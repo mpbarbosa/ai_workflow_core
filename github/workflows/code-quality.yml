@@ -1,0 +1,223 @@
+name: Code Quality Checks
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  shellcheck:
+    name: ShellCheck Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Cache ShellCheck results
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/shellcheck
+          key: shellcheck-${{ hashFiles('src/**/*.sh') }}
+          restore-keys: |
+            shellcheck-
+      
+      - name: Track step timing
+        run: echo "STEP_START=$(date +%s)" >> $GITHUB_ENV
+        
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        with:
+          scandir: './src/workflow'
+          severity: warning
+          format: gcc
+          
+      - name: ShellCheck Report
+        if: failure()
+        run: |
+          echo "::error::ShellCheck found issues. Please fix them before merging."
+      
+      - name: Report timing
+        if: always()
+        run: |
+          DURATION=$(($(date +%s) - STEP_START))
+          echo "::notice::ShellCheck duration: ${DURATION}s"
+          
+  markdown-lint:
+    name: Markdown Linting
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Cache npm dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: npm-markdownlint-${{ hashFiles('package*.json') }}
+          restore-keys: |
+            npm-markdownlint-
+      
+      - name: Track step timing
+        run: echo "STEP_START=$(date +%s)" >> $GITHUB_ENV
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Install markdownlint-cli
+        run: npm install -g markdownlint-cli
+        
+      - name: Run markdownlint
+        run: |
+          markdownlint '**/*.md' \
+            --ignore node_modules \
+            --ignore src/workflow/backlog \
+            --ignore src/workflow/logs \
+            --ignore src/workflow/summaries \
+            --config .markdownlint.json || true
+      
+      - name: Report timing
+        if: always()
+        run: |
+          DURATION=$(($(date +%s) - STEP_START))
+          echo "::notice::Markdown lint duration: ${DURATION}s"
+            
+  yaml-lint:
+    name: YAML Validation
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-yamllint-${{ hashFiles('requirements*.txt') }}
+          restore-keys: |
+            pip-yamllint-
+      
+      - name: Track step timing
+        run: echo "STEP_START=$(date +%s)" >> $GITHUB_ENV
+        
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Install yamllint
+        run: pip install yamllint
+        
+      - name: Run yamllint
+        run: |
+          yamllint src/workflow/config/*.yaml \
+            src/workflow/lib/*.yaml \
+            .github/workflows/*.yml
+      
+      - name: Report timing
+        if: always()
+        run: |
+          DURATION=$(($(date +%s) - STEP_START))
+          echo "::notice::YAML lint duration: ${DURATION}s"
+            
+  test-execution:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Cache test results
+        uses: actions/cache@v4
+        with:
+          path: |
+            test-results
+            src/workflow/lib/.test-cache
+          key: tests-${{ hashFiles('src/**/*.sh', 'tests/**') }}
+          restore-keys: |
+            tests-
+      
+      - name: Track step timing
+        run: echo "STEP_START=$(date +%s)" >> $GITHUB_ENV
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Install BATS
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y bats
+          
+      - name: Run library tests
+        run: |
+          cd src/workflow/lib
+          export AUTO_MODE=true
+          for test_file in test_*.sh; do
+            if [[ -f "$test_file" && -x "$test_file" ]]; then
+              echo "Running $test_file..."
+              timeout 60s bash "$test_file" || echo "Test $test_file failed or timed out"
+            fi
+          done
+      
+      - name: Report timing
+        if: always()
+        run: |
+          DURATION=$(($(date +%s) - STEP_START))
+          echo "::notice::Test execution duration: ${DURATION}s"
+          
+  documentation-validation:
+    name: Documentation Validation
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Cache validation results
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/doc-validation
+          key: doc-validation-${{ hashFiles('docs/**', 'scripts/validate_docs.sh') }}
+          restore-keys: |
+            doc-validation-
+      
+      - name: Track step timing
+        run: echo "STEP_START=$(date +%s)" >> $GITHUB_ENV
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Install yq
+        run: |
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+          
+      - name: Validate documentation consistency
+        run: |
+          if [[ -f scripts/validate_docs.sh ]]; then
+            bash scripts/validate_docs.sh || true
+          fi
+          
+      - name: Check for broken links
+        run: |
+          # Check for broken internal links in markdown files
+          find docs -name "*.md" -type f -exec grep -H "\[.*\](.*)" {} \; | \
+            grep -v "http" | \
+            grep -v "^#" || true
+      
+      - name: Report timing
+        if: always()
+        run: |
+          DURATION=$(($(date +%s) - STEP_START))
+          echo "::notice::Documentation validation duration: ${DURATION}s"

@@ -1,0 +1,89 @@
+# GitHub Copilot Instructions - {{PROJECT_NAME}}
+
+**Repository**: {{REPO_NAME}}  
+**Version**: {{VERSION}}  
+**Last Updated**: {{LAST_UPDATED}}  
+**Maintainer**: {{MAINTAINER_NAME}} ([@{{MAINTAINER_GITHUB}}](https://github.com/{{MAINTAINER_GITHUB}}))
+
+## Project Overview
+
+{{PROJECT_DESCRIPTION}}
+
+### Key Capabilities
+
+> 📋 **Reference**: See [docs/PROJECT_REFERENCE.md](../docs/PROJECT_REFERENCE.md) for authoritative project statistics, features, and module inventory.
+
+**Core Features**:
+{{CORE_FEATURES_LIST}}
+
+## Architecture Patterns
+
+### Core Design Principles
+
+{{DESIGN_PRINCIPLES}}
+
+### Module Categories
+
+> 📋 **Complete Inventory**: See [docs/PROJECT_REFERENCE.md#module-inventory](../docs/PROJECT_REFERENCE.md#module-inventory) for full module list with descriptions.
+
+{{MODULE_CATEGORIES}}
+
+## Key Files and Directories
+
+### Primary Entry Points
+
+{{ENTRY_POINTS}}
+
+### Configuration Files
+
+{{CONFIG_FILES}}
+
+### Documentation Structure
+
+{{DOCS_STRUCTURE}}
+
+## Development Workflow
+
+### Testing Strategy
+
+{{TESTING_STRATEGY}}
+
+### Code Quality Standards
+
+{{QUALITY_STANDARDS}}
+
+## AI Assistance Guidelines
+
+### When to Use AI
+
+{{AI_USE_CASES}}
+
+### AI Personas
+
+{{AI_PERSONAS}}
+
+### Prompt Engineering
+
+{{PROMPT_GUIDELINES}}
+
+## Common Tasks
+
+### Running Tests
+
+{{TEST_COMMANDS}}
+
+### Building/Linting
+
+{{BUILD_LINT_COMMANDS}}
+
+### Documentation Updates
+
+{{DOC_UPDATE_PROCESS}}
+
+## Contributing
+
+See [CONTRIBUTING.md](../CONTRIBUTING.md) for detailed contribution guidelines.
+
+## Version History
+
+See [CHANGELOG.md](../CHANGELOG.md) for version history and migration guides.

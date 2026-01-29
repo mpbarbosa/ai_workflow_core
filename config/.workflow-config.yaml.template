@@ -1,0 +1,24 @@
+# AI Workflow Automation Configuration Template
+# Copy this file to your project root as .workflow-config.yaml and customize
+
+project:
+  name: "{{PROJECT_NAME}}"
+  type: "{{PROJECT_TYPE}}"  # e.g., bash-automation-framework, nodejs-application, python-package
+  description: "{{PROJECT_DESCRIPTION}}"
+  kind: "{{PROJECT_KIND}}"  # e.g., shell_automation, web_application, library
+  version: "{{VERSION}}"
+
+tech_stack:
+  primary_language: "{{LANGUAGE}}"  # e.g., bash, javascript, python, typescript
+  build_system: "{{BUILD_SYSTEM}}"  # e.g., none, npm, webpack, maven, gradle
+  test_framework: "{{TEST_FRAMEWORK}}"  # e.g., shell-script, jest, pytest, mocha
+  test_command: "{{TEST_COMMAND}}"  # e.g., ./tests/run_all_tests.sh, npm test, pytest
+  lint_command: "{{LINT_COMMAND}}"  # e.g., shellcheck src/**/*.sh, eslint ., pylint src/
+
+structure:
+  source_dirs:
+    - src
+  test_dirs:
+    - tests
+  docs_dirs:
+    - docs

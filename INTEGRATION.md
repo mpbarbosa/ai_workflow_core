@@ -44,14 +44,17 @@ git commit -m "Add ai_workflow_core submodule"
 # Copy workflow configuration template
 cp .workflow_core/config/.workflow-config.yaml.template .workflow-config.yaml
 
-# Append gitignore patterns (or create if doesn't exist)
-if [ -f .gitignore ]; then
-    echo "" >> .gitignore
-    echo "# AI Workflow artifacts" >> .gitignore
-    cat .workflow_core/config/.gitignore.template >> .gitignore
-else
-    cp .workflow_core/config/.gitignore.template .gitignore
-fi
+# Add workflow artifact patterns to .gitignore
+cat >> .gitignore << 'EOF'
+
+# AI Workflow artifacts
+.ai_workflow/backlog/
+.ai_workflow/summaries/
+.ai_workflow/logs/
+.ai_workflow/metrics/
+.ai_workflow/checkpoints/
+.ai_workflow/.incremental_cache/
+EOF
 ```
 
 ### Step 3: Create Workflow Directory Structure
@@ -341,8 +344,18 @@ grep -r "{{" .workflow-config.yaml  # Find remaining placeholders
 
 ```bash
 # Symptoms: Git wants to commit .ai_workflow/ contents
-# Solution: Ensure .gitignore is properly configured
-cat .workflow_core/config/.gitignore.template >> .gitignore
+# Solution: Ensure .gitignore includes workflow patterns
+cat >> .gitignore << 'EOF'
+
+# AI Workflow artifacts
+.ai_workflow/backlog/
+.ai_workflow/summaries/
+.ai_workflow/logs/
+.ai_workflow/metrics/
+.ai_workflow/checkpoints/
+.ai_workflow/.incremental_cache/
+EOF
+
 git rm -r --cached .ai_workflow/backlog .ai_workflow/logs  # Remove from index
 ```
 

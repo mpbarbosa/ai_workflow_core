@@ -36,8 +36,17 @@ git submodule update --init --recursive
 # Copy workflow config
 cp .workflow_core/config/.workflow-config.yaml.template .workflow-config.yaml
 
-# Add gitignore patterns
-cat .workflow_core/config/.gitignore.template >> .gitignore
+# Add workflow artifact patterns to your .gitignore
+cat >> .gitignore << 'EOF'
+
+# AI Workflow artifacts
+.ai_workflow/backlog/
+.ai_workflow/summaries/
+.ai_workflow/logs/
+.ai_workflow/metrics/
+.ai_workflow/checkpoints/
+.ai_workflow/.incremental_cache/
+EOF
 ```
 
 ### 3. Replace Placeholders

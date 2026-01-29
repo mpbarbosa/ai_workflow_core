@@ -19,9 +19,6 @@ Main workflow configuration template. Copy to your project root as `.workflow-co
 - `{{TEST_COMMAND}}` - Command to run tests
 - `{{LINT_COMMAND}}` - Command to run linter
 
-### `.gitignore.template`
-Git ignore patterns for workflow artifacts. Copy to your project root as `.gitignore` (or append to existing).
-
 ## Usage
 
 ```bash
@@ -33,6 +30,20 @@ cp .workflow_core/config/.workflow-config.yaml.template .workflow-config.yaml
 sed -i 's/{{PROJECT_NAME}}/My Project/g' .workflow-config.yaml
 sed -i 's/{{LANGUAGE}}/javascript/g' .workflow-config.yaml
 # ... etc
+```
+
+## Gitignore Patterns
+
+Add these patterns to your project's `.gitignore` file to exclude workflow artifacts:
+
+```gitignore
+# AI Workflow artifacts
+.ai_workflow/backlog/
+.ai_workflow/summaries/
+.ai_workflow/logs/
+.ai_workflow/metrics/
+.ai_workflow/checkpoints/
+.ai_workflow/.incremental_cache/
 ```
 
 ## AI Prompt Configuration Files

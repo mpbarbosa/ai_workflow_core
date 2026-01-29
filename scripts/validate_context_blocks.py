@@ -107,7 +107,7 @@ def validate_context_blocks(yaml_file):
 
 
 if __name__ == '__main__':
-    yaml_file = sys.argv[1] if len(sys.argv) > 1 else 'src/workflow/lib/ai_helpers.yaml'
+    yaml_file = sys.argv[1] if len(sys.argv) > 1 else '.workflow_core/config/ai_helpers.yaml'
     
     if not Path(yaml_file).exists():
         print(f"Error: File not found: {yaml_file}")

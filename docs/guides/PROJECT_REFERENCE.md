@@ -159,10 +159,10 @@
 The AI Workflow uses a **flexible persona system** with dynamic prompt construction:
 
 **System Design**:
-- **9 Base Prompt Templates** in `src/workflow/lib/ai_helpers.yaml`
+- **9 Base Prompt Templates** in `.workflow_core/config/ai_helpers.yaml`
   - doc_analysis_prompt, consistency_prompt, test_strategy_prompt, quality_prompt, issue_extraction_prompt, markdown_lint_prompt, language_specific_documentation, language_specific_quality, language_specific_testing
 
-- **4 Specialized Persona Types** in `src/workflow/config/ai_prompts_project_kinds.yaml`
+- **4 Specialized Persona Types** in `.workflow_core/config/ai_prompts_project_kinds.yaml`
   - documentation_specialist (adapts per project kind)
   - code_reviewer (adapts per project kind)
   - test_engineer (adapts per project kind)

@@ -64,15 +64,13 @@ Language-specific prompt customizations for different project types (bash, javas
 ### `project_kinds.yaml`
 Project kind definitions and their characteristics.
 
-### `paths.yaml`
-Path configuration for workflow artifacts and directories.
-
 ### Usage
 
 These files work together with the workflow automation system:
 1. `ai_helpers.yaml` provides base prompt templates
 2. `ai_prompts_project_kinds.yaml` adds language-specific context
 3. `project_kinds.yaml` defines project types
-4. `paths.yaml` configures artifact locations
 
 Copy these to your project if you're building a workflow automation system that needs AI prompt management.
+
+**Note:** Path configurations should be defined in your project-specific configuration files, not in the core templates.

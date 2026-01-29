@@ -45,6 +45,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+- `config/paths.yaml` - Removed as it's project-specific and should be created by consuming projects, not provided as a template
+
 ### Planned
 - Python integration example
 - Additional GitHub workflow templates

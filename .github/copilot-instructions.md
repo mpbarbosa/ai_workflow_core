@@ -79,7 +79,6 @@ ai_workflow_core/
 │   ├── .workflow-config.yaml.template  # Main workflow config template
 │   ├── ai_helpers.yaml          # AI helper definitions (1900+ lines)
 │   ├── ai_prompts_project_kinds.yaml   # Project-specific AI prompts
-│   ├── paths.yaml               # Path configurations
 │   ├── project_kinds.yaml       # Project type definitions & validation rules
 │   └── README.md
 ├── docs/                        # Comprehensive documentation
@@ -136,6 +135,7 @@ target_project/
 - `.workflow-config.yaml.template`: Main config with placeholders
 - `project_kinds.yaml`: Defines validation rules per project type (shell_script_automation, nodejs_api, react_spa, python_app, client_spa, static_website, generic)
 - `ai_helpers.yaml`: Large file (1900+ lines) with AI helper configurations
+- `ai_prompts_project_kinds.yaml`: Project-specific AI prompts
 - Project types define test frameworks, linters, build systems, and best practices
 
 **docs/**: Comprehensive documentation organized by purpose
@@ -588,7 +588,7 @@ Always clarify which context applies to the current task.
 
 **This repository contains:**
 - Configuration templates (2 files: `.workflow-config.yaml.template`, `cleanup_artifacts.sh.template`)
-- Configuration schemas (5 YAML files in `config/`: project_kinds, ai_helpers, ai_prompts_project_kinds, paths, README)
+- Configuration schemas (4 YAML files in `config/`: project_kinds, ai_helpers, ai_prompts_project_kinds, README)
 - GitHub workflow templates (3 files in `github/workflows/`: code-quality, validate-docs, validate-tests)
 - Integration examples (2 language examples: shell minimal quick-start, nodejs comprehensive guide)
 - Documentation (7 core docs in `docs/` + 3 guides in `docs/guides/`)

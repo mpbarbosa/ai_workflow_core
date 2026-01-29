@@ -6,7 +6,7 @@ The `.ai_workflow/` directory is used for workflow execution artifacts. This dir
 
 Create this structure in your project:
 
-```
+```text
 .ai_workflow/
 ├── backlog/              # Workflow execution reports and step outputs
 ├── summaries/            # AI-generated summaries per workflow run
@@ -65,6 +65,7 @@ find .ai_workflow/logs -type d -mtime +7 -exec rm -rf {} \;
 ## Disk Space
 
 Typical artifact sizes per workflow run:
+
 - Backlog reports: ~100-500 KB
 - Summaries: ~10-50 KB
 - Logs: ~50-200 KB

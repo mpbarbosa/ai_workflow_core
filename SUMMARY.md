@@ -11,7 +11,6 @@ ai_workflow_core/
 ├── config/                          # Configuration templates
 │   ├── .workflow-config.yaml.template
 │   ├── .gitignore.template
-│   ├── .vscode/                     # VS Code integration
 │   └── README.md
 ├── github/                          # GitHub integration
 │   ├── workflows/                   # CI/CD workflows
@@ -72,7 +71,6 @@ ai_workflow_core/
 ### 4. GitHub Integration
 - Ready-to-use GitHub Actions workflows
 - GitHub Copilot instructions template
-- VS Code task integration
 - Pre-configured for CI/CD
 
 ### 5. Standard Directory Structure
@@ -119,7 +117,6 @@ cp -r .workflow_core/ai_workflow .ai_workflow
 - `.gitignore` → language-agnostic patterns
 - `.github/copilot-instructions.md` → templatized
 - `.github/workflows/*.yml` → 3 workflow files
-- `.vscode/tasks.json` → VS Code integration
 
 ### Templates & Scripts
 - `templates/` → complete directory (error handling, workflows)
@@ -172,7 +169,6 @@ tech_stack:
 ✅ Documentation complete with examples  
 ✅ Shell and Node.js integration examples working  
 ✅ GitHub Actions workflows included  
-✅ VS Code integration provided  
 ✅ 33 files committed across 10 directories
 
 ## Next Steps

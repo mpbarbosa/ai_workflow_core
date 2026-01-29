@@ -52,9 +52,6 @@ if [ -f .gitignore ]; then
 else
     cp .workflow_core/config/.gitignore.template .gitignore
 fi
-
-# Copy VS Code configuration (optional)
-cp -r .workflow_core/config/.vscode .vscode
 ```
 
 ### Step 3: Create Workflow Directory Structure

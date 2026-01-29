@@ -22,9 +22,6 @@ Main workflow configuration template. Copy to your project root as `.workflow-co
 ### `.gitignore.template`
 Git ignore patterns for workflow artifacts. Copy to your project root as `.gitignore` (or append to existing).
 
-### `.vscode/`
-VS Code configuration for workflow integration with tasks and keyboard shortcuts.
-
 ## Usage
 
 ```bash

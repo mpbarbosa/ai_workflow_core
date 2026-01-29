@@ -14,7 +14,7 @@
 
 ## What's Included
 
-- **Configuration Templates** - Workflow config, gitignore, VS Code integration
+- **Configuration Templates** - Workflow config, gitignore patterns
 - **GitHub Integration** - Actions workflows, Copilot instructions
 - **Reusable Templates** - Error handling, workflow templates
 - **Utility Scripts** - Cleanup, validation scripts
@@ -38,9 +38,6 @@ cp .workflow_core/config/.workflow-config.yaml.template .workflow-config.yaml
 
 # Add gitignore patterns
 cat .workflow_core/config/.gitignore.template >> .gitignore
-
-# Copy VS Code integration (optional)
-cp -r .workflow_core/config/.vscode .vscode
 ```
 
 ### 3. Replace Placeholders
@@ -110,7 +107,6 @@ See [examples/](examples/) for complete integration examples.
 ✅ Language-agnostic templates  
 ✅ GitHub Actions workflows  
 ✅ GitHub Copilot integration  
-✅ VS Code task integration  
 ✅ Standardized directory structure  
 ✅ Utility scripts  
 ✅ Comprehensive documentation

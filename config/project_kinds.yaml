@@ -1,0 +1,730 @@
+# Project Kind Configuration Schema
+# Version: 1.0.0
+# Purpose: Define validation rules, test commands, and quality standards per project kind
+# Last Updated: 2025-12-18
+
+# ============================================================================
+# PROJECT KIND DEFINITIONS
+# ============================================================================
+
+project_kinds:
+  
+  # ----------------------------------------------------------------------------
+  # Shell Script Automation Project
+  # ----------------------------------------------------------------------------
+  shell_script_automation:
+    name: "Shell Script Automation"
+    description: "Bash/shell script based automation tools and utilities"
+    
+    # Validation rules
+    validation:
+      required_files:
+        - "*.sh"
+      required_directories:
+        - "src"
+      optional_files:
+        - "README.md"
+        - ".gitignore"
+      file_patterns:
+        - "*.sh"
+        - "*.bash"
+    
+    # Test execution configuration
+    testing:
+      test_framework: "bash_unit"
+      test_directory: "tests"
+      test_file_pattern: "test_*.sh"
+      test_command: "bash"
+      coverage_required: false
+      coverage_threshold: 0
+      
+    # Quality standards
+    quality:
+      linters:
+        - name: "shellcheck"
+          enabled: true
+          command: "shellcheck"
+          args: ["-x", "-S", "warning"]
+          file_pattern: "*.sh"
+        - name: "shfmt"
+          enabled: false
+          command: "shfmt"
+          args: ["-d", "-i", "4"]
+          file_pattern: "*.sh"
+      
+      documentation_required: true
+      inline_comments_recommended: true
+      readme_required: true
+    
+    # Dependencies configuration
+    dependencies:
+      package_files: []
+      lock_files: []
+      validation_required: false
+    
+    # Build configuration
+    build:
+      required: false
+      build_command: ""
+      output_directory: ""
+    
+    # Deployment configuration  
+    deployment:
+      type: "script"
+      requires_build: false
+      artifact_patterns: ["*.sh"]
+    
+    # Language-specific best practices and standards
+    ai_guidance:
+      testing_standards:
+        - "BATS testing conventions and best practices"
+        - "Test with set -euo pipefail for strict error handling"
+        - "Mock external commands and dependencies"
+        - "Test both success and failure scenarios"
+      
+      style_guides:
+        - "Google Shell Style Guide"
+        - "ShellCheck recommendations"
+      
+      best_practices:
+        - "Quote all variable expansions: \"${var}\""
+        - "Use [[ ]] for conditionals instead of [ ]"
+        - "Use functions for code organization"
+        - "Add error handling with trap"
+        - "Use local for function variables"
+        - "Avoid eval and command substitution pitfalls"
+      
+      directory_standards:
+        - "Separate source (src/), tests (tests/), and docs (docs/)"
+        - "Keep scripts in bin/ or scripts/ directory"
+        - "Configuration files in config/ or root"
+        - "Library modules in lib/"
+
+  # ----------------------------------------------------------------------------
+  # Node.js API Project
+  # ----------------------------------------------------------------------------
+  nodejs_api:
+    name: "Node.js API"
+    description: "Node.js backend API with Express or similar framework"
+    
+    validation:
+      required_files:
+        - "package.json"
+        - "server.js|app.js|index.js"
+      required_directories:
+        - "src|lib|routes"
+      optional_files:
+        - "README.md"
+        - ".env.example"
+        - "docker-compose.yml"
+      file_patterns:
+        - "*.js"
+        - "*.ts"
+        - "*.mjs"
+    
+    testing:
+      test_framework: "jest|mocha|vitest"
+      test_directory: "test|tests|__tests__"
+      test_file_pattern: "*.test.js|*.spec.js|*.test.ts|*.spec.ts"
+      test_command: "npm test"
+      coverage_required: true
+      coverage_threshold: 80
+      
+    quality:
+      linters:
+        - name: "eslint"
+          enabled: true
+          command: "npx eslint"
+          args: ["."]
+          file_pattern: "*.js|*.ts"
+        - name: "prettier"
+          enabled: true
+          command: "npx prettier"
+          args: ["--check", "."]
+          file_pattern: "*.js|*.ts|*.json"
+      
+      documentation_required: true
+      inline_comments_recommended: true
+      readme_required: true
+      api_documentation_required: true
+      api_documentation_format: "openapi|swagger|jsdoc"
+    
+    dependencies:
+      package_files: ["package.json"]
+      lock_files: ["package-lock.json", "yarn.lock", "pnpm-lock.yaml"]
+      validation_required: true
+      security_audit_required: true
+      audit_command: "npm audit"
+    
+    build:
+      required: false  # May be true for TypeScript
+      build_command: "npm run build"
+      output_directory: "dist|build"
+    
+    deployment:
+      type: "service"
+      requires_build: false
+      artifact_patterns: ["package.json", "*.js", "src/**/*"]
+      environment_required: true
+    
+    # Language-specific best practices and standards
+    ai_guidance:
+      testing_standards:
+        - "Jest/Vitest/Mocha best practices"
+        - "Supertest for API endpoint testing"
+        - "Mock external services and databases"
+        - "Test middleware and error handlers"
+        - "Use fixtures for test data"
+      
+      style_guides:
+        - "Airbnb JavaScript Style Guide"
+        - "Node.js Best Practices"
+        - "Express.js security best practices"
+      
+      best_practices:
+        - "Use async/await for async operations"
+        - "Handle errors with proper HTTP status codes"
+        - "Validate input with middleware (joi, express-validator)"
+        - "Use environment variables for configuration"
+        - "Implement proper logging (winston, pino)"
+        - "Follow RESTful API design principles"
+      
+      directory_standards:
+        - "Separate routes/, controllers/, models/, services/"
+        - "Configuration in config/ directory"
+        - "Middleware in middleware/ directory"
+        - "Tests parallel to src/ structure"
+
+  # ----------------------------------------------------------------------------
+  # Static Website Project
+  # ----------------------------------------------------------------------------
+  static_website:
+    name: "Static Website"
+    description: "HTML/CSS/JavaScript static website or portfolio"
+    
+    validation:
+      required_files:
+        - "index.html"
+      required_directories: []
+      optional_files:
+        - "README.md"
+        - "package.json"
+        - "style.css|styles.css"
+      file_patterns:
+        - "*.html"
+        - "*.css"
+        - "*.js"
+    
+    testing:
+      test_framework: "none|jest|playwright"
+      test_directory: "tests"
+      test_file_pattern: "*.test.js|*.spec.js"
+      test_command: "npm test"
+      coverage_required: false
+      coverage_threshold: 0
+      
+    quality:
+      linters:
+        - name: "htmlhint"
+          enabled: true
+          command: "npx htmlhint"
+          args: ["**/*.html"]
+          file_pattern: "*.html"
+        - name: "stylelint"
+          enabled: true
+          command: "npx stylelint"
+          args: ["**/*.css"]
+          file_pattern: "*.css"
+        - name: "eslint"
+          enabled: false
+          command: "npx eslint"
+          args: ["."]
+          file_pattern: "*.js"
+      
+      documentation_required: true
+      inline_comments_recommended: false
+      readme_required: true
+      accessibility_required: true
+      wcag_level: "AA"
+    
+    dependencies:
+      package_files: ["package.json"]
+      lock_files: ["package-lock.json", "yarn.lock"]
+      validation_required: false
+    
+    build:
+      required: false
+      build_command: "npm run build"
+      output_directory: "dist|build|public"
+    
+    deployment:
+      type: "static"
+      requires_build: false
+      artifact_patterns: ["*.html", "*.css", "*.js", "assets/**/*"]
+      cdn_compatible: true
+    
+    # Language-specific best practices and standards
+    ai_guidance:
+      testing_standards:
+        - "Jest/Vitest for JavaScript testing"
+        - "Playwright/Cypress for E2E testing"
+        - "Test DOM manipulation and user interactions"
+        - "Mock fetch/API calls"
+      
+      style_guides:
+        - "HTML5 semantic markup guidelines"
+        - "CSS BEM or OOCSS methodology"
+        - "JavaScript ES6+ best practices"
+      
+      best_practices:
+        - "Use semantic HTML elements"
+        - "Implement responsive design (mobile-first)"
+        - "Optimize images and assets"
+        - "Minimize and bundle JavaScript/CSS for production"
+        - "Implement proper accessibility (WCAG)"
+        - "Use CSS Grid/Flexbox for layouts"
+      
+      directory_standards:
+        - "Separate content (HTML), styles (CSS), scripts (JS)"
+        - "Assets in assets/ or public/ directory"
+        - "Source in src/, distribution in dist/ or public/"
+        - "Documentation in docs/ directory"
+
+  # ----------------------------------------------------------------------------
+  # Client-Side SPA Project (Vanilla JS/Bootstrap)
+  # ----------------------------------------------------------------------------
+  client_spa:
+    name: "Client-Side SPA"
+    description: "Vanilla JavaScript Single Page Application with Bootstrap/CSS frameworks (no React/Vue/Angular)"
+    
+    # Validation rules
+    validation:
+      required_files:
+        - "index.html|public/index.html"
+        - "package.json"
+        - "src/**/*.js"
+      required_directories:
+        - "src"
+        - "public|dist"
+      optional_files:
+        - "README.md"
+        - "vite.config.js|webpack.config.js"
+        - "jest.config.js"
+        - "eslint.config.js"
+        - "sw.js|service-worker.js"
+        - ".env.example"
+      file_patterns:
+        - "*.html"
+        - "*.css"
+        - "*.js"
+        - "*.mjs"
+      excluded_patterns:
+        - "*.jsx"
+        - "*.tsx"
+        - "*.vue"
+        - "angular.json"
+    
+    # Test execution configuration
+    testing:
+      test_framework: "jest|playwright|selenium"
+      test_directory: "tests"
+      test_file_pattern: "*.test.js|*.spec.js|*.e2e.test.js|test_*.py"
+      test_command: "npm test"
+      e2e_command: "npm run test:e2e"
+      coverage_required: true
+      coverage_threshold: 70
+      
+    # Quality standards
+    quality:
+      linters:
+        - name: "eslint"
+          enabled: true
+          command: "npx eslint"
+          args: ["src/**/*.js"]
+          file_pattern: "*.js|*.mjs"
+        - name: "htmlhint"
+          enabled: true
+          command: "npx htmlhint"
+          args: ["**/*.html"]
+          file_pattern: "*.html"
+        - name: "stylelint"
+          enabled: true
+          command: "npx stylelint"
+          args: ["src/styles/**/*.css"]
+          file_pattern: "*.css"
+      
+      documentation_required: true
+      inline_comments_recommended: true
+      readme_required: true
+      api_documentation_required: true
+      accessibility_required: true
+      wcag_level: "AA"
+    
+    # Dependencies configuration
+    dependencies:
+      package_files: ["package.json"]
+      lock_files: ["package-lock.json", "yarn.lock", "pnpm-lock.yaml"]
+      validation_required: true
+      security_audit_required: true
+      audit_command: "npm audit"
+    
+    # Build configuration
+    build:
+      required: false  # Optional - supports both static serving and build tools
+      build_command: "npm run build"
+      output_directory: "dist|build|public"
+      dev_server: "npm run dev|python3 -m http.server"
+    
+    # Deployment configuration  
+    deployment:
+      type: "static"
+      requires_build: false
+      artifact_patterns:
+        - "public/**/*"
+        - "dist/**/*"
+        - "index.html"
+        - "src/**/*.js"
+        - "src/**/*.css"
+      cdn_compatible: true
+    
+    # Language-specific best practices and standards
+    ai_guidance:
+      testing_standards:
+        - "Jest for unit testing with jsdom environment"
+        - "Playwright/Selenium for E2E browser testing"
+        - "Test API client with mock responses and fetch mocks"
+        - "Test state management and localStorage interactions"
+        - "Validate DOM manipulation and event handlers"
+        - "Test responsive design breakpoints"
+        - "Mock external API calls consistently"
+      
+      style_guides:
+        - "Airbnb JavaScript Style Guide (ES6+)"
+        - "Bootstrap 5 Best Practices"
+        - "Vanilla JS Best Practices (avoiding jQuery where possible)"
+        - "HTML5 semantic markup guidelines"
+        - "CSS BEM methodology for custom styles"
+      
+      best_practices:
+        - "Use ES6+ modules (import/export) for code organization"
+        - "Implement client-side routing with History API if SPA navigation needed"
+        - "Use fetch() API with proper error handling and timeouts"
+        - "Implement caching strategy (localStorage/sessionStorage) with TTL"
+        - "Use async/await for asynchronous operations"
+        - "Implement proper state management (avoid global variables)"
+        - "Use Bootstrap utilities before custom CSS"
+        - "Optimize bundle size with tree-shaking and code splitting"
+        - "Implement proper CORS handling for API consumption"
+        - "Use semantic HTML5 elements (nav, main, article, section)"
+        - "Follow mobile-first responsive design principles"
+        - "Implement proper accessibility (ARIA labels, keyboard navigation)"
+        - "Use Service Worker for PWA features (optional)"
+        - "Validate forms with HTML5 attributes + JavaScript"
+        - "Implement proper error boundaries for API failures"
+      
+      directory_standards:
+        - "HTML entry point in root or public/ directory"
+        - "JavaScript modules in src/js/ or src/ directory"
+        - "API clients and services in src/services/ directory"
+        - "Utility functions in src/utils/ or src/lib/ directory"
+        - "Stylesheets in src/styles/ or public/css/ directory"
+        - "Static assets in public/ or assets/ directory"
+        - "Tests in tests/ directory (unit, integration, e2e)"
+        - "Configuration files in root directory"
+        - "Build output in dist/ or build/ directory"
+        - "Documentation in docs/ directory"
+      
+      api_integration_patterns:
+        - "Create dedicated apiClient.js module for all HTTP requests"
+        - "Implement referential transparency (pure functions with dependency injection)"
+        - "Use configuration objects for API endpoints and timeouts"
+        - "Implement retry logic with exponential backoff"
+        - "Handle network errors gracefully with user-friendly messages"
+        - "Cache API responses with appropriate TTL strategies"
+        - "Use AbortController for request cancellation"
+        - "Validate API responses before processing"
+      
+      state_management_patterns:
+        - "Use localStorage for persistent client-side data (with TTL)"
+        - "Use sessionStorage for temporary session data"
+        - "Implement centralized state management module (e.g., stateManager.js)"
+        - "Use event-driven architecture for state change notifications"
+        - "Avoid global variables - encapsulate state in modules"
+        - "Implement state validation and sanitization"
+        - "Clear stale cache data on version updates"
+
+  # ----------------------------------------------------------------------------
+  # React/SPA Application
+  # ----------------------------------------------------------------------------
+  react_spa:
+    name: "React SPA"
+    description: "Single Page Application using React"
+    
+    validation:
+      required_files:
+        - "package.json"
+        - "src/App.js|src/App.tsx"
+      required_directories:
+        - "src"
+        - "public"
+      optional_files:
+        - "README.md"
+        - "tsconfig.json"
+      file_patterns:
+        - "*.jsx"
+        - "*.tsx"
+        - "*.js"
+        - "*.ts"
+    
+    testing:
+      test_framework: "jest|vitest"
+      test_directory: "src"
+      test_file_pattern: "*.test.js|*.test.tsx|*.spec.js|*.spec.tsx"
+      test_command: "npm test"
+      coverage_required: true
+      coverage_threshold: 70
+      
+    quality:
+      linters:
+        - name: "eslint"
+          enabled: true
+          command: "npx eslint"
+          args: ["src"]
+          file_pattern: "*.jsx|*.tsx|*.js|*.ts"
+        - name: "prettier"
+          enabled: true
+          command: "npx prettier"
+          args: ["--check", "src"]
+          file_pattern: "*.jsx|*.tsx|*.js|*.ts"
+      
+      documentation_required: true
+      inline_comments_recommended: true
+      readme_required: true
+      component_documentation_required: true
+    
+    dependencies:
+      package_files: ["package.json"]
+      lock_files: ["package-lock.json", "yarn.lock", "pnpm-lock.yaml"]
+      validation_required: true
+      security_audit_required: true
+      audit_command: "npm audit"
+    
+    build:
+      required: true
+      build_command: "npm run build"
+      output_directory: "build|dist"
+    
+    deployment:
+      type: "static"
+      requires_build: true
+      artifact_patterns: ["build/**/*", "dist/**/*"]
+      cdn_compatible: true
+    
+    # Language-specific best practices and standards
+    ai_guidance:
+      testing_standards:
+        - "Jest/Vitest with React Testing Library"
+        - "Test components in isolation"
+        - "Test user interactions and state changes"
+        - "Mock API calls and external dependencies"
+        - "Snapshot testing for UI components"
+      
+      style_guides:
+        - "Airbnb React/JSX Style Guide"
+        - "React Best Practices and Patterns"
+      
+      best_practices:
+        - "Use functional components with hooks"
+        - "Implement proper state management (useState, useContext, Redux)"
+        - "Optimize re-renders with React.memo and useCallback"
+        - "Follow component composition patterns"
+        - "Implement proper error boundaries"
+        - "Use TypeScript for type safety (if applicable)"
+      
+      directory_standards:
+        - "Components in src/components/ directory"
+        - "Pages/Routes in src/pages/ or src/routes/"
+        - "Utilities in src/utils/ or src/lib/"
+        - "Tests co-located or in __tests__/ directory"
+
+  # ----------------------------------------------------------------------------
+  # Python Application
+  # ----------------------------------------------------------------------------
+  python_app:
+    name: "Python Application"
+    description: "Python application or script collection"
+    
+    validation:
+      required_files:
+        - "*.py"
+      required_directories:
+        - "src|lib"
+      optional_files:
+        - "README.md"
+        - "requirements.txt"
+        - "setup.py"
+        - "pyproject.toml"
+      file_patterns:
+        - "*.py"
+    
+    testing:
+      test_framework: "pytest|unittest"
+      test_directory: "tests"
+      test_file_pattern: "test_*.py|*_test.py"
+      test_command: "pytest"
+      coverage_required: true
+      coverage_threshold: 80
+      
+    quality:
+      linters:
+        - name: "pylint"
+          enabled: true
+          command: "pylint"
+          args: ["src"]
+          file_pattern: "*.py"
+        - name: "black"
+          enabled: true
+          command: "black"
+          args: ["--check", "src"]
+          file_pattern: "*.py"
+        - name: "mypy"
+          enabled: false
+          command: "mypy"
+          args: ["src"]
+          file_pattern: "*.py"
+      
+      documentation_required: true
+      inline_comments_recommended: true
+      readme_required: true
+      docstring_required: true
+      docstring_format: "google|numpy|sphinx"
+    
+    dependencies:
+      package_files: ["requirements.txt", "setup.py", "pyproject.toml"]
+      lock_files: ["Pipfile.lock", "poetry.lock"]
+      validation_required: true
+      security_audit_required: true
+      audit_command: "pip-audit"
+    
+    build:
+      required: false
+      build_command: "python setup.py build"
+      output_directory: "build|dist"
+    
+    deployment:
+      type: "application"
+      requires_build: false
+      artifact_patterns: ["*.py", "src/**/*.py"]
+    
+    # Language-specific best practices and standards
+    ai_guidance:
+      testing_standards:
+        - "Pytest best practices with fixtures"
+        - "Use parametrize for multiple test cases"
+        - "Mock external dependencies with unittest.mock"
+        - "Test exceptions and error conditions"
+        - "Use pytest-cov for coverage analysis"
+      
+      style_guides:
+        - "PEP 8 - Style Guide for Python Code"
+        - "PEP 257 - Docstring Conventions"
+        - "Google Python Style Guide"
+      
+      best_practices:
+        - "Use type hints for function signatures"
+        - "Follow PEP 8 naming conventions"
+        - "Write docstrings for modules, classes, and functions"
+        - "Use context managers for resource management"
+        - "Prefer list/dict comprehensions over loops (when readable)"
+        - "Handle exceptions explicitly (avoid bare except)"
+      
+      directory_standards:
+        - "Source code in src/ or package name directory"
+        - "Tests in tests/ directory (parallel structure)"
+        - "Scripts in scripts/ or bin/ directory"
+        - "Configuration in config/ or root directory"
+
+  # ----------------------------------------------------------------------------
+  # Generic Project (Fallback)
+  # ----------------------------------------------------------------------------
+  generic:
+    name: "Generic Project"
+    description: "Generic project with minimal assumptions"
+    
+    validation:
+      required_files: []
+      required_directories: []
+      optional_files:
+        - "README.md"
+      file_patterns: ["*"]
+    
+    testing:
+      test_framework: "unknown"
+      test_directory: "tests|test"
+      test_file_pattern: "test_*|*_test.*|*.test.*|*.spec.*"
+      test_command: ""
+      coverage_required: false
+      coverage_threshold: 0
+      
+    quality:
+      linters: []
+      documentation_required: true
+      inline_comments_recommended: false
+      readme_required: true
+    
+    dependencies:
+      package_files: []
+      lock_files: []
+      validation_required: false
+    
+    build:
+      required: false
+      build_command: ""
+      output_directory: ""
+    
+    deployment:
+      type: "unknown"
+      requires_build: false
+      artifact_patterns: []
+    
+    # Language-specific best practices and standards
+    ai_guidance:
+      testing_standards:
+        - "Follow language-appropriate testing framework conventions"
+        - "Test critical functionality thoroughly"
+        - "Include both positive and negative test cases"
+        - "Mock external dependencies appropriately"
+      
+      style_guides:
+        - "Follow language-specific style guides"
+        - "Maintain consistent code formatting"
+      
+      best_practices:
+        - "Write clear, self-documenting code"
+        - "Follow SOLID principles where applicable"
+        - "Handle errors appropriately"
+        - "Add comments for complex logic"
+        - "Keep functions focused and concise"
+        - "Use meaningful variable and function names"
+      
+      directory_standards:
+        - "Follow language/framework conventional structure"
+        - "Separate source, tests, and documentation"
+        - "Keep configuration files organized"
+        - "Use conventional directory names"
+
+# ============================================================================
+# CONFIGURATION METADATA
+# ============================================================================
+
+metadata:
+  schema_version: "1.1.0"
+  last_updated: "2025-12-22"
+  compatible_workflow_version: "2.3.1"
+  changelog:
+    - version: "1.1.0"
+      date: "2025-12-22"
+      changes: "Added client_spa project kind for vanilla JS SPAs with Bootstrap"
+    - version: "1.0.0"
+      date: "2025-12-18"
+      changes: "Initial project kinds configuration"

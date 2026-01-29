@@ -1,0 +1,85 @@
+# Project Path Configuration
+# This file centralizes all absolute paths for portability
+# Update PROJECT_ROOT when deploying to different environments
+
+# Base Paths
+project:
+  root: /home/mpb/Documents/GitHub/ai_workflow
+  name: ai_workflow
+
+# Source Directories
+directories:
+  src: ${project.root}/src
+  public: ${project.root}/public
+  docs: ${project.root}/docs
+  shell_scripts: ${project.root}/src/workflow
+  config: ${project.root}/config
+  
+  # Target Projects (where workflow may be applied)
+  targets:
+    mpbarbosa_site: /home/mpb/Documents/GitHub/mpbarbosa_site
+    monitora_vagas: /home/mpb/Documents/GitHub/monitora_vagas
+    busca_vagas: /home/mpb/Documents/GitHub/busca_vagas
+
+# Workflow Directories
+workflow:
+  root: ${project.root}/src/workflow
+  lib: ${project.root}/src/workflow/lib
+  steps: ${project.root}/src/workflow/steps
+  backlog: ${project.root}/src/workflow/backlog
+  logs: ${project.root}/src/workflow/logs
+  summaries: ${project.root}/src/workflow/summaries
+
+# Testing Configuration
+testing:
+  lib_tests: ${project.root}/src/workflow/lib/test_enhancements.sh
+
+# Node.js Configuration (for target projects)
+node:
+  required_version: "25.2.1"
+
+# Documentation Paths
+documentation:
+  readme: ${project.root}/README.md
+  migration_readme: ${project.root}/MIGRATION_README.md
+  workflow_automation: ${project.root}/docs/workflow-automation
+
+# Git Configuration
+git:
+  gitignore: ${project.root}/.gitignore
+  gitmodules: ${project.root}/.gitmodules
+  github_dir: ${project.root}/.github
+
+# Editor Configuration
+editor:
+  editorconfig: ${project.root}/.editorconfig
+  mdlrc: ${project.root}/.mdlrc
+  vscode: ${project.root}/.vscode
+
+# Environment Detection
+environment:
+  # Set to 'development', 'staging', or 'production'
+  current: development
+  
+  # Home directory (platform-specific)
+  user_home: /home/mpb
+  
+  # Detect if running in CI/CD
+  is_ci: false
+
+# Repository Configuration
+repository:
+  url: git@github.com:mpbarbosa/ai_workflow.git
+  origin: mpbarbosa_site
+
+# Script Paths
+scripts:
+  workflow:
+    main: ${project.root}/src/workflow/execute_tests_docs_workflow.sh
+    session_manager: ${project.root}/src/workflow/example_session_manager.sh
+
+# Notes:
+# - Use ${variable.path} syntax for path interpolation in scripts
+# - Update project.root when deploying to new environments
+# - Target projects can be configured for workflow application
+# - This is a standalone workflow automation repository

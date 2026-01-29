@@ -1,0 +1,48 @@
+# Git attributes for ai_workflow_core
+
+# Auto-detect text files and normalize line endings
+* text=auto
+
+# Explicitly declare text files with LF endings
+*.md text eol=lf
+*.sh text eol=lf
+*.py text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.template text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.mov binary
+*.mp4 binary
+*.mp3 binary
+*.gz binary
+*.zip binary
+*.7z binary
+*.ttf binary
+*.eot binary
+*.woff binary
+*.woff2 binary
+
+# Archives
+*.tar diff=astextplain
+
+# Export-ignore for cleaner archives
+.git* export-ignore
+.vscode export-ignore
+.idea export-ignore
+*.swp export-ignore
+*~ export-ignore
+.DS_Store export-ignore
+
+# Linguist overrides for better language detection
+*.sh linguist-language=Shell
+*.template linguist-language=Text
+docs/** linguist-documentation
+examples/** linguist-documentation

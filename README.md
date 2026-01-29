@@ -14,9 +14,8 @@
 
 ## What's Included
 
-- **Configuration Templates** - Workflow config, gitignore patterns
+- **Configuration Templates** - Workflow config files
 - **GitHub Integration** - Actions workflows, Copilot instructions
-- **Reusable Templates** - Error handling, workflow templates
 - **Utility Scripts** - Cleanup, validation scripts
 - **Directory Structure** - Standard artifact organization
 - **Documentation** - Architecture, guides, contributing

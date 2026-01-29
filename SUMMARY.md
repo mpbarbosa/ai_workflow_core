@@ -117,8 +117,7 @@ cp -r .workflow_core/ai_workflow .ai_workflow
 - `.github/copilot-instructions.md` → templatized
 - `.github/workflows/*.yml` → 3 workflow files
 
-### Templates & Scripts
-- `templates/` → complete directory (error handling, workflows)
+### Scripts
 - `scripts/cleanup_artifacts.sh` → templatized
 - `scripts/validate_context_blocks.py` → copied as-is
 
@@ -129,7 +128,7 @@ cp -r .workflow_core/ai_workflow .ai_workflow
 ### Workflow Structure
 - `.ai_workflow/` complete directory structure
 - README documentation
-- Example prompt templates
+- Example prompt structure
 
 ## What Was NOT Extracted
 
@@ -175,8 +174,8 @@ tech_stack:
 1. Push to GitHub: `git push origin main`
 2. Create v1.0.0 release tag
 3. Configure GitHub repository settings:
-   - Topics: `workflow-automation`, `ai`, `submodule`, `templates`
-   - Description: Language-agnostic workflow automation templates
+   - Topics: `workflow-automation`, `ai`, `submodule`, `configuration`
+   - Description: Language-agnostic workflow automation configuration
 4. Enable GitHub Discussions
 5. Add to GitHub Topics
 

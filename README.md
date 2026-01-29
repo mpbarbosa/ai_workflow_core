@@ -108,7 +108,6 @@ See [examples/](examples/) for complete integration examples.
 
 - [INTEGRATION.md](INTEGRATION.md) - Detailed integration guide
 - [docs/guides/](docs/guides/) - Implementation guides
-- [docs/architecture/](docs/architecture/) - Architecture documentation
 - [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) - Contributing guidelines
 
 ## Features

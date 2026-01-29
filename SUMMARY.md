@@ -31,7 +31,6 @@ ai_workflow_core/
 │   └── README_STRUCTURE.md
 ├── docs/                            # Documentation
 │   ├── guides/                      # Implementation guides
-│   ├── architecture/                # Architecture docs
 │   ├── CONTRIBUTING.md
 │   ├── CODE_OF_CONDUCT.md
 │   └── LICENSE
@@ -125,7 +124,6 @@ cp -r .workflow_core/ai_workflow .ai_workflow
 
 ### Documentation
 - `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `LICENSE`
-- Architecture documentation from `docs/architecture/`
 - Implementation guides from `docs/guides/`
 
 ### Workflow Structure
@@ -193,7 +191,6 @@ tech_stack:
 - **Main Documentation**: README.md
 - **Integration Guide**: INTEGRATION.md
 - **Examples**: examples/shell/, examples/nodejs/
-- **Architecture**: docs/architecture/
 - **Original Project**: https://github.com/mpbarbosa/ai_workflow
 
 ## Version

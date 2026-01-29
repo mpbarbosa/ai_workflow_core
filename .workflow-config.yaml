@@ -1,0 +1,85 @@
+# AI Workflow Automation Configuration
+# Project: ai_workflow_core
+# Created: 2026-01-29
+
+project:
+  name: "AI Workflow Core"
+  type: "configuration-library"
+  description: "Language-agnostic foundational configuration and templates for AI-powered workflow automation"
+  kind: "configuration_library"
+  version: "1.0.0"
+
+tech_stack:
+  primary_language: "yaml"
+  build_system: "none"
+  test_framework: "validation-scripts"
+  test_command: "python scripts/validate_context_blocks.py"
+  lint_command: "yamllint -d relaxed config/"
+
+structure:
+  source_dirs:
+    - config
+    - github/workflows
+    - scripts
+  test_dirs:
+    - scripts
+  docs_dirs:
+    - docs
+    - examples
+
+workflow:
+  # Enable smart execution to skip unchanged areas
+  smart_execution: true
+  
+  # Enable parallel execution for independent steps
+  parallel_execution: true
+  
+  # AI caching enabled by default (24-hour TTL)
+  ai_cache_enabled: true
+  
+  # Auto-commit workflow artifacts
+  auto_commit: false
+  
+  # Multi-stage pipeline for progressive validation
+  multi_stage_pipeline: false
+  
+  # ML optimization (requires historical data)
+  ml_optimize: false
+
+# Configuration-specific settings
+configuration:
+  # Template placeholder format
+  placeholder_format: "{{VARIABLE_NAME}}"
+  
+  # Integration type
+  integration_type: "git-submodule"
+  
+  # Required documentation
+  required_docs:
+    - "README.md"
+    - "INTEGRATION.md"
+    - "CHANGELOG.md"
+  
+  # Validation requirements
+  validation:
+    yaml_syntax: true
+    placeholder_consistency: true
+    example_completeness: true
+    documentation_links: true
+
+# Git submodule configuration
+submodule:
+  intended_path: ".workflow_core"
+  update_strategy: "checkout"
+  
+# Quality standards
+quality:
+  documentation:
+    integration_guide: true
+    examples_required: true
+    placeholder_documentation: true
+  
+  templates:
+    placeholder_consistency: true
+    example_validation: true
+    backward_compatibility: true

@@ -317,7 +317,7 @@ Edit `.workflow-config.yaml` to customize:
 ## Resources
 
 - [ai_workflow_core Documentation](../../README.md)
-- [Integration Guide](../../INTEGRATION.md)
+- [Integration Guide](../../docs/INTEGRATION.md)
 - [Jest Documentation](https://jestjs.io/)
 - [ESLint Documentation](https://eslint.org/)
 - [Node.js Best Practices](https://github.com/goldbergyoni/nodebestpractices)

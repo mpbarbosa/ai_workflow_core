@@ -85,7 +85,7 @@ mkdir -p .ai_workflow/{backlog,summaries,logs,metrics,checkpoints,prompts,ml_mod
 | `{{LINT_COMMAND}}` | Lint command | "eslint .", "shellcheck **/*.sh" |
 | `{{VERSION}}` | Version number | "1.0.0" |
 
-See [INTEGRATION.md](INTEGRATION.md) for complete placeholder list.
+See [docs/INTEGRATION.md](docs/INTEGRATION.md) for complete placeholder list.
 
 ## Language Examples
 
@@ -105,7 +105,7 @@ See [examples/](examples/) for complete integration examples.
 
 ## Documentation
 
-- [INTEGRATION.md](INTEGRATION.md) - Detailed integration guide
+- [docs/INTEGRATION.md](docs/INTEGRATION.md) - Detailed integration guide
 - [docs/guides/](docs/guides/) - Implementation guides
 - [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) - Contributing guidelines
 

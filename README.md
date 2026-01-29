@@ -66,8 +66,8 @@ tech_stack:
 ### 4. Set Up Workflow Structure
 
 ```bash
-# Create artifact directory
-cp -r .workflow_core/ai_workflow .ai_workflow
+# Create artifact directory structure
+mkdir -p .ai_workflow/{backlog,summaries,logs,metrics,checkpoints,prompts,ml_models,.incremental_cache}
 ```
 
 ## Placeholder Reference

@@ -60,8 +60,8 @@ cp -r .workflow_core/config/.vscode .vscode
 ### Step 3: Create Workflow Directory Structure
 
 ```bash
-# Copy the ai_workflow directory structure
-cp -r .workflow_core/ai_workflow .ai_workflow
+# Create the ai_workflow directory structure
+mkdir -p .ai_workflow/{backlog,summaries,logs,metrics,checkpoints,prompts,ml_models,.incremental_cache}
 
 # The structure includes:
 # - backlog/, summaries/, logs/, metrics/, checkpoints/

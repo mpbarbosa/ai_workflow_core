@@ -12,9 +12,8 @@ ai_workflow_core/
 │   ├── .workflow-config.yaml.template
 │   ├── .gitignore.template
 │   └── README.md
-├── github/                          # GitHub integration
-│   ├── workflows/                   # CI/CD workflows
-│   ├── copilot-instructions.md.template
+├── github/                          # GitHub configuration
+│   ├── workflows/                   # GitHub Actions workflows
 │   └── README.md
 ├── templates/                       # Reusable templates
 │   ├── error_handling.sh
@@ -113,8 +112,6 @@ cp -r .workflow_core/ai_workflow .ai_workflow
 
 ### Configuration
 - `.workflow-config.yaml` → templatized
-- `.gitignore` → language-agnostic patterns
-- `.github/copilot-instructions.md` → templatized
 - `.github/workflows/*.yml` → 3 workflow files
 
 ### Scripts

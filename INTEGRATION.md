@@ -262,16 +262,32 @@ For a Node.js project, edit `.github/workflows/code-quality.yml`:
 
 ### GitHub Copilot Instructions
 
-```bash
-# Copy template
-cp .workflow_core/github/copilot-instructions.md.template .github/copilot-instructions.md
+Each project should create its own `.github/copilot-instructions.md` file based on their specific:
+- Project architecture and design patterns
+- Module organization and key files
+- Development workflow and best practices
+- Testing strategy and conventions
+- Language-specific guidelines
 
-# Edit and replace placeholders
-# Use an editor or sed script:
-sed -i 's/{{PROJECT_NAME}}/My Project/g' .github/copilot-instructions.md
-sed -i 's/{{VERSION}}/1.0.0/g' .github/copilot-instructions.md
-sed -i 's/{{REPO_NAME}}/my_project/g' .github/copilot-instructions.md
-# ... etc
+Example structure:
+```markdown
+# GitHub Copilot Instructions - My Project
+
+**Repository**: my_project
+**Version**: 1.0.0
+**Language**: JavaScript/Node.js
+
+## Project Overview
+[Your project description]
+
+## Architecture Patterns
+[Your patterns and conventions]
+
+## Key Files and Directories
+[Your file structure]
+
+## Development Workflow
+[Your workflow]
 ```
 
 ## Updating the Submodule

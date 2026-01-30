@@ -72,9 +72,9 @@
 
 ```
 ai_workflow_core/
-├── .github/
+├── .github/                     # GitHub-specific metadata files
 │   ├── DESCRIPTION.md           # Repository description for GitHub
-│   └── copilot-instructions.md  # This file
+│   └── copilot-instructions.md  # This file (GitHub Copilot instructions)
 ├── config/                      # Configuration templates
 │   ├── .workflow-config.yaml.template  # Main workflow config template
 │   ├── ai_helpers.yaml          # AI helper definitions (1900+ lines)
@@ -98,8 +98,9 @@ ai_workflow_core/
 │   ├── cleanup_artifacts.sh.template  # Artifact cleanup script
 │   ├── validate_context_blocks.py     # Documentation validator
 │   └── README.md
-├── github/                      # GitHub-specific files (workflow templates)
-│   └── workflows/               # GitHub Actions workflow templates
+├── github/                      # GitHub Actions workflow templates
+│   ├── README.md                # Workflow documentation
+│   └── workflows/               # Workflow YAML files
 │       ├── code-quality.yml
 │       ├── validate-docs.yml
 │       └── validate-tests.yml
@@ -139,9 +140,10 @@ target_project/
 - Project types define test frameworks, linters, build systems, and best practices
 
 **docs/**: Comprehensive documentation organized by purpose
-- Essential docs at root level: INTEGRATION.md, AI_WORKFLOW_DIRECTORY.md, CONTRIBUTING.md, CODE_OF_CONDUCT.md
+- Essential docs at root level: INTEGRATION.md, AI_WORKFLOW_DIRECTORY.md, CONTRIBUTING.md, CODE_OF_CONDUCT.md, LICENSE
 - `guides/` subdirectory contains implementation guides (some reference parent ai_workflow features)
-- Clean structure with no empty directories
+- `misc/` contains documentation tracking files
+- Additional subdirectories for future organization: architecture, reference, reports (with analysis/bugfixes/implementation), testing, workflow-automation
 
 **examples/**: Reference implementations showing integration patterns
 - Each subdirectory demonstrates language-specific setup
@@ -519,7 +521,7 @@ When updating documentation:
 
 ### When Helping with GitHub Workflows
 
-- Reference existing workflow files in `github/workflows/`
+- Reference existing workflow files in `github/workflows/` (note: `.github/` directory contains copilot-instructions.md and DESCRIPTION.md)
 - Current workflows: `code-quality.yml`, `validate-docs.yml`, `validate-tests.yml`
 - These are templates that projects can copy and customize
 - Workflows assume the target project structure, not this repo's structure
@@ -586,11 +588,12 @@ Always clarify which context applies to the current task.
 ### Repository Scope
 
 **This repository contains:**
-- Configuration templates (2 files: `.workflow-config.yaml.template`, `cleanup_artifacts.sh.template`)
+- Configuration templates (2 template files: `.workflow-config.yaml.template`, `cleanup_artifacts.sh.template`)
 - Configuration schemas (4 YAML files in `config/`: project_kinds, ai_helpers, ai_prompts_project_kinds, README)
-- GitHub workflow templates (3 files in `github/workflows/`: code-quality, validate-docs, validate-tests)
+- GitHub workflow templates (3 workflow files + README in `github/workflows/`: code-quality, validate-docs, validate-tests)
+- GitHub metadata (`.github/` directory with DESCRIPTION.md and copilot-instructions.md)
 - Integration examples (2 language examples: shell minimal quick-start, nodejs comprehensive guide)
-- Documentation (7 core docs in `docs/` + 3 guides in `docs/guides/`)
+- Documentation (5 core docs in `docs/` root + 3 guides in `docs/guides/` + 1 in `docs/misc/` + placeholder subdirectories)
 - Utility scripts (1 Python validator: `validate_context_blocks.py`)
 - Workflow artifacts in `.ai_workflow/` (for dogfooding - this repo tests itself)
 
@@ -667,6 +670,6 @@ python3 scripts/validate_context_blocks.py docs/
 
 ---
 
-**Last Updated**: 2026-01-29  
-**Document Version**: 1.0.0  
+**Last Updated**: 2026-01-30  
+**Document Version**: 1.0.1  
 **For**: GitHub Copilot assistance within ai_workflow_core repository

@@ -5,6 +5,32 @@ All notable changes to the AI Workflow Core project will be documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **New AI Persona**: `technical_writer_prompt` (v4.1.0)
+  - Specialized in comprehensive from-scratch documentation creation
+  - Designed for undocumented codebases, new projects, and major rewrites
+  - Covers: API docs, architecture guides, user guides, developer guides, code documentation
+  - Language-agnostic with dynamic language-specific standards injection
+  - Complements existing `doc_analysis_prompt` (incremental updates) and `consistency_prompt` (auditing)
+  - Follows v4.0.0 token efficiency patterns (YAML anchors, concise output format)
+- Updated `config/README.md` with persona usage guidelines
+  - Documented when to use technical_writer vs doc_analysis vs consistency personas
+  - Added complete list of 15 AI personas by category
+
+### Changed
+- Bumped `ai_helpers.yaml` version from 4.0.0 to 4.1.0
+- Updated version history with technical_writer_prompt addition
+
+### Fixed
+- **Bug Fix**: Corrected `version_manager_prompt` YAML syntax error
+  - Changed undefined `<<: *standard_guidelines` to `behavioral_guidelines: *behavioral_actionable`
+  - This was a pre-existing bug preventing YAML parsing
+
+### Removed
+- `config/paths.yaml` - Removed as it's project-specific and should be created by consuming projects, not provided as a template
+
 ## [1.0.0] - 2026-01-29
 
 ### Added
@@ -42,11 +68,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Works with multiple programming languages (Shell, JavaScript, Python, etc.)
 - Extracted from proven [ai_workflow](https://github.com/mpbarbosa/ai_workflow) project
 - MIT licensed
-
-## [Unreleased]
-
-### Removed
-- `config/paths.yaml` - Removed as it's project-specific and should be created by consuming projects, not provided as a template
 
 ### Planned
 - Python integration example

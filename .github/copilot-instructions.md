@@ -391,22 +391,21 @@ When assisting with this project, reference these critical documents:
 7. **config/project_kinds.yaml**: Project type definitions with validation rules (7 project types)
 8. **config/ai_helpers.yaml**: AI helper configurations (1900+ lines)
 9. **config/ai_prompts_project_kinds.yaml**: Project-specific AI prompts
-10. **config/paths.yaml**: Path configurations
-11. **config/README.md**: Configuration system overview
+10. **config/README.md**: Configuration system overview
 
 ### Integration Examples
 
-12. **examples/shell/README.md**: Shell script integration example (basic quick start)
-13. **examples/nodejs/README.md**: Node.js integration example (comprehensive with full setup)
+11. **examples/shell/README.md**: Shell script integration example (basic quick start)
+12. **examples/nodejs/README.md**: Node.js integration example (comprehensive with full setup)
 
 **Note**: The shell example is a minimal quick-start. The nodejs example provides a complete, detailed integration guide. Consider expanding the shell example with similar detail if working on examples.
 
 ### Additional Documentation
 
-14. **docs/CONTRIBUTING.md**: Contributing guidelines (references parent ai_workflow project features)
-15. **docs/guides/PROJECT_REFERENCE.md**: Project reference (documents parent ai_workflow v3.0.0)
-16. **docs/guides/ML_OPTIMIZATION_GUIDE.md**: ML optimization guide (for parent project)
-17. **docs/guides/MULTI_STAGE_PIPELINE_GUIDE.md**: Pipeline guide (for parent project)
+13. **docs/CONTRIBUTING.md**: Contributing guidelines (references parent ai_workflow project features)
+14. **docs/guides/PROJECT_REFERENCE.md**: Project reference (documents parent ai_workflow v3.0.0)
+15. **docs/guides/ML_OPTIMIZATION_GUIDE.md**: ML optimization guide (for parent project)
+16. **docs/guides/MULTI_STAGE_PIPELINE_GUIDE.md**: Pipeline guide (for parent project)
 
 ### ⚠️ Important: Documentation Context
 

@@ -130,7 +130,7 @@
 
 ### Configuration Files (6 total in src/workflow/config/)
 
-1. `paths.yaml` - Path configuration
+1. `paths.yaml` - Path configuration (ai_workflow project only, not in ai_workflow_core templates)
 2. `ai_helpers.yaml` - Base AI prompt templates (9 templates)
 3. `ai_prompts_project_kinds.yaml` - Project-specific AI prompts
 4. `project_kinds.yaml` - Project type definitions

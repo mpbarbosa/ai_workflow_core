@@ -49,12 +49,32 @@ Add these patterns to your project's `.gitignore` file to exclude workflow artif
 ## AI Prompt Configuration Files
 
 ### `ai_helpers.yaml`
-Core AI prompt templates for workflow automation. Contains 1,900+ lines of optimized prompts for 14 AI personas including:
-- Documentation Specialist
-- Test Engineer
+Core AI prompt templates for workflow automation. Contains 1,900+ lines of optimized prompts for 15 AI personas including:
+
+**Documentation Personas:**
+- **Documentation Specialist** (`doc_analysis_prompt`) - Incremental change-driven documentation updates
+- **Technical Writer** (`technical_writer_prompt`) - NEW v4.1.0: Comprehensive from-scratch documentation creation
+- **Consistency Analyst** (`consistency_prompt`) - Documentation quality assurance and auditing
+
+**Testing & Quality Personas:**
+- Test Strategy Architect
+- Test Review Specialist
 - Code Quality Analyst
+- Dependency Auditor
+
+**Development Personas:**
+- DevOps Specialist
+- Git Commit Message Expert
+- Markdown Linter
 - Prompt Engineer
-- And more...
+- Version Manager
+
+**And more specialized roles...**
+
+**Usage Guidelines:**
+- Use `technical_writer_prompt` for: New projects, major rewrites, undocumented codebases
+- Use `doc_analysis_prompt` for: Incremental updates after code changes
+- Use `consistency_prompt` for: Documentation audits and quality assurance
 
 Uses YAML anchors for token efficiency and reduced duplication.
 

@@ -1,7 +1,7 @@
 # Project Kind Configuration Schema
-# Version: 1.0.0
+# Version: 1.2.0
 # Purpose: Define validation rules, test commands, and quality standards per project kind
-# Last Updated: 2025-12-18
+# Last Updated: 2026-01-30
 
 # ============================================================================
 # PROJECT KIND DEFINITIONS
@@ -645,6 +645,111 @@ project_kinds:
         - "Configuration in config/ or root directory"
 
   # ----------------------------------------------------------------------------
+  # Configuration Library (Meta-type for config/template repositories)
+  # ----------------------------------------------------------------------------
+  configuration_library:
+    name: "Configuration Library"
+    description: "Template and configuration repository used as Git submodule (e.g., ai_workflow_core itself)"
+    
+    validation:
+      required_files:
+        - "README.md"
+        - "CHANGELOG.md"
+      required_directories:
+        - "config"
+        - "docs"
+      optional_files:
+        - ".gitignore"
+        - ".workflow-config.yaml"
+        - "LICENSE"
+      file_patterns:
+        - "*.yaml"
+        - "*.yml"
+        - "*.md"
+        - "*.template"
+    
+    testing:
+      test_framework: "validation-scripts"
+      test_directory: "scripts"
+      test_file_pattern: "validate_*.py|test_*.sh"
+      test_command: "python scripts/validate_context_blocks.py"
+      coverage_required: false
+      coverage_threshold: 0
+      
+    quality:
+      linters:
+        - name: "yamllint"
+          enabled: true
+          command: "yamllint"
+          args: ["-d", "relaxed"]
+          file_pattern: "*.yaml|*.yml"
+        - name: "markdownlint"
+          enabled: false
+          command: "markdownlint"
+          args: ["**/*.md"]
+          file_pattern: "*.md"
+      
+      documentation_required: true
+      inline_comments_recommended: true
+      readme_required: true
+      api_documentation_required: false
+    
+    dependencies:
+      package_files: []
+      lock_files: []
+      validation_required: false
+      security_audit_required: false
+    
+    build:
+      required: false
+      build_command: ""
+      output_directory: ""
+    
+    deployment:
+      type: "git-submodule"
+      requires_build: false
+      artifact_patterns:
+        - "config/**/*.yaml"
+        - "config/**/*.template"
+        - "docs/**/*.md"
+        - "examples/**/*"
+        - "scripts/**/*"
+        - "github/workflows/**/*.yml"
+    
+    # Configuration library specific best practices
+    ai_guidance:
+      testing_standards:
+        - "Validate YAML syntax and schema consistency"
+        - "Test placeholder substitution patterns"
+        - "Verify example configurations are valid"
+        - "Validate documentation context blocks with validation scripts"
+        - "Test template files can be copied and customized"
+      
+      style_guides:
+        - "Follow YAML style guide (2-space indentation, quoted strings)"
+        - "Use consistent placeholder format: {{PLACEHOLDER_NAME}}"
+        - "Maintain clear separation between templates and examples"
+        - "Document all placeholders in README.md"
+      
+      best_practices:
+        - "Keep templates language-agnostic where possible"
+        - "Version configuration schemas explicitly"
+        - "Provide working examples for each template"
+        - "Document integration patterns clearly"
+        - "Maintain backward compatibility within major versions"
+        - "Use .template extension for files requiring customization"
+        - "Keep configuration files self-documenting with comments"
+        - "Separate metadata files (.github/) from templates (github/)"
+      
+      directory_standards:
+        - "config/ for all configuration templates and schemas"
+        - "docs/ for comprehensive documentation"
+        - "examples/ for language-specific integration examples"
+        - "scripts/ for utility scripts (use .template extension)"
+        - "github/ for GitHub Actions workflow templates"
+        - ".github/ for GitHub platform metadata (DESCRIPTION.md, copilot-instructions.md)"
+
+  # ----------------------------------------------------------------------------
   # Generic Project (Fallback)
   # ----------------------------------------------------------------------------
   generic:
@@ -718,10 +823,13 @@ project_kinds:
 # ============================================================================
 
 metadata:
-  schema_version: "1.1.0"
-  last_updated: "2025-12-22"
+  schema_version: "1.2.0"
+  last_updated: "2026-01-30"
   compatible_workflow_version: "2.3.1"
   changelog:
+    - version: "1.2.0"
+      date: "2026-01-30"
+      changes: "Added configuration_library project kind for template/config repositories"
     - version: "1.1.0"
       date: "2025-12-22"
       changes: "Added client_spa project kind for vanilla JS SPAs with Bootstrap"

@@ -57,7 +57,7 @@ project:
   name: "My Project"                    # Replace {{PROJECT_NAME}}
   type: "nodejs-application"            # Replace {{PROJECT_TYPE}}
   description: "My description"         # Replace {{PROJECT_DESCRIPTION}}
-  kind: "web_application"               # Replace {{PROJECT_KIND}}
+  kind: "nodejs_api"                    # Replace {{PROJECT_KIND}} - see config/project_kinds.yaml
   version: "1.0.0"                      # Replace {{VERSION}}
 
 tech_stack:

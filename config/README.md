@@ -11,7 +11,7 @@ Main workflow configuration template. Copy to your project root as `.workflow-co
 - `{{PROJECT_NAME}}` - Your project name
 - `{{PROJECT_TYPE}}` - Project type (e.g., bash-automation-framework, nodejs-application)
 - `{{PROJECT_DESCRIPTION}}` - Project description
-- `{{PROJECT_KIND}}` - Project kind (e.g., shell_automation, web_application)
+- `{{PROJECT_KIND}}` - Project kind (e.g., shell_script_automation, nodejs_api, react_spa) - see project_kinds.yaml
 - `{{VERSION}}` - Current version
 - `{{LANGUAGE}}` - Primary language (bash, javascript, python, etc.)
 - `{{BUILD_SYSTEM}}` - Build system (none, npm, webpack, etc.)

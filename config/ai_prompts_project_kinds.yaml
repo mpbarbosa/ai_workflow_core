@@ -1,12 +1,13 @@
 # AI Prompt Templates for Project Kinds
-# Version: 1.0.0
+# Version: 1.1.0
 # Purpose: Project kind-specific prompt templates for workflow steps
+# Note: Project kind names must match config/project_kinds.yaml definitions
 
 # =============================================================================
-# SHELL AUTOMATION PROJECT PROMPTS
+# SHELL SCRIPT AUTOMATION PROJECT PROMPTS
 # =============================================================================
 
-shell_automation:
+shell_script_automation:  # Renamed from shell_automation to match project_kinds.yaml
   documentation_specialist:
     role: |
       You are a senior DevOps documentation specialist with expertise in:
@@ -191,6 +192,8 @@ nodejs_api:
 # NODE.JS CLI TOOL PROJECT PROMPTS
 # =============================================================================
 
+# Note: nodejs_cli, nodejs_library, documentation_site were removed as they are not in project_kinds.yaml
+
 nodejs_cli:
   documentation_specialist:
     role: "You are a CLI tool developer and technical writer with expertise in command-line interfaces, option parsing, and terminal UX documentation."
@@ -309,7 +312,7 @@ nodejs_library:
 # WEB APPLICATION PROJECT PROMPTS
 # =============================================================================
 
-web_application:
+react_spa:  # Renamed from web_application to match project_kinds.yaml
   documentation_specialist:
     role: "You are a frontend architect and technical writer with expertise in web application documentation, component libraries, and modern frontend frameworks."
     task_context: |

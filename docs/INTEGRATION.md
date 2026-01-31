@@ -105,9 +105,13 @@ tech_stack:
 
 #### Project Kinds
 
-- `shell_automation`
-- `web_application`
-- `api_service`
+- `shell_script_automation` - Bash/shell script projects
+- `nodejs_api` - Node.js backend APIs
+- `static_website` - HTML/CSS/JS static sites
+- `client_spa` - Vanilla JS SPAs with Bootstrap
+- `react_spa` - React single-page applications
+- `python_app` - Python applications
+- `generic` - Other project types
 - `library`
 - `cli_tool`
 - `data_pipeline`
@@ -125,7 +129,7 @@ CONFIG_FILE=".workflow-config.yaml"
 sed -i 's/{{PROJECT_NAME}}/My Awesome Project/g' "$CONFIG_FILE"
 sed -i 's/{{PROJECT_TYPE}}/nodejs-application/g' "$CONFIG_FILE"
 sed -i 's/{{PROJECT_DESCRIPTION}}/Web application for task management/g' "$CONFIG_FILE"
-sed -i 's/{{PROJECT_KIND}}/web_application/g' "$CONFIG_FILE"
+sed -i 's/{{PROJECT_KIND}}/nodejs_api/g' "$CONFIG_FILE"
 sed -i 's/{{VERSION}}/1.0.0/g' "$CONFIG_FILE"
 sed -i 's/{{LANGUAGE}}/javascript/g' "$CONFIG_FILE"
 sed -i 's/{{BUILD_SYSTEM}}/npm/g' "$CONFIG_FILE"
@@ -146,7 +150,7 @@ project:
   name: "My Shell Script Project"
   type: "bash-automation-framework"
   description: "Shell script automation tools"
-  kind: "shell_automation"
+  kind: "shell_script_automation"
   version: "1.0.0"
 
 tech_stack:
@@ -176,7 +180,7 @@ project:
   name: "My Node.js App"
   type: "nodejs-application"
   description: "Node.js web application"
-  kind: "web_application"
+  kind: "nodejs_api"
   version: "1.0.0"
 
 tech_stack:

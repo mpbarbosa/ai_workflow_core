@@ -77,9 +77,9 @@ ai_workflow_core/
 │   └── copilot-instructions.md  # This file (GitHub Copilot instructions)
 ├── config/                      # Configuration templates
 │   ├── .workflow-config.yaml.template  # Main workflow config template
-│   ├── ai_helpers.yaml          # AI helper definitions (1900+ lines)
-│   ├── ai_prompts_project_kinds.yaml   # Project-specific AI prompts
-│   ├── project_kinds.yaml       # Project type definitions & validation rules
+│   ├── ai_helpers.yaml          # AI helper definitions (2000+ lines)
+│   ├── ai_prompts_project_kinds.yaml   # Project-specific AI prompts (⚠️ partially aligned with project_kinds.yaml)
+│   ├── project_kinds.yaml       # Project type definitions & validation rules (8 kinds: shell_script_automation, nodejs_api, static_website, client_spa, react_spa, python_app, configuration_library, generic)
 │   └── README.md
 ├── docs/                        # Comprehensive documentation
 │   ├── guides/                  # Implementation guides
@@ -241,11 +241,9 @@ tech_stack:
 
 ### Supported Project Kinds
 
-Defined in `config/project_kinds.yaml` (7 types) + this repo's own kind:
+Defined in `config/project_kinds.yaml` (8 types including configuration_library):
 
-**Note**: This repository itself uses `kind: "configuration_library"` (a meta-type for configuration libraries, not included in the standard project_kinds.yaml definitions below).
-
-**Standard Project Kinds:**
+**Supported Project Kinds** (defined in config/project_kinds.yaml v1.2.0):
 
 1. **shell_script_automation**: Bash/shell script projects
    - Test framework: bash_unit/BATS
@@ -280,8 +278,13 @@ Defined in `config/project_kinds.yaml` (7 types) + this repo's own kind:
    - Minimal assumptions
    - Basic documentation requirements
 
+8. **configuration_library**: Template/config repositories (meta-type)
+   - Used by ai_workflow_core itself
+   - Git submodule deployment pattern
+   - YAML/template validation
+
 **Special Cases:**
-- **configuration_library**: Meta-type used by ai_workflow_core itself (not in project_kinds.yaml as it's for libraries that define project kinds)
+- **configuration_library**: Meta-type for repositories that provide configuration templates and schemas (like ai_workflow_core itself)
 
 ### Project Kind Schema
 
@@ -390,8 +393,8 @@ When assisting with this project, reference these critical documents:
 ### Configuration References (Core Assets)
 
 6. **config/.workflow-config.yaml.template**: Main configuration template with placeholders
-7. **config/project_kinds.yaml**: Project type definitions with validation rules (7 project types)
-8. **config/ai_helpers.yaml**: AI helper configurations (1900+ lines)
+7. **config/project_kinds.yaml**: Project type definitions with validation rules (8 project types)
+8. **config/ai_helpers.yaml**: AI helper configurations (2000+ lines)
 9. **config/ai_prompts_project_kinds.yaml**: Project-specific AI prompts
 10. **config/README.md**: Configuration system overview
 
@@ -580,7 +583,7 @@ Always clarify which context applies to the current task.
 ### Version Compatibility
 
 - **ai_workflow_core version**: 1.0.0
-- **Schema version** (project_kinds.yaml): 1.1.0
+- **project_kinds.yaml schema version**: 1.2.0 (last updated: 2026-01-30)
 - Maintain backward compatibility within major version
 - Document breaking changes in CHANGELOG.md
 - Provide migration guides for major version changes

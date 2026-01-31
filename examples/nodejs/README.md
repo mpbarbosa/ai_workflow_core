@@ -60,7 +60,7 @@ project:
   name: "My Node.js App"
   type: "nodejs-application"
   description: "Node.js application with workflow automation"
-  kind: "web_application"
+  kind: "nodejs_api"
   version: "1.0.0"
 
 tech_stack:

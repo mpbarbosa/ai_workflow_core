@@ -4,6 +4,8 @@
 **Status**: Production Ready  
 **Last Updated**: 2026-01-01
 
+> ⚠️ **Context**: This document describes features from the **parent ai_workflow project** (workflow execution engine), NOT ai_workflow_core (configuration templates). This guide was included for reference but describes execution features not present in this configuration library.
+
 ## Overview
 
 The Multi-Stage Pipeline provides progressive validation that intelligently determines which checks to run based on your changes. Most workflows complete in just the first 1-2 stages, dramatically reducing execution time.

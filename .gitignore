@@ -1,1 +1,169 @@
-.ai_workflow/
+# ==============================================================================
+# AI Workflow Core - Comprehensive .gitignore
+# ==============================================================================
+# For configuration/template repository used as Git submodule
+# Last Updated: 2026-01-31
+
+# ==============================================================================
+# AI WORKFLOW ARTIFACTS
+# ==============================================================================
+.ai_workflow/logs/
+.ai_workflow/metrics/
+.ai_workflow/backlog/
+.ai_workflow/summaries/
+.ai_workflow/checkpoints/
+.ai_workflow/.incremental_cache/
+
+# Optional: Keep prompts and ML models in git
+# .ai_workflow/prompts/
+# .ai_workflow/ml_models/
+
+# ==============================================================================
+# EDITOR AND IDE
+# ==============================================================================
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# JetBrains IDEs (IntelliJ, PyCharm, WebStorm, etc.)
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Vim
+*.swp
+*.swo
+*.swn
+*~
+.*.sw?
+
+# Emacs
+\#*\#
+.\#*
+*~
+.emacs.desktop
+.emacs.desktop.lock
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Atom
+.atom/
+
+# ==============================================================================
+# OPERATING SYSTEM FILES
+# ==============================================================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+.directory
+.Trash-*
+
+# ==============================================================================
+# PYTHON (for validation scripts)
+# ==============================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# PyCharm
+.idea/
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ==============================================================================
+# NODE.JS (for projects using this as submodule)
+# ==============================================================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.npm
+.yarn-integrity
+.pnp
+.pnp.js
+
+# ==============================================================================
+# LOGS
+# ==============================================================================
+*.log
+logs/
+*.log.*
+
+# ==============================================================================
+# TEMPORARY FILES
+# ==============================================================================
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+*.orig
+*.cache
+
+# ==============================================================================
+# MISC
+# ==============================================================================
+# Backup files
+*~
+*.bak
+*.orig
+
+# Patch files
+*.patch
+*.diff
+
+# Archive files (unless intentional)
+# *.zip
+# *.tar.gz
+# *.tar.bz2

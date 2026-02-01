@@ -30,6 +30,35 @@ Python script to validate documentation context blocks and code examples.
 python3 validate_context_blocks.py <directory>
 ```
 
+### `validate_structure.py`
+Python script to validate repository directory structure for empty directories, undocumented directories, and required directories.
+
+**Features:**
+- Detects empty directories (excluding allowed exceptions)
+- Identifies undocumented directories not in known structure
+- Verifies required directories exist
+- Auto-fix mode to remove empty directories
+
+**Requirements:**
+- Python 3.6+
+
+**Usage:**
+```bash
+# Validate structure
+python3 validate_structure.py
+
+# Validate and auto-fix empty directories
+python3 validate_structure.py --fix
+
+# Quiet mode (errors only)
+python3 validate_structure.py --quiet
+```
+
+**Exit Codes:**
+- 0: Structure is valid
+- 1: Validation errors found
+- 2: Script error
+
 ## Creating Custom Scripts
 
 When creating scripts for your project:

@@ -16,12 +16,15 @@ Thank you for your interest in contributing to AI Workflow Automation! This docu
 - [Getting Started](#getting-started)
 - [Development Setup](#development-setup)
 - [Code Style Guidelines](#code-style-guidelines)
+  - [Naming Conventions](#naming-conventions)
+  - [Shell Script Standards](#shell-script-standards)
 - [Testing Requirements](#testing-requirements)
 - [Pull Request Process](#pull-request-process)
 - [Documentation Standards](#documentation-standards)
 - [Commit Message Convention](#commit-message-convention)
 - [Issue Reporting](#issue-reporting)
 - [Release Process](#release-process)
+- [Architecture & Design](#architecture--design)
 
 ---
 
@@ -286,6 +289,72 @@ cd /path/to/sample/project
 ---
 
 ## Code Style Guidelines
+
+### Naming Conventions
+
+Consistent naming across the project ensures maintainability and clarity. Follow these conventions:
+
+#### File and Directory Naming
+
+| Category | Convention | Examples | Rationale |
+|----------|-----------|----------|-----------|
+| **Directories** | lowercase with underscores | `ai_workflow/`, `workflow-templates/`, `examples/` | Unix convention, no spaces |
+| **YAML Configs** | lowercase with underscores | `project_kinds.yaml`, `ai_helpers.yaml` | Consistency with Python module naming |
+| **Hidden Config Files** | lowercase with hyphens | `.workflow-config.yaml`, `.gitignore` | Standard for dotfiles |
+| **Key Documentation** | UPPERCASE (except extension) | `README.md`, `CONTRIBUTING.md`, `CHANGELOG.md` | High visibility, standard convention |
+| **Regular Documentation** | Title Case or lowercase | `INTEGRATION.md`, `AI_WORKFLOW_DIRECTORY.md` | Descriptive, searchable |
+| **Templates** | Add `.template` suffix | `cleanup_artifacts.sh.template`, `.workflow-config.yaml.template` | Clear indication of customization needed |
+| **Scripts** | lowercase with underscores | `validate_context_blocks.py`, `cleanup_artifacts.sh` | Unix convention |
+
+#### Variable and Configuration Naming
+
+| Category | Convention | Examples | Rationale |
+|----------|-----------|----------|-----------|
+| **Placeholders** | UPPERCASE with underscores | `{{PROJECT_NAME}}`, `{{TEST_COMMAND}}` | High visibility in templates |
+| **YAML Keys** | lowercase with underscores | `project_kinds:`, `test_framework:`, `primary_language:` | YAML convention, Python-style |
+| **PROJECT_TYPE** | lowercase with hyphens | `"nodejs-application"`, `"configuration-library"` | Human-readable, URL-safe |
+| **PROJECT_KIND** | lowercase with underscores | `"nodejs_api"`, `"shell_script_automation"` | Matches config key naming |
+| **Shell Variables** | lowercase or UPPERCASE | `local temp_file="/tmp"` or `readonly MAX_RETRIES=5` | lowercase for local, UPPERCASE for constants |
+
+#### Special Cases
+
+- **Metadata Directories**: `.github/` (GitHub-specific metadata)
+- **Submodule Directories**: `.workflow_core/` (dotfile convention for Git submodules)
+- **Artifact Directories**: `.ai_workflow/` (hidden to avoid clutter)
+- **GitHub Workflows**: kebab-case for YAML files (`code-quality.yml`, `validate-docs.yml`)
+
+#### Examples in Context
+
+```bash
+# Directory structure
+.workflow_core/                    # Submodule (lowercase + underscore)
+├── config/                        # Directory (lowercase)
+│   ├── project_kinds.yaml         # Config (underscore)
+│   └── .workflow-config.yaml.template  # Template (hyphen + .template)
+├── workflow-templates/            # Directory (hyphen for multi-word)
+│   └── workflows/
+│       └── code-quality.yml       # Workflow (hyphen)
+└── docs/
+    ├── README.md                  # Key doc (UPPERCASE)
+    └── INTEGRATION.md             # Key doc (UPPERCASE)
+
+# Configuration file
+project:
+  type: "nodejs-application"       # PROJECT_TYPE (hyphenated)
+  kind: "nodejs_api"               # PROJECT_KIND (underscored)
+  
+tech_stack:
+  test_framework: "jest"           # Config key (underscored)
+```
+
+#### Quick Decision Guide
+
+**When naming a new file or directory, ask:**
+1. Is it configuration/data? → Use underscores (`project_kinds.yaml`)
+2. Is it a dotfile? → Use hyphens (`.workflow-config.yaml`)
+3. Is it important documentation? → Use UPPERCASE (`README.md`)
+4. Is it a workflow/action? → Use hyphens (`validate-docs.yml`)
+5. Does it need customization? → Add `.template` suffix
 
 ### Shell Script Standards
 
@@ -716,11 +785,9 @@ PRs will be merged using **squash and merge** to keep main branch clean.
 
 ## Documentation Standards
 
-### Follow the Style Guide
-
-All documentation must follow [`docs/reference/documentation-style-guide.md`](docs/reference/documentation-style-guide.md).
-
 ### Key Conventions
+
+Documentation in this project follows these essential conventions:
 
 #### File Paths
 
@@ -917,7 +984,7 @@ If your contribution should be part of a release:
 
 ### For Maintainers
 
-See [`docs/reference/release-process.md`](docs/reference/release-process.md) for complete release process.
+Follow semantic versioning and update CHANGELOG.md for all releases.
 
 ---
 
@@ -925,21 +992,20 @@ See [`docs/reference/release-process.md`](docs/reference/release-process.md) for
 
 ### Documentation
 
-- **Quick Start**: [`docs/user-guide/quick-start.md`](docs/user-guide/quick-start.md)
-- **Testing Strategy**: [`docs/developer-guide/testing.md`](docs/developer-guide/testing.md)
-- **Release Process**: [`docs/reference/release-process.md`](docs/reference/release-process.md)
-- **Configuration Schema**: [`docs/reference/configuration.md`](docs/reference/configuration.md)
-- **Performance Benchmarks**: [`docs/reference/performance-benchmarks.md`](docs/reference/performance-benchmarks.md)
+- **Integration Guide**: [`docs/INTEGRATION.md`](INTEGRATION.md)
+- **AI Workflow Directory**: [`docs/AI_WORKFLOW_DIRECTORY.md`](AI_WORKFLOW_DIRECTORY.md)
+- **Project Kinds Schema**: [`config/project_kinds.yaml`](../config/project_kinds.yaml)
+- **AI Prompts Reference**: [`config/ai_prompts_project_kinds.yaml`](../config/ai_prompts_project_kinds.yaml)
+- **Example Integrations**: [`examples/`](../examples/)
 
 ### Tools
 
-- **Test Runner**: `./tests/run_all_tests.sh`
-- **Version Bump**: `./scripts/bump_version.sh`
-- **Health Check**: `./src/workflow/lib/health_check.sh`
+- **Validation Script**: `python scripts/validate_context_blocks.py config/ai_helpers.yaml`
+- **Cleanup Template**: `scripts/cleanup_artifacts.sh.template`
 
 ### Communication
 
-- **Issues**: [GitHub Issues](https://github.com/mpbarbosa/ai_workflow/issues)
+- **Issues**: [GitHub Issues](https://github.com/mpbarbosa/ai_workflow_core/issues)
 - **Pull Requests**: [GitHub PRs](https://github.com/mpbarbosa/ai_workflow/pulls)
 - **Discussions**: [GitHub Discussions](https://github.com/mpbarbosa/ai_workflow/discussions)
 
@@ -959,6 +1025,29 @@ If you have questions not covered here:
 ## Thank You!
 
 Thank you for contributing to AI Workflow Automation! Your contributions help make this project better for everyone.
+
+---
+
+## Architecture & Design
+
+For a comprehensive understanding of ai_workflow_core's architecture and design decisions, see:
+
+- **[docs/ARCHITECTURE.md](ARCHITECTURE.md)** - System architecture, template design, Git submodule pattern, ADRs
+
+**Key Concepts:**
+- **Template System**: Configuration files with `{{PLACEHOLDER}}` substitution patterns
+- **Project Kinds**: 8 validated project types with language-specific standards
+- **Submodule Pattern**: Designed to be integrated into other projects via Git submodules
+- **Separation of Concerns**: Templates (this repo) vs. execution engine (parent ai_workflow project)
+
+**Architectural Decision Records (ADRs):**
+1. Template-based configuration (vs hardcoded)
+2. Placeholder syntax (vs alternative formats)
+3. Git submodule integration (vs npm package)
+4. Language-agnostic design (vs language-specific)
+5. Separation of templates and execution (vs monolithic)
+
+See ARCHITECTURE.md for complete details on system design, integration patterns, and decision rationale.
 
 ---
 

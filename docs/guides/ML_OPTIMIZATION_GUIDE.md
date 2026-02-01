@@ -4,6 +4,8 @@
 **Status**: Production Ready  
 **Last Updated**: 2026-01-01
 
+> ⚠️ **Context**: This document describes features from the **parent ai_workflow project** (workflow execution engine), NOT ai_workflow_core (configuration templates). This guide was included for reference but describes ML optimization features not present in this configuration library.
+
 ## Overview
 
 The ML Optimization module provides predictive workflow intelligence that learns from historical execution patterns to optimize workflow performance.

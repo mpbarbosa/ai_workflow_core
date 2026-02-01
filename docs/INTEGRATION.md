@@ -92,30 +92,35 @@ tech_stack:
   lint_command: "{{LINT_COMMAND}}"              # Command to run linter
 ```
 
-#### Project Types
+#### Project Types (Hyphenated Format)
 
-- `bash-automation-framework`
-- `nodejs-application`
-- `nodejs-library`
-- `python-application`
-- `python-package`
-- `web-application`
-- `cli-tool`
-- `library`
+Choose from these standard types for `{{PROJECT_TYPE}}`:
 
-#### Project Kinds
+- `shell-script-automation` - Bash/shell automation projects
+- `nodejs-application` - Node.js backend applications
+- `nodejs-library` - Node.js reusable libraries
+- `static-website` - HTML/CSS/JS static websites
+- `client-spa` - Vanilla JS single-page applications
+- `react-spa` - React single-page applications
+- `python-application` - Python applications or scripts
+- `python-package` - Python distributable packages
+- `configuration-library` - Template/config repositories
+- `generic` - Other project types
+
+#### Project Kinds (Underscored Format)
+
+Choose from these standard kinds for `{{PROJECT_KIND}}` (must match `config/project_kinds.yaml`):
 
 - `shell_script_automation` - Bash/shell script projects
 - `nodejs_api` - Node.js backend APIs
-- `static_website` - HTML/CSS/JS static sites
-- `client_spa` - Vanilla JS SPAs with Bootstrap
+- `static_website` - HTML/CSS/JS static sites  
+- `client_spa` - Vanilla JS SPAs with Bootstrap (no frameworks)
 - `react_spa` - React single-page applications
 - `python_app` - Python applications
-- `generic` - Other project types
-- `library`
-- `cli_tool`
-- `data_pipeline`
-- `mobile_app`
+- `configuration_library` - Template and configuration repositories (like ai_workflow_core)
+- `generic` - Fallback for other project types
+
+**Note**: `PROJECT_TYPE` uses hyphens (e.g., `"nodejs-application"`), while `PROJECT_KIND` uses underscores (e.g., `"nodejs_api"`). Project kinds define validation rules, testing standards, and quality requirements in `config/project_kinds.yaml`.
 
 ### Automated Placeholder Replacement
 
@@ -244,7 +249,7 @@ my_python_project/
 mkdir -p .github
 
 # Copy workflows
-cp -r .workflow_core/github/workflows .github/
+cp -r .workflow_core/workflow-templates/workflows .github/
 
 # Customize for your language
 # Edit .github/workflows/*.yml files

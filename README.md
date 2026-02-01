@@ -85,7 +85,7 @@ mkdir -p .ai_workflow/{backlog,summaries,logs,metrics,checkpoints,prompts,ml_mod
 | `{{LINT_COMMAND}}` | Lint command | "eslint .", "shellcheck **/*.sh" |
 | `{{VERSION}}` | Version number | "1.0.0" |
 
-See [docs/INTEGRATION.md](docs/INTEGRATION.md) for complete placeholder list.
+See [docs/api/PLACEHOLDER_REFERENCE.md](docs/api/PLACEHOLDER_REFERENCE.md) for complete placeholder reference guide, or [docs/INTEGRATION.md](docs/INTEGRATION.md) for integration examples.
 
 ## Language Examples
 
@@ -101,13 +101,51 @@ cp .workflow_core/config/.workflow-config.yaml.template .workflow-config.yaml
 # Edit: language: javascript, build_system: npm, test_framework: jest
 ```
 
-See [examples/](examples/) for complete integration examples.
+**Complete Integration Examples:**
+- **[Shell Script](examples/shell/)** - Bash automation with BATS testing (645+ lines)
+- **[Node.js](examples/nodejs/)** - JavaScript/Node.js with npm/jest (320+ lines)
+
+**Want to add an example?** See [examples/README.md](examples/README.md) for comprehensive contributor guide.
 
 ## Documentation
 
-- [docs/INTEGRATION.md](docs/INTEGRATION.md) - Detailed integration guide
-- [docs/guides/](docs/guides/) - Implementation guides
-- [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) - Contributing guidelines
+### Core Documentation
+- **[ARCHITECTURE.md](docs/ARCHITECTURE.md)** - System architecture and design decisions  
+- **[INTEGRATION.md](docs/INTEGRATION.md)** - Detailed integration guide  
+- **[CONTRIBUTING.md](docs/CONTRIBUTING.md)** - Contributing guidelines and standards  
+- **[AI_WORKFLOW_DIRECTORY.md](docs/AI_WORKFLOW_DIRECTORY.md)** - Artifact directory structure  
+
+### API References
+- **[CONFIG_REFERENCE.md](docs/api/CONFIG_REFERENCE.md)** - Complete `.workflow-config.yaml` field reference
+- **[PLACEHOLDER_REFERENCE.md](docs/api/PLACEHOLDER_REFERENCE.md)** - Placeholder patterns and substitution guide
+- **[PROJECT_KINDS_SCHEMA.md](docs/api/PROJECT_KINDS_SCHEMA.md)** - Project kinds schema v1.2.0 reference
+
+### Additional Guides
+- [docs/guides/](docs/guides/) - Implementation guides and advanced topics
+
+## Development
+
+### Pre-commit Hooks
+
+This project uses pre-commit hooks for code quality:
+
+```bash
+# Install pre-commit
+pip install pre-commit
+
+# Install hooks
+pre-commit install
+
+# Run manually
+pre-commit run --all-files
+```
+
+**Hooks validate:**
+- ✅ YAML syntax
+- ✅ File formatting (trailing whitespace, EOF)
+- ✅ Large file prevention
+- ✅ Merge conflict markers
+- ✅ Private key detection
 
 ## Features
 

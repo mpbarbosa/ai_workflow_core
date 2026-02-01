@@ -78,7 +78,7 @@ ai_workflow_core/
 ├── config/                      # Configuration templates
 │   ├── .workflow-config.yaml.template  # Main workflow config template
 │   ├── ai_helpers.yaml          # AI helper definitions (2000+ lines)
-│   ├── ai_prompts_project_kinds.yaml   # Project-specific AI prompts (⚠️ partially aligned with project_kinds.yaml)
+│   ├── ai_prompts_project_kinds.yaml   # Project-specific AI prompts (v1.2.0, aligned with project_kinds)
 │   ├── project_kinds.yaml       # Project type definitions & validation rules (8 kinds: shell_script_automation, nodejs_api, static_website, client_spa, react_spa, python_app, configuration_library, generic)
 │   └── README.md
 ├── docs/                        # Comprehensive documentation
@@ -86,19 +86,29 @@ ai_workflow_core/
 │   │   ├── ML_OPTIMIZATION_GUIDE.md
 │   │   ├── MULTI_STAGE_PIPELINE_GUIDE.md
 │   │   └── PROJECT_REFERENCE.md
+│   ├── api/                     # API reference documentation
+│   │   ├── CONFIG_REFERENCE.md      # Complete config field reference
+│   │   ├── PLACEHOLDER_REFERENCE.md # Placeholder patterns guide
+│   │   └── PROJECT_KINDS_SCHEMA.md  # Project kinds schema reference
+│   ├── misc/                    # Miscellaneous documentation
+│   │   ├── documentation_updates.md
+│   │   └── step0b_bootstrap_documentation.md
 │   ├── AI_WORKFLOW_DIRECTORY.md # Artifact directory structure guide
+│   ├── ARCHITECTURE.md          # System architecture and ADRs
 │   ├── CODE_OF_CONDUCT.md       # Contributor Covenant 2.1
 │   ├── CONTRIBUTING.md          # Contributing guidelines (detailed)
 │   ├── INTEGRATION.md           # Integration guide for using as submodule
 │   └── LICENSE                  # MIT License
 ├── examples/                    # Language-specific integration examples
+│   ├── README.md                # Contributor guide for creating examples
 │   ├── shell/                   # Shell script integration example
 │   └── nodejs/                  # Node.js integration example
 ├── scripts/                     # Utility script templates
 │   ├── cleanup_artifacts.sh.template  # Artifact cleanup script
 │   ├── validate_context_blocks.py     # Documentation validator
+│   ├── validate_structure.py          # Directory structure validator
 │   └── README.md
-├── github/                      # GitHub Actions workflow templates
+├── workflow-templates/          # GitHub Actions workflow templates
 │   ├── README.md                # Workflow documentation
 │   └── workflows/               # Workflow YAML files
 │       ├── code-quality.yml
@@ -134,16 +144,16 @@ target_project/
 
 **config/**: Contains all template configuration files
 - `.workflow-config.yaml.template`: Main config with placeholders
-- `project_kinds.yaml`: Defines validation rules per project type (shell_script_automation, nodejs_api, react_spa, python_app, client_spa, static_website, generic)
-- `ai_helpers.yaml`: Large file (1900+ lines) with AI helper configurations
-- `ai_prompts_project_kinds.yaml`: Project-specific AI prompts
+- `project_kinds.yaml`: Defines validation rules per project type (8 kinds: shell_script_automation, nodejs_api, react_spa, python_app, client_spa, static_website, configuration_library, generic)
+- `ai_helpers.yaml`: Large file (2000+ lines) with AI helper configurations
+- `ai_prompts_project_kinds.yaml`: Project-specific AI prompts (v1.2.0, aligned with project_kinds)
 - Project types define test frameworks, linters, build systems, and best practices
 
 **docs/**: Comprehensive documentation organized by purpose
-- Essential docs at root level: INTEGRATION.md, AI_WORKFLOW_DIRECTORY.md, CONTRIBUTING.md, CODE_OF_CONDUCT.md, LICENSE
-- `guides/` subdirectory contains implementation guides (some reference parent ai_workflow features)
-- `misc/` contains documentation tracking files
-- Additional subdirectories for future organization: architecture, reference, reports (with analysis/bugfixes/implementation), testing, workflow-automation
+- Essential docs at root level: ARCHITECTURE.md, INTEGRATION.md, AI_WORKFLOW_DIRECTORY.md, CONTRIBUTING.md, CODE_OF_CONDUCT.md, LICENSE
+- `api/` subdirectory: Complete API references for config, placeholders, and project kinds schema (2,200+ lines total)
+- `guides/` subdirectory: Implementation guides (some reference parent ai_workflow features)
+- `misc/` subdirectory: Documentation tracking and bootstrap files
 
 **examples/**: Reference implementations showing integration patterns
 - Each subdirectory demonstrates language-specific setup
@@ -400,17 +410,24 @@ When assisting with this project, reference these critical documents:
 
 ### Integration Examples
 
-11. **examples/shell/README.md**: Shell script integration example (basic quick start)
-12. **examples/nodejs/README.md**: Node.js integration example (comprehensive with full setup)
+11. **examples/shell/README.md**: Shell script integration example (comprehensive, 645+ lines)
+12. **examples/nodejs/README.md**: Node.js integration example (compact, 320+ lines)
 
-**Note**: The shell example is a minimal quick-start. The nodejs example provides a complete, detailed integration guide. Consider expanding the shell example with similar detail if working on examples.
+**Note**: The shell example provides a comprehensive integration guide with detailed setup steps, troubleshooting, and best practices. The nodejs example is more compact but covers the essential integration patterns.
+
+### API Documentation References
+
+13. **docs/api/CONFIG_REFERENCE.md**: Complete `.workflow-config.yaml` field reference (695 lines)
+14. **docs/api/PLACEHOLDER_REFERENCE.md**: Placeholder patterns and substitution guide (756 lines)
+15. **docs/api/PROJECT_KINDS_SCHEMA.md**: Project kinds schema v1.2.0 reference (777 lines)
 
 ### Additional Documentation
 
-13. **docs/CONTRIBUTING.md**: Contributing guidelines (references parent ai_workflow project features)
-14. **docs/guides/PROJECT_REFERENCE.md**: Project reference (documents parent ai_workflow v3.0.0)
-15. **docs/guides/ML_OPTIMIZATION_GUIDE.md**: ML optimization guide (for parent project)
-16. **docs/guides/MULTI_STAGE_PIPELINE_GUIDE.md**: Pipeline guide (for parent project)
+16. **docs/ARCHITECTURE.md**: System architecture, design patterns, ADRs
+17. **docs/CONTRIBUTING.md**: Contributing guidelines (references parent ai_workflow project features)
+18. **docs/guides/PROJECT_REFERENCE.md**: Project reference (documents parent ai_workflow v3.0.0)
+19. **docs/guides/ML_OPTIMIZATION_GUIDE.md**: ML optimization guide (for parent project)
+20. **docs/guides/MULTI_STAGE_PIPELINE_GUIDE.md**: Pipeline guide (for parent project)
 
 ### ⚠️ Important: Documentation Context
 
@@ -524,7 +541,7 @@ When updating documentation:
 
 ### When Helping with GitHub Workflows
 
-- Reference existing workflow files in `github/workflows/` (note: `.github/` directory contains copilot-instructions.md and DESCRIPTION.md)
+- Reference existing workflow files in `workflow-templates/workflows/` (note: `.github/` directory contains copilot-instructions.md and DESCRIPTION.md)
 - Current workflows: `code-quality.yml`, `validate-docs.yml`, `validate-tests.yml`
 - These are templates that projects can copy and customize
 - Workflows assume the target project structure, not this repo's structure
@@ -593,11 +610,11 @@ Always clarify which context applies to the current task.
 **This repository contains:**
 - Configuration templates (2 template files: `.workflow-config.yaml.template`, `cleanup_artifacts.sh.template`)
 - Configuration schemas (4 YAML files in `config/`: project_kinds, ai_helpers, ai_prompts_project_kinds, README)
-- GitHub workflow templates (3 workflow files + README in `github/workflows/`: code-quality, validate-docs, validate-tests)
+- GitHub workflow templates (3 workflow files + README in `workflow-templates/workflows/`: code-quality, validate-docs, validate-tests)
 - GitHub metadata (`.github/` directory with DESCRIPTION.md and copilot-instructions.md)
-- Integration examples (2 language examples: shell minimal quick-start, nodejs comprehensive guide)
-- Documentation (5 core docs in `docs/` root + 3 guides in `docs/guides/` + 1 in `docs/misc/` + placeholder subdirectories)
-- Utility scripts (1 Python validator: `validate_context_blocks.py`)
+- Integration examples (2 language examples with README guides: shell 645+ lines, nodejs 320+ lines + examples/README.md contributor guide 350+ lines)
+- Documentation (5 core docs in `docs/` root + 3 guides in `docs/guides/` + 3 API references in `docs/api/` + 2 misc files in `docs/misc/`)
+- Utility scripts (2 Python validators: `validate_context_blocks.py`, `validate_structure.py`)
 - Workflow artifacts in `.ai_workflow/` (for dogfooding - this repo tests itself)
 
 **This repository does NOT contain:**
@@ -673,6 +690,6 @@ python3 scripts/validate_context_blocks.py docs/
 
 ---
 
-**Last Updated**: 2026-01-30  
+**Last Updated**: 2026-02-01  
 **Document Version**: 1.0.1  
 **For**: GitHub Copilot assistance within ai_workflow_core repository

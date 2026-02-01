@@ -3,9 +3,9 @@
 
 project:
   name: "{{PROJECT_NAME}}"
-  type: "{{PROJECT_TYPE}}"  # e.g., bash-automation-framework, nodejs-application, python-package
+  type: "{{PROJECT_TYPE}}"  # e.g., nodejs-application, configuration-library, python-package
   description: "{{PROJECT_DESCRIPTION}}"
-  kind: "{{PROJECT_KIND}}"  # e.g., shell_automation, web_application, library
+  kind: "{{PROJECT_KIND}}"  # e.g., shell_script_automation, nodejs_api, react_spa, client_spa, static_website, python_app, configuration_library, generic
   version: "{{VERSION}}"
 
 tech_stack:

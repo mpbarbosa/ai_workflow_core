@@ -1,0 +1,89 @@
+# Pre-commit Hooks Configuration for AI Workflow Core
+# https://pre-commit.com
+
+# Installation:
+#   pip install pre-commit
+#   pre-commit install
+
+# Usage:
+#   pre-commit run --all-files  # Run on all files
+#   pre-commit run              # Run on staged files
+#   git commit                  # Runs automatically
+
+repos:
+  # General file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      # YAML validation
+      - id: check-yaml
+        name: Check YAML syntax
+        args: ['--safe']
+        
+      # File formatting
+      - id: end-of-file-fixer
+        name: Fix end of files (ensure newline)
+        exclude: \.ai_workflow/
+        
+      - id: trailing-whitespace
+        name: Trim trailing whitespace
+        exclude: \.ai_workflow/
+        
+      # Prevent large files
+      - id: check-added-large-files
+        name: Check for large files
+        args: ['--maxkb=1000']
+        
+      # Check for merge conflicts
+      - id: check-merge-conflict
+        name: Check for merge conflict markers
+        
+      # Ensure files are executable
+      - id: check-executables-have-shebangs
+        name: Check executables have shebangs
+        
+      # JSON validation
+      - id: check-json
+        name: Check JSON syntax
+        exclude: \.ai_workflow/
+        
+      # Detect private keys
+      - id: detect-private-key
+        name: Detect private keys
+
+  # YAML linting with yamllint
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.32.0
+    hooks:
+      - id: yamllint
+        name: Lint YAML files
+        args: ['-d', 'relaxed']
+        files: \.(yaml|yml)$
+        exclude: \.ai_workflow/
+
+  # Custom validation scripts
+  - repo: local
+    hooks:
+      - id: validate-structure
+        name: Validate directory structure
+        entry: python3 scripts/validate_structure.py
+        language: system
+        pass_filenames: false
+        always_run: true
+
+  # Markdown formatting (optional - uncomment if desired)
+  # - repo: https://github.com/pre-commit/mirrors-prettier
+  #   rev: v3.0.0
+  #   hooks:
+  #     - id: prettier
+  #       name: Format Markdown files
+  #       types_or: [markdown]
+  #       args: ['--write']
+
+# Skip CI if only pre-commit config changed
+ci:
+  skip: [yamllint]
+  autofix_commit_msg: |
+    [pre-commit.ci] auto fixes from pre-commit hooks
+    
+    for more information, see https://pre-commit.ci

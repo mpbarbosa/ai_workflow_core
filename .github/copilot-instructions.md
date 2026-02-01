@@ -30,6 +30,7 @@
 - **Dual Nature**: You're working on both the core templates AND the system that consumes them
 
 **Version**: 1.0.0  
+**Parent Project**: [mpbarbosa/ai_workflow](https://github.com/mpbarbosa/ai_workflow) v1.1.0 (Phase 3 Complete)  
 **License**: MIT  
 **Originally extracted from**: [mpbarbosa/ai_workflow](https://github.com/mpbarbosa/ai_workflow)
 

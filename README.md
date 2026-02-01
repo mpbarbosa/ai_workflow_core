@@ -180,6 +180,8 @@ MIT License - See [docs/LICENSE](docs/LICENSE)
 
 Part of [AI Workflow Automation](https://github.com/mpbarbosa/ai_workflow) project.
 
+**Parent Project Status**: v1.1.0 (Phase 3 Complete - File Operations & Utilities)
+
 ---
 
-**Version**: 1.0.0 | **Updated**: 2026-01-31
+**Version**: 1.0.0 | **Updated**: 2026-02-01

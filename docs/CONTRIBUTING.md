@@ -4,6 +4,8 @@
 **Last Updated**: 2025-12-23  
 **Status**: ✅ Official Guidelines
 
+> ⚠️ **Context**: This document was originally written for the **parent ai_workflow project** (workflow execution engine). For ai_workflow_core contributions, focus on: configuration templates, project_kinds schemas, integration examples, and documentation structure. Ignore references to workflow execution, testing framework, and v2.x/v3.x execution features.
+
 Thank you for your interest in contributing to AI Workflow Automation! This document provides guidelines to help you contribute effectively.
 
 ---

@@ -455,4 +455,7 @@ project_b/
 
 ---
 
+**Version**: 1.0.0  
+**Last Updated**: 2026-01-31
+
 **Next Steps**: See [examples/](examples/) for complete integration examples in different languages.

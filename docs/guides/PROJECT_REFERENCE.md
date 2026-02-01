@@ -4,6 +4,8 @@
 **Version**: v3.0.0  
 **Last Updated**: 2026-01-28
 
+> ⚠️ **Context**: This document references the **parent ai_workflow project** (workflow execution engine), NOT ai_workflow_core (configuration templates). This documentation was included for reference but describes features not present in this repository.
+
 > ⚠️ **Important**: This document is the authoritative source for project statistics, features, and module lists. All other documentation should reference this file, not duplicate its content.
 
 ## Quick Reference

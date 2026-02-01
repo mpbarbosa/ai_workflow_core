@@ -1,8 +1,43 @@
 # Node.js Integration Example
 
-This example shows how to integrate `ai_workflow_core` into a Node.js project.
+This example shows how to integrate `ai_workflow_core` into a Node.js project with best practices for dynamic codebases.
 
-## Directory Structure
+## Quick Start
+
+```bash
+# Initialize project
+mkdir my_nodejs_project && cd my_nodejs_project
+git init
+npm init -y
+
+# Add submodule (pinned to specific version)
+git submodule add https://github.com/mpbarbosa/ai_workflow_core.git .workflow_core
+cd .workflow_core && git checkout v1.0.0 && cd ..
+git submodule update --init --recursive
+
+# Copy and customize configuration
+cp .workflow_core/config/.workflow-config.yaml.template .workflow-config.yaml
+# Edit .workflow-config.yaml with your project details
+
+# Create directory structure
+mkdir -p .ai_workflow/{backlog,summaries,logs,metrics,checkpoints,prompts,ml_models,.incremental_cache}
+
+# Update .gitignore
+cat >> .gitignore << 'EOF'
+
+# AI Workflow artifacts
+.ai_workflow/backlog/
+.ai_workflow/summaries/
+.ai_workflow/logs/
+.ai_workflow/metrics/
+.ai_workflow/checkpoints/
+.ai_workflow/.incremental_cache/
+EOF
+```
+
+## Version Management
+
+This example demonstrates **version pinning** strategy for production systems.
 
 ```
 my_nodejs_project/
@@ -307,6 +342,78 @@ Edit `.workflow-config.yaml` to customize:
 5. Maintain high test coverage (>80%)
 6. Follow ESLint rules consistently
 7. Use semantic versioning
+8. **Pin submodule to specific version tags for production**
+9. **Run health checks before deployments**
+10. **Update submodule only through tested PRs**
+
+## Version Management Best Practices
+
+### For Production
+
+```bash
+# Always pin to tags
+cd .workflow_core && git checkout v1.0.0 && cd ..
+
+# Never track branches in production
+# Bad: git checkout main
+# Good: git checkout v1.0.0
+```
+
+### For Development
+
+```bash
+# Can track main branch for latest features
+cd .workflow_core && git checkout main && cd ..
+git config -f .gitmodules submodule.workflow_core.branch main
+```
+
+### Regular Maintenance
+
+```bash
+# Weekly health check (add to CI/CD)
+bash .workflow_core/scripts/check_integration_health.sh
+
+# Monthly version review
+cd .workflow_core && git fetch --tags && git tag -l && cd ..
+```
+
+## CI/CD Integration
+
+### GitHub Actions Example
+
+Create `.github/workflows/integration-check.yml`:
+
+```yaml
+name: Integration Check
+
+on: [push, pull_request]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run health check
+        run: |
+          bash .workflow_core/scripts/check_integration_health.sh
+      
+      - name: Run tests
+        run: npm test
+      
+      - name: Run linter
+        run: npm run lint
+```
 
 ## Dependencies
 
@@ -318,6 +425,14 @@ Edit `.workflow-config.yaml` to customize:
 
 - [ai_workflow_core Documentation](../../README.md)
 - [Integration Guide](../../docs/INTEGRATION.md)
+- [Version Management Guide](../../docs/guides/VERSION_MANAGEMENT.md) - **Essential for dynamic codebases**
+- [Integration Best Practices](../../docs/guides/INTEGRATION_BEST_PRACTICES.md) - **Maintenance strategies**
 - [Jest Documentation](https://jestjs.io/)
 - [ESLint Documentation](https://eslint.org/)
 - [Node.js Best Practices](https://github.com/goldbergyoni/nodebestpractices)
+
+---
+
+**Integration Strategy**: Version pinning with quarterly updates  
+**Last Updated**: 2026-01-29  
+**Example Version**: 1.1.0

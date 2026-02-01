@@ -4,7 +4,46 @@ This directory contains utility scripts that can be adapted for different langua
 
 ## Available Scripts
 
+### `check_integration_health.sh.template`
+
+**NEW**: Comprehensive integration health check and validation
+
+**Purpose**: Validate ai_workflow_core integration and detect configuration issues
+
+**Usage:**
+```bash
+# Copy to project root first (or use directly from submodule)
+bash .workflow_core/scripts/check_integration_health.sh
+
+# Automatically fix common issues
+bash .workflow_core/scripts/check_integration_health.sh --fix
+```
+
+**What it checks:**
+- ✅ Submodule presence and initialization
+- ✅ Submodule version (tag/branch/detached HEAD)
+- ✅ Configuration file existence and validity
+- ✅ Unreplaced placeholders
+- ✅ YAML syntax (if yamllint installed)
+- ✅ Artifact directory structure
+- ✅ .gitignore configuration
+- ✅ Git tracking status
+- ✅ Integration consistency
+
+**Exit codes:**
+- `0` - All checks passed
+- `1` - One or more checks failed
+- `2` - Critical errors (submodule missing)
+
+**Integration with CI/CD:**
+```yaml
+# .github/workflows/integration-health.yml
+- name: Run health check
+  run: bash .workflow_core/scripts/check_integration_health.sh
+```
+
 ### `cleanup_artifacts.sh.template`
+
 Cleans up old workflow execution artifacts including logs, metrics, backlog reports, and AI cache files.
 
 **Features:**
@@ -20,6 +59,7 @@ Cleans up old workflow execution artifacts including logs, metrics, backlog repo
 ```
 
 ### `validate_context_blocks.py`
+
 Python script to validate documentation context blocks and code examples.
 
 **Requirements:**
@@ -71,7 +111,7 @@ When creating scripts for your project:
 ## Script Placeholders
 
 Common placeholders used in script templates:
-- `{{PROJECT_ROOT}}` - Project root directory
+- `{{PROJECT_ROOT}}` - Project root directory (or use `$(git rev-parse --show-toplevel)`)
 - `{{ARTIFACT_DIR}}` - Artifact directory path (usually `.ai_workflow`)
 - `{{LOG_DIR}}` - Log directory path
 - `{{METRICS_DIR}}` - Metrics directory path
@@ -82,6 +122,31 @@ These scripts are primarily bash-based but can be adapted to other languages:
 - **JavaScript/Node.js**: Convert to Node.js scripts using `fs`, `path`, and `child_process` modules
 - **Python**: Convert using `os`, `pathlib`, `shutil`, and `subprocess` modules
 - **PowerShell**: Convert to PowerShell scripts for Windows environments
+
+## Best Practices for Dynamic Codebases
+
+1. **Run health checks regularly** - Weekly validation recommended
+2. **Automate in CI/CD** - Add health checks to pipelines
+3. **Use `--fix` mode carefully** - Only in development, review changes
+4. **Monitor submodule versions** - Track updates and changes
+5. **Version control scripts** - Commit customized scripts to project
+
+### Integration Health Checks
+
+For frequently changing projects:
+
+- **Before deployments**: Always run health check
+- **After submodule updates**: Validate integration
+- **In CI/CD**: Automate validation on every commit
+- **Weekly maintenance**: Schedule regular checks
+
+See [Integration Best Practices](../docs/guides/INTEGRATION_BEST_PRACTICES.md) for comprehensive guidance.
+
+## Resources
+
+- [Integration Guide](../docs/INTEGRATION.md) - Setup and configuration
+- [Version Management](../docs/guides/VERSION_MANAGEMENT.md) - Managing versions in dynamic codebases
+- [Integration Best Practices](../docs/guides/INTEGRATION_BEST_PRACTICES.md) - Maintenance strategies
 
 ## Contributing
 

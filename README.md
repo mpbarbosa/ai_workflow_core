@@ -87,6 +87,22 @@ mkdir -p .ai_workflow/{backlog,summaries,logs,metrics,checkpoints,prompts,ml_mod
 
 See [docs/api/PLACEHOLDER_REFERENCE.md](docs/api/PLACEHOLDER_REFERENCE.md) for complete placeholder reference guide, or [docs/INTEGRATION.md](docs/INTEGRATION.md) for integration examples.
 
+## Version Management
+
+For production systems, **always pin to specific version tags**:
+
+```bash
+# Pin to stable version
+cd .workflow_core && git checkout v1.0.0 && cd ..
+git add .workflow_core
+git commit -m "Pin ai_workflow_core to v1.0.0"
+```
+
+**Important for dynamic codebases:**
+- Review [Version Management Guide](docs/guides/VERSION_MANAGEMENT.md) for update strategies
+- Run health checks after updates: `bash .workflow_core/scripts/check_integration_health.sh`
+- See [Integration Best Practices](docs/guides/INTEGRATION_BEST_PRACTICES.md) for maintenance tips
+
 ## Language Examples
 
 ### Shell Script

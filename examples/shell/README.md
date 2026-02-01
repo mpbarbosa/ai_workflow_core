@@ -60,70 +60,118 @@ my_shell_project/
 ### 1. Initialize Your Project
 
 ```bash
-# Create project directory
-mkdir my_shell_project
-cd my_shell_project
-
-# Initialize git repository
+# Initialize project
+mkdir my_shell_project && cd my_shell_project
 git init
-```
 
-### 2. Add ai_workflow_core Submodule
-
-```bash
-# Add submodule
+# Add submodule (pinned to specific version for stability)
 git submodule add https://github.com/mpbarbosa/ai_workflow_core.git .workflow_core
-
-# Initialize and update submodule
+cd .workflow_core && git checkout v1.0.0 && cd ..
 git submodule update --init --recursive
-```
 
-### 3. Copy and Customize Configuration
-
-```bash
-# Copy workflow configuration template
+# Copy and customize configuration
 cp .workflow_core/config/.workflow-config.yaml.template .workflow-config.yaml
 
-# Create workflow artifacts directory structure
-mkdir -p .ai_workflow/{backlog,summaries,logs,metrics,checkpoints,prompts,.incremental_cache}
+# Edit .workflow-config.yaml:
+# - Replace {{PROJECT_NAME}} with "My Shell Script Project"
+# - Set primary_language: "bash"
+# - Set test_framework: "shell-script"
+# - Set test_command: "./tests/run_all_tests.sh"
+# - Set lint_command: "shellcheck src/**/*.sh"
 
-# Create standard project directories
-mkdir -p src/lib tests docs
+# Create project structure
+mkdir -p src tests docs
+mkdir -p .ai_workflow/{backlog,summaries,logs,metrics,checkpoints,prompts,ml_models,.incremental_cache}
 
-# Update .gitignore to exclude workflow artifacts
+# Update .gitignore
 cat >> .gitignore << 'EOF'
-# Workflow artifacts
-.ai_workflow/logs/
-.ai_workflow/metrics/
+
+# AI Workflow artifacts
 .ai_workflow/backlog/
 .ai_workflow/summaries/
+.ai_workflow/logs/
+.ai_workflow/metrics/
 .ai_workflow/checkpoints/
 .ai_workflow/.incremental_cache/
-
-# Optional: Keep prompts and ML models in git
-# .ai_workflow/prompts/
-# .ai_workflow/ml_models/
 EOF
+
+# Commit
+git add .
+git commit -m "Initial commit with ai_workflow_core integration"
 ```
 
-### 4. Configure for Shell Script Projects
+## Version Management
 
-Edit `.workflow-config.yaml`:
+### Check Current Version
+
+```bash
+cd .workflow_core && git describe --tags && cd ..
+# Output: v1.0.0
+```
+
+### Update to New Version
+
+```bash
+# 1. Fetch updates
+cd .workflow_core && git fetch --tags && cd ..
+
+# 2. Review changes
+cd .workflow_core && git log --oneline v1.0.0..v1.1.0 && cd ..
+
+# 3. Update in feature branch
+git checkout -b update-workflow-core
+cd .workflow_core && git checkout v1.1.0 && cd ..
+
+# 4. Test
+bash .workflow_core/scripts/check_integration_health.sh
+./tests/run_all_tests.sh
+
+# 5. Commit
+git add .workflow_core
+git commit -m "chore: update ai_workflow_core to v1.1.0"
+```
+
+## Project Structure
+
+```
+my_shell_project/
+├── .workflow_core/           # ai_workflow_core submodule (pinned to v1.0.0)
+├── .ai_workflow/             # Workflow artifacts (gitignored)
+├── .workflow-config.yaml     # Customized workflow config
+├── .gitignore                # Git ignore patterns
+├── src/                      # Shell scripts
+│   ├── main.sh              # Main entry point
+│   └── lib/                 # Library functions
+├── tests/                    # Test scripts
+│   ├── run_all_tests.sh     # Test runner
+│   └── test_*.sh            # Individual test files
+├── docs/                     # Documentation
+│   └── README.md
+└── README.md
+```
+
+## Configuration Example
+
+`.workflow-config.yaml`:
 
 ```yaml
 project:
-  name: "My Shell Automation"
+  name: "My Shell Script Project"
   type: "shell-script-automation"
-  description: "Bash script automation with AI workflow integration"
+  description: "Shell script automation tools"
   kind: "shell_script_automation"
   version: "1.0.0"
+  
+  # Track submodule version
+  workflow_core_version: "v1.0.0"
+  workflow_core_updated: "2026-01-29"
 
 tech_stack:
   primary_language: "bash"
   build_system: "none"
-  test_framework: "bash_unit"  # or "bats" if using BATS
-  test_command: "./tests/run_tests.sh"
-  lint_command: "shellcheck -x -S warning src/**/*.sh"
+  test_framework: "shell-script"
+  test_command: "./tests/run_all_tests.sh"
+  lint_command: "shellcheck src/**/*.sh"
 
 structure:
   source_dirs:
@@ -134,513 +182,106 @@ structure:
     - docs
 ```
 
-### 5. Create Project Files
+## Testing
 
-#### Main Script (`src/main.sh`)
+Create `tests/run_all_tests.sh`:
 
 ```bash
 #!/usr/bin/env bash
-################################################################################
-# Main Script
-# Description: Entry point for shell automation
-# Usage: ./src/main.sh [OPTIONS]
-################################################################################
-
 set -euo pipefail
 
-# Script directory and project root
-readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-readonly PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-
-# Source library functions
-# shellcheck source=src/lib/utils.sh
-source "${PROJECT_ROOT}/src/lib/utils.sh"
-
-# shellcheck source=src/lib/validation.sh
-source "${PROJECT_ROOT}/src/lib/validation.sh"
-
-#######################################
-# Display usage information
-#######################################
-usage() {
-    cat << EOF
-Usage: $(basename "$0") [OPTIONS]
-
-Description:
-    Shell script automation with AI workflow integration
-
-Options:
-    -h, --help       Show this help message
-    -v, --version    Show version information
-    --debug          Enable debug output
-
-Examples:
-    $(basename "$0") --help
-    $(basename "$0") --version
-
-EOF
-    exit 0
-}
-
-#######################################
-# Main function
-#######################################
-main() {
-    # Parse command-line arguments
-    while [[ $# -gt 0 ]]; do
-        case "$1" in
-            -h|--help)
-                usage
-                ;;
-            -v|--version)
-                echo "Version: 1.0.0"
-                exit 0
-                ;;
-            --debug)
-                set -x
-                shift
-                ;;
-            *)
-                log_error "Unknown option: $1"
-                usage
-                ;;
-        esac
-    done
-
-    log_info "Starting automation script..."
-    
-    # Your automation logic here
-    
-    log_success "Automation complete!"
-}
-
-main "$@"
-```
-
-#### Utility Library (`src/lib/utils.sh`)
-
-```bash
-#!/usr/bin/env bash
-################################################################################
-# Utility Functions Library
-# Description: Common utility functions for shell scripts
-################################################################################
-
-# Colors for output
-readonly RED='\033[0;31m'
-readonly GREEN='\033[0;32m'
-readonly YELLOW='\033[1;33m'
-readonly BLUE='\033[0;34m'
-readonly NC='\033[0m' # No Color
-
-#######################################
-# Log info message
-# Arguments:
-#   $1 - Message to log
-#######################################
-log_info() {
-    echo -e "${BLUE}[INFO]${NC} $1"
-}
-
-#######################################
-# Log success message
-# Arguments:
-#   $1 - Message to log
-#######################################
-log_success() {
-    echo -e "${GREEN}[SUCCESS]${NC} $1"
-}
-
-#######################################
-# Log warning message
-# Arguments:
-#   $1 - Message to log
-#######################################
-log_warning() {
-    echo -e "${YELLOW}[WARNING]${NC} $1" >&2
-}
-
-#######################################
-# Log error message
-# Arguments:
-#   $1 - Message to log
-#######################################
-log_error() {
-    echo -e "${RED}[ERROR]${NC} $1" >&2
-}
-```
-
-#### Test Runner (`tests/run_tests.sh`)
-
-```bash
-#!/usr/bin/env bash
-################################################################################
-# Test Runner
-# Description: Execute all test suites
-################################################################################
-
-set -euo pipefail
-
-readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-readonly PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-
-# Test counters
-TESTS_RUN=0
-TESTS_PASSED=0
-TESTS_FAILED=0
-
-#######################################
-# Run a single test suite
-# Arguments:
-#   $1 - Test file path
-#######################################
-run_test_suite() {
-    local test_file="$1"
-    echo "Running: $(basename "$test_file")"
-    
-    if bash "$test_file"; then
-        echo "✓ PASSED: $(basename "$test_file")"
-        ((TESTS_PASSED++))
-    else
-        echo "✗ FAILED: $(basename "$test_file")"
-        ((TESTS_FAILED++))
-    fi
-    ((TESTS_RUN++))
-}
-
-#######################################
-# Main function
-#######################################
-main() {
-    echo "========================================"
-    echo "Running Shell Script Test Suite"
-    echo "========================================"
-    echo ""
-
-    # Run all test files
-    for test_file in "${SCRIPT_DIR}"/test_*.sh; do
-        if [[ -f "$test_file" ]]; then
-            run_test_suite "$test_file"
-        fi
-    done
-
-    echo ""
-    echo "========================================"
-    echo "Test Results"
-    echo "========================================"
-    echo "Total:  ${TESTS_RUN}"
-    echo "Passed: ${TESTS_PASSED}"
-    echo "Failed: ${TESTS_FAILED}"
-    echo "========================================"
-
-    [[ $TESTS_FAILED -eq 0 ]] && exit 0 || exit 1
-}
-
-main "$@"
-```
-
-### 6. Run Tests and Linters
-
-```bash
-# Run ShellCheck
-shellcheck -x -S warning src/**/*.sh
-
-# Run tests
-./tests/run_tests.sh
-
-# Make scripts executable
-chmod +x src/main.sh tests/run_tests.sh
-```
-
-### 7. Commit Initial Setup
-
-```bash
-# Stage files
-git add .gitignore .workflow-config.yaml
-git add src/ tests/ docs/
-git add .workflow_core  # Submodule reference
-
-# Commit
-git commit -m "feat: initial project setup with ai_workflow_core integration"
-```
-
-## Integration Workflow
-
-### Standard Development Cycle
-
-1. **Create feature branch**
-   ```bash
-   git checkout -b feature/my-automation
-   ```
-
-2. **Develop with workflow artifacts**
-   - Workflow artifacts stored in `.ai_workflow/`
-   - Configuration read from `.workflow-config.yaml`
-   - AI helpers use project kind (`shell_script_automation`)
-
-3. **Run quality checks**
-   ```bash
-   # Linting
-   shellcheck -x -S warning src/**/*.sh
-   
-   # Testing
-   ./tests/run_tests.sh
-   
-   # Code formatting
-   shfmt -w -i 2 -ci src/**/*.sh
-   ```
-
-4. **Review workflow artifacts** (optional)
-   ```bash
-   # Check execution logs
-   ls -la .ai_workflow/logs/
-   
-   # Review AI summaries
-   cat .ai_workflow/summaries/latest_summary.md
-   ```
-
-5. **Commit and push**
-   ```bash
-   git add src/ tests/
-   git commit -m "feat: add new automation feature"
-   git push origin feature/my-automation
-   ```
-
-## Configuration Customization
-
-### Placeholder Reference
-
-| Placeholder | Description | Example Value |
-|------------|-------------|---------------|
-| `{{PROJECT_NAME}}` | Project display name | "Log Analyzer Tool" |
-| `{{PROJECT_TYPE}}` | Technical project type | "shell-script-automation" |
-| `{{PROJECT_DESCRIPTION}}` | Brief description | "Automated log analysis and reporting" |
-| `{{PROJECT_KIND}}` | Project kind from schema | "shell_script_automation" |
-| `{{VERSION}}` | Current version | "1.0.0" |
-| `{{LANGUAGE}}` | Primary language | "bash" |
-| `{{BUILD_SYSTEM}}` | Build system | "none" |
-| `{{TEST_FRAMEWORK}}` | Testing framework | "bash_unit" or "bats" |
-| `{{TEST_COMMAND}}` | Test execution command | "./tests/run_tests.sh" |
-| `{{LINT_COMMAND}}` | Linter command | "shellcheck -x -S warning src/**/*.sh" |
-
-### Shell-Specific Configuration Options
-
-```yaml
-tech_stack:
-  primary_language: "bash"
-  build_system: "none"
-  
-  # Testing options
-  test_framework: "bash_unit"  # or "bats", "shunit2"
-  test_command: "./tests/run_tests.sh"
-  
-  # Linting options
-  lint_command: "shellcheck -x -S warning src/**/*.sh"
-  # ShellCheck flags:
-  #   -x : Follow source statements
-  #   -S : Set severity threshold (error, warning, info, style)
-  
-quality:
-  # Additional quality tools
-  formatters:
-    - shfmt -w -i 2 -ci src/**/*.sh  # Format with 2-space indent
-  
-  security:
-    - shellcheck -e SC2086 src/**/*.sh  # Check for unquoted variables
-```
-
-## Testing and Validation
-
-### Running Tests
-
-```bash
-# Run all tests
-./tests/run_tests.sh
-
-# Run specific test suite
-bash tests/test_utils.sh
-
-# Run with BATS (if installed)
-bats tests/
-```
-
-### Writing Tests
-
-Example test file (`tests/test_utils.sh`):
-
-```bash
-#!/usr/bin/env bash
-# Test Suite: Utility Functions
-
-set +e  # Don't exit on test failures
-set -uo pipefail
-
-# Load module under test
-source "$(dirname "$0")/../src/lib/utils.sh"
-
-# Test counters
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PASSED=0
 FAILED=0
 
-# Test helper function
-assert_equals() {
-    local expected="$1"
-    local actual="$2"
-    local test_name="$3"
-    
-    if [[ "$expected" == "$actual" ]]; then
-        echo "✓ PASS: $test_name"
-        ((PASSED++))
+echo "Running tests..."
+
+for test_file in "$SCRIPT_DIR"/test_*.sh; do
+  if [[ -f "$test_file" ]]; then
+    echo "Running: $(basename "$test_file")"
+    if bash "$test_file"; then
+      ((PASSED++))
     else
-        echo "✗ FAIL: $test_name"
-        echo "  Expected: $expected"
-        echo "  Actual:   $actual"
-        ((FAILED++))
+      ((FAILED++))
     fi
-}
+  fi
+done
 
-# Tests
-test_log_functions() {
-    # Test log_info outputs message
-    local output
-    output=$(log_info "test message")
-    assert_equals "[INFO] test message" "$output" "log_info outputs correctly"
-}
-
-# Run tests
-test_log_functions
-
-# Summary
-echo ""
-echo "Tests passed: $PASSED"
-echo "Tests failed: $FAILED"
-[[ $FAILED -eq 0 ]] && exit 0 || exit 1
+echo "Results: $PASSED passed, $FAILED failed"
+[[ $FAILED -eq 0 ]]
 ```
 
-### Linting with ShellCheck
+## Best Practices
 
-```bash
-# Check all shell scripts
-shellcheck -x -S warning src/**/*.sh tests/**/*.sh
-
-# Fix common issues
-# - SC2086: Quote variables to prevent word splitting
-# - SC2155: Declare and assign separately
-# - SC2164: Use || exit with cd commands
-```
-
-## Common Pitfalls
-
-### 1. Variable Quoting
-
-```bash
-# ❌ Bad: Unquoted variables
-echo $variable
-cp $source $destination
-
-# ✅ Good: Quoted variables
-echo "${variable}"
-cp "${source}" "${destination}"
-```
-
-### 2. Sourcing Files
-
-```bash
-# ❌ Bad: Relative path without PROJECT_ROOT
-source ../lib/utils.sh
-
-# ✅ Good: Absolute path from PROJECT_ROOT
-readonly PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-source "${PROJECT_ROOT}/lib/utils.sh"
-```
-
-### 3. Strict Mode
-
-```bash
-# Always use at top of scripts
-set -euo pipefail
-# -e: Exit on error
-# -u: Exit on undefined variable
-# -o pipefail: Exit on pipe failure
-```
-
-### 4. Workflow Directory Structure
-
-```bash
-# ❌ Bad: Hardcoded paths
-ls .ai_workflow/logs
-
-# ✅ Good: Use PROJECT_ROOT variable
-ls "${PROJECT_ROOT}/.ai_workflow/logs"
-```
-
-## Troubleshooting
-
-### Submodule Not Found
-
-```bash
-# Problem: .workflow_core directory is empty
-# Solution: Initialize submodules
-git submodule update --init --recursive
-```
-
-### ShellCheck Errors
-
-```bash
-# Problem: ShellCheck reports SC2086 (unquoted variables)
-# Solution: Quote all variable expansions
-"${variable}" instead of $variable
-```
-
-### Test Failures
-
-```bash
-# Problem: Tests fail with "command not found"
-# Solution: Check script is executable and paths are correct
-chmod +x tests/run_tests.sh
-# Verify PROJECT_ROOT is correctly set in test files
-```
-
-### Workflow Artifacts Not Created
-
-```bash
-# Problem: .ai_workflow directory missing
-# Solution: Create directory structure
-mkdir -p .ai_workflow/{backlog,summaries,logs,metrics,checkpoints,prompts,.incremental_cache}
-```
-
-## Next Steps
-
-1. **Explore Configuration**: Review `config/project_kinds.yaml` in `.workflow_core/` to understand validation rules for shell projects
-
-2. **Add CI/CD**: Copy GitHub Actions workflow from `.workflow_core/workflow-templates/workflows/`
+1. **Use shellcheck** for linting all shell scripts
+2. **Follow Google Shell Style Guide**
+3. **Pin submodule to tagged versions** in production
+4. **Run health checks** before deployments:
    ```bash
-   mkdir -p .github/workflows
-   cp .workflow_core/workflow-templates/workflows/code-quality.yml .github/workflows/
+   bash .workflow_core/scripts/check_integration_health.sh
    ```
+5. **Update through tested branches/PRs only**
+6. **Document shell version requirements** (Bash 4.0+)
 
-3. **Update Submodule**: Keep ai_workflow_core up to date
-   ```bash
-   cd .workflow_core
-   git pull origin main
-   cd ..
-   git add .workflow_core
-   git commit -m "chore: update ai_workflow_core submodule"
-   ```
+## Maintenance
 
-4. **Read Integration Guide**: See [docs/INTEGRATION.md](../../docs/INTEGRATION.md) for advanced configuration options
+### Weekly Health Check
 
-5. **Review AI Helpers**: Explore `config/ai_helpers.yaml` and `config/ai_prompts_project_kinds.yaml` for shell-specific AI prompts
+```bash
+bash .workflow_core/scripts/check_integration_health.sh
+```
+
+### Monthly Version Review
+
+```bash
+cd .workflow_core
+git fetch --tags
+git tag -l  # Check for new versions
+cd ..
+```
+
+### CI/CD Integration
+
+Create `.github/workflows/test.yml`:
+
+```yaml
+name: Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+      
+      - name: Install shellcheck
+        run: sudo apt-get install -y shellcheck
+      
+      - name: Run health check
+        run: |
+          bash .workflow_core/scripts/check_integration_health.sh
+      
+      - name: Lint scripts
+        run: shellcheck src/**/*.sh
+      
+      - name: Run tests
+        run: ./tests/run_all_tests.sh
+```
 
 ## Resources
 
-- **ShellCheck**: [https://www.shellcheck.net/](https://www.shellcheck.net/)
-- **Google Shell Style Guide**: [https://google.github.io/styleguide/shellguide.html](https://google.github.io/styleguide/shellguide.html)
-- **BATS Testing**: [https://github.com/bats-core/bats-core](https://github.com/bats-core/bats-core)
-- **ai_workflow_core Docs**: [../../docs/](../../docs/)
+- [ai_workflow_core Documentation](../../README.md)
+- [Integration Guide](../../docs/INTEGRATION.md)
+- [Version Management Guide](../../docs/guides/VERSION_MANAGEMENT.md)
+- [Integration Best Practices](../../docs/guides/INTEGRATION_BEST_PRACTICES.md)
+- [Google Shell Style Guide](https://google.github.io/styleguide/shellguide.html)
+- [ShellCheck](https://www.shellcheck.net/)
 
 ---
 
-**Version**: 1.0.0  
-**Last Updated**: 2026-01-31  
-**Project Kind**: `shell_script_automation`
+**Integration Strategy**: Version pinning with as-needed updates  
+**Last Updated**: 2026-01-29  
+**Example Version**: 1.1.0

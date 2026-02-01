@@ -1,0 +1,135 @@
+# Integration Health Check Workflow
+# Validates ai_workflow_core integration health on push and weekly schedule
+
+name: Integration Health Check
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - '.workflow_core/**'
+      - '.workflow-config.yaml'
+      - '.ai_workflow/**'
+  pull_request:
+    paths:
+      - '.workflow_core/**'
+      - '.workflow-config.yaml'
+  schedule:
+    - cron: '0 0 * * 1'  # Weekly on Monday at midnight UTC
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  health-check:
+    name: Check Integration Health
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: true  # Initialize submodules
+      
+      - name: Setup dependencies
+        run: |
+          # Install yamllint if needed for validation
+          pip install yamllint
+      
+      - name: Run health check script
+        run: |
+          bash .workflow_core/scripts/check_integration_health.sh
+      
+      - name: Check for unreplaced placeholders
+        run: |
+          if grep -r "{{" .workflow-config.yaml; then
+            echo "❌ Configuration contains unreplaced placeholders"
+            exit 1
+          else
+            echo "✅ No unreplaced placeholders found"
+          fi
+      
+      - name: Validate YAML syntax
+        run: |
+          yamllint -d relaxed .workflow-config.yaml
+      
+      - name: Check submodule version
+        id: version
+        run: |
+          cd .workflow_core
+          VERSION=$(git describe --tags 2>/dev/null || echo "unknown")
+          COMMIT=$(git rev-parse --short HEAD)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "commit=$COMMIT" >> $GITHUB_OUTPUT
+          echo "Submodule version: $VERSION ($COMMIT)"
+      
+      - name: Report health status
+        if: always()
+        run: |
+          echo "## Integration Health Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Submodule Version**: ${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Submodule Commit**: ${{ steps.version.outputs.commit }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Workflow**: ${{ github.workflow }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Triggered by**: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+
+  validate-structure:
+    name: Validate Directory Structure
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+      
+      - name: Check artifact directories exist
+        run: |
+          REQUIRED_DIRS=(
+            ".ai_workflow/backlog"
+            ".ai_workflow/summaries"
+            ".ai_workflow/logs"
+            ".ai_workflow/metrics"
+            ".ai_workflow/checkpoints"
+            ".ai_workflow/prompts"
+            ".ai_workflow/ml_models"
+            ".ai_workflow/.incremental_cache"
+          )
+          
+          MISSING=0
+          for dir in "${REQUIRED_DIRS[@]}"; do
+            if [[ ! -d "$dir" ]]; then
+              echo "❌ Missing directory: $dir"
+              MISSING=$((MISSING + 1))
+            fi
+          done
+          
+          if [[ $MISSING -eq 0 ]]; then
+            echo "✅ All required directories exist"
+          else
+            echo "❌ $MISSING directories missing"
+            exit 1
+          fi
+      
+      - name: Check .gitignore configuration
+        run: |
+          REQUIRED_PATTERNS=(
+            ".ai_workflow/backlog/"
+            ".ai_workflow/summaries/"
+            ".ai_workflow/logs/"
+            ".ai_workflow/metrics/"
+            ".ai_workflow/checkpoints/"
+            ".ai_workflow/.incremental_cache/"
+          )
+          
+          MISSING=0
+          for pattern in "${REQUIRED_PATTERNS[@]}"; do
+            if ! grep -qF "$pattern" .gitignore 2>/dev/null; then
+              echo "⚠️ Missing .gitignore pattern: $pattern"
+              MISSING=$((MISSING + 1))
+            fi
+          done
+          
+          if [[ $MISSING -eq 0 ]]; then
+            echo "✅ All artifact patterns in .gitignore"
+          else
+            echo "⚠️ $MISSING patterns missing (warning only)"
+          fi

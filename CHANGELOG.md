@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- **Cleanup Script Updated to v2.0.0** (2026-02-01)
+  - Updated `scripts/cleanup_artifacts.sh.template` to v2.0.0
+  - **BREAKING**: Changed WORKFLOW_DIR from `${REPO_ROOT}/src/workflow` to `${REPO_ROOT}/.ai_workflow`
+  - Added `--summaries` option to clean summary files
+  - Updated cache cleanup to use `.incremental_cache/` (was `.ai_cache/`)
+  - Added note about Node.js cleanup_handlers.js implementation (v2.0.0) in parent project
+  - Aligned directory structure with current .ai_workflow/ standard
+  - Updated version from 1.0.0 to 2.0.0, date from 2025-12-20 to 2026-02-01
 - **Parent Project Status Update** (2026-02-01)
   - Parent project ([ai_workflow](https://github.com/mpbarbosa/ai_workflow)) updated to v1.1.0
   - Phase 3 completed: File Operations & Utilities (5 modules, 354 new tests)

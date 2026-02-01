@@ -6,6 +6,10 @@
 #   Removes old workflow logs, metrics, backlog reports, and AI cache files
 #   to free disk space and maintain repository cleanliness.
 #
+# Note: A Node.js implementation with additional features (size-based cleanup,
+#       pattern matching, directory size limits) is available in the parent
+#       ai_workflow project (cleanup_handlers.js v2.0.0).
+#
 # Usage:
 #   ./scripts/cleanup_artifacts.sh [OPTIONS]
 #
@@ -14,7 +18,8 @@
 #   --logs             Remove log files only
 #   --metrics          Remove metrics files only
 #   --backlog          Remove backlog reports only
-#   --cache            Remove AI cache only
+#   --summaries        Remove summary files only
+#   --cache            Remove cache files only
 #   --older-than DAYS  Remove artifacts older than N days (default: 30)
 #   --dry-run          Show what would be deleted without deleting
 #   --yes              Skip confirmation prompts
@@ -26,8 +31,8 @@
 #   ./scripts/cleanup_artifacts.sh --metrics --yes
 #
 # Author: AI Workflow Automation
-# Version: 1.0.0
-# Last Updated: 2025-12-20
+# Version: 2.0.0
+# Last Updated: 2026-02-01
 
 set -euo pipefail
 
@@ -41,13 +46,15 @@ readonly NC='\033[0m' # No Color
 # Script directory and repository root
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-WORKFLOW_DIR="${REPO_ROOT}/src/workflow"
+# Updated to use .ai_workflow/ directory (standard since v1.0.0)
+WORKFLOW_DIR="${REPO_ROOT}/.ai_workflow"
 
 # Default options
 CLEAN_ALL=false
 CLEAN_LOGS=false
 CLEAN_METRICS=false
 CLEAN_BACKLOG=false
+CLEAN_SUMMARIES=false
 CLEAN_CACHE=false
 OLDER_THAN_DAYS=30
 DRY_RUN=false
@@ -82,7 +89,8 @@ Options:
     --logs             Remove log files only
     --metrics          Remove metrics files only
     --backlog          Remove backlog reports only
-    --cache            Remove AI cache only
+    --summaries        Remove summary files only
+    --cache            Remove cache files only
     --older-than DAYS  Remove artifacts older than N days (default: 30)
     --dry-run          Show what would be deleted without deleting
     --yes              Skip confirmation prompts
@@ -119,6 +127,10 @@ parse_args() {
                 CLEAN_BACKLOG=true
                 shift
                 ;;
+            --summaries)
+                CLEAN_SUMMARIES=true
+                shift
+                ;;
             --cache)
                 CLEAN_CACHE=true
                 shift
@@ -150,12 +162,14 @@ parse_args() {
         CLEAN_LOGS=true
         CLEAN_METRICS=true
         CLEAN_BACKLOG=true
+        CLEAN_SUMMARIES=true
         CLEAN_CACHE=true
     fi
 
     # If no specific option is set, default to all
     if [[ "$CLEAN_LOGS" == false && "$CLEAN_METRICS" == false && \
-          "$CLEAN_BACKLOG" == false && "$CLEAN_CACHE" == false ]]; then
+          "$CLEAN_BACKLOG" == false && "$CLEAN_SUMMARIES" == false && \
+          "$CLEAN_CACHE" == false ]]; then
         print_color "$YELLOW" "No specific cleanup option specified. Use --help for options."
         exit 1
     fi
@@ -284,22 +298,19 @@ cleanup_backlog() {
 }
 
 #######################################
-# Clean up AI cache
+# Clean up summaries
 #######################################
-cleanup_cache() {
-    local cache_dir="${WORKFLOW_DIR}/.ai_cache"
+cleanup_summaries() {
+    local summaries_dir="${WORKFLOW_DIR}/summaries"
     
-    if [[ ! -d "$cache_dir" ]]; then
-        print_color "$YELLOW" "AI cache directory not found: $cache_dir"
+    if [[ ! -d "$summaries_dir" ]]; then
+        print_color "$YELLOW" "Summaries directory not found: $summaries_dir"
         return
     fi
 
-    print_color "$BLUE" "Cleaning up AI cache files older than ${OLDER_THAN_DAYS} days..."
+    print_color "$BLUE" "Cleaning up summary files older than ${OLDER_THAN_DAYS} days..."
 
     local count=0
-    local index_file="${cache_dir}/index.json"
-    
-    # Clean up cached response files
     while IFS= read -r -d '' file; do
         local size
         size=$(stat -f%z "$file" 2>/dev/null || stat -c%s "$file" 2>/dev/null || echo 0)
@@ -313,14 +324,43 @@ cleanup_cache() {
             SPACE_FREED=$((SPACE_FREED + size))
         fi
         ((count++))
-    done < <(find "$cache_dir" -type f -name "*.md" -mtime "+${OLDER_THAN_DAYS}" -print0 2>/dev/null)
+    done < <(find "$summaries_dir" -type f -mtime "+${OLDER_THAN_DAYS}" -print0 2>/dev/null)
 
-    # Update index.json to remove expired entries
-    if [[ -f "$index_file" && "$DRY_RUN" == false ]]; then
-        print_color "$BLUE" "Updating cache index..."
-        # This would require jq or similar, keeping it simple for now
-        # The cache system will self-clean on next use
+    if [[ $count -eq 0 ]]; then
+        print_color "$GREEN" "No old summary files found."
     fi
+}
+
+#######################################
+# Clean up cache files
+#######################################
+cleanup_cache() {
+    local cache_dir="${WORKFLOW_DIR}/.incremental_cache"
+    
+    if [[ ! -d "$cache_dir" ]]; then
+        print_color "$YELLOW" "Cache directory not found: $cache_dir"
+        return
+    fi
+
+    print_color "$BLUE" "Cleaning up cache files older than ${OLDER_THAN_DAYS} days..."
+
+    local count=0
+    
+    # Clean up cache files
+    while IFS= read -r -d '' file; do
+        local size
+        size=$(stat -f%z "$file" 2>/dev/null || stat -c%s "$file" 2>/dev/null || echo 0)
+        
+        if [[ "$DRY_RUN" == true ]]; then
+            print_color "$YELLOW" "[DRY RUN] Would delete: $file ($(human_readable_size "$size"))"
+        else
+            print_color "$GREEN" "Deleting: $file ($(human_readable_size "$size"))"
+            rm -f "$file"
+            ((FILES_DELETED++))
+            SPACE_FREED=$((SPACE_FREED + size))
+        fi
+        ((count++))
+    done < <(find "$cache_dir" -type f -mtime "+${OLDER_THAN_DAYS}" -print0 2>/dev/null)
 
     if [[ $count -eq 0 ]]; then
         print_color "$GREEN" "No old cache files found."
@@ -339,7 +379,8 @@ confirm_cleanup() {
     [[ "$CLEAN_LOGS" == true ]] && echo "  - Log files (${WORKFLOW_DIR}/logs/)"
     [[ "$CLEAN_METRICS" == true ]] && echo "  - Metrics files (${WORKFLOW_DIR}/metrics/)"
     [[ "$CLEAN_BACKLOG" == true ]] && echo "  - Backlog reports (${WORKFLOW_DIR}/backlog/)"
-    [[ "$CLEAN_CACHE" == true ]] && echo "  - AI cache (${WORKFLOW_DIR}/.ai_cache/)"
+    [[ "$CLEAN_SUMMARIES" == true ]] && echo "  - Summary files (${WORKFLOW_DIR}/summaries/)"
+    [[ "$CLEAN_CACHE" == true ]] && echo "  - Cache files (${WORKFLOW_DIR}/.incremental_cache/)"
     echo ""
 
     read -rp "Continue? [y/N] " response
@@ -395,6 +436,7 @@ main() {
     [[ "$CLEAN_LOGS" == true ]] && cleanup_logs
     [[ "$CLEAN_METRICS" == true ]] && cleanup_metrics
     [[ "$CLEAN_BACKLOG" == true ]] && cleanup_backlog
+    [[ "$CLEAN_SUMMARIES" == true ]] && cleanup_summaries
     [[ "$CLEAN_CACHE" == true ]] && cleanup_cache
 
     print_summary

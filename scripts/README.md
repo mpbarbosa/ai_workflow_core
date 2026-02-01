@@ -44,19 +44,57 @@ bash .workflow_core/scripts/check_integration_health.sh --fix
 
 ### `cleanup_artifacts.sh.template`
 
-Cleans up old workflow execution artifacts including logs, metrics, backlog reports, and AI cache files.
+**Version**: 2.0.0 (Updated 2026-02-01)
+
+Cleans up old workflow execution artifacts including logs, metrics, backlog reports, summaries, and cache files.
 
 **Features:**
-- Selective cleanup (logs, metrics, backlog, cache)
-- Age-based cleanup (older than N days)
-- Dry-run mode
-- Confirmation prompts
+- Selective cleanup (logs, metrics, backlog, summaries, cache)
+- Age-based cleanup (older than N days, default: 30)
+- Dry-run mode (preview before deletion)
+- Confirmation prompts (skip with --yes)
+- Human-readable size reporting
+
+**Directory Structure** (since v2.0.0):
+- Logs: `.ai_workflow/logs/`
+- Metrics: `.ai_workflow/metrics/`
+- Backlog: `.ai_workflow/backlog/`
+- Summaries: `.ai_workflow/summaries/`
+- Cache: `.ai_workflow/.incremental_cache/`
 
 **Usage:**
 ```bash
+# Clean all artifacts older than 7 days
 ./cleanup_artifacts.sh --all --older-than 7
+
+# Preview log cleanup without deleting
 ./cleanup_artifacts.sh --logs --dry-run
+
+# Clean metrics without confirmation
+./cleanup_artifacts.sh --metrics --yes
+
+# Clean specific types
+./cleanup_artifacts.sh --summaries --cache --older-than 14
 ```
+
+**Options:**
+- `--all` - Clean all artifact types
+- `--logs` - Clean log files only
+- `--metrics` - Clean metrics files only
+- `--backlog` - Clean backlog reports only
+- `--summaries` - Clean summary files only
+- `--cache` - Clean cache files only
+- `--older-than DAYS` - Remove artifacts older than N days (default: 30)
+- `--dry-run` - Show what would be deleted without deleting
+- `--yes` - Skip confirmation prompts
+- `-h, --help` - Show help message
+
+**Breaking Changes in v2.0.0:**
+- Changed WORKFLOW_DIR from `src/workflow` to `.ai_workflow`
+- Updated cache directory from `.ai_cache` to `.incremental_cache`
+- Added `--summaries` option for summary file cleanup
+
+**Note**: A more advanced Node.js implementation with additional features (size-based cleanup, pattern matching, directory size limits) is available in the parent [ai_workflow](https://github.com/mpbarbosa/ai_workflow) project as `cleanup_handlers.js` (v2.0.0).
 
 ### `validate_context_blocks.py`
 

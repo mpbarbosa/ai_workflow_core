@@ -1,0 +1,213 @@
+# Model Selection Rules Configuration
+# Purpose: Configure AI model selection behavior for workflow automation
+# Version: 3.2.0
+# Part of: Intelligent AI Model Selection Feature
+
+# ==============================================================================
+# FEATURE TOGGLE
+# ==============================================================================
+
+model_selection:
+  enabled: true  # Set to false to disable model selection (use defaults)
+
+# ==============================================================================
+# COMPLEXITY THRESHOLDS
+# ==============================================================================
+# Define score ranges for each tier (0-100 scale)
+
+thresholds:
+  tier_1_max: 25    # Fast models (0-25)
+  tier_2_max: 60    # Balanced models (26-60)
+  tier_3_max: 90    # Deep reasoning models (61-90)
+  # 91+ = Tier 4 (Agentic models)
+
+# ==============================================================================
+# MODEL PREFERENCES
+# ==============================================================================
+# Based on: https://docs.github.com/en/copilot/reference/ai-models/model-comparison
+
+tier_preferences:
+  tier_1_fast:
+    primary: claude-haiku-4.5
+    alternatives:
+      - gpt-5-mini
+      - gemini-3-flash
+    description: "Fast, lightweight coding questions and simple edits"
+    
+  tier_2_balanced:
+    primary: claude-sonnet-4.5
+    alternatives:
+      - gpt-5.1-codex
+      - gpt-5-mini
+    description: "General-purpose coding with balanced performance"
+    
+  tier_3_deep:
+    primary: claude-opus-4.5
+    alternatives:
+      - gpt-5.2
+      - claude-sonnet-4.0
+      - gemini-3-pro
+    description: "Deep reasoning for complex problem-solving"
+    
+  tier_4_agentic:
+    primary: claude-opus-4.6
+    alternatives:
+      - gpt-5.2-codex
+      - gpt-5.1-codex-max
+    description: "Agentic software development and architecture"
+
+# ==============================================================================
+# COMPLEXITY CALCULATION WEIGHTS
+# ==============================================================================
+
+complexity_weights:
+  code:
+    cyclomatic_multiplier: 2.0      # Weight for cyclomatic complexity
+    lines_per_point: 10             # Lines changed per complexity point
+    function_depth_multiplier: 1.5  # Weight for function nesting depth
+    semantic_factors:
+      minor_change: 5
+      enhancement: 15
+      major_refactor: 30
+      architectural_change: 50
+  
+  documentation:
+    words_per_point: 100            # Words changed per complexity point
+    files_multiplier: 0.5           # Weight per file affected
+    structural_multiplier: 2.0      # Weight for structural changes
+    primary_doc_modifier: 5.0       # Extra weight for README/index changes
+  
+  tests:
+    cases_multiplier: 1.5           # Weight per test case
+    lines_per_point: 20             # Lines changed per complexity point
+    coverage_multiplier: 2.0        # Weight for coverage impact
+    coverage_factors:
+      minor_update: 5
+      new_coverage: 15
+      major_expansion: 30
+
+# ==============================================================================
+# STEP-SPECIFIC OVERRIDES
+# ==============================================================================
+# Customize model selection for specific workflow steps
+
+step_overrides:
+  step_01_documentation:
+    # Use documentation complexity tier
+    category: documentation
+    
+  step_02_consistency:
+    # Validation can use same tier as docs
+    category: documentation
+    
+  step_03_script_refs:
+    # Script analysis uses code complexity
+    category: code
+    
+  step_05_test_review:
+    # Test review uses test complexity
+    category: tests
+    
+  step_06_test_gen:
+    # Test generation needs higher tier
+    tier_adjustment: +1
+    reason: "Test generation requires reasoning about code behavior"
+    
+  step_09_code_quality:
+    # Code quality uses code complexity
+    category: code
+    
+  step_13_prompt_engineer:
+    # Prompt engineering always uses deep reasoning
+    force_tier: tier_3_deep
+    reason: "Meta-analysis requires sophisticated reasoning"
+    
+  step_14_ux_analysis:
+    # UX analysis always uses deep reasoning
+    force_tier: tier_3_deep
+    reason: "UI/UX analysis requires human-centered design reasoning"
+
+# ==============================================================================
+# SUPPORTED MODELS LIST
+# ==============================================================================
+# Used for validation when --force-model is specified
+
+supported_models:
+  # Claude models
+  - claude-haiku-4.5
+  - claude-sonnet-4.0
+  - claude-sonnet-4.5
+  - claude-opus-4.1
+  - claude-opus-4.5
+  - claude-opus-4.6
+  
+  # GPT models
+  - gpt-4.1
+  - gpt-5
+  - gpt-5-mini
+  - gpt-5.1
+  - gpt-5.1-codex
+  - gpt-5.1-codex-mini
+  - gpt-5.1-codex-max
+  - gpt-5.2
+  - gpt-5.2-codex
+  
+  # Gemini models
+  - gemini-2.5-pro
+  - gemini-3-flash
+  - gemini-3-pro
+  
+  # Grok models
+  - grok-code-fast-1
+  
+  # Qwen models
+  - qwen2.5
+  
+  # Raptor models
+  - raptor-mini
+
+# ==============================================================================
+# FALLBACK BEHAVIOR
+# ==============================================================================
+
+fallback:
+  # What to do when model selection fails
+  on_failure: use_defaults
+  # Options: use_defaults, abort_workflow, skip_ai_steps
+  
+  # Default model when selection unavailable
+  default_model: claude-sonnet-4.5
+  
+  # Log model selection decisions
+  enable_logging: true
+  
+  # Warn if primary model unavailable
+  warn_on_fallback: true
+
+# ==============================================================================
+# PERFORMANCE TUNING
+# ==============================================================================
+
+performance:
+  # Maximum time for complexity analysis (seconds)
+  max_analysis_time: 5
+  
+  # Cache model definitions between steps
+  cache_definitions: true
+  
+  # Enable parallel complexity calculation
+  parallel_analysis: false  # Future feature
+
+# ==============================================================================
+# EXPERIMENTAL FEATURES
+# ==============================================================================
+
+experimental:
+  # Use ML to learn optimal model selections (requires historical data)
+  ml_based_selection: false
+  
+  # Adjust tiers based on historical model performance
+  adaptive_thresholds: false
+  
+  # A/B test different models for comparison
+  enable_ab_testing: false

@@ -421,6 +421,8 @@ When assisting with this project, reference these critical documents:
 13. **docs/api/CONFIG_REFERENCE.md**: Complete `.workflow-config.yaml` field reference (695 lines)
 14. **docs/api/PLACEHOLDER_REFERENCE.md**: Placeholder patterns and substitution guide (756 lines)
 15. **docs/api/PROJECT_KINDS_SCHEMA.md**: Project kinds schema v1.2.0 reference (777 lines)
+16. **docs/api/AI_HELPERS_REFERENCE.md**: AI persona definitions, YAML anchors, token efficiency system (1,177 lines)
+17. **docs/api/AI_PROMPTS_REFERENCE.md**: Project-specific AI prompt templates (1,197 lines)
 
 ### Additional Documentation
 
@@ -542,11 +544,12 @@ When updating documentation:
 
 ### When Helping with GitHub Workflows
 
-- Reference existing workflow files in `workflow-templates/workflows/` (note: `.github/` directory contains copilot-instructions.md and DESCRIPTION.md)
-- Current workflows: `code-quality.yml`, `validate-docs.yml`, `validate-tests.yml`
-- These are templates that projects can copy and customize
-- Workflows assume the target project structure, not this repo's structure
-- Workflows are language-agnostic and can be adapted for different project types
+- **Source location**: Workflow templates are in `workflow-templates/workflows/` directory
+- **Metadata location**: `.github/` directory contains copilot-instructions.md and DESCRIPTION.md (NOT workflow templates)
+- **Current workflows**: `code-quality.yml`, `validate-docs.yml`, `validate-tests.yml`, `validate-structure.yml`, `integration-health.yml`
+- **Usage pattern**: Projects copy templates FROM `workflow-templates/workflows/` TO their own `.github/workflows/`
+- **Important**: These are templates that projects customize, they assume target project structure
+- **Language support**: Workflows are language-agnostic and adaptable for different project types
 
 ---
 
@@ -560,7 +563,7 @@ When updating documentation:
 - Integration examples for different languages
 - Documentation structure and standards
 - Utility script templates
-- GitHub workflow templates
+- GitHub Actions workflow templates (in `workflow-templates/` directory)
 
 **What this repository IS NOT:**
 - A workflow execution engine (that's in the parent ai_workflow project)
@@ -608,10 +611,10 @@ Always clarify which context applies to the current task.
 
 ### Repository Scope
 
-**This repository contains:**
+**What this repository contains:**
 - Configuration templates (2 template files: `.workflow-config.yaml.template`, `cleanup_artifacts.sh.template`)
 - Configuration schemas (4 YAML files in `config/`: project_kinds, ai_helpers, ai_prompts_project_kinds, README)
-- GitHub workflow templates (3 workflow files + README in `workflow-templates/workflows/`: code-quality, validate-docs, validate-tests)
+- GitHub Actions workflow templates (5 workflow files + README in `workflow-templates/workflows/`: code-quality, validate-docs, validate-tests, validate-structure, integration-health)
 - GitHub metadata (`.github/` directory with DESCRIPTION.md and copilot-instructions.md)
 - Integration examples (2 language examples with README guides: shell 645+ lines, nodejs 320+ lines + examples/README.md contributor guide 350+ lines)
 - Documentation (5 core docs in `docs/` root + 3 guides in `docs/guides/` + 3 API references in `docs/api/` + 2 misc files in `docs/misc/`)

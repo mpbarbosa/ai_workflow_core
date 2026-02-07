@@ -299,6 +299,59 @@ Example structure:
 [Your workflow]
 ```
 
+### AI Prompt Customization
+
+The `ai_workflow_core` provides AI prompt templates that can be customized for your project.
+
+#### Understanding the AI System
+
+The AI system uses two layers:
+1. **Generic personas** (`config/ai_helpers.yaml`) - Base AI roles (documentation specialist, test engineer, etc.)
+2. **Project-specific prompts** (`config/ai_prompts_project_kinds.yaml`) - Customizations per project type
+
+See the [AI Helpers Reference](api/AI_HELPERS_REFERENCE.md) and [AI Prompts Reference](api/AI_PROMPTS_REFERENCE.md) for complete documentation.
+
+#### Customizing AI Prompts
+
+To customize AI behavior for your project:
+
+**Option 1: Copy and modify configuration files** (for advanced customization):
+```bash
+# Copy AI configuration to your project
+cp .workflow_core/config/ai_helpers.yaml config/
+cp .workflow_core/config/ai_prompts_project_kinds.yaml config/
+
+# Edit to customize for your specific needs
+# Example: Add project-specific terminology, adjust focus areas, etc.
+```
+
+**Option 2: Use project_kind alignment** (recommended):
+```yaml
+# In .workflow-config.yaml
+project:
+  kind: "nodejs_api"  # Uses nodejs_api prompts from ai_prompts_project_kinds.yaml
+```
+
+The system will automatically load project-specific prompts for your project kind. Available project kinds:
+- `shell_script_automation` - Shell script projects
+- `nodejs_api` - Node.js backend APIs
+- `react_spa` - React applications
+- `python_app` - Python applications
+- `client_spa` - Vanilla JS SPAs
+- `static_website` - Static HTML/CSS/JS sites
+- `configuration_library` - Config/template repositories
+- `generic` - Generic fallback
+
+#### Token Efficiency
+
+The AI prompt system is optimized for token efficiency:
+- **YAML anchors** for reusable guidelines (~260-390 tokens saved)
+- **Language-specific injection** based on `primary_language` setting
+- **Total savings**: ~1,400-1,500 tokens per workflow
+- **Cost impact**: ~$0.042-0.045 saved per workflow (GPT-4 pricing)
+
+See [AI Helpers Reference](api/AI_HELPERS_REFERENCE.md#token-efficiency-system) for details.
+
 ## Updating the Submodule
 
 ### Version Management

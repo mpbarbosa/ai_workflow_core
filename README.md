@@ -80,10 +80,16 @@ mkdir -p .ai_workflow/{backlog,summaries,logs,metrics,checkpoints,prompts,ml_mod
 | Placeholder | Description | Example |
 |------------|-------------|---------|
 | `{{PROJECT_NAME}}` | Project name | "My Project" |
+| `{{PROJECT_TYPE}}` | Project type (hyphenated) | "nodejs-application", "configuration-library" |
+| `{{PROJECT_KIND}}` | Project kind (underscored) | "nodejs_api", "configuration_library" |
 | `{{LANGUAGE}}` | Primary language | "javascript", "bash", "python" |
 | `{{TEST_COMMAND}}` | Test command | "npm test", "./tests/run_tests.sh" |
 | `{{LINT_COMMAND}}` | Lint command | "eslint .", "shellcheck **/*.sh" |
 | `{{VERSION}}` | Version number | "1.0.0" |
+
+**Terminology Note:**
+- `PROJECT_TYPE` uses **hyphens** for display: `"nodejs-application"`, `"configuration-library"`
+- `PROJECT_KIND` uses **underscores** for validation: `"nodejs_api"`, `"configuration_library"` (from `config/project_kinds.yaml`)
 
 See [docs/api/PLACEHOLDER_REFERENCE.md](docs/api/PLACEHOLDER_REFERENCE.md) for complete placeholder reference guide, or [docs/INTEGRATION.md](docs/INTEGRATION.md) for integration examples.
 
@@ -118,28 +124,74 @@ cp .workflow_core/config/.workflow-config.yaml.template .workflow-config.yaml
 ```
 
 **Complete Integration Examples:**
-- **[Shell Script](examples/shell/)** - Bash automation with BATS testing (645+ lines)
-- **[Node.js](examples/nodejs/)** - JavaScript/Node.js with npm/jest (320+ lines)
+- **[Shell Script](examples/shell/)** 🟢 **Comprehensive** - Bash automation with BATS testing (645+ lines, detailed troubleshooting)
+- **[Node.js](examples/nodejs/)** 🟡 **Compact** - JavaScript/Node.js with npm/jest (320+ lines, essential patterns)
+
+**Complexity Labels:**
+- 🟢 **Comprehensive** = Detailed walkthrough with troubleshooting, best practices, and edge cases
+- 🟡 **Compact** = Essential patterns and quick setup focused on getting started
 
 **Want to add an example?** See [examples/README.md](examples/README.md) for comprehensive contributor guide.
 
 ## Documentation
 
+> ⚠️ **Context Note**: Some guides in `docs/guides/` reference the **parent ai_workflow project** (workflow execution engine). Focus on configuration templates, project_kinds schemas, and integration patterns when using ai_workflow_core as a configuration library.
+
 ### Core Documentation
 - **[ARCHITECTURE.md](docs/ARCHITECTURE.md)** - System architecture and design decisions  
 - **[INTEGRATION.md](docs/INTEGRATION.md)** - Detailed integration guide  
-- **[CONTRIBUTING.md](docs/CONTRIBUTING.md)** - Contributing guidelines and standards  
+- **[CONTRIBUTING.md](docs/CONTRIBUTING.md)** ⚠️ - Contributing guidelines (references parent project features)
 - **[AI_WORKFLOW_DIRECTORY.md](docs/AI_WORKFLOW_DIRECTORY.md)** - Artifact directory structure  
 
 ### API References
 - **[CONFIG_REFERENCE.md](docs/api/CONFIG_REFERENCE.md)** - Complete `.workflow-config.yaml` field reference
 - **[PLACEHOLDER_REFERENCE.md](docs/api/PLACEHOLDER_REFERENCE.md)** - Placeholder patterns and substitution guide
 - **[PROJECT_KINDS_SCHEMA.md](docs/api/PROJECT_KINDS_SCHEMA.md)** - Project kinds schema v1.2.0 reference
+- **[AI_HELPERS_REFERENCE.md](docs/api/AI_HELPERS_REFERENCE.md)** - AI persona definitions and token efficiency system
+- **[AI_PROMPTS_REFERENCE.md](docs/api/AI_PROMPTS_REFERENCE.md)** - Project-specific AI prompt templates
 
-### Additional Guides
-- [docs/guides/](docs/guides/) - Implementation guides and advanced topics
+### User Guides
+- **[QUICK_START.md](docs/guides/QUICK_START.md)** - 5-minute setup guide
+- **[MIGRATION_GUIDE.md](docs/guides/MIGRATION_GUIDE.md)** - Version upgrade procedures
+- **[TROUBLESHOOTING.md](docs/guides/TROUBLESHOOTING.md)** - 25+ solutions across 8 categories
+- **[FAQ.md](docs/guides/FAQ.md)** - 40+ questions answered
+
+### Developer Guides
+- **[TEMPLATE_AUTHORING.md](docs/developers/TEMPLATE_AUTHORING.md)** - Creating and modifying templates
+
+### Advanced Guides
+- **[MULTI_LANGUAGE_SETUP.md](docs/advanced/MULTI_LANGUAGE_SETUP.md)** - Polyglot project configurations
+- **[CUSTOM_WORKFLOW_CREATION.md](docs/advanced/CUSTOM_WORKFLOW_CREATION.md)** - Custom automation workflows
+- **[CI_CD_INTEGRATION.md](docs/advanced/CI_CD_INTEGRATION.md)** - Integration with 5 CI/CD platforms
+
+### Visual Aids
+- **[diagrams/README.md](docs/diagrams/README.md)** - 20+ Mermaid diagrams for architecture, flows, and structures
 
 ## Development
+
+### Validation Scripts
+
+Run validation scripts to ensure configuration quality:
+
+```bash
+# Validate documentation context blocks
+python3 scripts/validate_context_blocks.py
+
+# Validate directory structure
+python3 scripts/validate_structure.py
+
+# With auto-fix for empty directories
+python3 scripts/validate_structure.py --fix
+```
+
+**Script Documentation:**
+- `validate_context_blocks.py` - Validates standardized context block structure in YAML configs
+- `validate_structure.py` - Checks directory structure for empty/undocumented directories
+
+**Automated in CI/CD:**
+- ✅ Structure validation runs on every push/PR
+- ✅ Pre-commit hooks validate before each commit
+- ✅ See [workflow-templates/workflows/validate-structure.yml](workflow-templates/workflows/validate-structure.yml)
 
 ### Pre-commit Hooks
 
@@ -162,6 +214,7 @@ pre-commit run --all-files
 - ✅ Large file prevention
 - ✅ Merge conflict markers
 - ✅ Private key detection
+- ✅ **Directory structure** (via validate_structure.py)
 
 ## Features
 
@@ -185,3 +238,41 @@ Part of [AI Workflow Automation](https://github.com/mpbarbosa/ai_workflow) proje
 ---
 
 **Version**: 1.0.0 | **Updated**: 2026-02-01
+
+## Automated Validation
+
+### CI/CD Integration
+
+This repository includes automated structure validation in CI/CD:
+
+```yaml
+# .github/workflows/validate-structure.yml (included in workflow-templates/)
+- Runs on every push and pull request
+- Detects empty directories automatically
+- Verifies required directories exist
+- Checks documentation alignment
+```
+
+To integrate in your project:
+```bash
+cp .workflow_core/workflow-templates/workflows/validate-structure.yml .github/workflows/
+```
+
+### Pre-commit Hooks
+
+Structure validation runs automatically via pre-commit hooks:
+
+```bash
+# Install pre-commit
+pip install pre-commit
+pre-commit install
+
+# Run manually
+pre-commit run validate-structure --all-files
+```
+
+The pre-commit hook:
+- ✅ Validates directory structure before each commit
+- ✅ Detects empty directories
+- ✅ Ensures required directories exist
+- ✅ Prevents structure drift

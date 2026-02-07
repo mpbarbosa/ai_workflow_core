@@ -1,0 +1,135 @@
+name: Validate Directory Structure
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  validate-structure:
+    name: Validate Repository Structure
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive  # Include submodules
+          
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          # Add any Python dependencies here if validate_structure.py needs them
+          
+      - name: Run structure validation
+        run: |
+          echo "Running directory structure validation..."
+          python3 scripts/validate_structure.py
+          
+      - name: Check for empty directories
+        run: |
+          echo "Checking for empty directories..."
+          EMPTY_DIRS=$(find . -type d -empty \
+            -not -path "./.git/*" \
+            -not -path "./node_modules/*" \
+            -not -path "./__pycache__/*" \
+            -not -path "./.venv/*" \
+            -not -path "./venv/*" \
+            -not -path "./.ai_workflow/*" \
+            -not -path "./docs/misc" \
+            2>/dev/null || true)
+          
+          if [ -n "$EMPTY_DIRS" ]; then
+            echo "❌ Found unexpected empty directories:"
+            echo "$EMPTY_DIRS"
+            exit 1
+          else
+            echo "✅ No unexpected empty directories found"
+          fi
+          
+      - name: Verify required directories
+        run: |
+          echo "Verifying required directories exist..."
+          REQUIRED_DIRS=(
+            "config"
+            "docs"
+            "examples"
+            "scripts"
+            "workflow-templates"
+            ".github"
+          )
+          
+          MISSING_DIRS=()
+          for dir in "${REQUIRED_DIRS[@]}"; do
+            if [ ! -d "$dir" ]; then
+              MISSING_DIRS+=("$dir")
+            fi
+          done
+          
+          if [ ${#MISSING_DIRS[@]} -gt 0 ]; then
+            echo "❌ Missing required directories:"
+            printf '%s\n' "${MISSING_DIRS[@]}"
+            exit 1
+          else
+            echo "✅ All required directories present"
+          fi
+          
+      - name: Check structure documentation alignment
+        run: |
+          echo "Checking structure vs documentation alignment..."
+          
+          # Extract structure from copilot-instructions.md
+          if [ -f ".github/copilot-instructions.md" ]; then
+            echo "✅ Found copilot-instructions.md"
+            
+            # Check if documented directories exist
+            DOCUMENTED_DIRS=$(grep -E "^├── |^│   ├── " .github/copilot-instructions.md 2>/dev/null | \
+              sed 's/^[│├─ ]*//g' | sed 's/\/.*//g' | sort -u || echo "")
+            
+            if [ -n "$DOCUMENTED_DIRS" ]; then
+              echo "Documented top-level directories found"
+            else
+              echo "⚠️  Warning: No directory structure found in copilot-instructions.md"
+            fi
+          else
+            echo "⚠️  Warning: .github/copilot-instructions.md not found"
+          fi
+          
+      - name: Generate structure report
+        if: always()
+        run: |
+          echo "=== Directory Structure Report ==="
+          echo ""
+          echo "Top-level directories:"
+          find . -maxdepth 1 -type d -not -path "./.git" -not -path "." | sort
+          echo ""
+          echo "Documentation subdirectories:"
+          find docs -mindepth 1 -maxdepth 1 -type d | sort
+          echo ""
+          echo "File counts per docs subdirectory:"
+          for dir in docs/*/; do
+            if [ -d "$dir" ]; then
+              count=$(find "$dir" -type f | wc -l)
+              echo "  $(basename $dir): $count files"
+            fi
+          done
+          echo ""
+          echo "Total markdown files: $(find docs -name '*.md' -type f | wc -l)"
+          echo "Total directories: $(find . -type d -not -path "./.git/*" | wc -l)"
+          
+      - name: Upload structure report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: structure-report
+          path: |
+            .github/copilot-instructions.md
+            scripts/validate_structure.py
+          retention-days: 30

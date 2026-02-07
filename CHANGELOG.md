@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Comprehensive API Documentation for AI Prompts** (2026-02-07)
+  - Added `docs/api/AI_HELPERS_REFERENCE.md` (1,177 lines) - Complete reference for `config/ai_helpers.yaml`
+    - Documents 8 AI personas (doc_analysis, consistency, technical_writer, test_strategy, quality, issue_extraction, markdown_lint, version_manager)
+    - Explains YAML anchor system for token efficiency (~1,400-1,500 tokens saved per workflow)
+    - Details language-specific standards injection for 8 programming languages
+    - Includes prompt builder integration patterns and customization guide
+    - Documents version history from v3.0.0 to v4.1.0 with token optimization tracking
+  - Added `docs/api/AI_PROMPTS_REFERENCE.md` (1,197 lines) - Complete reference for `config/ai_prompts_project_kinds.yaml`
+    - Documents 11 project kinds with specialized AI prompt templates
+    - Maps project kinds to 3-4 personas per type (documentation_specialist, test_engineer, code_reviewer, ux_designer)
+    - Explains role/task_context/approach patterns across all project types
+    - Includes verification checklist structure for shell_script_automation
+    - Documents alignment with `project_kinds.yaml` v1.2.0 (8 aligned, 3 legacy)
+    - Details two-layer prompt system integration with `ai_helpers.yaml`
+  - Updated `README.md` to link to new API documentation
+  - Updated `.github/copilot-instructions.md` with new API doc references (exact line counts)
+  - Added "AI Prompt Customization" section to `docs/INTEGRATION.md`
+    - Explains two-layer AI system (generic personas + project-specific prompts)
+    - Documents available project kinds and selection strategy
+    - Details token efficiency benefits (~$0.042-0.045 saved per workflow)
+    - Provides customization options and best practices
+
 ### Changed
 - **Cleanup Script Updated to v2.0.0** (2026-02-01)
   - Updated `scripts/cleanup_artifacts.sh.template` to v2.0.0

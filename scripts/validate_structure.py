@@ -59,7 +59,11 @@ KNOWN_STRUCTURE = {
     '.ai_workflow/.incremental_cache',
     'config',                           # Configuration templates
     'docs',                             # Documentation
-    'docs/guides',                      # Implementation guides
+    'docs/api',                         # API references
+    'docs/guides',                      # User guides
+    'docs/advanced',                    # Advanced guides
+    'docs/developers',                  # Developer guides
+    'docs/diagrams',                    # Visual aids and diagrams
     'docs/misc',                        # Documentation tracking
     'examples',                         # Language integration examples
     'examples/shell',                   # Shell integration

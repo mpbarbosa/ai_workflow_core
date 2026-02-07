@@ -1,5 +1,7 @@
 # Shell Script Integration Example
 
+🟢 **Complexity: Comprehensive** - Detailed walkthrough with troubleshooting and best practices
+
 This example shows how to integrate `ai_workflow_core` into a shell script automation project.
 
 ## Directory Structure

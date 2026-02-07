@@ -1,5 +1,7 @@
 # Node.js Integration Example
 
+🟡 **Complexity: Compact** - Essential patterns for quick setup
+
 This example shows how to integrate `ai_workflow_core` into a Node.js project with best practices for dynamic codebases.
 
 ## Quick Start
@@ -266,7 +268,7 @@ cp -r .workflow_core/config/.vscode .vscode
 
 ```bash
 mkdir -p .github
-cp -r .workflow_core/github/workflows .github/
+cp -r .workflow_core/workflow-templates/workflows .github/
 
 # Customize for Node.js
 # Edit .github/workflows/*.yml

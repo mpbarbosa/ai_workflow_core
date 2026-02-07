@@ -1,26 +1,61 @@
 # GitHub Workflows & Templates
 
-⚠️ **Important Directory Distinction**:
-- **`.github/`** (with dot) = GitHub platform metadata for THIS repository (DESCRIPTION.md, copilot-instructions.md)
-- **`github/`** (no dot) = Workflow templates for YOUR projects to copy
+## 🚨 Critical Directory Terminology
 
-This directory contains **template** GitHub Actions workflows that projects can copy and customize when using ai_workflow_core as a submodule.
+**Understanding the Two Different "GitHub" Directories:**
 
-## Directory Structure
+### `.github/` (WITH dot prefix)
+- **Location**: `.github/` in THIS repository (ai_workflow_core)
+- **Purpose**: GitHub platform metadata FOR ai_workflow_core itself
+- **Contains**: 
+  - `DESCRIPTION.md` - Repository description
+  - `copilot-instructions.md` - Copilot instructions for this repo
+- **Do NOT copy** these files to your project
+
+### `workflow-templates/` (NO "github" in name)
+- **Location**: `workflow-templates/` in THIS repository
+- **Purpose**: Template workflows for YOUR projects to copy
+- **Contains**: 
+  - `workflows/*.yml` - CI/CD workflow templates
+  - `README.md` - This file
+- **DO copy** these files to your project's `.github/workflows/`
+
+---
+
+## Directory Structure Explained
 
 ```
 ai_workflow_core/
-├── .github/                    # GitHub metadata (DO NOT COPY)
-│   ├── DESCRIPTION.md          # This repo's description
-│   └── copilot-instructions.md # This repo's Copilot instructions
 │
-└── github/                     # Workflow templates (COPY THESE)
-    ├── README.md               # This file
-    └── workflows/              # Template workflow files
-        ├── code-quality.yml
-        ├── validate-docs.yml
-        └── validate-tests.yml
+├── .github/                         # ❌ DO NOT COPY
+│   ├── DESCRIPTION.md               #    Metadata for ai_workflow_core
+│   └── copilot-instructions.md      #    Instructions for ai_workflow_core
+│
+└── workflow-templates/              # ✅ COPY THESE
+    ├── README.md                    #    This file
+    └── workflows/                   #    Template workflows
+        ├── code-quality.yml         #    → Copy to YOUR .github/workflows/
+        ├── validate-docs.yml        #    → Copy to YOUR .github/workflows/
+        ├── validate-structure.yml   #    → Copy to YOUR .github/workflows/
+        ├── validate-tests.yml       #    → Copy to YOUR .github/workflows/
+        └── integration-health.yml   #    → Copy to YOUR .github/workflows/
 ```
+
+**Integration Pattern**:
+```
+your_project/
+├── .workflow_core/          # Submodule (ai_workflow_core)
+│   ├── .github/             # ❌ Ignore this
+│   └── workflow-templates/  # ✅ Copy from this
+│
+└── .github/                 # Your project's GitHub config
+    └── workflows/           # Copy workflow templates HERE
+        ├── code-quality.yml
+        ├── validate-structure.yml
+        └── ...
+```
+
+---
 
 ## Workflows Included
 
@@ -39,16 +74,40 @@ ai_workflow_core/
 - Generates coverage reports
 - Validates test structure
 
+### `workflows/validate-structure.yml` ✨ NEW
+- Validates directory structure integrity
+- Detects empty directories
+- Verifies required directories exist
+- Checks documentation alignment
+- Runs automatically on push/PR
+
+### `workflows/integration-health.yml`
+- Checks submodule integration health
+- Validates configuration files
+- Tests placeholder substitution
+
 ## Usage
 
 ### 1. Copy Templates to Your Project
 
 ```bash
-# From your project root
-mkdir -p .github
-cp -r .workflow_core/github/workflows .github/
+# From your project root (where .workflow_core/ submodule is)
+mkdir -p .github/workflows
 
-# Edit .github/workflows/*.yml files
+# Copy all workflow templates
+cp .workflow_core/workflow-templates/workflows/*.yml .github/workflows/
+
+# Or copy individual workflows
+cp .workflow_core/workflow-templates/workflows/validate-structure.yml .github/workflows/
+```
+
+**⚠️ Common Mistake**: Do NOT copy from `.github/` (that's ai_workflow_core's metadata)
+```bash
+# ❌ WRONG - This copies ai_workflow_core's metadata
+cp -r .workflow_core/.github/workflows .github/
+
+# ✅ CORRECT - This copies the templates
+cp -r .workflow_core/workflow-templates/workflows .github/
 ```
 
 ### 2. Customize for Your Project

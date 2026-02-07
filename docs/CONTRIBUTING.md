@@ -1,7 +1,7 @@
 # Contributing to AI Workflow Automation
 
 **Version**: 1.0.0  
-**Last Updated**: 2025-12-23  
+**Last Updated**: 2026-01-31  
 **Status**: ✅ Official Guidelines
 
 > ⚠️ **Context**: This document was originally written for the **parent ai_workflow project** (workflow execution engine). For ai_workflow_core contributions, focus on: configuration templates, project_kinds schemas, integration examples, and documentation structure. Ignore references to workflow execution, testing framework, and v2.x/v3.x execution features.
@@ -1052,5 +1052,5 @@ See ARCHITECTURE.md for complete details on system design, integration patterns,
 ---
 
 **Document Version**: 1.0.0  
-**Last Updated**: 2025-12-23  
+**Last Updated**: 2026-01-31  
 **Status**: ✅ Official Contributing Guidelines

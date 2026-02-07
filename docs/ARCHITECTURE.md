@@ -395,21 +395,25 @@ Checks:
 
 ---
 
-### ADR-002: Separate `.github/` and `workflow-templates/`
+### ADR-002: Separate `.github/` and `workflow-templates/` Directories
 
 **Status**: Accepted  
 **Date**: 2026-01-31
 
-**Context**: Confusion between GitHub metadata and workflow templates.
+**Context**: Prevent confusion between GitHub metadata and workflow templates.
 
 **Decision**: 
-- `.github/` = GitHub metadata (copilot-instructions, description)
-- `workflow-templates/` = Templates for projects to copy
+- `.github/` in ai_workflow_core = GitHub metadata for THIS repository (DO NOT COPY)
+  - Contains: copilot-instructions.md, DESCRIPTION.md
+- `workflow-templates/` = Workflow templates for OTHER projects to copy (COPY THESE)
+  - Contains: workflows/*.yml files
+- Projects copy from `workflow-templates/workflows/` to their own `.github/workflows/`
 
 **Rationale:**
 - Clear separation of concerns
-- Follows GitHub conventions
-- Eliminates ambiguity
+- Follows GitHub Actions conventions
+- Eliminates accidental copying of ai_workflow_core metadata
+- Standard workflow location in consuming projects
 
 ---
 
@@ -558,14 +562,18 @@ git commit -m "feat: integrate ai_workflow_core"
 
 ```bash
 # Basic integration +
-cp -r .workflow_core/workflow-templates/workflows .github/
+# Copy workflow templates from ai_workflow_core to your project
+mkdir -p .github/workflows
+cp -r .workflow_core/workflow-templates/workflows/*.yml .github/workflows/
 
-# Customize workflows for language
+# Customize workflows for your language and project
 # Edit .github/workflows/*.yml
 
 git add .github/
 git commit -m "feat: add CI/CD workflows"
 ```
+
+**⚠️ Note**: Copy from `workflow-templates/workflows/` (the templates), NOT from `.github/` (ai_workflow_core's metadata).
 
 ### Pattern 3: Fork and Customize
 

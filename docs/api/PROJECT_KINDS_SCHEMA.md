@@ -1,7 +1,7 @@
 # Project Kinds Schema Reference
 
 **Version**: 1.2.0  
-**Last Updated**: 2026-02-01  
+**Last Updated**: 2026-01-30  
 **Schema File**: `config/project_kinds.yaml`
 
 > **Purpose**: Complete reference for the `project_kinds.yaml` schema. This document explains all 8 supported project kinds, their validation rules, testing requirements, quality standards, and AI guidance.
@@ -772,6 +772,6 @@ File patterns support pipe-separated alternatives:
 
 ---
 
-**Last Updated**: 2026-02-01  
+**Last Updated**: 2026-01-30  
 **Document Version**: 1.0.0  
 **Schema Version**: 1.2.0

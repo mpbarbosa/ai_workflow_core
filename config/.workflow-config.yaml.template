@@ -22,3 +22,274 @@ structure:
     - tests
   docs_dirs:
     - docs
+
+# ============================================================================
+# WORKFLOW EXECUTION CONFIGURATION (v4.0.0+)
+# ============================================================================
+# Define the execution order and behavior of workflow steps.
+# Steps are executed in the order defined below, respecting dependencies.
+#
+# Migration from v3.x:
+#   - Step numbers (0-15) are replaced with descriptive names
+#   - Execution order is now configurable per project
+#   - Dependencies are explicitly declared
+#   - Use --steps with names or indices: --steps 1,test_execution,markdown_linting
+#
+workflow:
+  # Global workflow settings
+  settings:
+    auto_mode: false              # Skip interactive prompts
+    parallel_execution: true      # Run independent steps in parallel
+    smart_execution: true         # Skip steps based on change detection
+    ml_optimize: false           # Use ML-driven step optimization
+    multi_stage: false           # Progressive validation pipeline
+    auto_commit: false           # Automatically commit workflow artifacts
+    
+  # Step execution pipeline
+  # Each step can be customized per project
+  steps:
+    # ========================================================================
+    # PRE-PROCESSING STEPS
+    # ========================================================================
+    
+    - name: version_update
+      description: "Update semantic version (pre-processing)"
+      module: version_update.sh
+      function: version_update
+      enabled: true
+      dependencies: []
+      conditions:
+        - pre_processing
+      ai_persona: version_manager
+      
+    # ========================================================================
+    # ANALYSIS & PLANNING STEPS
+    # ========================================================================
+    
+    - name: pre_analysis
+      description: "Analyze changes and determine impact"
+      module: pre_analysis.sh
+      function: pre_analysis
+      enabled: true
+      dependencies: []
+      conditions:
+        - always
+      ai_persona: technical_project_manager
+      
+    - name: bootstrap_documentation
+      description: "Generate initial documentation from code"
+      module: bootstrap_documentation.sh
+      function: bootstrap_documentation
+      enabled: true
+      dependencies: []
+      conditions:
+        - has_code_files
+        - missing_documentation
+      ai_persona: technical_writer
+      optional: true  # Only runs when documentation is missing
+      
+    # ========================================================================
+    # DOCUMENTATION STEPS
+    # ========================================================================
+    
+    - name: documentation_updates
+      description: "Update existing documentation"
+      module: documentation_updates.sh
+      function: documentation_updates
+      enabled: true
+      dependencies: [bootstrap_documentation]
+      conditions:
+        - has_documentation
+        - code_or_docs_changed
+      ai_persona: documentation_specialist
+      
+    - name: api_coverage_analysis
+      description: "Analyze API documentation coverage"
+      module: api_coverage_analysis.sh
+      function: api_coverage_analysis
+      enabled: true
+      dependencies: [documentation_updates]
+      conditions:
+        - is_api_project
+      ai_persona: documentation_specialist
+      optional: true  # Only for API projects
+      
+    - name: consistency_analysis
+      description: "Check documentation consistency"
+      module: consistency_analysis.sh
+      function: consistency_analysis
+      enabled: true
+      dependencies: [documentation_updates]
+      ai_persona: information_architect
+      
+    - name: documentation_optimization
+      description: "Optimize documentation structure"
+      module: documentation_optimization.sh
+      function: documentation_optimization
+      enabled: true
+      dependencies: [consistency_analysis]
+      ai_persona: documentation_architect
+      
+    - name: markdown_linting
+      description: "Lint markdown files"
+      module: markdown_linting.sh
+      function: markdown_linting
+      enabled: true
+      dependencies: [documentation_updates]
+      ai_persona: documentation_specialist
+      
+    # ========================================================================
+    # VALIDATION STEPS
+    # ========================================================================
+    
+    - name: script_reference_validation
+      description: "Validate script references in documentation"
+      module: script_reference_validation.sh
+      function: script_reference_validation
+      enabled: true
+      dependencies: [documentation_updates]
+      ai_persona: devops_documentation_expert
+      
+    - name: config_validation
+      description: "Validate configuration files"
+      module: config_validation.sh
+      function: config_validation
+      enabled: true
+      dependencies: []
+      ai_persona: devops_engineer
+      
+    - name: directory_validation
+      description: "Validate directory structure"
+      module: directory_validation.sh
+      function: directory_validation
+      enabled: true
+      dependencies: []
+      ai_persona: software_architect
+      
+    # ========================================================================
+    # TESTING STEPS
+    # ========================================================================
+    
+    - name: test_review
+      description: "Review existing tests"
+      module: test_review.sh
+      function: test_review
+      enabled: true
+      dependencies: []
+      conditions:
+        - has_test_files
+      ai_persona: qa_engineer
+      
+    - name: test_generation
+      description: "Generate new tests"
+      module: test_generation.sh
+      function: test_generation
+      enabled: true
+      dependencies: [test_review]
+      conditions:
+        - has_code_files
+      ai_persona: tdd_expert
+      
+    - name: test_execution
+      description: "Execute test suite"
+      module: test_execution.sh
+      function: test_execution
+      enabled: true
+      dependencies: [test_generation]
+      ai_persona: qa_automation_engineer
+      
+    # ========================================================================
+    # QUALITY ASSURANCE STEPS
+    # ========================================================================
+    
+    - name: dependency_validation
+      description: "Validate dependencies"
+      module: dependency_validation.sh
+      function: dependency_validation
+      enabled: true
+      dependencies: []
+      ai_persona: devops_engineer
+      
+    - name: code_quality_validation
+      description: "Validate code quality"
+      module: code_quality_validation.sh
+      function: code_quality_validation
+      enabled: true
+      dependencies: [test_execution]
+      ai_persona: software_quality_engineer
+      
+    # ========================================================================
+    # ANALYSIS & FINALIZATION STEPS
+    # ========================================================================
+    
+    - name: context_analysis
+      description: "Analyze execution context"
+      module: context_analysis.sh
+      function: context_analysis
+      enabled: true
+      dependencies: []
+      ai_persona: technical_project_manager
+      
+    - name: prompt_engineer_analysis
+      description: "Analyze and optimize AI prompts"
+      module: prompt_engineer_analysis.sh
+      function: prompt_engineer_analysis
+      enabled: true
+      dependencies: []
+      ai_persona: prompt_engineer
+      optional: true  # Only when AI prompts are used
+      
+    - name: ux_analysis
+      description: "UX and accessibility analysis"
+      module: ux_analysis.sh
+      function: ux_analysis
+      enabled: true
+      dependencies: []
+      conditions:
+        - is_web_project
+      ai_persona: ux_designer
+      optional: true  # Only for web projects
+      
+    - name: deployment_gate
+      description: "Pre-deployment validation gate"
+      module: deployment_gate.sh
+      function: deployment_gate
+      enabled: true
+      dependencies: [code_quality_validation, test_execution]
+      ai_persona: devops_engineer
+      
+    - name: git_finalization
+      description: "Git commit and push"
+      module: git_finalization.sh
+      function: git_finalization
+      enabled: true
+      dependencies: [deployment_gate]
+      conditions:
+        - is_final_step
+      ai_persona: git_workflow_specialist
+      
+# ============================================================================
+# STEP NAMING REFERENCE (Migration from v3.x)
+# ============================================================================
+# Old Number → New Name Mapping:
+#   0a  → version_update
+#   0   → pre_analysis  
+#   0b  → bootstrap_documentation
+#   1   → documentation_updates
+#   1.5 → api_coverage_analysis
+#   2   → consistency_analysis
+#   2.5 → documentation_optimization
+#   3   → script_reference_validation
+#   4   → config_validation
+#   5   → directory_validation
+#   6   → test_review
+#   7   → test_generation
+#   8   → test_execution
+#   9   → dependency_validation
+#   10  → code_quality_validation
+#   11.5→ context_analysis
+#   11  → deployment_gate
+#   12  → git_finalization
+#   13  → markdown_linting
+#   14  → prompt_engineer_analysis
+#   15  → ux_analysis

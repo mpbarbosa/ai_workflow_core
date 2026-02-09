@@ -1,12 +1,12 @@
 # AI Workflow Automation - Project Reference
 
 **SINGLE SOURCE OF TRUTH**  
-**Version**: v1.1.0 (Updated from v3.0.0)  
-**Last Updated**: 2026-02-01
+**Version**: v1.2.0 (Updated from v3.0.0)  
+**Last Updated**: 2026-02-09
 
 > ⚠️ **Context**: This document references the **parent ai_workflow project** (workflow execution engine, now in Node.js), NOT ai_workflow_core (configuration templates). This documentation was included for reference but describes features not present in this repository.
 
-> ℹ️ **Migration Status**: The parent project has been migrated from Bash (v3.0.0) to Node.js (v1.1.0). Phase 3 (File Operations & Utilities) completed with 5 modules and 354 tests.
+> ℹ️ **Migration Status**: The parent project has been migrated from Bash (v3.0.0) to Node.js (v1.2.0). Phase 7 (Workflow Orchestration) completed with 6 modules (workflow_engine, step_registry, dependency_resolver, step_executor, conditional_executor, checkpoint_manager). Phase 8 (Performance Optimization) in progress.
 
 > ⚠️ **Important**: This document is the authoritative source for project statistics, features, and module lists. All other documentation should reference this file, not duplicate its content.
 
@@ -16,45 +16,52 @@
 
 - **Repository**: [github.com/mpbarbosa/ai_workflow](https://github.com/mpbarbosa/ai_workflow)
 - **License**: MIT
-- **Current Version**: v1.1.0 (Node.js implementation, migrated from Bash v3.0.0)
+- **Current Version**: v1.2.0 (Node.js implementation, migrated from Bash v3.0.0)
 - **Previous Version**: v3.0.0 (Bash implementation)
 - **Migration Started**: 2026-01-27
 - **Previous Repository**: mpbarbosa_site (migrated 2025-12-18)
 - **Primary Maintainer**: Marcelo Pereira Barbosa ([@mpbarbosa](https://github.com/mpbarbosa))
 - **Contact**: mpbarbosa@gmail.com
 
-### Key Statistics (Node.js v1.1.0)
+### Key Statistics (Node.js v1.2.0)
 
-- **Status**: Phase 3 Complete (File Operations & Utilities)
-- **Total Modules**: 10+ (5 Phase 3 modules + Phase 2.1 modules)
-- **Test Coverage**: 528 tests (was 174, +354 in Phase 3)
+- **Status**: Phase 7 Complete (Workflow Orchestration), Phase 8 In Progress (Performance Optimization)
+- **Total Modules**: 36+ across 7 completed phases
+- **Test Coverage**: 3,417 tests passing (18 skipped, 0 failures)
 - **Language**: JavaScript/Node.js (was Bash)
+- **Node.js Version**: 18+ (was 14+)
 - **Architecture**: Functional with referential transparency
-- **Recent Addition**: cleanup_handlers.js, argument_parser.js, utils.js, edit_operations.js, file_operations.js
+- **Recent Additions**: Conditional execution strategy, validation scripts, test splitting strategy
+- **CI/CD Optimization**: 40-60% time reduction with intelligent conditional execution
 
-## Core Features (v1.1.0 - Node.js Implementation)
+## Core Features (v1.2.0 - Node.js Implementation)
 
 ### Current Status
 - **Phase 1**: ✅ Foundation and Development Setup
-- **Phase 2.1**: ✅ Configuration & State Management
-- **Phase 3**: ✅ File Operations & Utilities (5 modules complete)
-  - file_operations.js (v2.0.0) - 54 tests
-  - edit_operations.js (v2.0.0) - 80 tests
-  - utils.js (v1.0.0) - 109 tests
-  - argument_parser.js (v2.0.0) - 61 tests
-  - cleanup_handlers.js (v2.0.0) - 50 tests
+- **Phase 2**: ✅ Configuration & State Management
+- **Phase 3**: ✅ File Operations & Utilities (5 modules)
+- **Phase 4**: ✅ Project Detection & Analysis (4 modules)
+- **Phase 5**: ✅ Git Integration (4 modules - git_automation, git_cache, auto_commit, change_detection)
+- **Phase 6**: ✅ AI Integration (5 modules)
+- **Phase 7**: ✅ Workflow Orchestration (6 modules - workflow_engine, step_registry, dependency_resolver, step_executor, conditional_executor, checkpoint_manager)
+- **Phase 8**: 🚧 Performance Optimization (in progress - parallel processing modules)
+- **Phase 9**: 📋 Step Implementations (19 workflow steps planned)
+- **Phase 10+**: 📋 Monitoring, CLI, Testing, Documentation, Packaging
 
-### Refactoring (Referential Transparency)
-- backlog.js (v2.0.0) - Pure functional approach
-- session_manager.js (v2.0.0) - Complete refactoring
-- metrics.js (v2.0.0) - Added 22 pure function tests
-- config.js (v2.0.0) - Added 19 pure function tests
+### Phase 7 Modules (Recently Completed)
+- workflow_engine.js - Core orchestration engine
+- step_registry.js - Step definition and registration
+- dependency_resolver.js - Step dependency management
+- step_executor.js - Individual step execution
+- conditional_executor.js - Conditional logic and skipping
+- checkpoint_manager.js - Checkpoint/resume functionality
 
 ### Architecture Principles
 - **Referential Transparency**: All core logic is pure (deterministic, no side effects)
 - **Immutability**: State transformations return new values
 - **Functional Core, Imperative Shell**: Side effects at boundaries
 - **Testability**: Pure functions enable comprehensive testing
+- **Node.js 18+**: Modern JavaScript features and performance
 
 ---
 

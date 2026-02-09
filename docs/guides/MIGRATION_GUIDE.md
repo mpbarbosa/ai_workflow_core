@@ -1,7 +1,7 @@
 # Migration Guide
 
 **Version**: 1.0.0  
-**Last Updated**: 2026-02-07
+**Last Updated**: 2026-02-09
 
 > **Purpose**: Step-by-step instructions for upgrading ai_workflow_core between versions. This guide covers breaking changes, deprecations, and migration strategies.
 
@@ -73,7 +73,7 @@ ai_workflow_core follows [Semantic Versioning](https://semver.org/):
 
 | ai_workflow_core | Parent ai_workflow | Node.js | Python | Bash |
 |-----------------|-------------------|---------|--------|------|
-| v1.0.0 | v1.1.0+ | 14+ | 3.8+ | 4.0+ |
+| v1.0.0 | v1.2.0+ | 18+ | 3.8+ | 4.0+ |
 
 ---
 
@@ -369,8 +369,10 @@ WORKFLOW_DIR="${REPO_ROOT}/.ai_workflow"
 
 **Notable Changes**:
 - Cleanup script updated to v2.0.0 (see above)
-- Parent project ai_workflow updated to v1.1.0
-- 528 tests in parent project (was 174)
+- Parent project ai_workflow updated to v1.2.0
+- 3,417 tests in parent project (18 skipped, Phase 7 complete)
+- Phase 7 workflow orchestration modules fully implemented
+- Phase 8 performance optimization in progress
 
 **No migration required** for new installations.
 

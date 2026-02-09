@@ -40,8 +40,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Aligned directory structure with current .ai_workflow/ standard
   - Updated version from 1.0.0 to 2.0.0, date from 2025-12-20 to 2026-02-01
 - **Parent Project Status Update** (2026-02-09)
-  - Parent project ([ai_workflow](https://github.com/mpbarbosa/ai_workflow)) updated to v1.3.0
-  - Phase 8 completed: Performance Optimization (11 modules - performance, monitoring, ML optimization, caching, incremental, multi-stage pipeline)
+  - **Source ai_workflow (Bash)** updated to v4.0.0 (released 2026-02-08)
+  - **Major Breaking Changes in Source v4.0.0**:
+    - Configuration-driven step execution system
+    - Steps renamed to descriptive names (e.g., `documentation_updates` instead of `step_01`)
+    - Step registry system with YAML parser and topological sort
+    - Dynamic step loader with on-demand module loading
+    - All orchestrators and optimization modules refactored
+    - 21 step files renamed, 8 library directories renamed
+    - 100% backward compatible with legacy mode
+  - **Migration Target ai_workflow.js (Node.js)** updated to v1.3.0
+  - Phase 8 completed: Performance Optimization (11 modules)
   - All 11 performance optimization modules implemented:
     - performance.js, performance_monitoring.js, ml_optimization.js
     - analysis_cache.js, incremental_analysis.js

@@ -1,12 +1,12 @@
 # AI Workflow Automation - Project Reference
 
 **SINGLE SOURCE OF TRUTH**  
-**Version**: v1.3.0 (Updated from v3.0.0)  
+**Version**: v1.3.0 (Updated from v4.0.0)  
 **Last Updated**: 2026-02-09
 
 > ⚠️ **Context**: This document references the **parent ai_workflow project** (workflow execution engine, now in Node.js), NOT ai_workflow_core (configuration templates). This documentation was included for reference but describes features not present in this repository.
 
-> ℹ️ **Migration Status**: The parent project has been migrated from Bash (v3.0.0) to Node.js (v1.3.0). Phase 8 (Performance Optimization) completed with 11 modules (performance tracking, monitoring, ML optimization, caching, incremental analysis, optimization strategies, multi-stage pipeline). Phase 9 (Step Implementations) in progress.
+> ℹ️ **Migration Status**: The parent project has been migrated from Bash (v4.0.0) to Node.js (v1.3.0). Source project updated to v4.0.0 with configuration-driven step execution (breaking changes: named steps replace numbers). Phase 8 (Performance Optimization) completed with 11 modules. Phase 9 (Step Implementations) in progress.
 
 > ⚠️ **Important**: This document is the authoritative source for project statistics, features, and module lists. All other documentation should reference this file, not duplicate its content.
 
@@ -16,8 +16,8 @@
 
 - **Repository**: [github.com/mpbarbosa/ai_workflow](https://github.com/mpbarbosa/ai_workflow)
 - **License**: MIT
-- **Current Version**: v1.3.0 (Node.js implementation, migrated from Bash v3.0.0)
-- **Previous Version**: v3.0.0 (Bash implementation)
+- **Current Version**: v1.3.0 (Node.js implementation, migrated from Bash v4.0.0)
+- **Previous Version**: v4.0.0 (Bash implementation, released 2026-02-08)
 - **Migration Started**: 2026-01-27
 - **Previous Repository**: mpbarbosa_site (migrated 2025-12-18)
 - **Primary Maintainer**: Marcelo Pereira Barbosa ([@mpbarbosa](https://github.com/mpbarbosa))
@@ -71,12 +71,17 @@
 
 ---
 
-## Legacy Features (Bash v3.0.0 - For Reference)
+## Legacy Features (Bash v4.0.0 - For Reference)
 
-> ℹ️ **Note**: The following features were present in the Bash implementation (v3.0.0). They are being migrated incrementally to the Node.js version.
+> ℹ️ **Note**: The following features were present in the Bash implementation (v4.0.0). They are being migrated incrementally to the Node.js version.
 
-### Workflow Pipeline (Bash v3.0.0)
-- **16-Step Automated Pipeline**: Complete workflow from analysis to finalization
+> 🚀 **NEW in v4.0.0**: Configuration-driven step execution with named steps! Steps now use descriptive names (`documentation_updates`) instead of numbers (`step_01`). Major breaking changes - see v4.0 migration guide.
+
+### Workflow Pipeline (Bash v4.0.0)
+- **20-Step Automated Pipeline**: Complete workflow from analysis to finalization (now with named steps)
+- **Configuration-Driven Execution**: Step order defined in `.workflow-config.yaml`
+- **Step Registry System**: YAML parser with topological sort and circular dependency detection
+- **Dynamic Step Loader**: On-demand module loading with execution wrapper
 - **Checkpoint Resume**: Automatic continuation from last completed step
 - **Dry Run Mode**: Preview execution without changes
 

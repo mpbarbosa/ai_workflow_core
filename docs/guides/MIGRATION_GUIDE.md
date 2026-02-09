@@ -1,6 +1,6 @@
 # Migration Guide
 
-**Version**: 1.0.0  
+**Version**: 1.1.0  
 **Last Updated**: 2026-02-09
 
 > **Purpose**: Step-by-step instructions for upgrading ai_workflow_core between versions. This guide covers breaking changes, deprecations, and migration strategies.
@@ -71,9 +71,13 @@ ai_workflow_core follows [Semantic Versioning](https://semver.org/):
 
 ### Compatibility Matrix
 
-| ai_workflow_core | Parent ai_workflow | Node.js | Python | Bash |
-|-----------------|-------------------|---------|--------|------|
-| v1.0.0 | v1.3.0+ | 18+ | 3.8+ | 4.0+ |
+| ai_workflow_core | Source ai_workflow (Bash) | Migration Target ai_workflow.js (Node.js) | Node.js | Python | Bash |
+|-----------------|---------------------------|------------------------------------------|---------|--------|------|
+| v1.0.0 | v4.0.0+ | v1.3.0+ | 18+ | 3.8+ | 4.0+ |
+
+**Important Notes:**
+- **Source ai_workflow v4.0.0** (released 2026-02-08): Configuration-driven step execution, 100% backward compatible
+- **ai_workflow.js v1.3.0** (released 2026-02-09): Phase 8 complete, all performance optimization modules implemented
 
 ---
 
@@ -369,10 +373,23 @@ WORKFLOW_DIR="${REPO_ROOT}/.ai_workflow"
 
 **Notable Changes**:
 - Cleanup script updated to v2.0.0 (see above)
-- Parent project ai_workflow updated to v1.3.0
-- 3,417 tests in parent project (18 skipped, Phase 8 complete)
-- Phase 8 performance optimization modules fully implemented (11 modules)
-- Phase 9 step implementations in progress
+- **Source ai_workflow (Bash)** updated to v4.0.0 (released 2026-02-08)
+  - Configuration-driven step execution system
+  - Steps renamed to descriptive names (e.g., `documentation_updates` instead of `step_01`)
+  - Step registry with YAML parser and topological sort
+  - Dynamic step loader with on-demand module loading
+  - 21 step files renamed, 8 library directories renamed
+  - 100% backward compatible with legacy mode
+- **Migration Target ai_workflow.js (Node.js)** updated to v1.3.0 (released 2026-02-09)
+  - Phase 8 complete: Performance Optimization (11 modules)
+  - 3,417 tests passing (18 skipped, 0 failures)
+  - All 11 performance optimization modules implemented:
+    - performance.js, performance_monitoring.js, ml_optimization.js
+    - analysis_cache.js, incremental_analysis.js
+    - docs_only_optimization.js, code_changes_optimization.js, full_changes_optimization.js
+    - multi_stage_pipeline.js, step1_incremental.js, step1_parallel.js
+  - Phase 9 in progress: Step Implementations (19 workflow steps)
+  - Performance improvements: 40-85% faster with optimizations, ML-driven skip prediction
 
 **No migration required** for new installations.
 
@@ -648,5 +665,54 @@ See `docs/guides/VERSION_MANAGEMENT.md` for complete strategies.
 
 ---
 
-**Last Updated**: 2026-02-07  
-**Document Version**: 1.0.0
+## Recent Migration Origin Updates
+
+### Source ai_workflow (Bash) - v4.0.0 (2026-02-08)
+
+**Major Breaking Changes**:
+- Configuration-driven step execution replaces hardcoded step numbers
+- All 21 step files renamed to descriptive names:
+  - Old: `step_01.sh`, `step_02.sh`, etc.
+  - New: `documentation_updates.sh`, `context_analysis.sh`, etc.
+- 8 library directories renamed for clarity
+- Step registry system with YAML configuration (`config/steps_registry.yaml`)
+- Dynamic step loader with topological sort for dependency resolution
+- All orchestrators and optimization modules refactored
+
+**Backward Compatibility**:
+- 100% backward compatible via legacy mode
+- Legacy step names still work via symlinks/aliases
+- No forced migration required
+
+**Impact on ai_workflow_core**:
+- Core templates remain compatible
+- Configuration schemas support both old and new naming
+- Documentation references updated for clarity
+
+### Migration Target ai_workflow.js (Node.js) - v1.3.0 (2026-02-09)
+
+**Phase 8 Complete - Performance Optimization**:
+- All 11 performance optimization modules implemented and tested
+- 3,417 tests passing (18 skipped, 0 failures)
+- Performance improvements: 40-85% faster with optimizations
+- ML-driven predictive step skipping implemented
+
+**Conditional Execution Strategy**:
+- `scripts/analyze-change-impact.js` for intelligent CI/CD execution
+- Four strategies: docs-only, unit-only, selective, run-all
+- 40-60% CI/CD time reduction for low-impact changes
+
+**Validation Scripts**:
+- Export validation (`validate-exports.js`)
+- Version consistency checks (`check-version-consistency.js`)
+- Integrated into CI/CD pipeline
+
+**Phase 9 Status**:
+- In progress: Step Implementations (19 workflow steps)
+- Aligned with source ai_workflow v4.0.0 naming conventions
+- Incremental migration to config-driven execution
+
+---
+
+**Last Updated**: 2026-02-09  
+**Document Version**: 1.1.0

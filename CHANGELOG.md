@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Migration Guide Updated to v1.1.0** (2026-02-09)
+  - Updated compatibility matrix with source and target projects
+  - Added section on Source ai_workflow v4.0.0 breaking changes (config-driven execution)
+  - Added section on Migration Target ai_workflow.js v1.3.0 (Phase 8 complete)
+  - Documented step renaming: `step_01` → `documentation_updates`, etc.
+  - Updated notable changes for v1.0.0 section with detailed project status
+  - Clarified 100% backward compatibility in source ai_workflow v4.0.0
+
 ### Added
 - **Comprehensive API Documentation for AI Prompts** (2026-02-07)
   - Added `docs/api/AI_HELPERS_REFERENCE.md` (1,177 lines) - Complete reference for `config/ai_helpers.yaml`

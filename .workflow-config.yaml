@@ -45,6 +45,214 @@ workflow:
   
   # ML optimization (requires historical data)
   ml_optimize: false
+  
+  # Workflow step execution order
+  # Steps are executed in the order listed below
+  # Git Finalization MUST be the final step
+  steps:
+    # Pre-Flight Phase (0x)
+    - id: "0a"
+      name: "Version Pre-Update"
+      file: "step_0a_version_update.sh"
+      description: "Pre-increment version for development cycle"
+      phase: "pre-flight"
+      can_parallelize: false
+      
+    - id: "0b"
+      name: "Bootstrap Documentation"
+      file: "step_0b_bootstrap_docs.sh"
+      description: "Generate initial documentation from scratch"
+      phase: "pre-flight"
+      can_parallelize: false
+      dependencies: ["0a"]
+      
+    - id: "00"
+      name: "Pre-Analysis"
+      file: "step_00_analyze.sh"
+      description: "Analyze project structure and changes"
+      phase: "pre-flight"
+      can_parallelize: false
+      dependencies: ["0b"]
+
+    # Analysis & Documentation Phase (01-03)
+    - id: "01"
+      name: "Documentation Updates"
+      file: "step_01_documentation.sh"
+      description: "AI-powered documentation analysis and updates"
+      phase: "analysis"
+      can_parallelize: true
+      dependencies: ["00"]
+      ai_persona: "documentation_specialist"
+      
+    - id: "02"
+      name: "Consistency Check"
+      file: "step_02_consistency.sh"
+      description: "Check documentation consistency"
+      phase: "analysis"
+      can_parallelize: true
+      dependencies: ["01"]
+      ai_persona: "consistency_checker"
+      
+    - id: "03"
+      name: "Script References"
+      file: "step_03_script_refs.sh"
+      description: "Validate cross-references and links"
+      phase: "analysis"
+      can_parallelize: true
+      dependencies: ["01"]
+
+    # Structure & Validation Phase (04-05)
+    - id: "04"
+      name: "Configuration Validation"
+      file: "step_04_config_validation.sh"
+      description: "Validate project configuration"
+      phase: "structure"
+      can_parallelize: true
+      dependencies: ["00"]
+      
+    - id: "05"
+      name: "Directory Structure"
+      file: "step_05_directory.sh"
+      description: "Validate and organize directory structure"
+      phase: "structure"
+      can_parallelize: false
+      dependencies: ["04"]
+
+    # Testing Phase (06-08)
+    - id: "06"
+      name: "Test Review"
+      file: "step_06_test_review.sh"
+      description: "Review existing tests and identify gaps"
+      phase: "testing"
+      can_parallelize: false
+      dependencies: ["05"]
+      ai_persona: "test_engineer"
+      
+    - id: "07"
+      name: "Test Generation"
+      file: "step_07_test_gen.sh"
+      description: "Generate new tests based on review"
+      phase: "testing"
+      can_parallelize: false
+      dependencies: ["06"]
+      ai_persona: "test_engineer"
+      
+    - id: "08"
+      name: "Test Execution"
+      file: "step_08_test_exec.sh"
+      description: "Execute test suite and collect results"
+      phase: "testing"
+      can_parallelize: false
+      dependencies: ["07"]
+
+    # Quality Phase (09-10)
+    - id: "09"
+      name: "Dependency Analysis"
+      file: "step_09_dependencies.sh"
+      description: "Analyze and validate dependencies"
+      phase: "quality"
+      can_parallelize: true
+      dependencies: ["08"]
+      
+    - id: "10"
+      name: "Code Quality"
+      file: "step_10_code_quality.sh"
+      description: "Run code quality checks and linting"
+      phase: "quality"
+      can_parallelize: true
+      dependencies: ["08"]
+      ai_persona: "code_reviewer"
+
+    # Context & Analysis Phase (11-14)
+    - id: "11"
+      name: "Context Analysis"
+      file: "step_11_context.sh"
+      description: "Analyze project context and relationships"
+      phase: "context"
+      can_parallelize: false
+      dependencies: ["09", "10"]
+      
+    - id: "12"
+      name: "Markdown Linting"
+      file: "step_12_markdown_lint.sh"
+      description: "Lint and fix markdown documentation"
+      phase: "finalization"
+      can_parallelize: true
+      dependencies: ["02"]
+      
+    - id: "13"
+      name: "Prompt Engineering"
+      file: "step_13_prompt_engineer.sh"
+      description: "Optimize AI prompts and templates"
+      phase: "finalization"
+      can_parallelize: true
+      dependencies: ["11"]
+      
+    - id: "14"
+      name: "UX Analysis"
+      file: "step_14_ux_analysis.sh"
+      description: "UI/UX and accessibility analysis"
+      phase: "specialized"
+      can_parallelize: true
+      dependencies: ["10"]
+      ai_persona: "ux_designer"
+      
+    - id: "15"
+      name: "Version Update"
+      file: "step_15_version_update.sh"
+      description: "Finalize version and generate changelog"
+      phase: "specialized"
+      can_parallelize: false
+      dependencies: ["12", "13", "14"]
+      ai_persona: "version_manager"
+    
+    # Git Finalization Phase - MUST BE LAST STEP
+    - id: "16"
+      name: "Git Finalization"
+      file: "step_16_git_finalization.sh"
+      description: "Git operations - stage, commit, push with AI-generated message"
+      phase: "git-finalization"
+      can_parallelize: false
+      required: true
+      dependencies: ["15", "11"]
+
+  # Step execution phases for multi-stage pipeline
+  phases:
+    pre-flight:
+      description: "Initial setup and analysis"
+      steps: ["0a", "0b", "00"]
+      
+    analysis:
+      description: "Documentation analysis and validation"
+      steps: ["01", "02", "03"]
+      
+    structure:
+      description: "Project structure validation"
+      steps: ["04", "05"]
+      
+    testing:
+      description: "Test review, generation, and execution"
+      steps: ["06", "07", "08"]
+      
+    quality:
+      description: "Code quality and dependency checks"
+      steps: ["09", "10"]
+      
+    context:
+      description: "Project context analysis"
+      steps: ["11"]
+      
+    finalization:
+      description: "Documentation linting and prompt optimization"
+      steps: ["12", "13"]
+      
+    specialized:
+      description: "UX analysis and version management"
+      steps: ["14", "15"]
+      
+    git-finalization:
+      description: "Final git operations - ALWAYS RUNS LAST"
+      steps: ["16"]
 
 # Configuration-specific settings
 configuration:

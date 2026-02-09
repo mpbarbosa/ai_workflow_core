@@ -1,29 +1,20 @@
 {
-  "workflow_run_id": "workflow_20260207_195124",
-  "generated_at": "2026-02-07T22:51:53Z",
+  "workflow_run_id": "workflow_20260209_181448",
+  "generated_at": "2026-02-09T21:14:52Z",
   "git_info": {
-    "commit": "e319bc2",
+    "commit": "8a2b484",
     "branch": "main"
   },
   "change_summary": {
-    "total_files": 28,
+    "total_files": 2,
     "by_category": {
-      "code": 1,
-      "documentation": 27,
+      "code": 0,
+      "documentation": 2,
       "tests": 0
     }
   },
   "complexity_analysis": {
-    "code": {
-  "score": 146,
-  "tier": "very_high",
-  "factors": {
-    "cyclomatic": 65,
-    "lines_changed": 6,
-    "function_depth": 1,
-    "semantic": "enhancement"
-  }
-},
+    "code": {"score":0,"tier":"low","factors":{"cyclomatic":0,"lines_changed":0,"function_depth":0,"semantic":"none"}},
     "documentation": {
   "score": 0,
   "tier": "low",
@@ -50,10 +41,10 @@
       "alternatives": ["gpt-5-mini", "gemini-3-flash" ]
     },
     "step_03_script_refs": {
-      "model": "claude-opus-4.6",
-      "reason": "Very high complexity script analysis changes - agentic model for complex reasoning",
-      "tier": "very_high",
-      "alternatives": ["gpt-5.2-codex", "gpt-5.1-codex-max" ]
+      "model": "claude-haiku-4.5",
+      "reason": "Low complexity script analysis changes - fast model sufficient",
+      "tier": "low",
+      "alternatives": ["gpt-5-mini", "gemini-3-flash" ]
     },
     "step_05_test_review": {
       "model": "claude-haiku-4.5",
@@ -68,10 +59,10 @@
       "alternatives": ["gpt-5-mini", "gemini-3-flash" ]
     },
     "step_09_code_quality": {
-      "model": "claude-opus-4.6",
-      "reason": "Very high complexity code analysis changes - agentic model for complex reasoning",
-      "tier": "very_high",
-      "alternatives": ["gpt-5.2-codex", "gpt-5.1-codex-max" ]
+      "model": "claude-haiku-4.5",
+      "reason": "Low complexity code analysis changes - fast model sufficient",
+      "tier": "low",
+      "alternatives": ["gpt-5-mini", "gemini-3-flash" ]
     },
     "step_13_prompt_engineer": {
       "model": "claude-opus-4.5",

@@ -73,7 +73,7 @@ ai_workflow_core follows [Semantic Versioning](https://semver.org/):
 
 | ai_workflow_core | Parent ai_workflow | Node.js | Python | Bash |
 |-----------------|-------------------|---------|--------|------|
-| v1.0.0 | v1.2.0+ | 18+ | 3.8+ | 4.0+ |
+| v1.0.0 | v1.3.0+ | 18+ | 3.8+ | 4.0+ |
 
 ---
 
@@ -369,10 +369,10 @@ WORKFLOW_DIR="${REPO_ROOT}/.ai_workflow"
 
 **Notable Changes**:
 - Cleanup script updated to v2.0.0 (see above)
-- Parent project ai_workflow updated to v1.2.0
-- 3,417 tests in parent project (18 skipped, Phase 7 complete)
-- Phase 7 workflow orchestration modules fully implemented
-- Phase 8 performance optimization in progress
+- Parent project ai_workflow updated to v1.3.0
+- 3,417 tests in parent project (18 skipped, Phase 8 complete)
+- Phase 8 performance optimization modules fully implemented (11 modules)
+- Phase 9 step implementations in progress
 
 **No migration required** for new installations.
 

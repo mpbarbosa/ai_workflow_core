@@ -112,7 +112,7 @@ workflow:
       
     - id: "05"
       name: "Directory Structure"
-      file: "step_05_directory.sh"
+      file: "directory.sh"
       description: "Validate and organize directory structure"
       phase: "structure"
       can_parallelize: false
@@ -121,7 +121,7 @@ workflow:
     # Testing Phase (06-08)
     - id: "06"
       name: "Test Review"
-      file: "step_06_test_review.sh"
+      file: "test_review.sh"
       description: "Review existing tests and identify gaps"
       phase: "testing"
       can_parallelize: false
@@ -130,7 +130,7 @@ workflow:
       
     - id: "07"
       name: "Test Generation"
-      file: "step_07_test_gen.sh"
+      file: "test_gen.sh"
       description: "Generate new tests based on review"
       phase: "testing"
       can_parallelize: false
@@ -139,7 +139,7 @@ workflow:
       
     - id: "08"
       name: "Test Execution"
-      file: "step_08_test_exec.sh"
+      file: "test_exec.sh"
       description: "Execute test suite and collect results"
       phase: "testing"
       can_parallelize: false
@@ -148,7 +148,7 @@ workflow:
     # Quality Phase (09-10)
     - id: "09"
       name: "Dependency Analysis"
-      file: "step_09_dependencies.sh"
+      file: "dependencies.sh"
       description: "Analyze and validate dependencies"
       phase: "quality"
       can_parallelize: true
@@ -156,7 +156,7 @@ workflow:
       
     - id: "10"
       name: "Code Quality"
-      file: "step_10_code_quality.sh"
+      file: "code_quality.sh"
       description: "Run code quality checks and linting"
       phase: "quality"
       can_parallelize: true

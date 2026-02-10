@@ -95,7 +95,7 @@ workflow:
       
     - id: "03"
       name: "Script References"
-      file: "step_03_script_refs.sh"
+      file: "script_refs.sh"
       description: "Validate cross-references and links"
       phase: "analysis"
       can_parallelize: true

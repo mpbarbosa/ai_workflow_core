@@ -104,7 +104,7 @@ workflow:
     # Structure & Validation Phase (04-05)
     - id: "04"
       name: "Configuration Validation"
-      file: "step_04_config_validation.sh"
+      file: "config_validation.sh"
       description: "Validate project configuration"
       phase: "structure"
       can_parallelize: true

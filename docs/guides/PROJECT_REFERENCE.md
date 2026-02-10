@@ -166,7 +166,7 @@
 **Execution Order** (Step 11 MUST be last):
 
 1. `step_00_analyze.sh` - Pre-flight analysis
-2. `step_0a_version_update.sh` - Semantic version updates (PRE-PROCESSING - NEW v2.6.0)
+2. `version_update.sh` - Semantic version updates (PRE-PROCESSING - NEW v2.6.0)
 3. `step_01_documentation.sh` - Documentation updates
 4. `step_02_consistency.sh` - Cross-reference validation
 5. `step_03_script_refs.sh` - Script reference validation

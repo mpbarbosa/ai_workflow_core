@@ -428,7 +428,7 @@ workflow:
     # Pre-Flight Phase (0x)
     - id: "0a"
       name: "Version Pre-Update"
-      file: "step_0a_version_update.sh"
+      file: "version_update.sh"
       description: "Pre-increment version for development cycle"
       phase: "pre-flight"
       can_parallelize: false

@@ -53,14 +53,14 @@ workflow:
     # Pre-Flight Phase (0x)
     - id: "0a"
       name: "Version Pre-Update"
-      file: "step_0a_version_update.sh"
+      file: "version_update.sh"
       description: "Pre-increment version for development cycle"
       phase: "pre-flight"
       can_parallelize: false
       
     - id: "0b"
       name: "Bootstrap Documentation"
-      file: "step_0b_bootstrap_docs.sh"
+      file: "bootstrap_docs.sh"
       description: "Generate initial documentation from scratch"
       phase: "pre-flight"
       can_parallelize: false
@@ -68,7 +68,7 @@ workflow:
       
     - id: "00"
       name: "Pre-Analysis"
-      file: "step_00_analyze.sh"
+      file: "pre_analysis.sh"
       description: "Analyze project structure and changes"
       phase: "pre-flight"
       can_parallelize: false

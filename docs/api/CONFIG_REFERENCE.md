@@ -1,7 +1,7 @@
 # Configuration Reference
 
-**Version**: 1.0.0  
-**Last Updated**: 2026-02-01  
+**Version**: 1.1.0  
+**Last Updated**: 2026-02-10  
 **Status**: Complete Reference
 
 > **Purpose**: Complete reference documentation for `.workflow-config.yaml` configuration file. This document describes every field, its purpose, valid values, and examples.
@@ -335,7 +335,72 @@ structure:
 - **Description**: ML optimization (requires historical data)
 - **Example**: `false`
 
-#### Example
+##### `workflow.steps`
+- **Type**: `array` of `object`
+- **Required**: No
+- **Description**: Workflow step execution order and configuration (for execution engines)
+- **Added**: Version supporting 16-step structure
+- **Format**: Array of step definition objects
+
+**Step Definition Object Fields:**
+- `id` (string, required): Step identifier (e.g., "0a", "00", "01", "16")
+- `name` (string, required): Human-readable step name
+- `file` (string, required): Script file for step execution
+- `description` (string, required): Step purpose description
+- `phase` (string, required): Execution phase (see `workflow.phases`)
+- `can_parallelize` (boolean, optional): Whether step can run in parallel
+- `dependencies` (array of strings, optional): IDs of prerequisite steps
+- `ai_persona` (string, optional): AI persona to use (from `ai_helpers.yaml`)
+- `required` (boolean, optional): Whether step is mandatory
+
+**Example**:
+```yaml
+steps:
+  - id: "01"
+    name: "Documentation Updates"
+    file: "step_01_documentation.sh"
+    description: "AI-powered documentation analysis and updates"
+    phase: "analysis"
+    can_parallelize: true
+    dependencies: ["00"]
+    ai_persona: "documentation_specialist"
+```
+
+##### `workflow.phases`
+- **Type**: `object`
+- **Required**: No
+- **Description**: Workflow phase definitions organizing steps into logical groups
+- **Added**: Version supporting multi-phase structure
+- **Format**: Object with phase names as keys
+
+**Phase Definition Object Fields:**
+- `description` (string, required): Phase purpose
+- `steps` (array of strings, required): Step IDs in this phase
+
+**Standard Phases**:
+- `pre-flight`: Initial setup and analysis (steps: 0a, 0b, 00)
+- `analysis`: Documentation analysis and validation (steps: 01, 02, 03)
+- `structure`: Project structure validation (steps: 04, 05)
+- `testing`: Test review, generation, execution (steps: 06, 07, 08)
+- `quality`: Code quality and dependency checks (steps: 09, 10)
+- `context`: Project context analysis (step: 11)
+- `finalization`: Documentation linting, prompt optimization, UX analysis (steps: 12, 13, 14)
+- `versioning`: Version management and changelog (step: 15)
+- `completion`: Final git operations - ALWAYS RUNS LAST (step: 16)
+
+**Example**:
+```yaml
+phases:
+  analysis:
+    description: "Documentation analysis and validation"
+    steps: ["01", "02", "03"]
+  
+  testing:
+    description: "Test review, generation, and execution"
+    steps: ["06", "07", "08"]
+```
+
+#### Example (Basic)
 
 ```yaml
 workflow:
@@ -346,6 +411,81 @@ workflow:
   multi_stage_pipeline: false
   ml_optimize: false
 ```
+
+#### Example (With Steps and Phases)
+
+```yaml
+workflow:
+  smart_execution: true
+  parallel_execution: true
+  ai_cache_enabled: true
+  auto_commit: false
+  multi_stage_pipeline: false
+  ml_optimize: false
+  
+  # Workflow step execution order
+  steps:
+    # Pre-Flight Phase (0x)
+    - id: "0a"
+      name: "Version Pre-Update"
+      file: "step_0a_version_update.sh"
+      description: "Pre-increment version for development cycle"
+      phase: "pre-flight"
+      can_parallelize: false
+      
+    - id: "00"
+      name: "Pre-Analysis"
+      file: "step_00_analyze.sh"
+      description: "Analyze project structure and changes"
+      phase: "pre-flight"
+      can_parallelize: false
+      dependencies: ["0a"]
+
+    # Analysis Phase
+    - id: "01"
+      name: "Documentation Updates"
+      file: "step_01_documentation.sh"
+      description: "AI-powered documentation analysis and updates"
+      phase: "analysis"
+      can_parallelize: true
+      dependencies: ["00"]
+      ai_persona: "documentation_specialist"
+    
+    # ... (additional steps 02-15)
+    
+    # Git Completion - MUST BE LAST STEP
+    - id: "16"
+      name: "Git Finalization"
+      file: "step_16_git_finalization.sh"
+      description: "Git operations - stage, commit, push - FINAL STEP"
+      phase: "completion"
+      can_parallelize: false
+      required: true
+      dependencies: ["15"]
+
+  # Step execution phases for multi-stage pipeline
+  phases:
+    pre-flight:
+      description: "Initial setup and analysis"
+      steps: ["0a", "0b", "00"]
+      
+    analysis:
+      description: "Documentation analysis and validation"
+      steps: ["01", "02", "03"]
+      
+    # ... (additional phases)
+    
+    completion:
+      description: "Final git operations - ALWAYS RUNS LAST"
+      steps: ["16"]
+```
+
+**Notes**:
+- Steps are executed in the order defined in the `steps` array
+- Dependencies are enforced: a step waits for all dependencies to complete
+- Step 16 (Git Finalization) should always be the final step
+- The `phases` object organizes steps into logical groups for multi-stage execution
+- Not all steps need `ai_persona` - only AI-assisted steps require this field
 
 ---
 

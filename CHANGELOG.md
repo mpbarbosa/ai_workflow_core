@@ -8,6 +8,56 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- **Documentation Updated for Workflow Steps Configuration** (2026-02-10)
+  - Updated `docs/api/CONFIG_REFERENCE.md` to v1.1.0 (695 → 835 lines)
+  - Added comprehensive documentation for `workflow.steps` configuration
+    - Documents 16-step structure with ID-based step definitions
+    - Explains step fields: id, name, file, description, phase, can_parallelize, dependencies, ai_persona, required
+    - Includes complete examples for step definitions
+  - Added documentation for `workflow.phases` configuration
+    - Documents 7 standard phases: pre-flight, analysis, structure, testing, quality, context, finalization, versioning, completion
+    - Explains phase fields: description, steps
+    - Shows phase organization and execution order
+  - Updated `.github/copilot-instructions.md` with new CONFIG_REFERENCE.md file size
+  - **Impact**: Configuration reference now complete for both basic and advanced workflow configurations
+  - **Note**: Both ID-based (0a-16) and name-based (v4.0.0 descriptive names) step formats are supported
+- **Workflow Phase Reorganization** (2026-02-10, commit 9e4d0f3)
+  - Reorganized workflow execution phases for better clarity and logical flow
+  - **Phase changes**:
+    - Removed `specialized` phase (was steps 14, 15)
+    - Split into two focused phases:
+      - `finalization`: Documentation linting, prompt optimization, and UX analysis (steps 12, 13, 14)
+      - `versioning`: Version management and changelog generation (step 15)
+    - Renamed `git-finalization` → `completion` for consistency
+  - **Step updates**:
+    - Step 14 (UX Analysis): Moved from `specialized` to `finalization` phase
+    - Step 15 (Version Update): Moved from `specialized` to new `versioning` phase
+    - Step 16 (Git Finalization): Phase renamed to `completion`, dependencies simplified (`["15", "11"]` → `["15"]`)
+  - **Impact**: Improved workflow phase semantics, clearer execution order, better phase grouping
+  - **Backward Compatibility**: Phase names changed in `.workflow-config.yaml` only, no breaking changes to templates
+- **AI Helpers Configuration Updated to v6.0.0** (2026-02-09)
+  - Added `ui_ux_designer_prompt`: Senior UI/UX designer persona for user experience and visual design
+  - Refined `front_end_developer_prompt`: Removed UI/UX design overlap, strengthened technical implementation focus
+  - **Clear separation of concerns** matching real-world team structures:
+    - `ui_ux_designer_prompt`: User research, visual design, interaction patterns, usability testing, information architecture
+    - `front_end_developer_prompt`: Code implementation, architecture, performance optimization, front-end testing, build configuration
+  - **UI/UX Designer expertise areas**:
+    - User research, personas, journey mapping
+    - Wireframing, prototyping, visual design
+    - Interaction design and usability testing
+    - Design systems and accessibility from user perspective
+    - Information architecture and responsive design strategy
+  - **Front End Developer refinements**:
+    - Removed UI/UX design aspects (now in dedicated persona)
+    - Strengthened technical implementation focus
+    - Enhanced performance optimization guidance
+    - Expanded testing and build configuration sections
+    - Added cross-browser compatibility focus
+  - Both personas follow v4.0.0 token efficiency patterns (anchors, concise output format)
+  - No token overhead: Only one persona loads per workflow step
+  - **Persona count**: Now **11 personas** (8 general + 3 specialized: front-end, UI/UX, config)
+
+### Changed
 - **Migration Guide Updated to v1.1.0** (2026-02-09)
   - Updated compatibility matrix with source and target projects
   - Added section on Source ai_workflow v4.0.0 breaking changes (config-driven execution)

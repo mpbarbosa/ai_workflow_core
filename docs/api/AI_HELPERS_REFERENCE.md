@@ -1,7 +1,7 @@
 # AI Helpers Reference
 
-**Version**: 5.0.0  
-**Last Updated**: 2026-02-07  
+**Version**: 6.0.0  
+**Last Updated**: 2026-02-09  
 **Schema File**: `config/ai_helpers.yaml`
 
 > **Purpose**: Complete reference for the `ai_helpers.yaml` configuration file. This document explains the AI persona system, YAML anchor patterns for token efficiency, language-specific standards injection, and prompt builder integration patterns.
@@ -23,6 +23,9 @@
   - [issue_extraction_prompt](#issue_extraction_prompt)
   - [markdown_lint_prompt](#markdown_lint_prompt)
   - [version_manager_prompt](#version_manager_prompt)
+  - [front_end_developer_prompt](#front_end_developer_prompt) (NEW v5.0.0)
+  - [ui_ux_designer_prompt](#ui_ux_designer_prompt) (NEW v6.0.0)
+  - [configuration_specialist_prompt](#configuration_specialist_prompt)
 - [Language-Specific Standards](#language-specific-standards)
 - [Version History](#version-history)
 - [Integration Patterns](#integration-patterns)
@@ -35,7 +38,7 @@
 The `ai_helpers.yaml` file defines **AI persona templates** used by workflow automation systems. Each persona represents a specialized AI role (documentation specialist, test engineer, code reviewer, etc.) with specific expertise, behavioral guidelines, and task templates.
 
 **Key Features:**
-- **8 core AI personas** for different workflow stages
+- **11 core AI personas** for different workflow stages (8 general + 3 specialized)
 - **Token efficiency optimization** (~1,400-1,500 tokens saved per workflow)
 - **YAML anchors** for DRY principle and maintainability
 - **Language-specific injection** for polyglot support (8 languages)
@@ -65,7 +68,8 @@ The file is organized into four main sections:
 #    - Shared behavioral patterns across personas
 
 # 3. AI PERSONA DEFINITIONS (lines 132-2034)
-#    - 8 core personas with role, task, approach, output format
+#    - 11 core personas with role, task, approach, output format
+#    - 8 general personas + 3 specialized personas (front-end, UI/UX, config)
 #    - Each persona uses anchors for token efficiency
 
 # 4. LANGUAGE-SPECIFIC STANDARDS (lines 1585-2034)
@@ -215,6 +219,11 @@ persona_name_prompt:
 
 ### Overview of Personas
 
+The file defines **11 AI personas** organized into three categories:
+
+#### General Personas (8)
+Core workflow personas for common tasks:
+
 | Persona | Purpose | Behavioral Pattern | Line Range |
 |---------|---------|-------------------|------------|
 | `doc_analysis_prompt` | Analyze code changes and update documentation | Actionable | 136-212 |
@@ -225,6 +234,17 @@ persona_name_prompt:
 | `issue_extraction_prompt` | Extract actionable issues from analysis reports | Actionable | 582-1404 |
 | `markdown_lint_prompt` | Markdown formatting and style consistency | Structured | 1406-1583 |
 | `version_manager_prompt` | Semantic version bump recommendations | Actionable | 2036-2063 |
+
+#### Specialized Personas (3)
+Domain-specific personas for specialized tasks:
+
+| Persona | Purpose | Behavioral Pattern | Added |
+|---------|---------|-------------------|-------|
+| `front_end_developer_prompt` | Front-end code implementation, architecture, performance | Actionable | v5.0.0 |
+| `ui_ux_designer_prompt` | UI/UX design, usability, visual design, interaction patterns | Actionable | v6.0.0 |
+| `configuration_specialist_prompt` | Configuration file validation, security, best practices | Actionable | Recent |
+
+**Total**: 11 personas (8 general + 3 specialized)
 
 ---
 
@@ -618,6 +638,212 @@ output_format: |
 
 ---
 
+### front_end_developer_prompt
+
+**Purpose**: Implement, review, and optimize front-end code with focus on technical quality, performance, and maintainability.
+
+**Behavioral Pattern**: Actionable (uses `&behavioral_actionable`)
+
+**Use Cases**:
+- Front-end code implementation and review
+- Component architecture and patterns
+- Performance optimization (bundle size, Core Web Vitals)
+- Accessibility implementation (WCAG 2.1+, ARIA, semantic HTML)
+- State management and build configuration
+- Front-end testing (Jest, React Testing Library, Cypress, Playwright)
+
+**Added**: v5.0.0 (2026-02-07)
+
+#### Fields
+
+**`role_prefix`** (lines 516-527):
+```yaml
+role_prefix: |
+  You are a senior front-end developer with deep expertise in:
+  - Modern JavaScript frameworks (React, Vue, Angular, Svelte)
+  - HTML5 semantics and web standards
+  - CSS architecture (BEM, CSS Modules, CSS-in-JS, Tailwind) and implementation
+  - Component-driven development and architecture patterns
+  - Front-end performance optimization (Core Web Vitals, lazy loading, code splitting)
+  - State management patterns (Redux, Context API, Vuex, Pinia, Zustand)
+  - Front-end testing (Jest, React Testing Library, Cypress, Playwright, Vitest)
+  - Build tools and bundlers (Webpack, Vite, Rollup, esbuild, Turbopack)
+  - Web APIs, browser features, and progressive enhancement
+  - Accessibility implementation (WCAG 2.1+, ARIA, semantic HTML)
+```
+
+**`behavioral_guidelines`** (line 529):
+```yaml
+behavioral_guidelines: *behavioral_actionable
+```
+
+**`task_template`** (lines 531-704):
+Comprehensive front-end implementation template covering:
+1. **Code Architecture**: Component structure, patterns, separation of concerns
+2. **Implementation Quality**: Code cleanliness, readability, maintainability
+3. **Performance**: Bundle size, lazy loading, render optimization, Core Web Vitals
+4. **Accessibility Implementation**: Semantic HTML, ARIA, keyboard navigation
+5. **State Management**: Data flow, side effects, local vs global state
+6. **Testing Coverage**: Unit tests, integration tests, E2E tests
+7. **Build Configuration**: Optimization, tree shaking, code splitting
+8. **Cross-Browser Compatibility**: Polyfills, feature detection, fallbacks
+
+**Key Actions**:
+- Code implementation with SOLID principles and design patterns
+- Performance optimization (code splitting, bundle optimization, virtualization)
+- State management implementation (Context, Redux, Zustand, React Query)
+- Accessibility implementation (semantic HTML, ARIA, keyboard navigation)
+- Responsive implementation (mobile-first CSS, Grid/Flexbox)
+- Testing implementation (unit, integration, accessibility tests)
+- Build optimization (Webpack/Vite configuration, tree shaking)
+
+**Separation from UI/UX Designer** (v6.0.0):
+- **Front-end developer**: Technical implementation, code architecture, performance
+- **UI/UX designer**: Visual design, usability, interaction patterns, user research
+
+---
+
+### ui_ux_designer_prompt
+
+**Purpose**: Review or design user interfaces and user experiences with focus on usability, visual design, and interaction patterns.
+
+**Behavioral Pattern**: Actionable (uses `&behavioral_actionable`)
+
+**Use Cases**:
+- UI/UX design reviews and recommendations
+- Usability assessment and cognitive load analysis
+- Visual design evaluation (typography, color, spacing, hierarchy)
+- Interaction design and micro-interactions
+- Information architecture and navigation structure
+- Accessibility from user perspective (readability, cognitive load, contrast)
+- Responsive design strategy and mobile-first approach
+- User flow optimization and conversion analysis
+
+**Added**: v6.0.0 (2026-02-09)
+
+**Separation of Concerns**: 
+- **ui_ux_designer_prompt**: User research, visual design, interaction patterns, usability testing
+- **front_end_developer_prompt**: Code implementation, architecture, performance, testing
+
+#### Fields
+
+**`role_prefix`** (lines 708-719):
+```yaml
+role_prefix: |
+  You are a senior UI/UX designer and user experience specialist with deep expertise in:
+  - User research, personas, and user journey mapping
+  - Information architecture and user flow design
+  - Wireframing and prototyping (Figma, Sketch, Adobe XD, InVision)
+  - Visual design (typography, color theory, spacing, hierarchy, composition)
+  - Interaction design and micro-interactions
+  - Usability testing and cognitive psychology principles
+  - Design systems, component libraries, and design tokens
+  - Accessibility from user perspective (WCAG 2.1+, cognitive load, readability)
+  - Mobile-first and responsive design strategy
+  - Design patterns and UI best practices
+```
+
+**`behavioral_guidelines`** (line 721):
+```yaml
+behavioral_guidelines: *behavioral_actionable
+```
+
+**`task_template`** (lines 723-816):
+Comprehensive UI/UX evaluation template covering:
+1. **Usability**: Ease of use, learnability, efficiency, error prevention
+2. **Visual Hierarchy**: Typography scale, spacing, color usage, emphasis
+3. **Interaction Design**: Navigation patterns, feedback, transitions, micro-interactions
+4. **Information Architecture**: Content organization, labeling, navigation structure
+5. **Accessibility**: Readability, cognitive load, color contrast, focus indicators
+6. **Consistency**: Design system adherence, pattern reuse, visual coherence
+7. **Responsive Design**: Mobile-first approach, breakpoint strategy, touch targets
+8. **User Flows**: Task completion paths, friction points, conversion optimization
+
+**`approach`** (lines 818-900):
+Design methodology and principles:
+1. **User-Centered Design**: Focus on user needs, goals, and context
+2. **Visual Hierarchy & Layout**: Guide user attention with size, color, contrast
+3. **Interaction Design Principles**: Immediate feedback, familiar patterns, progressive disclosure
+4. **Accessibility by Design**: WCAG 2.1 AA (4.5:1 contrast), keyboard navigation
+5. **Mobile-First Responsive Design**: Touch-friendly (44x44px targets), breakpoints
+6. **Design Systems & Consistency**: Design tokens, reusable patterns, naming conventions
+7. **Usability Testing Mindset**: Can users complete tasks efficiently?
+
+**Design Quality Checklist**:
+- ✅ Clear visual hierarchy (size, contrast, position)
+- ✅ Consistent spacing and alignment (8px grid)
+- ✅ WCAG 2.1 AA color contrast (4.5:1 minimum)
+- ✅ Touch targets ≥ 44x44px on mobile
+- ✅ Readable typography (16px+ body, clear hierarchy)
+- ✅ Clear affordances (buttons look clickable)
+- ✅ Immediate feedback for all interactions
+
+---
+
+### configuration_specialist_prompt
+
+**Purpose**: Validate and analyze configuration files for correctness, security, and best practices.
+
+**Behavioral Pattern**: Actionable (uses `&behavioral_actionable`)
+
+**Use Cases**:
+- Configuration file validation (JSON/YAML/TOML/INI)
+- Security analysis (exposed secrets, weak defaults)
+- Consistency checks across related configs
+- Best practices for dependency management and CI/CD
+- Special handling for AI workflow configs (ai_helpers.yaml)
+
+**Added**: Present in config but not yet documented (appears to be recent addition)
+
+#### Fields
+
+**`role_prefix`** (lines 1961-1964):
+```yaml
+role_prefix: |
+  You are a Senior DevOps Engineer and Configuration Management Expert with deep expertise in:
+  configuration file formats (JSON/YAML/TOML/INI), security best practices, dependency management,
+  environment configuration, CI/CD pipelines, and infrastructure as code.
+```
+
+**`behavioral_guidelines`** (line 1966):
+```yaml
+behavioral_guidelines: *behavioral_actionable
+```
+
+**`task_template`** (lines 1968-2012):
+Comprehensive validation template covering:
+1. **Syntax Validation**: Parse files, check schema compliance, verify required fields
+2. **Security Analysis**: ⚠️ CRITICAL - Check for exposed secrets, hardcoded credentials
+3. **Consistency Checks**: Cross-reference related configs, verify dependency versions
+4. **Best Practices**: Version pinning, environment separation, Docker optimization
+5. **Special Handling for AI Workflow Configs**: Validate ai_helpers.yaml structure, YAML anchors
+
+**`approach`** (lines 2014-2050):
+**Validation Priority:**
+1. Security issues (CRITICAL - exposed secrets, weak defaults)
+2. Syntax errors (HIGH - will break builds/deployments)
+3. Consistency problems (MEDIUM - may cause runtime issues)
+4. Best practice violations (LOW - quality improvements)
+
+**Output Format**: For each issue:
+- **File**: Configuration file path
+- **Severity**: CRITICAL | HIGH | MEDIUM | LOW
+- **Category**: Syntax | Security | Consistency | BestPractice
+- **Issue**: Specific problem description
+- **Line**: Line number (if applicable)
+- **Recommendation**: Concrete fix with before/after example
+- **Impact**: What breaks or improves
+
+**Format Types Supported**:
+- JSON: package.json, tsconfig.json, .vscode/*, composer.json
+- YAML: .github/workflows/*, docker-compose.yml, .gitlab-ci.yml, ai_helpers.yaml
+- TOML: Cargo.toml, pyproject.toml, .mdlrc
+- INI: .editorconfig, setup.cfg, tox.ini
+- Shell: .env.example (KEY=value format)
+- Specialized: Dockerfile, Makefile, .gitignore
+
+---
+
 ## Language-Specific Standards
 
 ### Overview
@@ -787,16 +1013,42 @@ python:
 
 ## Version History
 
+### Version 6.0.0 (2026-02-09)
+
+**Changes**:
+- **Added `ui_ux_designer_prompt`**: Senior UI/UX designer persona for user experience and visual design
+- **Refined `front_end_developer_prompt`**: Removed UI/UX design overlap, strengthened technical implementation focus
+- **Clear separation of concerns** matching real-world team structures:
+  - `ui_ux_designer_prompt`: User research, visual design, interaction patterns, usability testing, information architecture
+  - `front_end_developer_prompt`: Code implementation, architecture, performance optimization, front-end testing, build configuration
+- **UI/UX Designer expertise areas**:
+  - User research, personas, and journey mapping
+  - Wireframing, prototyping, and visual design (Figma, Sketch, Adobe XD)
+  - Interaction design and usability testing
+  - Design systems and accessibility from user perspective
+  - Information architecture and responsive design strategy
+- **Front End Developer refinements**:
+  - Removed UI/UX design aspects (now in dedicated persona)
+  - Strengthened technical implementation focus
+  - Enhanced performance optimization guidance
+  - Expanded accessibility implementation details
+  - Improved state management and testing coverage
+
+**Token Impact**: Minimal (persona refinement, no efficiency changes to existing personas)
+
+**Persona Count**: Now **11 personas** (8 general + 3 specialized: front-end, UI/UX, config)
+
 ### Version 5.0.0 (2026-01-30)
 
 **Changes**:
 - Added `technical_writer_prompt` for comprehensive from-scratch documentation
+- **Added `front_end_developer_prompt`**: Senior front-end developer for UI/UX implementation
 - Use case: Bootstrap documentation for undocumented/new projects
 - Complements `doc_analysis_prompt` (incremental) and `consistency_prompt` (auditing)
 - Follows v4.0.0 token efficiency patterns (anchors, concise output)
 - Language-agnostic with dynamic language-specific standards injection
 
-**Token Impact**: Minimal (new persona addition, no optimization changes)
+**Token Impact**: Minimal (new persona additions, no optimization changes)
 
 ### Version 4.0.0 (2025-12-24)
 

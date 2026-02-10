@@ -1,15 +1,15 @@
 {
-  "workflow_run_id": "workflow_20260209_181448",
-  "generated_at": "2026-02-09T21:14:52Z",
+  "workflow_run_id": "workflow_20260210_003520",
+  "generated_at": "2026-02-10T03:35:20Z",
   "git_info": {
-    "commit": "8a2b484",
+    "commit": "9e4d0f3",
     "branch": "main"
   },
   "change_summary": {
-    "total_files": 2,
+    "total_files": 1,
     "by_category": {
       "code": 0,
-      "documentation": 2,
+      "documentation": 1,
       "tests": 0
     }
   },
@@ -28,6 +28,18 @@
     "tests": {"score":0,"tier":"low","factors":{"test_cases":0,"lines_changed":0,"coverage_impact":"none"}}
   },
   "model_definitions": {
+    "step_0a_version_update": {
+      "model": "claude-haiku-4.5",
+      "reason": "Low complexity version analysis changes - fast model sufficient",
+      "tier": "low",
+      "alternatives": ["gpt-5-mini", "gemini-3-flash" ]
+    },
+    "step_0b_bootstrap_docs": {
+      "model": "claude-sonnet-4.5",
+      "reason": "Documentation generation from scratch requires reasoning",
+      "tier": "medium",
+      "alternatives": ["gpt-5.1-codex", "gpt-5-mini" ]
+    },
     "step_01_documentation": {
       "model": "claude-haiku-4.5",
       "reason": "Low complexity documentation changes - fast model sufficient",
@@ -75,6 +87,12 @@
       "reason": "UX analysis (forced tier: high for UI reasoning)",
       "tier": "high",
       "alternatives": ["gpt-5.2", "claude-sonnet-4.0", "gemini-3-pro" ]
+    },
+    "step_15_version_update": {
+      "model": "claude-haiku-4.5",
+      "reason": "Low complexity version finalization changes - fast model sufficient",
+      "tier": "low",
+      "alternatives": ["gpt-5-mini", "gemini-3-flash" ]
     }
   },
   "override": null

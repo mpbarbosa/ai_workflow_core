@@ -77,7 +77,7 @@ workflow:
     # Analysis & Documentation Phase (01-03)
     - id: "01"
       name: "Documentation Updates"
-      file: "step_01_documentation.sh"
+      file: "documentation.sh"
       description: "AI-powered documentation analysis and updates"
       phase: "analysis"
       can_parallelize: true

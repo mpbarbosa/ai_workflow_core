@@ -86,7 +86,7 @@ workflow:
       
     - id: "02"
       name: "Consistency Check"
-      file: "step_02_consistency.sh"
+      file: "consistency.sh"
       description: "Check documentation consistency"
       phase: "analysis"
       can_parallelize: true

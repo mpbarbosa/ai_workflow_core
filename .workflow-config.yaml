@@ -188,33 +188,35 @@ workflow:
       can_parallelize: true
       dependencies: ["11"]
       
+    # Finalization Phase (14)
     - id: "14"
       name: "UX Analysis"
       file: "step_14_ux_analysis.sh"
       description: "UI/UX and accessibility analysis"
-      phase: "specialized"
+      phase: "finalization"
       can_parallelize: true
       dependencies: ["10"]
       ai_persona: "ux_designer"
       
+    # Version Management (15)
     - id: "15"
       name: "Version Update"
       file: "step_15_version_update.sh"
       description: "Finalize version and generate changelog"
-      phase: "specialized"
+      phase: "versioning"
       can_parallelize: false
       dependencies: ["12", "13", "14"]
       ai_persona: "version_manager"
     
-    # Git Finalization Phase - MUST BE LAST STEP
+    # Git Completion - MUST BE LAST STEP
     - id: "16"
       name: "Git Finalization"
       file: "step_16_git_finalization.sh"
-      description: "Git operations - stage, commit, push with AI-generated message"
-      phase: "git-finalization"
+      description: "Git operations - stage, commit, push - FINAL STEP"
+      phase: "completion"
       can_parallelize: false
       required: true
-      dependencies: ["15", "11"]
+      dependencies: ["15"]
 
   # Step execution phases for multi-stage pipeline
   phases:
@@ -243,14 +245,14 @@ workflow:
       steps: ["11"]
       
     finalization:
-      description: "Documentation linting and prompt optimization"
-      steps: ["12", "13"]
+      description: "Documentation linting, prompt optimization, and UX analysis"
+      steps: ["12", "13", "14"]
       
-    specialized:
-      description: "UX analysis and version management"
-      steps: ["14", "15"]
+    versioning:
+      description: "Version management and changelog generation"
+      steps: ["15"]
       
-    git-finalization:
+    completion:
       description: "Final git operations - ALWAYS RUNS LAST"
       steps: ["16"]
 

@@ -395,9 +395,9 @@ technical_writer_prompt:
   behavioral_guidelines: *behavioral_actionable
   
   task_template: |
-    **YOUR TASK**: Analyze existing documentation and identify gaps, then generate missing documentation.
+    **YOUR TASK**: Analyze existing documentation and determine if new documentation is truly needed. Generate ONLY when necessary.
     
-    **CRITICAL**: You MUST proceed with the analysis and documentation generation. Do NOT ask what to write or for clarification. Use available context to make informed decisions.
+    **CRITICAL DECISION-MAKING FRAMEWORK**: You MUST evaluate necessity BEFORE generating documentation.
     
     **Project Context:**
     - Project: {project_name} ({project_description})
@@ -405,12 +405,33 @@ technical_writer_prompt:
     - Current Documentation: {doc_count} files
     - Source Code: {source_files} files
     
-    **ANALYSIS PHASE**: First, identify what documentation is missing or incomplete:
+    **STEP 1: NECESSITY EVALUATION** (Answer these questions FIRST):
+    
+    Is new documentation TRULY needed? Use this criteria suite:
+    
+    ✅ **GENERATE Documentation if ANY of these are TRUE**:
+    1. **Critical Gap**: No README or it's < 100 words (users can't get started)
+    2. **Public API Undocumented**: Public functions/classes lack documentation (breaking API contract)
+    3. **Setup Impossible**: No installation or setup instructions (project is unusable)
+    4. **Architecture Mystery**: Complex system (5+ modules) with no architecture overview (maintainers can't understand)
+    5. **Breaking Changes**: Recent major version change without migration guide (users will be stuck)
+    6. **Legal/Security Gap**: Missing LICENSE, security policy, or compliance documentation (legal risk)
+    7. **Explicit Request**: The task explicitly asks for specific new documentation
+    
+    ❌ **DO NOT GENERATE if ALL of these are TRUE**:
+    1. **Complete Coverage**: All public APIs documented with examples
+    2. **Clear Getting Started**: README covers installation, quick start, and basic usage
+    3. **Recent Updates**: Documentation modified within last 3 months
+    4. **No Code Changes**: No new features or APIs since last documentation update
+    5. **Adequate Examples**: Working code examples exist for common use cases
+    6. **Architecture Documented**: System design and component relationships are clear
+    
+    **STEP 2: GAP ANALYSIS** (Only if STEP 1 indicates documentation is needed):
     1. List all existing documentation files and their coverage
-    2. Identify undocumented APIs, functions, classes, or modules
-    3. Check for missing user guides, tutorials, or how-to sections
-    4. Verify architecture and design documentation exists
-    5. Check for missing developer guides (setup, contributing, testing)
+    2. Identify SPECIFIC undocumented APIs, functions, classes, or modules
+    3. Check for SPECIFIC missing user guides, tutorials, or how-to sections
+    4. Verify architecture and design documentation exists and is current
+    5. Check for SPECIFIC missing developer guides (setup, contributing, testing)
     
     **DOCUMENTATION TYPES TO EVALUATE AND CREATE IF MISSING**:
     
@@ -447,45 +468,61 @@ technical_writer_prompt:
        - Module/file headers explaining purpose
        - Example code snippets with explanations
     
-    **REQUIRED ACTIONS** (Execute immediately without asking for input):
+    **STEP 3: PRIORITIZED ACTIONS** (Execute based on STEP 1 evaluation):
+    
+    **IF Documentation IS Needed** (STEP 1 criteria met):
     1. **Analyze Existing Documentation**: List all current documentation and assess coverage
-    2. **Identify Gaps**: Determine what's missing, incomplete, or outdated
-    3. **Prioritize Documentation**: Focus on highest-impact missing docs first (README improvements, API gaps, missing guides)
-    4. **Generate Missing Content**: Create only what's needed to fill identified gaps
+    2. **Identify Specific Gaps**: Pinpoint EXACTLY what's missing (with evidence from criteria)
+    3. **Prioritize by Impact**: Focus on critical gaps first (README → API → guides)
+    4. **Generate Missing Content**: Create ONLY what's needed to fill identified gaps
     5. **Include Examples**: Add practical, working code examples for new content
     6. **Verify Accuracy**: Ensure all references and examples are correct
     
+    **IF Documentation is NOT Needed** (STEP 1 criteria NOT met):
+    1. **Confirm Coverage**: State "Documentation evaluation complete - no new documentation needed"
+    2. **Provide Evidence**: List which criteria were evaluated (e.g., "✅ Complete API coverage, ✅ Recent README update")
+    3. **Optional Minor Improvements**: Suggest 1-2 small enhancements ONLY (typo fixes, link updates, formatting)
+    4. **Exit Cleanly**: Do NOT generate new documentation files or major content
+    
     **OUTPUT FORMAT**:
-    - Start with a "Documentation Gap Analysis" section listing what's missing
-    - For each identified gap, provide the complete missing documentation
-    - Use clear headings to separate different documentation pieces
-    - If all documentation is complete, state "No significant documentation gaps found" and provide specific minor improvements
-    - NEVER end with questions or requests for input - always provide concrete documentation or analysis
+    - **Always start with**: "Documentation Necessity Evaluation" section with PASS/FAIL decision
+    - **If PASS (needed)**: Show criteria met → "Documentation Gap Analysis" → complete missing documentation
+    - **If FAIL (not needed)**: Show criteria evaluation → "No new documentation required" → exit with optional minor suggestions
+    - **Never generate** "just in case" documentation - only when criteria clearly indicate need
+    - NEVER end with questions or requests for input - always provide definitive decision
   
   approach: |
-    **Documentation Gap Analysis Strategy**:
+    **Documentation Necessity-First Strategy**:
     
-    1. **Discovery Phase**: Audit existing documentation
+    **Phase 0: Necessity Check** (REQUIRED FIRST STEP):
+    - Apply the 7-point necessity criteria suite
+    - If ANY criterion is TRUE → Proceed to Phase 1
+    - If ALL criteria are FALSE → Output "No documentation needed" and exit
+    - **Default to NOT generating** unless clear need is demonstrated
+    
+    **Phase 1: Discovery** (Only if Phase 0 indicates need):
        - List all existing documentation files (README, guides, API docs)
        - Identify which components/modules are documented
-       - Check for outdated or incomplete sections
+       - Check for outdated or incomplete sections (> 3 months old with code changes)
        - Identify undocumented public APIs, functions, and classes
-       - Assess documentation quality and coverage
+       - Assess documentation quality and coverage against criteria
     
-    2. **Gap Identification**: Find what's missing
-       - **Critical Gaps**: Missing README sections, no getting started guide, undocumented public APIs
-       - **High Priority Gaps**: Missing architecture docs, incomplete tutorials, no troubleshooting guide
-       - **Medium Priority Gaps**: Missing configuration reference, incomplete API docs, outdated examples
-       - **Low Priority Gaps**: Advanced topics, edge cases, internal documentation
+    **Phase 2: Gap Identification** (Only for REAL gaps):
+       - **Critical Gaps** (immediate generation): Missing README sections, no getting started guide, undocumented public APIs
+       - **High Priority Gaps** (generate if time permits): Missing architecture docs, incomplete tutorials, no troubleshooting guide
+       - **Medium Priority Gaps** (defer): Missing configuration reference, incomplete API docs, outdated examples
+       - **Low Priority Gaps** (do not generate): Advanced topics, edge cases, internal documentation
+       - **Rule**: If no Critical or High Priority gaps exist, output "No new documentation needed"
     
-    3. **Content Creation**: Generate only what's missing
-       - For each identified gap, create complete, ready-to-use documentation
-       - Focus on high-impact missing pieces first
+    **Phase 3: Targeted Content Creation** (Only for identified Critical/High gaps):
+       - For EACH identified gap, create complete, ready-to-use documentation
+       - Focus on high-impact missing pieces ONLY
        - Maintain consistency with existing documentation style
        - Add cross-references to existing docs where appropriate
-       - Generate step-by-step tutorials for undocumented features
+       - Generate step-by-step tutorials ONLY for undocumented features
+       - **Stop generating** once Critical/High gaps are filled
     
-    4. **Quality Assurance**: Ensure new documentation integrates well
+    **Phase 4: Quality Assurance** (For generated content only):
        - Verify all code examples are syntactically correct
        - Check that referenced files and APIs exist
        - Ensure consistent terminology with existing docs

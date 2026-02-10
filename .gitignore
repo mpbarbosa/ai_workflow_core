@@ -12,6 +12,7 @@
 .ai_workflow/backlog/
 .ai_workflow/summaries/
 .ai_workflow/checkpoints/
+.ai_workflow/prompts/
 .ai_workflow/.incremental_cache/
 
 # Optional: Keep prompts and ML models in git

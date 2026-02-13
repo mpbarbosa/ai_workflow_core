@@ -7,6 +7,54 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Directory Structure Awareness Enhancement** (2026-02-12, v6.2.1)
+  - Enhanced `technical_writer_prompt` with **STEP 1.5: DIRECTORY STRUCTURE ANALYSIS**
+  - **Purpose**: Prevents duplicate documentation file creation by checking subdirectories before creating new files
+  - **Real-world problem solved**: AI created `docs/USER_GUIDE.md` when `docs/user/USER_GUIDE.md` already existed
+  - **Enhancement includes**:
+    1. Scan documentation organization (subdirectories, patterns, naming conventions)
+    2. Check for similar files in ALL subdirectories before creating (prevents duplicates)
+    3. File location decision rules (priority: UPDATE existing > FOLLOW pattern > ROOT only if flat)
+    4. Examples of correct behavior with ✅ markers (e.g., "UPDATE docs/user/USER_GUIDE.md, not create docs/USER_GUIDE.md")
+    5. Examples of incorrect behavior with ❌ markers to avoid (e.g., "Creating docs/USER_GUIDE.md when docs/user/USER_GUIDE.md exists")
+    6. Directory pattern recognition (by audience, type, feature, mixed/hybrid)
+    7. When to ask vs. decide guidance (clear patterns = decide, ambiguous = ask)
+  - **Specifications**:
+    - ~54 lines of guidance (~700 tokens) inserted between STEP 1 and STEP 2
+    - Token efficiency maintained: Concise examples, clear decision rules, no bloat
+    - Backward compatible: Existing workflows benefit immediately without changes
+  - **Prevention example**: "Before creating docs/USER_GUIDE.md, check for docs/user/USER_GUIDE.md"
+  - **Updated files**:
+    - `config/ai_helpers.yaml`: v6.1.0 → v6.2.1 (inserted STEP 1.5 at line 449-502)
+    - Version history entry added documenting the enhancement
+
+- **Requirements Engineering Persona** (2026-02-11, v6.1.0)
+  - Added `requirements_engineer_prompt`: Senior requirements engineer persona for comprehensive requirements engineering
+  - **Expertise areas**:
+    - Requirements elicitation (interviews, workshops, user observation, prototyping)
+    - Requirements analysis and refinement (ambiguity resolution, feasibility analysis, prioritization)
+    - Requirements specification (user stories, use cases, acceptance criteria, functional/non-functional requirements)
+    - Requirements traceability and management (change tracking, dependency analysis, requirements-to-test mapping)
+    - Requirements validation and verification (reviews, walkthroughs, SMART criteria verification, testability assessment)
+    - Standards and frameworks (IEEE 29148, BABOK, Agile user stories, Gherkin/BDD scenarios, Cockburn use cases)
+  - **Key features**:
+    - Necessity evaluation framework (9-point criteria to avoid unnecessary requirements generation)
+    - Supports multiple specification formats (user stories, use cases, Gherkin scenarios, functional requirements)
+    - Full requirements engineering lifecycle (elicitation → analysis → specification → traceability → validation)
+    - SMART requirements validation (Specific, Measurable, Achievable, Relevant, Testable)
+    - Language-agnostic with `{language_specific_requirements}` placeholder for future enhancement
+  - **Integration with existing personas**:
+    - `requirements_engineer_prompt`: Defines WHAT the system SHOULD do
+    - `technical_writer_prompt`: Documents WHAT the system DOES (after implementation)
+    - `ui_ux_designer_prompt`: Defines HOW users will interact (informed by requirements)
+    - `test_strategy_prompt`: Validates requirements are met (traceability)
+  - **Token efficiency**: Follows v4.0.0 patterns (uses `*behavioral_actionable` anchor, concise output format)
+  - **Updated files**:
+    - `config/ai_helpers.yaml`: v6.0.0 → v6.1.0 (added requirements_engineer_prompt at line 991)
+    - `docs/api/AI_HELPERS_REFERENCE.md`: v6.0.0 → v6.1.0 (added comprehensive documentation section)
+    - **Persona count**: 11 → 12 core AI personas (9 general + 3 specialized)
+
 ### Changed
 - **Documentation Updated for Workflow Steps Configuration** (2026-02-10)
   - Updated `docs/api/CONFIG_REFERENCE.md` to v1.1.0 (695 → 835 lines)

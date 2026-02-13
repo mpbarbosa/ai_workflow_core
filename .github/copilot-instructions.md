@@ -405,7 +405,7 @@ When assisting with this project, reference these critical documents:
 
 6. **config/.workflow-config.yaml.template**: Main configuration template with placeholders
 7. **config/project_kinds.yaml**: Project type definitions with validation rules (8 project types)
-8. **config/ai_helpers.yaml**: AI helper configurations (2000+ lines)
+8. **config/ai_helpers.yaml**: AI helper configurations (2,927 lines, v6.2.1)
 9. **config/ai_prompts_project_kinds.yaml**: Project-specific AI prompts
 10. **config/README.md**: Configuration system overview
 
@@ -421,16 +421,18 @@ When assisting with this project, reference these critical documents:
 13. **docs/api/CONFIG_REFERENCE.md**: Complete `.workflow-config.yaml` field reference (835 lines, v1.1.0 - updated 2026-02-10)
 14. **docs/api/PLACEHOLDER_REFERENCE.md**: Placeholder patterns and substitution guide (756 lines)
 15. **docs/api/PROJECT_KINDS_SCHEMA.md**: Project kinds schema v1.2.0 reference (777 lines)
-16. **docs/api/AI_HELPERS_REFERENCE.md**: AI persona definitions, YAML anchors, token efficiency system (1,177 lines)
+16. **docs/api/AI_HELPERS_REFERENCE.md**: AI persona definitions, YAML anchors, token efficiency system (1,590 lines, v6.2.1)
 17. **docs/api/AI_PROMPTS_REFERENCE.md**: Project-specific AI prompt templates (1,197 lines)
+18. **docs/api/MODEL_SELECTION_RULES_REFERENCE.md**: Model selection rules and decision trees (723 lines)
+19. **docs/api/SCRIPT_API_REFERENCE.md**: Utility script API reference (1,173 lines)
 
 ### Additional Documentation
 
-16. **docs/ARCHITECTURE.md**: System architecture, design patterns, ADRs
-17. **docs/CONTRIBUTING.md**: Contributing guidelines (references parent ai_workflow project features)
-18. **docs/guides/PROJECT_REFERENCE.md**: Project reference (documents parent ai_workflow v3.0.0)
-19. **docs/guides/ML_OPTIMIZATION_GUIDE.md**: ML optimization guide (for parent project)
-20. **docs/guides/MULTI_STAGE_PIPELINE_GUIDE.md**: Pipeline guide (for parent project)
+20. **docs/ARCHITECTURE.md**: System architecture, design patterns, ADRs
+21. **docs/CONTRIBUTING.md**: Contributing guidelines (references parent ai_workflow project features)
+22. **docs/guides/PROJECT_REFERENCE.md**: Project reference (documents parent ai_workflow v3.0.0)
+23. **docs/guides/ML_OPTIMIZATION_GUIDE.md**: ML optimization guide (for parent project)
+24. **docs/guides/MULTI_STAGE_PIPELINE_GUIDE.md**: Pipeline guide (for parent project)
 
 ### ⚠️ Important: Documentation Context
 
@@ -617,7 +619,7 @@ Always clarify which context applies to the current task.
 - GitHub Actions workflow templates (5 workflow files + README in `workflow-templates/workflows/`: code-quality, validate-docs, validate-tests, validate-structure, integration-health)
 - GitHub metadata (`.github/` directory with DESCRIPTION.md and copilot-instructions.md)
 - Integration examples (2 language examples with README guides: shell 645+ lines, nodejs 320+ lines + examples/README.md contributor guide 350+ lines)
-- Documentation (5 core docs in `docs/` root + 3 guides in `docs/guides/` + 3 API references in `docs/api/` + 2 misc files in `docs/misc/`)
+- Documentation (5 core docs in `docs/` root + 3 guides in `docs/guides/` + 8 API references in `docs/api/` + 2 misc files in `docs/misc/`)
 - Utility scripts (2 Python validators: `validate_context_blocks.py`, `validate_structure.py`)
 - Workflow artifacts in `.ai_workflow/` (for dogfooding - this repo tests itself)
 

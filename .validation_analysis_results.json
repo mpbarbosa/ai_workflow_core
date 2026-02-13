@@ -1,0 +1,130 @@
+{
+  "analysis": {
+    "project": "AI Workflow Core",
+    "date": "2026-02-13T02:22:22.841Z",
+    "type": "Shell Script Documentation Validation",
+    "scope": "comprehensive"
+  },
+  "overall_status": {
+    "rating": "GOOD",
+    "compliance_percentage": 95,
+    "critical_issues": 0,
+    "high_priority_issues": 1,
+    "medium_priority_issues": 3,
+    "low_priority_issues": 2,
+    "total_issues": 6
+  },
+  "scripts_analyzed": {
+    "total_count": 4,
+    "templates": 2,
+    "validators": 2,
+    "all_documented": true,
+    "all_executable": true
+  },
+  "documentation_coverage": {
+    "descriptions": "100%",
+    "usage_examples": "95%",
+    "exit_codes": "100%",
+    "parameters": "95%",
+    "prerequisites": "100%",
+    "error_handling": "100%",
+    "integration": "90%"
+  },
+  "scripts": {
+    "cleanup_artifacts.sh.template": {
+      "status": "EXCELLENT",
+      "version": "2.0.0",
+      "executable": true,
+      "documented": true,
+      "issues": []
+    },
+    "check_integration_health.sh.template": {
+      "status": "EXCELLENT",
+      "version": "not_versioned",
+      "executable": true,
+      "documented": true,
+      "issues": ["missing_version_header", "placeholder_documentation_gap"]
+    },
+    "validate_context_blocks.py": {
+      "status": "GOOD",
+      "version": "not_versioned",
+      "executable": true,
+      "documented": true,
+      "issues": ["missing_entry_point_guard", "incomplete_argument_docs"]
+    },
+    "validate_structure.py": {
+      "status": "EXCELLENT",
+      "version": "1.0.0",
+      "executable": true,
+      "documented": true,
+      "issues": []
+    }
+  },
+  "key_findings": {
+    "strengths": [
+      "All scripts properly executable",
+      "Comprehensive inline documentation",
+      "Robust error handling with exit codes",
+      "Clear usage examples",
+      "Well-organized in scripts directory",
+      "Template naming conventions followed"
+    ],
+    "issues": [
+      "Workflow docs reference parent project scripts",
+      "Inconsistent script versioning",
+      "Missing placeholder documentation",
+      "No workflow customization guide",
+      "Python entry point guard missing",
+      "Incomplete argument documentation"
+    ]
+  },
+  "recommendations": {
+    "immediate": [
+      {
+        "issue_id": 1,
+        "priority": "HIGH",
+        "effort_minutes": 30,
+        "description": "Fix workflow documentation references"
+      }
+    ],
+    "short_term": [
+      {
+        "issue_id": 2,
+        "priority": "MEDIUM",
+        "effort_minutes": 15,
+        "description": "Document placeholder dynamic substitution"
+      },
+      {
+        "issue_id": 3,
+        "priority": "MEDIUM",
+        "effort_minutes": 20,
+        "description": "Standardize script versioning"
+      },
+      {
+        "issue_id": 4,
+        "priority": "MEDIUM",
+        "effort_minutes": 45,
+        "description": "Create workflow customization guide"
+      }
+    ],
+    "optional": [
+      {
+        "issue_id": 5,
+        "priority": "LOW",
+        "effort_minutes": 10,
+        "description": "Add Python entry point guard"
+      },
+      {
+        "issue_id": 6,
+        "priority": "LOW",
+        "effort_minutes": 10,
+        "description": "Expand validate_context_blocks docs"
+      }
+    ]
+  },
+  "reports_generated": {
+    "summary": "VALIDATION_SUMMARY.txt",
+    "detailed": "SHELL_SCRIPT_VALIDATION_REPORT.md",
+    "structured": ".validation_analysis_results.json"
+  }
+}

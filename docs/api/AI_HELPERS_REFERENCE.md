@@ -1,7 +1,7 @@
 # AI Helpers Reference
 
-**Version**: 6.0.0  
-**Last Updated**: 2026-02-09  
+**Version**: 6.2.2  
+**Last Updated**: 2026-02-12  
 **Schema File**: `config/ai_helpers.yaml`
 
 > **Purpose**: Complete reference for the `ai_helpers.yaml` configuration file. This document explains the AI persona system, YAML anchor patterns for token efficiency, language-specific standards injection, and prompt builder integration patterns.
@@ -18,13 +18,14 @@
   - [doc_analysis_prompt](#doc_analysis_prompt)
   - [consistency_prompt](#consistency_prompt)
   - [technical_writer_prompt](#technical_writer_prompt)
+  - [requirements_engineer_prompt](#requirements_engineer_prompt) (NEW v6.1.0)
   - [test_strategy_prompt](#test_strategy_prompt)
   - [quality_prompt](#quality_prompt)
   - [issue_extraction_prompt](#issue_extraction_prompt)
   - [markdown_lint_prompt](#markdown_lint_prompt)
   - [version_manager_prompt](#version_manager_prompt)
   - [front_end_developer_prompt](#front_end_developer_prompt) (NEW v5.0.0)
-  - [ui_ux_designer_prompt](#ui_ux_designer_prompt) (NEW v6.0.0)
+  - [ui_ux_designer_prompt](#ui_ux_designer_prompt) (NEW v6.0.1)
   - [configuration_specialist_prompt](#configuration_specialist_prompt)
 - [Language-Specific Standards](#language-specific-standards)
 - [Version History](#version-history)
@@ -38,7 +39,7 @@
 The `ai_helpers.yaml` file defines **AI persona templates** used by workflow automation systems. Each persona represents a specialized AI role (documentation specialist, test engineer, code reviewer, etc.) with specific expertise, behavioral guidelines, and task templates.
 
 **Key Features:**
-- **11 core AI personas** for different workflow stages (8 general + 3 specialized)
+- **12 core AI personas** for different workflow stages (9 general + 3 specialized)
 - **Token efficiency optimization** (~1,400-1,500 tokens saved per workflow)
 - **YAML anchors** for DRY principle and maintainability
 - **Language-specific injection** for polyglot support (8 languages)
@@ -58,27 +59,32 @@ The `ai_helpers.yaml` file defines **AI persona templates** used by workflow aut
 The file is organized into four main sections:
 
 ```yaml
-# 1. CUMULATIVE TOKEN EFFICIENCY SUMMARY (lines 5-106)
-#    - Token savings breakdown by optimization type
-#    - Cost impact analysis ($21-22.50/month savings for 500 workflows)
-#    - Version history of optimizations (v3.0.0 → v5.0.0)
+# 1. VERSION HISTORY NOTES (lines 1-125)
+#    - Recent version enhancements (v6.2.2, v6.1.0, v6.0.1)
+#    - Token efficiency summaries and improvements
+#    - Backward compatibility notes
 
-# 2. REUSABLE BEHAVIORAL GUIDELINES (lines 108-130)
+# 2. CUMULATIVE TOKEN EFFICIENCY SUMMARY (lines 126-300+)
+#    - Token savings breakdown by optimization type
+#    - Cost impact analysis
+#    - Version history of optimizations (v3.0.0 → v6.2.2)
+
+# 3. REUSABLE BEHAVIORAL GUIDELINES (lines 300+)
 #    - YAML anchors (&behavioral_actionable, &behavioral_structured)
 #    - Shared behavioral patterns across personas
 
-# 3. AI PERSONA DEFINITIONS (lines 132-2034)
-#    - 11 core personas with role, task, approach, output format
-#    - 8 general personas + 3 specialized personas (front-end, UI/UX, config)
+# 4. AI PERSONA DEFINITIONS (lines 400-2800+)
+#    - 12 core personas with role, task, approach, output format
+#    - 9 general personas + 3 specialized personas (front-end, UI/UX, config)
 #    - Each persona uses anchors for token efficiency
 
-# 4. LANGUAGE-SPECIFIC STANDARDS (lines 1585-2034)
+# 5. LANGUAGE-SPECIFIC STANDARDS (lines 2800+)
 #    - Documentation standards per language (JSDoc, PEP 257, godoc, etc.)
 #    - Code quality standards per language
 #    - Testing standards per language
 ```
 
-**Total Size**: 2,064 lines
+**Total Size**: 2,927 lines (v6.2.2, 2026-02-12)
 
 ---
 
@@ -241,7 +247,7 @@ Domain-specific personas for specialized tasks:
 | Persona | Purpose | Behavioral Pattern | Added |
 |---------|---------|-------------------|-------|
 | `front_end_developer_prompt` | Front-end code implementation, architecture, performance | Actionable | v5.0.0 |
-| `ui_ux_designer_prompt` | UI/UX design, usability, visual design, interaction patterns | Actionable | v6.0.0 |
+| `ui_ux_designer_prompt` | UI/UX design, usability, visual design, interaction patterns | Actionable | v6.0.1 |
 | `configuration_specialist_prompt` | Configuration file validation, security, best practices | Actionable | Recent |
 
 **Total**: 11 personas (8 general + 3 specialized)
@@ -452,6 +458,166 @@ The `technical_writer_prompt` complements two existing documentation personas:
 | `technical_writer_prompt` | **Comprehensive** from-scratch documentation creation |
 | `doc_analysis_prompt` | **Incremental** change-driven documentation updates |
 | `consistency_prompt` | **Quality assurance** and auditing |
+
+---
+
+### requirements_engineer_prompt
+
+**Purpose**: Comprehensive requirements engineering including elicitation, analysis, specification, traceability, and validation.
+
+**Behavioral Pattern**: Actionable (uses `&behavioral_actionable`)
+
+**Use Cases**:
+- Requirements gathering and analysis for new features
+- User story and acceptance criteria creation
+- Requirements documentation (BRD, SRS, use cases)
+- Requirements traceability matrix generation
+- Requirements validation and SMART criteria verification
+
+**Added**: v6.1.0 (2026-02-11)
+
+#### Fields
+
+**`role_prefix`** (lines 993-1001):
+```yaml
+role_prefix: |
+  You are a senior requirements engineer with expertise in:
+  - Requirements elicitation techniques (interviews, workshops, user observation, prototyping)
+  - Requirements analysis and refinement (ambiguity resolution, conflict resolution, feasibility analysis)
+  - Requirements specification writing (user stories, use cases, acceptance criteria, functional/non-functional requirements)
+  - Requirements traceability and management (change tracking, dependency analysis, requirements-to-test mapping)
+  - Requirements validation and verification (reviews, walkthroughs, prototype validation, testability assessment)
+  - Standards and frameworks (IEEE 29148, BABOK, Agile user stories, Gherkin/BDD scenarios, Cockburn use cases)
+  - Stakeholder analysis and management (identifying needs, prioritization, conflict resolution)
+```
+
+**`behavioral_guidelines`** (line 1003):
+```yaml
+behavioral_guidelines: *behavioral_actionable
+```
+Uses the actionable anchor for decision-making and concrete output.
+
+**`task_template`** (lines 1005-1145):
+Three-phase necessity-first approach:
+
+1. **Phase 1: Necessity Evaluation** - 9-point criteria for determining if requirements work is needed:
+   - No requirements foundation
+   - Ambiguous scope
+   - Missing acceptance criteria
+   - Undocumented features
+   - Stakeholder conflicts
+   - Traceability gaps
+   - Compliance requirements
+   - Major changes
+   - Explicit request
+
+2. **Phase 2: Requirements Analysis** (if needed):
+   - Current state assessment
+   - Gap identification (functional, non-functional, acceptance criteria)
+   - Stakeholder analysis
+   
+3. **Phase 3: Prioritized Actions**:
+   - **If needed**: Elicit → Document → Establish traceability → Validate
+   - **If not needed**: Confirm coverage → Provide evidence → Optional minor improvements
+
+**Template Placeholders**:
+- `{project_name}` - Project name
+- `{project_description}` - Brief description
+- `{primary_language}` - Programming language
+- `{requirements_docs_count}` - Number of existing requirements documents
+- `{source_files}` - Number of source files
+- `{stakeholder_count}` - Number of stakeholders
+
+**Critical Design Pattern** (lines 1007-1009):
+```yaml
+**YOUR TASK**: Analyze existing requirements and determine if new requirements 
+documentation is truly needed. Generate ONLY when necessary.
+```
+
+Similar to `technical_writer_prompt`, this persona uses a necessity-first framework to avoid generating unnecessary requirements documentation.
+
+**`approach`** (lines 1147-1199):
+Five-phase requirements engineering lifecycle:
+
+1. **Phase 0: Necessity Check** - Apply 9-point criteria, default to NOT generating
+2. **Phase 1: Discovery & Analysis** - List existing artifacts, identify gaps, assess quality
+3. **Phase 2: Gap Identification & Prioritization** - Critical → High → Medium → Low priority gaps
+4. **Phase 3: Requirements Elicitation** - Analyze context, infer needs, identify stakeholders
+5. **Phase 4: Requirements Specification** - Generate user stories, acceptance criteria, use cases, functional/non-functional requirements
+6. **Phase 5: Validation & Quality Assurance** - SMART check, completeness, consistency, clarity, traceability, testability
+
+**Language-Specific Injection** (line 1191):
+```yaml
+**Language-Specific Standards:** {language_specific_requirements}
+```
+Placeholder for future language-specific requirements patterns (e.g., Python: PEPs, JavaScript: RFCs).
+
+**Requirements Engineering Best Practices** (lines 1193-1201):
+- **SMART Requirements**: Specific, Measurable, Achievable, Relevant, Testable
+- **Clear Actors**: Identify who benefits from each requirement
+- **Testable Criteria**: Every requirement has verifiable acceptance criteria
+- **Priority-Driven**: Use MoSCoW or similar prioritization framework
+- **Traceable**: Link requirements to design, code, and tests
+- **Version-Controlled**: Track changes and maintain history
+- **Stakeholder-Validated**: Confirm requirements with stakeholders
+- **Minimal Viable**: Focus on essential requirements first
+- **Avoid Gold-Plating**: Don't add requirements "just in case"
+
+#### Complementary Personas
+
+The `requirements_engineer_prompt` works alongside other personas in the requirements-to-delivery pipeline:
+
+| Persona | Focus | Relationship |
+|---------|-------|--------------|
+| `requirements_engineer_prompt` | **WHAT** the system SHOULD do | Defines requirements |
+| `technical_writer_prompt` | **WHAT** the system DOES | Documents implementation (after development) |
+| `ui_ux_designer_prompt` | **HOW** users will interact | User experience informed by requirements |
+| `test_strategy_prompt` | **VALIDATES** requirements are met | Traceability to tests |
+
+#### Requirements Specification Formats
+
+The persona supports multiple requirements formats:
+
+**Agile: User Stories**
+```gherkin
+As a [role]
+I want [feature]
+So that [benefit]
+
+Acceptance Criteria:
+- Given [context], when [action], then [outcome]
+- Given [context], when [action], then [outcome]
+```
+
+**Waterfall: Use Cases (Cockburn Style)**
+```
+Use Case: [Name]
+Actor: [Primary actor]
+Preconditions: [State before]
+Main Flow:
+  1. [Step]
+  2. [Step]
+Alternative Flows:
+  1a. [Exception handling]
+Postconditions: [State after]
+```
+
+**BDD: Gherkin Scenarios**
+```gherkin
+Feature: [Feature name]
+  Scenario: [Scenario name]
+    Given [precondition]
+    When [action]
+    Then [expected result]
+```
+
+**Functional Requirements**
+```
+REQ-001: The system SHALL [behavior]
+Priority: Must Have
+Rationale: [Why this is needed]
+Acceptance Criteria: [How to verify]
+```
 
 ---
 
@@ -697,7 +863,7 @@ Comprehensive front-end implementation template covering:
 - Testing implementation (unit, integration, accessibility tests)
 - Build optimization (Webpack/Vite configuration, tree shaking)
 
-**Separation from UI/UX Designer** (v6.0.0):
+**Separation from UI/UX Designer** (v6.0.1):
 - **Front-end developer**: Technical implementation, code architecture, performance
 - **UI/UX designer**: Visual design, usability, interaction patterns, user research
 
@@ -719,7 +885,7 @@ Comprehensive front-end implementation template covering:
 - Responsive design strategy and mobile-first approach
 - User flow optimization and conversion analysis
 
-**Added**: v6.0.0 (2026-02-09)
+**Added**: v6.0.1 (2026-02-09)
 
 **Separation of Concerns**: 
 - **ui_ux_designer_prompt**: User research, visual design, interaction patterns, usability testing
@@ -1013,7 +1179,38 @@ python:
 
 ## Version History
 
-### Version 6.0.0 (2026-02-09)
+### Version 6.2.2 (2026-02-12)
+
+**Changes**:
+- **Directory Structure Awareness Enhancement** added to `technical_writer_prompt`
+- Added STEP 1.5: DIRECTORY STRUCTURE ANALYSIS to prevent duplicate documentation file creation
+- Checks subdirectories before creating new files to maintain existing documentation organization
+- Includes directory pattern recognition and file location decision rules
+- ~54 lines of guidance (~700 tokens) inserted between STEP 1 and STEP 2
+- Backward compatible: Existing workflows benefit immediately without changes
+- **Token Impact**: Minimal (guidance addition within existing scope)
+
+### Version 6.1.0 (2026-02-11)
+
+**Changes**:
+- **Added `requirements_engineer_prompt`**: Senior requirements engineer persona for comprehensive requirements engineering
+- **Expertise areas**:
+  - Requirements elicitation (interviews, workshops, user observation, prototyping)
+  - Requirements analysis and refinement (ambiguity resolution, feasibility analysis, prioritization)
+  - Requirements specification (user stories, use cases, acceptance criteria, functional/non-functional requirements)
+  - Requirements traceability and management (change tracking, dependency analysis, requirements-to-test mapping)
+  - Requirements validation and verification (reviews, walkthroughs, SMART criteria verification, testability assessment)
+  - Standards and frameworks (IEEE 29148, BABOK, Agile user stories, Gherkin/BDD scenarios, Cockburn use cases)
+- **Key features**:
+  - Necessity evaluation framework (9-point criteria to avoid unnecessary requirements generation)
+  - Supports multiple specification formats (user stories, use cases, Gherkin scenarios, functional requirements)
+  - Full requirements engineering lifecycle (elicitation → analysis → specification → traceability → validation)
+  - SMART requirements validation (Specific, Measurable, Achievable, Relevant, Testable)
+  - Language-agnostic with `{language_specific_requirements}` placeholder for future enhancement
+- **Persona Count**: Now **12 personas** (9 general + 3 specialized: front-end, UI/UX, config)
+- **Token efficiency**: Follows v4.0.0 patterns (uses `*behavioral_actionable` anchor, concise output format)
+
+### Version 6.0.1 (2026-02-09)
 
 **Changes**:
 - **Added `ui_ux_designer_prompt`**: Senior UI/UX designer persona for user experience and visual design

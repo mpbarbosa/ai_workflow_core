@@ -1,7 +1,7 @@
 # AI Workflow Core - Documentation Index
 
 **Version**: 1.0.0  
-**Last Updated**: 2026-02-07  
+**Last Updated**: 2026-02-12  
 **Purpose**: Master index of all documentation in ai_workflow_core
 
 > 📚 **Quick Navigation**: Use this index to find the right documentation for your needs.

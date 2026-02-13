@@ -49,11 +49,12 @@ Add these patterns to your project's `.gitignore` file to exclude workflow artif
 ## AI Prompt Configuration Files
 
 ### `ai_helpers.yaml`
-Core AI prompt templates for workflow automation. Contains 1,900+ lines of optimized prompts for 15 AI personas including:
+Core AI prompt templates for workflow automation. Contains 2,927 lines (v6.2.1) of optimized prompts for 12 AI personas including:
 
 **Documentation Personas:**
 - **Documentation Specialist** (`doc_analysis_prompt`) - Incremental change-driven documentation updates
 - **Technical Writer** (`technical_writer_prompt`) - NEW v4.1.0: Comprehensive from-scratch documentation creation
+- **Requirements Engineer** (`requirements_engineer_prompt`) - NEW v6.1.0: Requirements elicitation, analysis, specification, and validation
 - **Consistency Analyst** (`consistency_prompt`) - Documentation quality assurance and auditing
 
 **Testing & Quality Personas:**

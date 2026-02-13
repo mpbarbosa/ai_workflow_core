@@ -82,7 +82,10 @@ mkdir -p .ai_workflow/{backlog,summaries,logs,metrics,checkpoints,prompts,ml_mod
 | `{{PROJECT_NAME}}` | Project name | "My Project" |
 | `{{PROJECT_TYPE}}` | Project type (hyphenated) | "nodejs-application", "configuration-library" |
 | `{{PROJECT_KIND}}` | Project kind (underscored) | "nodejs_api", "configuration_library" |
+| `{{PROJECT_DESCRIPTION}}` | Project description | "RESTful API for user management" |
 | `{{LANGUAGE}}` | Primary language | "javascript", "bash", "python" |
+| `{{BUILD_SYSTEM}}` | Build system/package manager | "npm", "webpack", "maven", "none" |
+| `{{TEST_FRAMEWORK}}` | Testing framework | "jest", "pytest", "shell-script" |
 | `{{TEST_COMMAND}}` | Test command | "npm test", "./tests/run_tests.sh" |
 | `{{LINT_COMMAND}}` | Lint command | "eslint .", "shellcheck **/*.sh" |
 | `{{VERSION}}` | Version number | "1.0.0" |

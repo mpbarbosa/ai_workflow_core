@@ -65,6 +65,16 @@ workflow:
       phase: "pre-flight"
       can_parallelize: false
       dependencies: ["0a"]
+      ai_persona: "technical_writer"
+      
+    - id: "0c"
+      name: "Requirements Analysis"
+      file: "requirements_analysis.sh"
+      description: "Analyze and generate requirements documentation"
+      phase: "pre-flight"
+      can_parallelize: false
+      dependencies: ["0b"]
+      ai_persona: "requirements_engineer"
       
     - id: "00"
       name: "Pre-Analysis"
@@ -72,7 +82,7 @@ workflow:
       description: "Analyze project structure and changes"
       phase: "pre-flight"
       can_parallelize: false
-      dependencies: ["0b"]
+      dependencies: ["0c"]
 
     # Analysis & Documentation Phase (01-03)
     - id: "01"

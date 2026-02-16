@@ -49,17 +49,22 @@ Add these patterns to your project's `.gitignore` file to exclude workflow artif
 ## AI Prompt Configuration Files
 
 ### `ai_helpers.yaml`
-Core AI prompt templates for workflow automation. Contains 2,927 lines (v6.2.1) of optimized prompts for 12 AI personas including:
+Core AI prompt templates for workflow automation. Contains 2,927+ lines (v6.3.0) of optimized prompts for 16 AI personas including:
 
 **Documentation Personas:**
 - **Documentation Specialist** (`doc_analysis_prompt`) - Incremental change-driven documentation updates
-- **Technical Writer** (`technical_writer_prompt`) - NEW v4.1.0: Comprehensive from-scratch documentation creation
-- **Requirements Engineer** (`requirements_engineer_prompt`) - NEW v6.1.0: Requirements elicitation, analysis, specification, and validation
+- **Technical Writer** (`technical_writer_prompt`) - Comprehensive from-scratch documentation creation (v4.1.0)
+- **Requirements Engineer** (`requirements_engineer_prompt`) - Requirements elicitation, analysis, specification, and validation (v6.1.0)
 - **Consistency Analyst** (`consistency_prompt`) - Documentation quality assurance and auditing
 
+**Front-End Development Personas:**
+- **Front-End Developer** (`front_end_developer_prompt`) - Front-end code implementation, architecture, and optimization (v4.2.0)
+- **UI/UX Designer** (`ui_ux_designer_prompt`) - User experience design, visual design, and interaction patterns (v6.0.0)
+- **E2E Test Engineer** (`e2e_test_engineer_prompt`) - NEW v6.3.0: End-to-end testing, browser automation, and visual testing
+
 **Testing & Quality Personas:**
-- Test Strategy Architect
-- Test Review Specialist
+- Test Strategy Architect (`test_strategy_prompt`) - Strategic test coverage analysis
+- Test Review Specialist (`step5_test_review_prompt`) - Tactical test code quality review
 - Code Quality Analyst
 - Dependency Auditor
 
@@ -70,12 +75,13 @@ Core AI prompt templates for workflow automation. Contains 2,927 lines (v6.2.1) 
 - Prompt Engineer
 - Version Manager
 
-**And more specialized roles...**
-
 **Usage Guidelines:**
 - Use `technical_writer_prompt` for: New projects, major rewrites, undocumented codebases
 - Use `doc_analysis_prompt` for: Incremental updates after code changes
 - Use `consistency_prompt` for: Documentation audits and quality assurance
+- Use `e2e_test_engineer_prompt` for: E2E testing strategy for front-end projects (client_spa, react_spa, static_website)
+- Use `test_strategy_prompt` for: Strategic test coverage analysis (WHAT to test)
+- Use `front_end_developer_prompt` for: Front-end code implementation and unit testing
 
 Uses YAML anchors for token efficiency and reduced duplication.
 

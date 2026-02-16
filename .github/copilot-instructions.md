@@ -78,7 +78,7 @@ ai_workflow_core/
 │   └── copilot-instructions.md  # This file (GitHub Copilot instructions)
 ├── config/                      # Configuration templates
 │   ├── .workflow-config.yaml.template  # Main workflow config template
-│   ├── ai_helpers.yaml          # AI helper definitions (2000+ lines)
+│   ├── ai_helpers.yaml          # AI helper definitions (2,927+ lines, v6.3.0 - 16 personas)
 │   ├── ai_prompts_project_kinds.yaml   # Project-specific AI prompts (v1.2.0, aligned with project_kinds)
 │   ├── project_kinds.yaml       # Project type definitions & validation rules (8 kinds: shell_script_automation, nodejs_api, static_website, client_spa, react_spa, python_app, configuration_library, generic)
 │   └── README.md
@@ -146,7 +146,7 @@ target_project/
 **config/**: Contains all template configuration files
 - `.workflow-config.yaml.template`: Main config with placeholders
 - `project_kinds.yaml`: Defines validation rules per project type (8 kinds: shell_script_automation, nodejs_api, react_spa, python_app, client_spa, static_website, configuration_library, generic)
-- `ai_helpers.yaml`: Large file (2000+ lines) with AI helper configurations
+- `ai_helpers.yaml`: Large file (2,927+ lines, v6.3.0) with AI helper configurations for 16 personas
 - `ai_prompts_project_kinds.yaml`: Project-specific AI prompts (v1.2.0, aligned with project_kinds)
 - Project types define test frameworks, linters, build systems, and best practices
 
@@ -405,7 +405,7 @@ When assisting with this project, reference these critical documents:
 
 6. **config/.workflow-config.yaml.template**: Main configuration template with placeholders
 7. **config/project_kinds.yaml**: Project type definitions with validation rules (8 project types)
-8. **config/ai_helpers.yaml**: AI helper configurations (2,927 lines, v6.2.1)
+8. **config/ai_helpers.yaml**: AI helper configurations (2,927+ lines, v6.3.0 - 16 personas)
 9. **config/ai_prompts_project_kinds.yaml**: Project-specific AI prompts
 10. **config/README.md**: Configuration system overview
 
@@ -543,6 +543,36 @@ When updating documentation:
 - Know which linters and frameworks are standard for each project type
 - Be aware of language-specific best practices in `ai_guidance` sections
 - Consider test coverage thresholds (varies by project type: 0-80%)
+
+### When Helping with AI Personas
+
+The repository includes 16 AI personas in `config/ai_helpers.yaml` (v6.3.0):
+
+**Documentation Personas**:
+- `doc_analysis_prompt`: Incremental documentation updates
+- `technical_writer_prompt`: Comprehensive from-scratch documentation (v4.1.0)
+- `requirements_engineer_prompt`: Requirements engineering (v6.1.0)
+- `consistency_prompt`: Documentation quality assurance
+
+**Front-End Development Personas**:
+- `front_end_developer_prompt`: Front-end code implementation (v4.2.0)
+- `ui_ux_designer_prompt`: UI/UX design and interaction patterns (v6.0.0)
+- `e2e_test_engineer_prompt`: **NEW v6.3.0** - E2E testing and browser automation
+
+**Testing Personas**:
+- `test_strategy_prompt`: Strategic test coverage analysis (WHAT to test)
+- `e2e_test_engineer_prompt`: E2E implementation (HOW to test E2E)
+- `step5_test_review_prompt`: Test code quality review
+
+**E2E Test Engineer Persona** (v6.3.0):
+- **Use Case**: End-to-end testing for front-end projects (client_spa, react_spa, static_website)
+- **Expertise**: Visual testing (Percy, Chromatic), browser automation (Playwright, Selenium, Cypress), user journey testing, accessibility testing automation, performance testing (Core Web Vitals)
+- **When to Use**: Designing E2E strategies, implementing test suites, visual regression testing, multi-step workflows, CI/CD integration
+- **Differentiation**: 
+  - `test_strategy_prompt` = WHAT to test (strategic coverage)
+  - `e2e_test_engineer_prompt` = HOW to test E2E (automation, visual testing)
+  - `step5_test_review_prompt` = Test code quality review
+  - `front_end_developer_prompt` = Implementation + unit tests
 
 ### When Helping with GitHub Workflows
 
@@ -685,6 +715,41 @@ python3 scripts/validate_context_blocks.py docs/
 ✅ name: "My Actual Project"
 ```
 
+### Build, Test, and Lint Commands
+
+This repository is a **configuration library** with validation scripts, not a code project.
+
+**Validation Commands**:
+```bash
+# Validate documentation context blocks
+python3 scripts/validate_context_blocks.py docs/
+
+# Validate specific file
+python3 scripts/validate_context_blocks.py docs/ARCHITECTURE.md
+
+# Validate directory structure
+python3 scripts/validate_structure.py
+
+# Lint YAML configuration files
+yamllint -d relaxed config/
+
+# Lint specific config file
+yamllint -d relaxed config/ai_helpers.yaml
+```
+
+**Pre-commit Hooks** (optional):
+```bash
+# Install pre-commit hooks
+pip install pre-commit
+pre-commit install
+
+# Run hooks manually
+pre-commit run --all-files
+```
+
+**No Build Required**: This is a template library with no compilation step.  
+**No Test Suite**: Validation scripts ensure configuration integrity.
+
 ---
 
 ## Contact & Resources
@@ -696,6 +761,7 @@ python3 scripts/validate_context_blocks.py docs/
 
 ---
 
-**Last Updated**: 2026-02-01  
-**Document Version**: 1.0.1  
+**Last Updated**: 2026-02-13  
+**Document Version**: 1.1.0  
+**For**: GitHub Copilot assistance within ai_workflow_core repository  
 **For**: GitHub Copilot assistance within ai_workflow_core repository

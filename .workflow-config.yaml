@@ -74,7 +74,7 @@ workflow:
       phase: "pre-flight"
       can_parallelize: false
       dependencies: ["0b"]
-      ai_persona: "requirements_engineer"
+      ai_persona: "documentation_expert"
       
     - id: "00"
       name: "Pre-Analysis"
@@ -92,7 +92,7 @@ workflow:
       phase: "analysis"
       can_parallelize: true
       dependencies: ["00"]
-      ai_persona: "documentation_specialist"
+      ai_persona: "documentation_expert"
       
     - id: "02"
       name: "Consistency Check"
@@ -101,7 +101,7 @@ workflow:
       phase: "analysis"
       can_parallelize: true
       dependencies: ["01"]
-      ai_persona: "consistency_checker"
+      ai_persona: "architecture_reviewer"
       
     - id: "03"
       name: "Script References"
@@ -171,7 +171,7 @@ workflow:
       phase: "quality"
       can_parallelize: true
       dependencies: ["08"]
-      ai_persona: "code_reviewer"
+      ai_persona: "code_quality_analyst"
 
     # Context & Analysis Phase (11-14)
     - id: "11"
@@ -206,7 +206,7 @@ workflow:
       phase: "finalization"
       can_parallelize: true
       dependencies: ["10"]
-      ai_persona: "ux_designer"
+      ai_persona: "ux_analyst"
       
     # Version Management (15)
     - id: "15"
@@ -216,7 +216,7 @@ workflow:
       phase: "versioning"
       can_parallelize: false
       dependencies: ["12", "13", "14"]
-      ai_persona: "version_manager"
+      ai_persona: "devops_engineer"
     
     # Git Completion - MUST BE LAST STEP
     - id: "16"

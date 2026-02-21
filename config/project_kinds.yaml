@@ -750,6 +750,134 @@ project_kinds:
         - ".github/ for GitHub platform metadata (DESCRIPTION.md, copilot-instructions.md)"
 
   # ----------------------------------------------------------------------------
+  # AWS Location-Based Service Backend Setup
+  # ----------------------------------------------------------------------------
+  aws_lbs_backend_setup:
+    name: "AWS LBS Backend Setup"
+    description: "Serverless AWS backend using Lambda, API Gateway, and AWS Location Service, provisioned via shell scripts"
+
+    # Auto-detection indicators used by project_kind_detection.js
+    detection:
+      file_indicators:
+        - "aws-config.json"       # Generated AWS resource identifiers
+        - "setup-aws-lbs.sh"      # Root-level orchestration script
+      directory_indicators:
+        - "src/lambda"            # Lambda function handlers
+        - "src/scripts"           # Infrastructure/deployment shell scripts
+      required_combination:
+        - "aws-config.json + *.sh + *.js"  # Mixed shell + Lambda JS + AWS config
+      confidence: 85
+
+    # Validation rules
+    validation:
+      required_files:
+        - "*.sh"
+        - "src/aws-config.json"
+      required_directories:
+        - "src/lambda"
+        - "src/scripts"
+      optional_files:
+        - "README.md"
+        - ".gitignore"
+        - "setup-aws-lbs.sh"
+      file_patterns:
+        - "*.sh"
+        - "*.js"
+        - "*.json"
+
+    # Test execution configuration
+    testing:
+      test_framework: "none"
+      test_directory: ""
+      test_file_pattern: ""
+      test_command: ""
+      coverage_required: false
+      coverage_threshold: 0
+
+    # Quality standards
+    quality:
+      linters:
+        - name: "shellcheck"
+          enabled: true
+          command: "shellcheck"
+          args: ["-x", "-S", "warning"]
+          file_pattern: "*.sh"
+      documentation_required: true
+      inline_comments_recommended: true
+      readme_required: true
+      api_documentation_required: true
+      api_documentation_format: "markdown"
+
+    # Dependencies configuration
+    dependencies:
+      package_files: ["src/lambda/*/package.json"]
+      lock_files: ["src/lambda/*/package-lock.json"]
+      validation_required: true
+      security_audit_required: true
+      audit_command: "npm audit --prefix src/lambda/<function>"
+
+    # Build configuration
+    build:
+      required: true
+      build_command: "npm install --production && zip -r function.zip ."
+      output_directory: "src/lambda"
+
+    # Deployment configuration
+    deployment:
+      type: "serverless"
+      requires_build: true
+      artifact_patterns:
+        - "*.sh"
+        - "src/scripts/*.sh"
+        - "src/lambda/**/*.js"
+        - "src/lambda/**/package.json"
+        - "src/aws-config.json"
+      environment_required: true
+
+    # Language-specific best practices and standards
+    ai_guidance:
+      testing_standards:
+        - "Verify AWS resources exist after setup with 'aws <service> describe/list' commands"
+        - "Smoke-test API endpoints with curl after deployment"
+        - "Validate Lambda function invocations via aws lambda invoke"
+        - "Check CloudWatch Logs for runtime errors after each deployment"
+        - "Test CORS headers with an OPTIONS preflight request"
+
+      style_guides:
+        - "Google Shell Style Guide for provisioning scripts"
+        - "AWS Lambda Node.js best practices"
+        - "AWS Well-Architected Framework — Serverless Lens"
+
+      best_practices:
+        - "Make all provisioning scripts idempotent (create-or-update semantics)"
+        - "Store generated ARNs and IDs in src/aws-config.json; never hardcode them"
+        - "Use least-privilege IAM policies scoped to specific resource ARNs"
+        - "Read ALLOWED_ORIGIN from environment variables at Lambda runtime, not at deploy time"
+        - "Package Lambda dependencies with npm install --production before zipping"
+        - "Use set -euo pipefail in every shell script for strict error handling"
+        - "Support AWS_REGION and ALLOWED_ORIGIN overrides via environment variables"
+        - "Use jq for all JSON parsing in shell scripts; avoid grep/sed on JSON"
+        - "Log meaningful progress messages (Step X/N: ...) in provisioning scripts"
+        - "Add a cleanup section to README.md with explicit aws CLI delete commands"
+        - "Implement CORS on both API Gateway level and Lambda response headers"
+        - "Stream Lambda logs with 'aws logs tail --follow' for live debugging"
+
+      directory_standards:
+        - "Root-level orchestration script (setup-aws-lbs.sh) calls sub-scripts in order"
+        - "src/scripts/ for infrastructure setup and deployment shell scripts"
+        - "src/lambda/<function-name>/ for each Lambda handler with its own package.json"
+        - "src/aws-config.json for generated AWS resource identifiers (not committed)"
+        - "README.md at root and src/lambda/<function-name>/ documenting the API contract"
+
+      aws_architecture_patterns:
+        - "API Gateway HTTP API (v2) + Lambda integration for low-latency REST endpoints"
+        - "Separate Lambda functions per route for single-responsibility"
+        - "AWS Location Service for geocoding and map tile serving"
+        - "Lambda resource-based policy to authorize API Gateway invocations"
+        - "CloudWatch log groups automatically created per Lambda function"
+        - "Environment variables injected at deploy time for region, resource names, and CORS origin"
+
+  # ----------------------------------------------------------------------------
   # Generic Project (Fallback)
   # ----------------------------------------------------------------------------
   generic:
@@ -823,10 +951,16 @@ project_kinds:
 # ============================================================================
 
 metadata:
-  schema_version: "1.2.0"
-  last_updated: "2026-01-30"
+  schema_version: "1.3.1"
+  last_updated: "2026-02-20"
   compatible_workflow_version: "2.3.1"
   changelog:
+    - version: "1.3.1"
+      date: "2026-02-20"
+      changes: "Enhanced aws_lbs_backend_setup with detection section documenting file/directory indicators for auto-detection"
+    - version: "1.3.0"
+      date: "2026-02-20"
+      changes: "Added aws_lbs_backend_setup project kind for serverless AWS Location-Based Service backends"
     - version: "1.2.0"
       date: "2026-01-30"
       changes: "Added configuration_library project kind for template/config repositories"

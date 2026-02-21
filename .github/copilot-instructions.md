@@ -78,7 +78,7 @@ ai_workflow_core/
 │   └── copilot-instructions.md  # This file (GitHub Copilot instructions)
 ├── config/                      # Configuration templates
 │   ├── .workflow-config.yaml.template  # Main workflow config template
-│   ├── ai_helpers.yaml          # AI helper definitions (2,927+ lines, v6.3.0 - 16 personas)
+│   ├── ai_helpers.yaml          # AI helper definitions (3,300+ lines, v6.4.0 - 17 personas)
 │   ├── ai_prompts_project_kinds.yaml   # Project-specific AI prompts (v1.2.0, aligned with project_kinds)
 │   ├── project_kinds.yaml       # Project type definitions & validation rules (8 kinds: shell_script_automation, nodejs_api, static_website, client_spa, react_spa, python_app, configuration_library, generic)
 │   └── README.md
@@ -146,7 +146,7 @@ target_project/
 **config/**: Contains all template configuration files
 - `.workflow-config.yaml.template`: Main config with placeholders
 - `project_kinds.yaml`: Defines validation rules per project type (8 kinds: shell_script_automation, nodejs_api, react_spa, python_app, client_spa, static_website, configuration_library, generic)
-- `ai_helpers.yaml`: Large file (2,927+ lines, v6.3.0) with AI helper configurations for 16 personas
+- `ai_helpers.yaml`: Large file (3,300+ lines, v6.4.0) with AI helper configurations for 17 personas
 - `ai_prompts_project_kinds.yaml`: Project-specific AI prompts (v1.2.0, aligned with project_kinds)
 - Project types define test frameworks, linters, build systems, and best practices
 
@@ -405,7 +405,7 @@ When assisting with this project, reference these critical documents:
 
 6. **config/.workflow-config.yaml.template**: Main configuration template with placeholders
 7. **config/project_kinds.yaml**: Project type definitions with validation rules (8 project types)
-8. **config/ai_helpers.yaml**: AI helper configurations (2,927+ lines, v6.3.0 - 16 personas)
+8. **config/ai_helpers.yaml**: AI helper configurations (3,300+ lines, v6.4.0 - 17 personas)
 9. **config/ai_prompts_project_kinds.yaml**: Project-specific AI prompts
 10. **config/README.md**: Configuration system overview
 
@@ -546,7 +546,7 @@ When updating documentation:
 
 ### When Helping with AI Personas
 
-The repository includes 16 AI personas in `config/ai_helpers.yaml` (v6.3.0):
+The repository includes 17 AI personas in `config/ai_helpers.yaml` (v6.4.0):
 
 **Documentation Personas**:
 - `doc_analysis_prompt`: Incremental documentation updates
@@ -564,6 +564,9 @@ The repository includes 16 AI personas in `config/ai_helpers.yaml` (v6.3.0):
 - `e2e_test_engineer_prompt`: E2E implementation (HOW to test E2E)
 - `step5_test_review_prompt`: Test code quality review
 
+**Cloud Architecture Personas**:
+- `aws_cloud_architect_prompt`: **NEW v6.4.0** - Senior AWS Cloud Architect for cloud strategy, architecture, and operations
+
 **E2E Test Engineer Persona** (v6.3.0):
 - **Use Case**: End-to-end testing for front-end projects (client_spa, react_spa, static_website)
 - **Expertise**: Visual testing (Percy, Chromatic), browser automation (Playwright, Selenium, Cypress), user journey testing, accessibility testing automation, performance testing (Core Web Vitals)
@@ -573,6 +576,11 @@ The repository includes 16 AI personas in `config/ai_helpers.yaml` (v6.3.0):
   - `e2e_test_engineer_prompt` = HOW to test E2E (automation, visual testing)
   - `step5_test_review_prompt` = Test code quality review
   - `front_end_developer_prompt` = Implementation + unit tests
+
+**AWS Cloud Architect Persona** (v6.4.0):
+- **Use Case**: Designing, reviewing, and optimizing AWS cloud solutions (any project type)
+- **Expertise**: EC2/S3/Lambda/ECS/EKS/VPC/IAM, Terraform/CloudFormation/CDK, security (GuardDuty/WAF/KMS), cost optimization, CloudWatch/X-Ray observability, migration (6 R's), DevOps/CI-CD, Amazon Location Service, Route 53 geo routing, CloudFront geo-restriction, AWS Local Zones/Wavelength
+- **When to Use**: Architecture design/review, cloud migration planning, IaC development, Well-Architected reviews, location-based service integration, cost optimization
 
 ### When Helping with GitHub Workflows
 

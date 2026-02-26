@@ -1,0 +1,163 @@
+[2026-02-26T23:24:05.547Z] 
+→ Starting: Documentation Optimization
+[2026-02-26T23:24:05.547Z] Documentation optimization initialized
+[2026-02-26T23:24:05.547Z] ════════════════════════════════════════════════════════════
+[2026-02-26T23:24:05.547Z] 🔷  Step 2.5: Documentation Optimization
+[2026-02-26T23:24:05.547Z] ════════════════════════════════════════════════════════════
+[2026-02-26T23:24:05.548Z] Phase 1: Heuristics Analysis (56 files)
+[2026-02-26T23:24:05.552Z] Calculating content hashes...
+[2026-02-26T23:24:05.554Z] Found 1 duplicate groups (1 redundant files)
+[2026-02-26T23:24:05.554Z] Analyzing document similarity...
+[2026-02-26T23:24:06.136Z] Found 1 redundant pairs above 80% similarity
+[2026-02-26T23:24:06.136Z] Found 1 exact duplicates, 1 redundant pairs
+[2026-02-26T23:24:06.136Z] Phase 2: Git History Analysis
+[2026-02-26T23:24:06.137Z] Analyzing git history for 56 files...
+[2026-02-26T23:24:06.506Z] Completed git analysis for 56 files
+[2026-02-26T23:24:06.507Z] Found 0 outdated files
+[2026-02-26T23:24:06.507Z] Phase 3: Version Reference Analysis
+[2026-02-26T23:24:06.509Z] Detected version from CHANGELOG.md: 6.5.0
+[2026-02-26T23:24:06.509Z] Analyzing version references in 56 files (current: 6.5.0)...
+[2026-02-26T23:24:06.519Z] Completed version analysis for 56 files
+[2026-02-26T23:24:06.520Z] Version analysis complete (53 total outdated)
+[2026-02-26T23:24:06.520Z] Phase 4: AI Edge Case Analysis (skipped - no AI analyzer)
+[2026-02-26T23:24:06.520Z] Phase 5: Optimization Summary
+[2026-02-26T23:24:06.520Z] 
+📊 Analysis Results:
+───────────────────
+  Total files analyzed: 56
+  Exact duplicates: 1
+  Redundant pairs: 1
+  Outdated files: 53
+  Files to optimize: 54
+
+[2026-02-26T23:24:06.520Z] Phase 6: Applying Optimizations
+[2026-02-26T23:24:06.520Z] Consolidating 1 duplicate groups...
+[2026-02-26T23:24:06.522Z] Created archive: /home/mpb/Documents/GitHub/ai_workflow_core/.ai_workflow/archive/docs/20260226_202406
+[2026-02-26T23:24:06.522Z] Consolidation complete: 0 removed, 0 kept
+[2026-02-26T23:24:06.522Z] Archiving 53 outdated files...
+[2026-02-26T23:24:06.522Z] Created archive: /home/mpb/Documents/GitHub/ai_workflow_core/.ai_workflow/archive/docs/20260226_202406
+[2026-02-26T23:24:06.523Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/ARCHITECTURE.md
+[2026-02-26T23:24:06.523Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/ARCHITECTURE.md
+[2026-02-26T23:24:06.523Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/CONTRIBUTING.md
+[2026-02-26T23:24:06.523Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/CONTRIBUTING.md
+[2026-02-26T23:24:06.523Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/DEPLOYMENT.md
+[2026-02-26T23:24:06.523Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/DEPLOYMENT.md
+[2026-02-26T23:24:06.524Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/INTEGRATION.md
+[2026-02-26T23:24:06.524Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/INTEGRATION.md
+[2026-02-26T23:24:06.524Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/INTEGRATION_QUICK_REFERENCE.md
+[2026-02-26T23:24:06.524Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/INTEGRATION_QUICK_REFERENCE.md
+[2026-02-26T23:24:06.524Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/SECURITY.md
+[2026-02-26T23:24:06.524Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/SECURITY.md
+[2026-02-26T23:24:06.526Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/TESTING.md
+[2026-02-26T23:24:06.526Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/TESTING.md
+[2026-02-26T23:24:06.526Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/advanced/CI_CD_INTEGRATION.md
+[2026-02-26T23:24:06.526Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/advanced/CI_CD_INTEGRATION.md
+[2026-02-26T23:24:06.527Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/advanced/CUSTOM_WORKFLOW_CREATION.md
+[2026-02-26T23:24:06.527Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/advanced/CUSTOM_WORKFLOW_CREATION.md
+[2026-02-26T23:24:06.527Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/advanced/MULTI_LANGUAGE_SETUP.md
+[2026-02-26T23:24:06.527Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/advanced/MULTI_LANGUAGE_SETUP.md
+[2026-02-26T23:24:06.527Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/advanced/README.md
+[2026-02-26T23:24:06.527Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/advanced/README.md
+[2026-02-26T23:24:06.527Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/api/AI_HELPERS_REFERENCE.md
+[2026-02-26T23:24:06.527Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/api/AI_HELPERS_REFERENCE.md
+[2026-02-26T23:24:06.527Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/api/AI_PROMPTS_REFERENCE.md
+[2026-02-26T23:24:06.528Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/api/AI_PROMPTS_REFERENCE.md
+[2026-02-26T23:24:06.528Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/api/CONFIG_REFERENCE.md
+[2026-02-26T23:24:06.528Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/api/CONFIG_REFERENCE.md
+[2026-02-26T23:24:06.528Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/api/MODEL_SELECTION_RULES_REFERENCE.md
+[2026-02-26T23:24:06.528Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/api/MODEL_SELECTION_RULES_REFERENCE.md
+[2026-02-26T23:24:06.528Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/api/PLACEHOLDER_REFERENCE.md
+[2026-02-26T23:24:06.528Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/api/PLACEHOLDER_REFERENCE.md
+[2026-02-26T23:24:06.528Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/api/PROJECT_KINDS_SCHEMA.md
+[2026-02-26T23:24:06.528Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/api/PROJECT_KINDS_SCHEMA.md
+[2026-02-26T23:24:06.528Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/api/README.md
+[2026-02-26T23:24:06.528Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/api/README.md
+[2026-02-26T23:24:06.529Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/api/SCRIPT_API_REFERENCE.md
+[2026-02-26T23:24:06.529Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/api/SCRIPT_API_REFERENCE.md
+[2026-02-26T23:24:06.529Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/api/VALIDATION_RULES_REFERENCE.md
+[2026-02-26T23:24:06.529Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/api/VALIDATION_RULES_REFERENCE.md
+[2026-02-26T23:24:06.529Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/architecture/OVERVIEW.md
+[2026-02-26T23:24:06.529Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/architecture/OVERVIEW.md
+[2026-02-26T23:24:06.529Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/architecture/TEMPLATE_SYSTEM.md
+[2026-02-26T23:24:06.529Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/architecture/TEMPLATE_SYSTEM.md
+[2026-02-26T23:24:06.529Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/developers/ADDING_PROJECT_KINDS.md
+[2026-02-26T23:24:06.529Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/developers/ADDING_PROJECT_KINDS.md
+[2026-02-26T23:24:06.529Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/developers/ONBOARDING.md
+[2026-02-26T23:24:06.529Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/developers/ONBOARDING.md
+[2026-02-26T23:24:06.530Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/developers/README.md
+[2026-02-26T23:24:06.530Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/developers/README.md
+[2026-02-26T23:24:06.530Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/developers/TEMPLATE_AUTHORING.md
+[2026-02-26T23:24:06.530Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/developers/TEMPLATE_AUTHORING.md
+[2026-02-26T23:24:06.530Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/diagrams/ARCHITECTURE_DIAGRAMS.md
+[2026-02-26T23:24:06.530Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/diagrams/ARCHITECTURE_DIAGRAMS.md
+[2026-02-26T23:24:06.530Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/diagrams/README.md
+[2026-02-26T23:24:06.530Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/diagrams/README.md
+[2026-02-26T23:24:06.530Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/guides/FAQ.md
+[2026-02-26T23:24:06.530Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/guides/FAQ.md
+[2026-02-26T23:24:06.530Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/guides/GETTING_STARTED.md
+[2026-02-26T23:24:06.530Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/guides/GETTING_STARTED.md
+[2026-02-26T23:24:06.531Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/guides/INTEGRATION_BEST_PRACTICES.md
+[2026-02-26T23:24:06.531Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/guides/INTEGRATION_BEST_PRACTICES.md
+[2026-02-26T23:24:06.531Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/guides/MIGRATION_GUIDE.md
+[2026-02-26T23:24:06.531Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/guides/MIGRATION_GUIDE.md
+[2026-02-26T23:24:06.531Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/guides/ML_OPTIMIZATION_GUIDE.md
+[2026-02-26T23:24:06.531Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/guides/ML_OPTIMIZATION_GUIDE.md
+[2026-02-26T23:24:06.531Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/guides/MULTI_STAGE_PIPELINE_GUIDE.md
+[2026-02-26T23:24:06.531Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/guides/MULTI_STAGE_PIPELINE_GUIDE.md
+[2026-02-26T23:24:06.531Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/guides/PROJECT_REFERENCE.md
+[2026-02-26T23:24:06.531Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/guides/PROJECT_REFERENCE.md
+[2026-02-26T23:24:06.531Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/guides/QUICK_START.md
+[2026-02-26T23:24:06.531Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/guides/QUICK_START.md
+[2026-02-26T23:24:06.532Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/guides/README.md
+[2026-02-26T23:24:06.532Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/guides/README.md
+[2026-02-26T23:24:06.532Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/guides/STRUCTURE_VALIDATION_TUTORIAL.md
+[2026-02-26T23:24:06.532Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/guides/STRUCTURE_VALIDATION_TUTORIAL.md
+[2026-02-26T23:24:06.532Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/guides/TROUBLESHOOTING.md
+[2026-02-26T23:24:06.532Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/guides/TROUBLESHOOTING.md
+[2026-02-26T23:24:06.532Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/guides/VERSION_MANAGEMENT.md
+[2026-02-26T23:24:06.532Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/guides/VERSION_MANAGEMENT.md
+[2026-02-26T23:24:06.532Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/misc/DOCUMENTATION_INDEX.md
+[2026-02-26T23:24:06.532Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/misc/DOCUMENTATION_INDEX.md
+[2026-02-26T23:24:06.532Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/misc/documentation_analysis_parallel.md
+[2026-02-26T23:24:06.532Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/misc/documentation_analysis_parallel.md
+[2026-02-26T23:24:06.532Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/misc/documentation_updates.md
+[2026-02-26T23:24:06.532Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/misc/documentation_updates.md
+[2026-02-26T23:24:06.533Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/reference/COMMAND_CHEAT_SHEET.md
+[2026-02-26T23:24:06.533Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/reference/COMMAND_CHEAT_SHEET.md
+[2026-02-26T23:24:06.533Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/reference/QUICK_REFERENCE_CARD.md
+[2026-02-26T23:24:06.533Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/reference/QUICK_REFERENCE_CARD.md
+[2026-02-26T23:24:06.533Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/reference/README.md
+[2026-02-26T23:24:06.533Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/reference/README.md
+[2026-02-26T23:24:06.533Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/reports/analysis/SHELL_SCRIPT_VALIDATION_REPORT.md
+[2026-02-26T23:24:06.533Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/reports/analysis/SHELL_SCRIPT_VALIDATION_REPORT.md
+[2026-02-26T23:24:06.533Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/reports/analysis/VALIDATION_RESULTS_INDEX.md
+[2026-02-26T23:24:06.533Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/reports/analysis/VALIDATION_RESULTS_INDEX.md
+[2026-02-26T23:24:06.533Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/reports/analysis/documentation_analysis_parallel.md
+[2026-02-26T23:24:06.533Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/reports/analysis/documentation_analysis_parallel.md
+[2026-02-26T23:24:06.533Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/testing/README.md
+[2026-02-26T23:24:06.533Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/testing/README.md
+[2026-02-26T23:24:06.534Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/workflow-automation/README.md
+[2026-02-26T23:24:06.534Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/workflow-automation/README.md
+[2026-02-26T23:24:06.534Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/workflow-automation/SCRIPTS_COMPREHENSIVE_GUIDE.md
+[2026-02-26T23:24:06.534Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/workflow-automation/SCRIPTS_COMPREHENSIVE_GUIDE.md
+[2026-02-26T23:24:06.534Z] Archived: /home/mpb/Documents/GitHub/ai_workflow_core/docs/workflow-automation/WORKFLOWS_COMPREHENSIVE_GUIDE.md
+[2026-02-26T23:24:06.534Z] Archived outdated: /home/mpb/Documents/GitHub/ai_workflow_core/docs/workflow-automation/WORKFLOWS_COMPREHENSIVE_GUIDE.md
+[2026-02-26T23:24:06.534Z] Archived 53 outdated files
+[2026-02-26T23:24:06.534Z] Phase 7: Generating Report
+[2026-02-26T23:24:06.534Z] Generating optimization report...
+[2026-02-26T23:24:06.535Z] Report saved: /home/mpb/Documents/GitHub/ai_workflow_core/.ai_workflow/archive/docs/20260226_202406/optimization_report.md
+[2026-02-26T23:24:06.535Z] 
+📊 Optimization Complete!
+═══════════════════════
+  Files analyzed: 56
+  Files optimized: 53
+  Size saved: 0KB (0%)
+  Token savings: ~0
+
+[2026-02-26T23:24:06.535Z] 
+Full report: /home/mpb/Documents/GitHub/ai_workflow_core/.ai_workflow/archive/docs/20260226_202406/optimization_report.md
+[2026-02-26T23:24:06.535Z] ✓ Workflow complete (1s)
+[2026-02-26T23:24:06.535Z] ✓ Step step_02_5 completed in 988ms
+[2026-02-26T23:24:06.535Z] [DEBUG] [Performance] step_02_5: 988ms
+[2026-02-26T23:24:06.535Z] [DEBUG] Recorded outcome for step_02_5: success
+[2026-02-26T23:24:06.535Z] ✓ Completed: Documentation Optimization (1s)

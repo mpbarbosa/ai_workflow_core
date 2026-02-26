@@ -2,13 +2,33 @@
 
 All notable changes to the AI Workflow Core project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.1/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
 ### Added
-- **Directory Structure Awareness Enhancement** (2026-02-12, v6.2.1)
+- **JavaScript Developer Persona** (2026-02-26, v6.5.0)
+  - Added `javascript_developer_prompt`: JavaScript Developer persona for `package.json` management
+  - **Target audience**: Developers & Project Teams creating, maintaining, and updating package.json
+  - **Expertise areas**:
+    - Dependency management: Runtime vs. devDependencies, semver version strategies (`^`, `~`, exact), npm/yarn/pnpm
+    - Script authoring: `start`, `test`, `build`, `lint`, `format` command-line aliases, pre/post hooks, cross-env
+    - Project metadata: `name`, `version`, `description`, `license`, `main`/`module`/`exports`, `repository`, `keywords`
+    - Security hygiene: `npm audit`, lockfile integrity, `overrides`/`resolutions` for transitive vulnerability patching
+    - Compatibility: `engines.node`, `peerDependencies`, `browserslist`, CJS/ESM `type` field
+    - Monorepo/workspaces: `workspaces` array, dependency hoisting, Turborepo/Nx integration
+  - **Methodology**: Dependency classification framework, semver selection strategy, script composition patterns, security governance
+  - **Quality checklist**: 12 checks covering name format, entry points, dependency placement, scripts, audit, lockfile, Node.js engine, and privacy
+  - **Complements existing personas**:
+    - `front_end_developer_prompt`: UI/code implementation (consumes packages declared here)
+    - `configuration_specialist_prompt`: Broader project configuration management
+  - **Total personas**: 18 (was 17)
+  - **Updated files**:
+    - `config/ai_helpers.yaml`: v6.4.0 → v6.5.0 (new persona appended, version header updated)
+    - `.github/copilot-instructions.md`: persona count, list, and detail section updated
+
+
   - Enhanced `technical_writer_prompt` with **STEP 1.5: DIRECTORY STRUCTURE ANALYSIS**
   - **Purpose**: Prevents duplicate documentation file creation by checking subdirectories before creating new files
   - **Real-world problem solved**: AI created `docs/USER_GUIDE.md` when `docs/user/USER_GUIDE.md` already existed
@@ -111,7 +131,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added section on Source ai_workflow v4.0.0 breaking changes (config-driven execution)
   - Added section on Migration Target ai_workflow.js v1.3.0 (Phase 8 complete)
   - Documented step renaming: `step_01` → `documentation_updates`, etc.
-  - Updated notable changes for v1.0.0 section with detailed project status
+  - Updated notable changes for v1.0.1 section with detailed project status
   - Clarified 100% backward compatibility in source ai_workflow v4.0.0
 
 ### Added
@@ -145,7 +165,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated cache cleanup to use `.incremental_cache/` (was `.ai_cache/`)
   - Added note about Node.js cleanup_handlers.js implementation (v2.0.0) in parent project
   - Aligned directory structure with current .ai_workflow/ standard
-  - Updated version from 1.0.0 to 2.0.0, date from 2025-12-20 to 2026-02-01
+  - Updated version from 1.0.1 to 2.0.0, date from 2025-12-20 to 2026-02-01
 - **Parent Project Status Update** (2026-02-09)
   - **Source ai_workflow (Bash)** updated to v4.0.0 (released 2026-02-08)
   - **Major Breaking Changes in Source v4.0.0**:
@@ -330,7 +350,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - `config/paths.yaml` - Removed as it's project-specific and should be created by consuming projects, not provided as a template
 
-## [1.0.0] - 2026-01-29
+## [1.0.1] - 2026-01-29
 
 ### Added
 - Initial release of ai_workflow_core as standalone repository
@@ -380,7 +400,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
-- **1.0.0** (2026-01-29) - Initial release
+- **1.0.1** (2026-01-29) - Initial release
 
 ## Migration Notes
 

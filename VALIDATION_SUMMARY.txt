@@ -65,7 +65,7 @@ MEDIUM PRIORITY ISSUES (Nice to Have)
 
 [3] SCRIPT VERSION CONSISTENCY
     Location: Multiple script files
-    Problem:  Inconsistent version numbering (some v2.0.0, some v1.0.0, some none)
+    Problem:  Inconsistent version numbering (some v2.0.0, some v1.0.1, some none)
               Not linked to CHANGELOG.md entries
     Impact:   MEDIUM - Affects maintainability and release tracking
     Fix Time: 20 minutes
@@ -135,7 +135,7 @@ validate_context_blocks.py
 validate_structure.py
   Status:               ✅ EXCELLENT
   Documentation:        Detailed docstring with all options
-  Version:              1.0.0 (well documented)
+  Version:              1.0.1 (well documented)
   Exit codes:           All 3 codes defined (0, 1, 2)
   Parameters:           All 3 options fully documented
   Error handling:       Comprehensive

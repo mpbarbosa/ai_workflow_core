@@ -14,7 +14,7 @@ npm init -y
 
 # Add submodule (pinned to specific version)
 git submodule add https://github.com/mpbarbosa/ai_workflow_core.git .workflow_core
-cd .workflow_core && git checkout v1.0.0 && cd ..
+cd .workflow_core && git checkout v1.0.1 && cd ..
 git submodule update --init --recursive
 
 # Copy and customize configuration
@@ -98,7 +98,7 @@ project:
   type: "nodejs-application"
   description: "Node.js application with workflow automation"
   kind: "nodejs_api"
-  version: "1.0.0"
+  version: "1.0.1"
 
 tech_stack:
   primary_language: "javascript"
@@ -136,7 +136,7 @@ Update `package.json`:
 ```json
 {
   "name": "my-nodejs-project",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Node.js application with workflow automation",
   "main": "src/index.js",
   "scripts": {
@@ -354,11 +354,11 @@ Edit `.workflow-config.yaml` to customize:
 
 ```bash
 # Always pin to tags
-cd .workflow_core && git checkout v1.0.0 && cd ..
+cd .workflow_core && git checkout v1.0.1 && cd ..
 
 # Never track branches in production
 # Bad: git checkout main
-# Good: git checkout v1.0.0
+# Good: git checkout v1.0.1
 ```
 
 ### For Development

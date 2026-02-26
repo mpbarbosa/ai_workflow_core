@@ -123,7 +123,7 @@ Before submitting your example, verify:
 - [ ] All placeholders replaced with actual values
 - [ ] PROJECT_TYPE uses hyphens (e.g., "nodejs-application")
 - [ ] PROJECT_KIND uses underscores (e.g., "nodejs_api")
-- [ ] Version format: "1.0.0" (no 'v' prefix)
+- [ ] Version format: "1.0.1" (no 'v' prefix)
 - [ ] Test command is executable and works
 - [ ] Lint command is executable and works
 - [ ] Comments explain non-obvious choices
@@ -326,7 +326,7 @@ See `config/project_kinds.yaml` for complete validation rules per language/proje
 
 ---
 
-**Version**: 1.0.0  
+**Version**: 1.0.1  
 **Last Updated**: 2026-01-31  
 **Maintainer**: ai_workflow_core team
 

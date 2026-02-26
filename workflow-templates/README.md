@@ -195,4 +195,4 @@ Default triggers (customize as needed):
 ---
 
 **Last Updated**: 2026-01-30  
-**ai_workflow_core Version**: 1.0.0
+**ai_workflow_core Version**: 1.0.1

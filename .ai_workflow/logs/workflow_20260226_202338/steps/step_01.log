@@ -1,0 +1,101 @@
+[2026-02-26T23:23:38.354Z] 
+→ Starting: Documentation Updates
+[2026-02-26T23:23:38.355Z] ════════════════════════════════════════════════════════════
+[2026-02-26T23:23:38.355Z] 🔷  Step 1: AI-Powered Documentation Updates
+[2026-02-26T23:23:38.355Z] ════════════════════════════════════════════════════════════
+[2026-02-26T23:23:38.355Z] Changed files detected: 51 files
+[2026-02-26T23:23:38.355Z] Classification: 48 docs, 0 source, 0 tests
+[2026-02-26T23:23:38.355Z] Checking documentation changes (incremental mode)...
+[2026-02-26T23:23:38.355Z] Step1: No cache found, starting fresh
+[2026-02-26T23:23:38.356Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/optimization_report.md
+[2026-02-26T23:23:38.356Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/ADDING_PROJECT_KINDS.md
+[2026-02-26T23:23:38.356Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/AI_HELPERS_REFERENCE.md
+[2026-02-26T23:23:38.356Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/AI_PROMPTS_REFERENCE.md
+[2026-02-26T23:23:38.356Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/ARCHITECTURE.md
+[2026-02-26T23:23:38.356Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/ARCHITECTURE_DIAGRAMS.md
+[2026-02-26T23:23:38.356Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/CI_CD_INTEGRATION.md
+[2026-02-26T23:23:38.356Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/COMMAND_CHEAT_SHEET.md
+[2026-02-26T23:23:38.356Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/CONFIG_REFERENCE.md
+[2026-02-26T23:23:38.356Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/CONTRIBUTING.md
+[2026-02-26T23:23:38.356Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/CUSTOM_WORKFLOW_CREATION.md
+[2026-02-26T23:23:38.356Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/DEPLOYMENT.md
+[2026-02-26T23:23:38.356Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/DOCUMENTATION_INDEX.md
+[2026-02-26T23:23:38.356Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/FAQ.md
+[2026-02-26T23:23:38.356Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/GETTING_STARTED.md
+[2026-02-26T23:23:38.356Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/INTEGRATION.md
+[2026-02-26T23:23:38.356Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/INTEGRATION_BEST_PRACTICES.md
+[2026-02-26T23:23:38.356Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/INTEGRATION_QUICK_REFERENCE.md
+[2026-02-26T23:23:38.356Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/MIGRATION_GUIDE.md
+[2026-02-26T23:23:38.356Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/ML_OPTIMIZATION_GUIDE.md
+[2026-02-26T23:23:38.356Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/MODEL_SELECTION_RULES_REFERENCE.md
+[2026-02-26T23:23:38.356Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/MULTI_LANGUAGE_SETUP.md
+[2026-02-26T23:23:38.356Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/MULTI_STAGE_PIPELINE_GUIDE.md
+[2026-02-26T23:23:38.356Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/ONBOARDING.md
+[2026-02-26T23:23:38.357Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/OVERVIEW.md
+[2026-02-26T23:23:38.357Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/PLACEHOLDER_REFERENCE.md
+[2026-02-26T23:23:38.357Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/PROJECT_KINDS_SCHEMA.md
+[2026-02-26T23:23:38.357Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/PROJECT_REFERENCE.md
+[2026-02-26T23:23:38.357Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/QUICK_REFERENCE_CARD.md
+[2026-02-26T23:23:38.357Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/QUICK_START.md
+[2026-02-26T23:23:38.357Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/README.md
+[2026-02-26T23:23:38.357Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/SCRIPTS_COMPREHENSIVE_GUIDE.md
+[2026-02-26T23:23:38.357Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/SCRIPT_API_REFERENCE.md
+[2026-02-26T23:23:38.357Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/SECURITY.md
+[2026-02-26T23:23:38.357Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/SHELL_SCRIPT_VALIDATION_REPORT.md
+[2026-02-26T23:23:38.357Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/STRUCTURE_VALIDATION_TUTORIAL.md
+[2026-02-26T23:23:38.357Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/TEMPLATE_AUTHORING.md
+[2026-02-26T23:23:38.357Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/TEMPLATE_SYSTEM.md
+[2026-02-26T23:23:38.357Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/TESTING.md
+[2026-02-26T23:23:38.357Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/TROUBLESHOOTING.md
+[2026-02-26T23:23:38.357Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/VALIDATION_RESULTS_INDEX.md
+[2026-02-26T23:23:38.357Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/VALIDATION_RULES_REFERENCE.md
+[2026-02-26T23:23:38.357Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/VERSION_MANAGEMENT.md
+[2026-02-26T23:23:38.357Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/WORKFLOWS_COMPREHENSIVE_GUIDE.md
+[2026-02-26T23:23:38.357Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/documentation_analysis_parallel.md
+[2026-02-26T23:23:38.357Z] [DEBUG] Step1: File no longer exists (skip): .ai_workflow/archive/docs/20260226_202033/outdated/documentation_updates.md
+[2026-02-26T23:23:38.357Z] Step1: Detected 2 changed files, 0 unchanged
+[2026-02-26T23:23:38.357Z] ✓ Incremental: 46 docs unchanged (skipped)
+[2026-02-26T23:23:38.357Z] Running documentation consistency validation...
+[2026-02-26T23:23:39.667Z] ✓ GitHub Copilot SDK initialized successfully
+[2026-02-26T23:23:40.659Z] Available Copilot models (13): claude-sonnet-4.5, claude-haiku-4.5, claude-opus-4.5, claude-sonnet-4, gemini-3-pro-preview, gpt-5.2-codex, gpt-5.2, gpt-5.1-codex-max, gpt-5.1-codex, gpt-5.1, gpt-5.1-codex-mini, gpt-5-mini, gpt-4.1
+[2026-02-26T23:23:40.704Z] [DEBUG] AI cache initialized: .ai_workflow/.ai_cache
+[2026-02-26T23:23:40.704Z] Running parallel documentation analysis...
+[2026-02-26T23:23:40.704Z] Step1Parallel: Validating 2 files across 2 categories (BALANCED)
+[2026-02-26T23:23:40.705Z] [DEBUG] Cache miss: f6f596fa...
+[2026-02-26T23:23:40.705Z] [DEBUG] Request Options: {"model":"gpt-4.1","temperature":0.7,"maxTokens":4000,"stream":false,"persona":"documentation_expert","cache":true}
+[2026-02-26T23:23:40.705Z] [DEBUG] Persona: documentation_expert
+[2026-02-26T23:23:40.705Z] [DEBUG] Model: gpt-4.1
+[2026-02-26T23:23:40.705Z] [AI] SDK call starting — persona: documentation_expert, model: gpt-4.1, prompt_chars: 4755
+[2026-02-26T23:23:40.705Z] [DEBUG] Executing AI request (attempt 1/3)
+[2026-02-26T23:23:40.705Z] [DEBUG] AiHelper._sendRequest called
+[2026-02-26T23:23:40.705Z] [Copilot SDK] Calling sendMessage — model: gpt-4.1, prompt_length: 4755 chars
+[2026-02-26T23:23:40.705Z] [DEBUG] Sending prompt...
+[2026-02-26T23:23:51.332Z] [Copilot SDK] sendAndWait returned — model: gpt-4.1
+[2026-02-26T23:23:51.332Z] [AI] SDK call completed — persona: documentation_expert, model: gpt-4.1, response_chars: 45, latency: 10627ms
+[2026-02-26T23:23:51.334Z] ✓ AI request completed successfully
+[2026-02-26T23:23:51.334Z] [DEBUG] Prompt logged to: 2026-02-26T23-23-51-334Z_0001_documentation_expert.md
+[2026-02-26T23:23:51.337Z] [DEBUG] Response cached: f6f596fa...
+[2026-02-26T23:23:51.337Z] Step1Parallel: Validated changelog (1 files) in 11s
+[2026-02-26T23:23:51.338Z] [DEBUG] Cache miss: f6659c60...
+[2026-02-26T23:23:51.338Z] [DEBUG] Request Options: {"model":"gpt-4.1","temperature":0.7,"maxTokens":4000,"stream":false,"persona":"documentation_expert","cache":true}
+[2026-02-26T23:23:51.338Z] [DEBUG] Persona: documentation_expert
+[2026-02-26T23:23:51.338Z] [DEBUG] Model: gpt-4.1
+[2026-02-26T23:23:51.338Z] [AI] SDK call starting — persona: documentation_expert, model: gpt-4.1, prompt_chars: 4774
+[2026-02-26T23:23:51.338Z] [DEBUG] Executing AI request (attempt 1/3)
+[2026-02-26T23:23:51.338Z] [DEBUG] AiHelper._sendRequest called
+[2026-02-26T23:23:51.338Z] [Copilot SDK] Calling sendMessage — model: gpt-4.1, prompt_length: 4774 chars
+[2026-02-26T23:23:51.338Z] [DEBUG] Sending prompt...
+[2026-02-26T23:23:57.682Z] [Copilot SDK] sendAndWait returned — model: gpt-4.1
+[2026-02-26T23:23:57.682Z] [AI] SDK call completed — persona: documentation_expert, model: gpt-4.1, response_chars: 45, latency: 6344ms
+[2026-02-26T23:23:57.683Z] ✓ AI request completed successfully
+[2026-02-26T23:23:57.684Z] [DEBUG] Prompt logged to: 2026-02-26T23-23-57-683Z_0002_documentation_expert.md
+[2026-02-26T23:23:57.688Z] [DEBUG] Response cached: f6659c60...
+[2026-02-26T23:23:57.688Z] Step1Parallel: Validated other (1 files) in 6s
+[2026-02-26T23:23:57.688Z] Step1Parallel: Completed validation in 17s (2/2 files)
+[2026-02-26T23:23:57.689Z] ✓ Parallel analysis completed: 2 docs in 17ms
+[2026-02-26T23:23:57.689Z] ✓ Step 1 completed successfully
+[2026-02-26T23:23:57.689Z] ✓ Step step_01 completed in 19335ms
+[2026-02-26T23:23:57.689Z] [DEBUG] [Performance] step_01: 19.3s
+[2026-02-26T23:23:57.690Z] ⚠ [WARNING] Operation 'step_01' took 19.3s (memory: 14.87MB)
+[2026-02-26T23:23:57.690Z] [DEBUG] Recorded outcome for step_01: success
+[2026-02-26T23:23:57.690Z] ✓ Completed: Documentation Updates (19s)

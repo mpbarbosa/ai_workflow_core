@@ -29,7 +29,7 @@
 - **Configuration-Driven**: Uses YAML templates with placeholder substitution patterns
 - **Dual Nature**: You're working on both the core templates AND the system that consumes them
 
-**Version**: 1.0.0  
+**Version**: 1.0.1  
 **Parent Project**: [mpbarbosa/ai_workflow](https://github.com/mpbarbosa/ai_workflow) v1.3.0 (Phase 8 Complete)  
 **License**: MIT  
 **Originally extracted from**: [mpbarbosa/ai_workflow](https://github.com/mpbarbosa/ai_workflow)
@@ -78,7 +78,7 @@ ai_workflow_core/
 │   └── copilot-instructions.md  # This file (GitHub Copilot instructions)
 ├── config/                      # Configuration templates
 │   ├── .workflow-config.yaml.template  # Main workflow config template
-│   ├── ai_helpers.yaml          # AI helper definitions (3,300+ lines, v6.4.0 - 17 personas)
+│   ├── ai_helpers.yaml          # AI helper definitions (3,300+ lines, v6.5.0 - 18 personas)
 │   ├── ai_prompts_project_kinds.yaml   # Project-specific AI prompts (v1.2.0, aligned with project_kinds)
 │   ├── project_kinds.yaml       # Project type definitions & validation rules (8 kinds: shell_script_automation, nodejs_api, static_website, client_spa, react_spa, python_app, configuration_library, generic)
 │   └── README.md
@@ -146,7 +146,7 @@ target_project/
 **config/**: Contains all template configuration files
 - `.workflow-config.yaml.template`: Main config with placeholders
 - `project_kinds.yaml`: Defines validation rules per project type (8 kinds: shell_script_automation, nodejs_api, react_spa, python_app, client_spa, static_website, configuration_library, generic)
-- `ai_helpers.yaml`: Large file (3,300+ lines, v6.4.0) with AI helper configurations for 17 personas
+- `ai_helpers.yaml`: Large file (3,300+ lines, v6.5.0) with AI helper configurations for 18 personas
 - `ai_prompts_project_kinds.yaml`: Project-specific AI prompts (v1.2.0, aligned with project_kinds)
 - Project types define test frameworks, linters, build systems, and best practices
 
@@ -182,7 +182,7 @@ Configuration files use `{{PLACEHOLDER}}` syntax for values that projects must c
 | `{{PROJECT_TYPE}}` | Technical project type (hyphenated) | "nodejs-application", "configuration-library" |
 | `{{PROJECT_DESCRIPTION}}` | Brief project description | "RESTful API for user management" |
 | `{{PROJECT_KIND}}` | Project kind from project_kinds.yaml (underscored) | "nodejs_api", "shell_script_automation", "configuration_library" |
-| `{{VERSION}}` | Project version (semver, no 'v' prefix) | "1.0.0" |
+| `{{VERSION}}` | Project version (semver, no 'v' prefix) | "1.0.1" |
 | `{{LANGUAGE}}` | Primary programming language | "javascript", "bash", "python", "yaml" |
 | `{{BUILD_SYSTEM}}` | Build system/package manager | "npm", "webpack", "maven", "none" |
 | `{{TEST_FRAMEWORK}}` | Testing framework | "jest", "pytest", "shell-script", "validation-scripts" |
@@ -192,7 +192,7 @@ Configuration files use `{{PLACEHOLDER}}` syntax for values that projects must c
 **Terminology Note:**
 - `PROJECT_TYPE` uses hyphens: `"nodejs-application"`, `"configuration-library"`
 - `PROJECT_KIND` uses underscores: `"nodejs_api"`, `"configuration_library"`
-- Version format: `"1.0.0"` (no 'v' prefix in config values)
+- Version format: `"1.0.1"` (no 'v' prefix in config values)
 
 ### Configuration Template Example
 
@@ -204,7 +204,7 @@ project:
   type: "{{PROJECT_TYPE}}"  # hyphenated: nodejs-application, configuration-library
   description: "{{PROJECT_DESCRIPTION}}"
   kind: "{{PROJECT_KIND}}"  # underscored: nodejs_api, configuration_library
-  version: "{{VERSION}}"    # no 'v' prefix: 1.0.0
+  version: "{{VERSION}}"    # no 'v' prefix: 1.0.1
 
 tech_stack:
   primary_language: "{{LANGUAGE}}"  # javascript, bash, python, yaml
@@ -228,7 +228,7 @@ project:
   name: "AI Workflow Core"
   type: "configuration-library"  # hyphenated
   kind: "configuration_library"   # underscored
-  version: "1.0.0"                # no 'v' prefix
+  version: "1.0.1"                # no 'v' prefix
 
 tech_stack:
   primary_language: "yaml"
@@ -405,7 +405,7 @@ When assisting with this project, reference these critical documents:
 
 6. **config/.workflow-config.yaml.template**: Main configuration template with placeholders
 7. **config/project_kinds.yaml**: Project type definitions with validation rules (8 project types)
-8. **config/ai_helpers.yaml**: AI helper configurations (3,300+ lines, v6.4.0 - 17 personas)
+8. **config/ai_helpers.yaml**: AI helper configurations (3,300+ lines, v6.5.0 - 18 personas)
 9. **config/ai_prompts_project_kinds.yaml**: Project-specific AI prompts
 10. **config/README.md**: Configuration system overview
 
@@ -546,7 +546,7 @@ When updating documentation:
 
 ### When Helping with AI Personas
 
-The repository includes 17 AI personas in `config/ai_helpers.yaml` (v6.4.0):
+The repository includes 18 AI personas in `config/ai_helpers.yaml` (v6.5.0):
 
 **Documentation Personas**:
 - `doc_analysis_prompt`: Incremental documentation updates
@@ -567,6 +567,9 @@ The repository includes 17 AI personas in `config/ai_helpers.yaml` (v6.4.0):
 **Cloud Architecture Personas**:
 - `aws_cloud_architect_prompt`: **NEW v6.4.0** - Senior AWS Cloud Architect for cloud strategy, architecture, and operations
 
+**JavaScript Project Personas**:
+- `javascript_developer_prompt`: **NEW v6.5.0** - JavaScript Developer for package.json management, dependencies, scripts, and metadata
+
 **E2E Test Engineer Persona** (v6.3.0):
 - **Use Case**: End-to-end testing for front-end projects (client_spa, react_spa, static_website)
 - **Expertise**: Visual testing (Percy, Chromatic), browser automation (Playwright, Selenium, Cypress), user journey testing, accessibility testing automation, performance testing (Core Web Vitals)
@@ -581,6 +584,15 @@ The repository includes 17 AI personas in `config/ai_helpers.yaml` (v6.4.0):
 - **Use Case**: Designing, reviewing, and optimizing AWS cloud solutions (any project type)
 - **Expertise**: EC2/S3/Lambda/ECS/EKS/VPC/IAM, Terraform/CloudFormation/CDK, security (GuardDuty/WAF/KMS), cost optimization, CloudWatch/X-Ray observability, migration (6 R's), DevOps/CI-CD, Amazon Location Service, Route 53 geo routing, CloudFront geo-restriction, AWS Local Zones/Wavelength
 - **When to Use**: Architecture design/review, cloud migration planning, IaC development, Well-Architected reviews, location-based service integration, cost optimization
+
+**JavaScript Developer Persona** (v6.5.0):
+- **Use Case**: Creating, reviewing, and updating `package.json` for Node.js and JavaScript projects (nodejs_api, client_spa, react_spa)
+- **Expertise**: Dependency classification (dependencies vs devDependencies), semver versioning strategies, npm/yarn/pnpm, script authoring (start/test/build/lint/format), project metadata (name, version, license, main/exports), security hygiene (npm audit, lockfile, overrides), workspaces/monorepo configuration
+- **When to Use**: Auditing or authoring package.json, resolving dependency conflicts, defining npm scripts, remediating npm audit vulnerabilities, setting up a new Node.js project's package manifest
+- **Differentiation**:
+  - `javascript_developer_prompt` = package.json management, dependency & script authoring
+  - `front_end_developer_prompt` = UI component implementation and front-end architecture
+  - `configuration_specialist_prompt` = broader project configuration management
 
 ### When Helping with GitHub Workflows
 
@@ -643,7 +655,7 @@ Always clarify which context applies to the current task.
 
 ### Version Compatibility
 
-- **ai_workflow_core version**: 1.0.0
+- **ai_workflow_core version**: 1.0.1
 - **project_kinds.yaml schema version**: 1.2.0 (last updated: 2026-01-30)
 - Maintain backward compatibility within major version
 - Document breaking changes in CHANGELOG.md
@@ -671,7 +683,7 @@ Always clarify which context applies to the current task.
 - Project type field: Use hyphens (e.g., `type: "nodejs-application"`, `type: "configuration-library"`)
 - Project kind field: Use underscores (e.g., `kind: "nodejs_api"`, `kind: "configuration_library"`)
 - YAML keys: Use underscores (e.g., `project_kinds`, `shell_script_automation`)
-- Version format: No 'v' prefix in config values (e.g., `version: "1.0.0"` not `"v1.0.0"`)
+- Version format: No 'v' prefix in config values (e.g., `version: "1.0.1"` not `"v1.0.1"`)
 
 ### Integration Pattern
 

@@ -3,7 +3,7 @@
 **Foundational configuration and templates for AI-powered workflow automation across multiple languages**
 
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](docs/LICENSE)
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-1.0.1-blue.svg)]()
 
 ## Overview
 
@@ -58,7 +58,7 @@ project:
   type: "nodejs-application"            # Replace {{PROJECT_TYPE}}
   description: "My description"         # Replace {{PROJECT_DESCRIPTION}}
   kind: "nodejs_api"                    # Replace {{PROJECT_KIND}} - see config/project_kinds.yaml
-  version: "1.0.0"                      # Replace {{VERSION}}
+  version: "1.0.1"                      # Replace {{VERSION}}
 
 tech_stack:
   primary_language: "javascript"        # Replace {{LANGUAGE}}
@@ -88,7 +88,7 @@ mkdir -p .ai_workflow/{backlog,summaries,logs,metrics,checkpoints,prompts,ml_mod
 | `{{TEST_FRAMEWORK}}` | Testing framework | "jest", "pytest", "shell-script" |
 | `{{TEST_COMMAND}}` | Test command | "npm test", "./tests/run_tests.sh" |
 | `{{LINT_COMMAND}}` | Lint command | "eslint .", "shellcheck **/*.sh" |
-| `{{VERSION}}` | Version number | "1.0.0" |
+| `{{VERSION}}` | Version number | "1.0.1" |
 
 **Terminology Note:**
 - `PROJECT_TYPE` uses **hyphens** for display: `"nodejs-application"`, `"configuration-library"`
@@ -102,9 +102,9 @@ For production systems, **always pin to specific version tags**:
 
 ```bash
 # Pin to stable version
-cd .workflow_core && git checkout v1.0.0 && cd ..
+cd .workflow_core && git checkout v1.0.1 && cd ..
 git add .workflow_core
-git commit -m "Pin ai_workflow_core to v1.0.0"
+git commit -m "Pin ai_workflow_core to v1.0.1"
 ```
 
 **Important for dynamic codebases:**
@@ -240,7 +240,7 @@ Part of [AI Workflow Automation](https://github.com/mpbarbosa/ai_workflow) proje
 
 ---
 
-**Version**: 1.0.0 | **Updated**: 2026-02-01
+**Version**: 1.0.1 | **Updated**: 2026-02-01
 
 ## Automated Validation
 

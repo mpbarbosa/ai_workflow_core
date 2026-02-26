@@ -21,7 +21,7 @@ Exit codes:
     2 - Script error (missing dependencies, etc.)
 
 Author: ai_workflow_core team
-Version: 1.0.0
+Version: 1.0.1
 Last Updated: 2026-01-31
 """
 
@@ -390,7 +390,7 @@ Exit codes:
     parser.add_argument(
         '--version',
         action='version',
-        version='validate_structure.py 1.0.0'
+        version='validate_structure.py 1.0.1'
     )
     
     args = parser.parse_args()

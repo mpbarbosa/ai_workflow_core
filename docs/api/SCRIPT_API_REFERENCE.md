@@ -593,7 +593,7 @@ Checking: Project root directory
 Checking: .workflow_core submodule
 ✓ PASS: Submodule directory exists
 ✓ PASS: Submodule initialized and checked out
-✓ PASS: Pinned to version tag: v1.0.0
+✓ PASS: Pinned to version tag: v1.0.1
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   Configuration
@@ -1234,5 +1234,5 @@ For `.template` files, document placeholders:
 ---
 
 **Last Updated**: 2026-02-09  
-**Version**: 1.0.0  
+**Version**: 1.0.1  
 **Maintainer**: ai_workflow_core team

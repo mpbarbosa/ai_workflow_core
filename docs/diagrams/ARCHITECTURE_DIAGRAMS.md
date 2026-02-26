@@ -2,7 +2,7 @@
 
 **Visual Guide to ai_workflow_core System Design**
 
-**Version**: 1.0.0  
+**Version**: 1.0.1  
 **Last Updated**: 2026-02-12  
 **Purpose**: Visual documentation of system architecture
 
@@ -528,6 +528,6 @@ Start Workflow
 
 ---
 
-**Document Version**: 1.0.0  
+**Document Version**: 1.0.1  
 **Last Updated**: 2026-02-12  
 **Maintained By**: ai_workflow_core team

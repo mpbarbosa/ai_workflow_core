@@ -13,7 +13,7 @@
 - [Version Compatibility](#version-compatibility)
 - [Migration Paths](#migration-paths)
   - [Upgrading to v2.0.0](#upgrading-to-v200-unreleased)
-  - [Upgrading to v1.0.0](#upgrading-to-v100-current)
+  - [Upgrading to v1.0.1](#upgrading-to-v100-current)
 - [Breaking Changes Reference](#breaking-changes-reference)
 - [Migration Checklists](#migration-checklists)
 - [Rollback Procedures](#rollback-procedures)
@@ -47,16 +47,16 @@ ai_workflow_core follows [Semantic Versioning](https://semver.org/):
 - **Patch (1.0.X)**: Bug fixes, backward compatible
 
 **Example**:
-- `v1.0.0` → `v1.1.0`: Safe upgrade, no breaking changes
-- `v1.0.0` → `v2.0.0`: Breaking changes, follow migration guide
+- `v1.0.1` → `v1.1.0`: Safe upgrade, no breaking changes
+- `v1.0.1` → `v2.0.0`: Breaking changes, follow migration guide
 
 ### Migration Risk Levels
 
 | Change Type | Risk | Time | Testing Required |
 |------------|------|------|------------------|
-| Patch (1.0.0 → 1.0.1) | 🟢 Low | 5 min | Basic validation |
-| Minor (1.0.0 → 1.1.0) | 🟡 Medium | 15 min | Config validation |
-| Major (1.0.0 → 2.0.0) | 🔴 High | 30-60 min | Full integration test |
+| Patch (1.0.1 → 1.0.1) | 🟢 Low | 5 min | Basic validation |
+| Minor (1.0.1 → 1.1.0) | 🟡 Medium | 15 min | Config validation |
+| Major (1.0.1 → 2.0.0) | 🔴 High | 30-60 min | Full integration test |
 
 ---
 
@@ -66,14 +66,14 @@ ai_workflow_core follows [Semantic Versioning](https://semver.org/):
 
 | Version | Released | Status | End of Life |
 |---------|----------|--------|-------------|
-| v1.0.0 | 2026-02-01 | ✅ Current | TBD |
+| v1.0.1 | 2026-02-01 | ✅ Current | TBD |
 | v0.x.x | 2025-2026 | ⚠️ Pre-release | 2026-06-01 |
 
 ### Compatibility Matrix
 
 | ai_workflow_core | Source ai_workflow (Bash) | Migration Target ai_workflow.js (Node.js) | Node.js | Python | Bash |
 |-----------------|---------------------------|------------------------------------------|---------|--------|------|
-| v1.0.0 | v4.0.0+ | v1.3.0+ | 18+ | 3.8+ | 4.0+ |
+| v1.0.1 | v4.0.0+ | v1.3.0+ | 18+ | 3.8+ | 4.0+ |
 
 **Important Notes:**
 - **Source ai_workflow v4.0.0** (released 2026-02-08): Configuration-driven step execution, 100% backward compatible
@@ -233,12 +233,12 @@ git push origin main
 
 ---
 
-### Upgrading to v1.0.0 (Current)
+### Upgrading to v1.0.1 (Current)
 
 **Status**: ✅ Stable release  
 **Breaking Changes**: No (initial stable release)
 
-#### From Pre-release (v0.x) to v1.0.0
+#### From Pre-release (v0.x) to v1.0.1
 
 **Estimated Time**: 15-20 minutes
 
@@ -254,7 +254,7 @@ cat .workflow_core/CHANGELOG.md
 ```bash
 cd .workflow_core
 git fetch --tags
-git checkout v1.0.0
+git checkout v1.0.1
 cd ..
 git add .workflow_core
 ```
@@ -301,7 +301,7 @@ bash .workflow_core/scripts/check_integration_health.sh  # If available
 ##### Step 7: Commit
 
 ```bash
-git commit -m "chore: upgrade ai_workflow_core to v1.0.0"
+git commit -m "chore: upgrade ai_workflow_core to v1.0.1"
 ```
 
 ---
@@ -366,7 +366,7 @@ WORKFLOW_DIR="${REPO_ROOT}/.ai_workflow"
 
 ---
 
-### v1.0.0 (Current)
+### v1.0.1 (Current)
 
 **Type**: Initial stable release  
 **Breaking Changes**: None (first major version)
@@ -437,14 +437,14 @@ After upgrading, verify:
 ```bash
 # Rollback to previous version
 cd .workflow_core
-git checkout v1.0.0  # Your previous version
+git checkout v1.0.1  # Your previous version
 cd ..
 git add .workflow_core
 
 # Restore previous config (if backed up)
 cp .workflow-config.yaml.backup .workflow-config.yaml
 
-git commit -m "chore: rollback ai_workflow_core to v1.0.0"
+git commit -m "chore: rollback ai_workflow_core to v1.0.1"
 ```
 
 **Option 2: Reset Branch** (Full rollback)
@@ -587,7 +587,7 @@ echo "✅ Smoke tests passed!"
 
 ## Version-Specific Notes
 
-### v1.0.0 → v2.0.0 (When Released)
+### v1.0.1 → v2.0.0 (When Released)
 
 **Complexity**: High  
 **Time**: 30-60 minutes  
@@ -600,7 +600,7 @@ echo "✅ Smoke tests passed!"
 
 **Recommendation**: Test thoroughly in dev/staging before production deployment.
 
-### v0.x → v1.0.0
+### v0.x → v1.0.1
 
 **Complexity**: Low  
 **Time**: 15-20 minutes  
@@ -638,10 +638,10 @@ echo "✅ Smoke tests passed!"
 **Production projects** should pin to specific versions:
 
 ```bash
-# Pin to v1.0.0
-cd .workflow_core && git checkout v1.0.0 && cd ..
+# Pin to v1.0.1
+cd .workflow_core && git checkout v1.0.1 && cd ..
 git add .workflow_core
-git commit -m "chore: pin ai_workflow_core to v1.0.0"
+git commit -m "chore: pin ai_workflow_core to v1.0.1"
 ```
 
 ### Version Tracking

@@ -1,6 +1,6 @@
 # CI/CD Integration
 
-**Version**: 1.0.0  
+**Version**: 1.0.1  
 **Last Updated**: 2026-02-07  
 **Audience**: DevOps engineers and developers setting up continuous integration and deployment
 
@@ -1231,4 +1231,4 @@ key: v2-${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 ---
 
 **Last Updated**: 2026-02-07  
-**Document Version**: 1.0.0
+**Document Version**: 1.0.1

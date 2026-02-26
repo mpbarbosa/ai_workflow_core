@@ -1,6 +1,6 @@
 # Frequently Asked Questions (FAQ)
 
-**Version**: 1.0.0  
+**Version**: 1.0.1  
 **Last Updated**: 2026-02-07
 
 > **Purpose**: Quick answers to common questions about ai_workflow_core. Organized by topic for easy navigation.
@@ -114,9 +114,9 @@ Each project kind defines language-specific standards (test frameworks, linters,
 **Option 1**: Copy files directly
 ```bash
 # Download and extract
-wget https://github.com/mpbarbosa/ai_workflow_core/archive/refs/tags/v1.0.0.tar.gz
-tar -xzf v1.0.0.tar.gz
-cp -r ai_workflow_core-1.0.0/config/* .
+wget https://github.com/mpbarbosa/ai_workflow_core/archive/refs/tags/v1.0.1.tar.gz
+tar -xzf v1.0.1.tar.gz
+cp -r ai_workflow_core-1.0.1/config/* .
 ```
 
 **Downsides**:
@@ -245,7 +245,7 @@ grep "^  your_kind:" .workflow_core/config/project_kinds.yaml
 
 **4. Manual Review**:
 - Required fields: `project.name`, `project.kind`, `project.version`
-- Version format: `"1.0.0"` (no 'v' prefix)
+- Version format: `"1.0.1"` (no 'v' prefix)
 - Valid kind: Must match `project_kinds.yaml`
 
 ---
@@ -382,7 +382,7 @@ your-project/
 ```bash
 cd .workflow_core
 git fetch --tags
-git checkout main  # or latest tag like v1.0.0
+git checkout main  # or latest tag like v1.0.1
 cd ..
 git add .workflow_core
 git commit -m "chore: update ai_workflow_core"
@@ -391,10 +391,10 @@ git commit -m "chore: update ai_workflow_core"
 **Update to specific version**:
 ```bash
 cd .workflow_core
-git checkout v1.0.0
+git checkout v1.0.1
 cd ..
 git add .workflow_core
-git commit -m "chore: update ai_workflow_core to v1.0.0"
+git commit -m "chore: update ai_workflow_core to v1.0.1"
 ```
 
 **See**: `docs/guides/VERSION_MANAGEMENT.md` for strategies.
@@ -537,10 +537,10 @@ mkdir -p .ai_workflow/{backlog,summaries,logs,metrics,checkpoints,prompts,ml_mod
 ```bash
 cd .workflow_core
 git fetch --tags
-git checkout v1.0.0  # Pin to v1.0.0
+git checkout v1.0.1  # Pin to v1.0.1
 cd ..
 git add .workflow_core
-git commit -m "chore: pin ai_workflow_core to v1.0.0"
+git commit -m "chore: pin ai_workflow_core to v1.0.1"
 ```
 
 **To update later**:
@@ -558,17 +558,17 @@ git commit -m "chore: update ai_workflow_core to v1.1.0"
 
 **A**: See `CHANGELOG.md` for all changes.
 
-**Major versions** (e.g., v1.0.0 → v2.0.0):
+**Major versions** (e.g., v1.0.1 → v2.0.0):
 - Breaking changes
 - Migration guide required
 - Significant new features
 
-**Minor versions** (e.g., v1.0.0 → v1.1.0):
+**Minor versions** (e.g., v1.0.1 → v1.1.0):
 - New features
 - Backward compatible
 - Safe to update
 
-**Patch versions** (e.g., v1.0.0 → v1.0.1):
+**Patch versions** (e.g., v1.0.1 → v1.0.1):
 - Bug fixes only
 - No breaking changes
 - Always safe to update
@@ -581,10 +581,10 @@ git commit -m "chore: update ai_workflow_core to v1.1.0"
 
 ```bash
 cd .workflow_core
-git checkout v1.0.0  # Previous working version
+git checkout v1.0.1  # Previous working version
 cd ..
 git add .workflow_core
-git commit -m "chore: rollback ai_workflow_core to v1.0.0"
+git commit -m "chore: rollback ai_workflow_core to v1.0.1"
 ```
 
 **See**: `docs/guides/MIGRATION_GUIDE.md` for rollback procedures.
@@ -829,4 +829,4 @@ project:
 ---
 
 **Last Updated**: 2026-02-07  
-**Document Version**: 1.0.0
+**Document Version**: 1.0.1

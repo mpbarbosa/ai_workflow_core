@@ -773,5 +773,5 @@ File patterns support pipe-separated alternatives:
 ---
 
 **Last Updated**: 2026-01-30  
-**Document Version**: 1.0.0  
+**Document Version**: 1.0.1  
 **Schema Version**: 1.2.0

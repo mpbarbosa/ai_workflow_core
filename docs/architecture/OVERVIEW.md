@@ -1,6 +1,6 @@
 # Architecture Overview
 
-**Version**: 1.0.0  
+**Version**: 1.0.1  
 **Last Updated**: 2026-02-09  
 **Status**: Stable
 
@@ -315,7 +315,7 @@ docs/
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │               ai_workflow_core (GitHub)                      │
-│               v1.0.0 (stable release)                        │
+│               v1.0.1 (stable release)                        │
 └────────┬────────────────────────────────────────────┬───────┘
          │                                             │
          │ git submodule                              │ git submodule
@@ -408,7 +408,7 @@ This repository uses its own templates:
 
 **Method**: Git submodule  
 **Repository**: https://github.com/mpbarbosa/ai_workflow_core  
-**Versioning**: Git tags (v1.0.0, v1.1.0, etc.)
+**Versioning**: Git tags (v1.0.1, v1.1.0, etc.)
 
 ### Integration Workflow
 
@@ -447,5 +447,5 @@ git commit -m "chore: update ai_workflow_core to v1.1.0"
 ---
 
 **Last Updated**: 2026-02-09  
-**Document Version**: 1.0.0  
-**Related Version**: ai_workflow_core v1.0.0
+**Document Version**: 1.0.1  
+**Related Version**: ai_workflow_core v1.0.1

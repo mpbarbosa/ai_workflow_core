@@ -1,6 +1,6 @@
 # Deployment Guide
 
-**Version**: 1.0.0  
+**Version**: 1.0.1  
 **Last Updated**: 2026-02-13  
 **Audience**: DevOps engineers, project maintainers, technical leads
 
@@ -105,14 +105,14 @@ git submodule add https://github.com/myorg/ai_workflow_core.git .workflow_core
 
 ```bash
 # Add submodule pinned to specific tag
-git submodule add -b v1.0.0 https://github.com/mpbarbosa/ai_workflow_core.git .workflow_core
+git submodule add -b v1.0.1 https://github.com/mpbarbosa/ai_workflow_core.git .workflow_core
 
 # Or pin to specific commit
 cd .workflow_core
-git checkout v1.0.0
+git checkout v1.0.1
 cd ..
 git add .workflow_core
-git commit -m "Pin ai_workflow_core to v1.0.0"
+git commit -m "Pin ai_workflow_core to v1.0.1"
 ```
 
 **Pros**:
@@ -197,12 +197,12 @@ git submodule add https://github.com/mpbarbosa/ai_workflow_core.git .workflow_co
 
 # Lock to specific version (recommended for production)
 cd .workflow_core
-git checkout v1.0.0
+git checkout v1.0.1
 cd ..
 
 # Commit submodule addition
 git add .gitmodules .workflow_core
-git commit -m "chore: Add ai_workflow_core v1.0.0 submodule"
+git commit -m "chore: Add ai_workflow_core v1.0.1 submodule"
 ```
 
 #### 3. Configure the Project
@@ -275,8 +275,8 @@ git commit -m "chore: Configure ai_workflow_core integration"
 git push origin main
 
 # Tag successful deployment
-git tag -a deploy/ai-workflow-v1.0.0 -m "Successfully deployed ai_workflow_core v1.0.0"
-git push origin deploy/ai-workflow-v1.0.0
+git tag -a deploy/ai-workflow-v1.0.1 -m "Successfully deployed ai_workflow_core v1.0.1"
+git push origin deploy/ai-workflow-v1.0.1
 ```
 
 ---
@@ -318,7 +318,7 @@ git checkout v1.0
 ```bash
 # Lock to specific version
 cd .workflow_core
-git checkout v1.0.0
+git checkout v1.0.1
 ```
 
 **Use when**: Production environments, maximum stability
@@ -503,7 +503,7 @@ REPOS=(
   "github.com/myorg/mobile-app"
 )
 
-TARGET_VERSION=${1:-"v1.0.0"}
+TARGET_VERSION=${1:-"v1.0.1"}
 
 for repo in "${REPOS[@]}"; do
   echo "Updating $repo..."
@@ -539,17 +539,17 @@ Create `workflow-core-versions.json`:
 
 ```json
 {
-  "version": "1.0.0",
+  "version": "1.0.1",
   "projects": {
     "api-backend": {
       "repo": "github.com/myorg/api-backend",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "status": "deployed",
       "last_updated": "2026-02-13T10:00:00Z"
     },
     "frontend": {
       "repo": "github.com/myorg/frontend",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "status": "deployed",
       "last_updated": "2026-02-13T10:15:00Z"
     },
@@ -606,14 +606,14 @@ cd .workflow_core
 git log --oneline -5
 
 # 2. Identify rollback target
-# Example: Rolling back from v1.1.0 to v1.0.0
-git checkout v1.0.0
+# Example: Rolling back from v1.1.0 to v1.0.1
+git checkout v1.0.1
 
 cd ..
 
 # 3. Commit rollback
 git add .workflow_core
-git commit -m "fix: Rollback ai_workflow_core to v1.0.0 due to [issue]"
+git commit -m "fix: Rollback ai_workflow_core to v1.0.1 due to [issue]"
 
 # 4. Push
 git push origin main
@@ -648,7 +648,7 @@ git checkout -b test/rollback-workflow-core
 
 # 2. Perform rollback
 cd .workflow_core
-git checkout v1.0.0
+git checkout v1.0.1
 cd ..
 
 # 3. Test thoroughly
@@ -679,7 +679,7 @@ git merge test/rollback-workflow-core
 
 ```yaml
 # Example: .workflow-core-version.yaml
-version: "1.0.0"
+version: "1.0.1"
 deployed_by: "devops-team"
 deployed_at: "2026-02-13T10:00:00Z"
 environment: "production"
@@ -749,7 +749,7 @@ git config --get submodule..workflow_core.url
 
 # Check for tampering
 cd .workflow_core
-git verify-tag v1.0.0  # If tags are signed
+git verify-tag v1.0.1  # If tags are signed
 ```
 
 ### Secrets Management
@@ -907,10 +907,10 @@ git submodule update --init --recursive
 **Solution**:
 ```bash
 cd .workflow_core
-git checkout v1.0.0  # or desired version
+git checkout v1.0.1  # or desired version
 cd ..
 git add .workflow_core
-git commit -m "fix: Lock workflow_core to v1.0.0"
+git commit -m "fix: Lock workflow_core to v1.0.1"
 ```
 
 #### Issue 3: Submodule Update Conflicts
@@ -955,10 +955,10 @@ for env in dev staging prod; do
   ssh $env "cd /path/to/project && \
     cd .workflow_core && \
     git fetch origin --tags && \
-    git checkout v1.0.0 && \
+    git checkout v1.0.1 && \
     cd .. && \
     git add .workflow_core && \
-    git commit -m 'chore: Standardize workflow_core to v1.0.0'"
+    git commit -m 'chore: Standardize workflow_core to v1.0.1'"
 done
 ```
 
@@ -1004,5 +1004,5 @@ After successful deployment:
 ---
 
 **Last Updated**: 2026-02-13  
-**Document Version**: 1.0.0  
+**Document Version**: 1.0.1  
 **Maintainers**: DevOps Team, Platform Engineering

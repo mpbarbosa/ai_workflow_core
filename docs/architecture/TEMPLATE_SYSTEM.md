@@ -1,6 +1,6 @@
 # Template System Architecture
 
-**Version**: 1.0.0  
+**Version**: 1.0.1  
 **Last Updated**: 2026-02-09  
 **Status**: Stable
 
@@ -93,7 +93,7 @@ project:
   type: "nodejs-application"
   description: "RESTful API for user management"
   kind: "nodejs_api"
-  version: "1.0.0"
+  version: "1.0.1"
 
 tech_stack:
   primary_language: "javascript"
@@ -141,7 +141,7 @@ workflow:
 | `{{PROJECT_TYPE}}` | String | "nodejs-application" | Hyphenated format |
 | `{{PROJECT_KIND}}` | Enum | "nodejs_api" | Must exist in project_kinds.yaml |
 | `{{PROJECT_DESCRIPTION}}` | String | "API for..." | Brief description |
-| `{{VERSION}}` | SemVer | "1.0.0" | No 'v' prefix |
+| `{{VERSION}}` | SemVer | "1.0.1" | No 'v' prefix |
 | `{{LANGUAGE}}` | String | "javascript" | Lowercase |
 | `{{BUILD_SYSTEM}}` | String | "npm" | Must be valid for project kind |
 | `{{TEST_FRAMEWORK}}` | String | "jest" | Must be valid for project kind |
@@ -646,5 +646,5 @@ python .workflow_core/scripts/validate_structure.py
 ---
 
 **Last Updated**: 2026-02-09  
-**Document Version**: 1.0.0  
-**Related Version**: ai_workflow_core v1.0.0
+**Document Version**: 1.0.1  
+**Related Version**: ai_workflow_core v1.0.1

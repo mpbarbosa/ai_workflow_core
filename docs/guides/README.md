@@ -47,7 +47,7 @@ When adding new user guides to this directory:
    ```markdown
    # Guide Title
    
-   **Version**: 1.0.0
+   **Version**: 1.0.1
    **Last Updated**: YYYY-MM-DD
    **Audience**: Beginners/Intermediate/Advanced
    

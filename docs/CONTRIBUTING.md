@@ -1,6 +1,6 @@
 # Contributing to AI Workflow Automation
 
-**Version**: 1.0.0  
+**Version**: 1.0.1  
 **Last Updated**: 2026-01-31  
 **Status**: ✅ Official Guidelines
 
@@ -1051,6 +1051,6 @@ See ARCHITECTURE.md for complete details on system design, integration patterns,
 
 ---
 
-**Document Version**: 1.0.0  
+**Document Version**: 1.0.1  
 **Last Updated**: 2026-01-31  
 **Status**: ✅ Official Contributing Guidelines

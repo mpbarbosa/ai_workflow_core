@@ -1,6 +1,6 @@
 # Reference Documentation
 
-**Version**: 1.0.0  
+**Version**: 1.0.1  
 **Last Updated**: 2026-02-10
 
 > **Purpose**: Quick reference guides and cheat sheets for ai_workflow_core
@@ -67,7 +67,7 @@ All commands organized by category:
 ```markdown
 # [Topic] Quick Reference
 
-**Version**: 1.0.0  
+**Version**: 1.0.1  
 **Last Updated**: YYYY-MM-DD
 
 ## Quick Commands

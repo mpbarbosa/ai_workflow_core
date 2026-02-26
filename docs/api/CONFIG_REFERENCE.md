@@ -124,7 +124,7 @@ quality:           # Quality standards (optional)
 - **Required**: Yes
 - **Description**: Project version following semver (no 'v' prefix)
 - **Format**: `"MAJOR.MINOR.PATCH"`
-- **Example**: `"1.0.0"`, `"2.1.3-beta"`
+- **Example**: `"1.0.1"`, `"2.1.3-beta"`
 - **Placeholder**: `{{VERSION}}`
 
 #### Example
@@ -691,7 +691,7 @@ project:
   type: "configuration-library"
   description: "Language-agnostic foundational configuration and templates"
   kind: "configuration_library"
-  version: "1.0.0"
+  version: "1.0.1"
 
 tech_stack:
   primary_language: "yaml"
@@ -832,4 +832,4 @@ yamllint .workflow-config.yaml
 ---
 
 **Last Updated**: 2026-02-01  
-**Document Version**: 1.0.0
+**Document Version**: 1.0.1

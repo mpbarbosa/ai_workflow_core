@@ -175,7 +175,7 @@ Scripts have version numbers that aren't consistently referenced:
 |--------|------------------|-------------------|
 | `cleanup_artifacts.sh.template` | 2.0.0 | Header comment + README.md |
 | `check_integration_health.sh.template` | Not versioned | README.md says "NEW" |
-| `validate_structure.py` | 1.0.0 | Module docstring |
+| `validate_structure.py` | 1.0.1 | Module docstring |
 | `validate_context_blocks.py` | No version | Docstring only |
 
 **Issue:**
@@ -192,7 +192,7 @@ Version: 2.0.0 (Documented in header - line 34)
 # No version - only marked as "NEW" in README
 
 # validate_structure.py
-Version: 1.0.0 (Line 24)
+Version: 1.0.1 (Line 24)
 
 # validate_context_blocks.py
 # No version documented
@@ -212,7 +212,7 @@ Version: 1.0.0 (Line 24)
 ## [Unreleased]
 
 ### Scripts
-- `check_integration_health.sh.template` v1.0.0 - NEW
+- `check_integration_health.sh.template` v1.0.1 - NEW
 - `cleanup_artifacts.sh.template` v2.0.0 - (no changes)
 ```
 

@@ -1,6 +1,6 @@
 # Command Cheat Sheet
 
-**Version**: 1.0.0  
+**Version**: 1.0.1  
 **Last Updated**: 2026-02-10
 
 > **Quick reference** for all ai_workflow_core commands

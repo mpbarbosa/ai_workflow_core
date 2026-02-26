@@ -1,6 +1,6 @@
 # Scripts Comprehensive Usage Guide
 
-**Version**: 1.0.0  
+**Version**: 1.0.1  
 **Last Updated**: 2026-02-16  
 **Target Audience**: Developers, DevOps Engineers, Project Maintainers
 
@@ -420,7 +420,7 @@ Checking: Gitignore configuration
 ✓ PASS: All artifact patterns in .gitignore
 
 Checking: Submodule version
-ℹ INFO: Submodule version: v1.0.0 (commit: abc123f)
+ℹ INFO: Submodule version: v1.0.1 (commit: abc123f)
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   Health Check Summary
@@ -859,7 +859,7 @@ bash scripts/check_integration_health.sh > health_report.txt
 # 4. Update submodule
 cd .workflow_core
 git fetch origin
-git checkout v1.0.0
+git checkout v1.0.1
 cd ..
 
 echo "✅ Maintenance complete"
@@ -1069,5 +1069,5 @@ repos:
 ---
 
 **Last Updated**: 2026-02-16  
-**Version**: 1.0.0  
+**Version**: 1.0.1  
 **Maintainers**: AI Workflow Core Team

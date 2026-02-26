@@ -1,6 +1,6 @@
 # Integration Best Practices for Dynamic Codebases
 
-**Version:** 1.0.0  
+**Version:** 1.0.1  
 **Last Updated:** 2026-01-29  
 **For:** Projects using ai_workflow_core with frequently changing source code
 
@@ -52,7 +52,7 @@ Dynamic codebases with frequent commits, feature development, and dependency upd
 ```markdown
 ## Workflow Integration
 
-- **Submodule**: ai_workflow_core v1.0.0
+- **Submodule**: ai_workflow_core v1.0.1
 - **Location**: `.workflow_core/`
 - **Config**: `.workflow-config.yaml`
 - **Artifacts**: `.ai_workflow/` (gitignored)
@@ -119,7 +119,7 @@ Treat `.workflow-config.yaml` like application code:
 
 ```yaml
 # .workflow-config.yaml
-# Version: 1.0.0
+# Version: 1.0.1
 # Last Updated: 2026-01-29
 # Owner: DevOps Team
 
@@ -131,7 +131,7 @@ project:
   version: "2.5.3"
   
   # Metadata for tracking
-  workflow_core_version: "v1.0.0"  # Add this!
+  workflow_core_version: "v1.0.1"  # Add this!
   workflow_core_updated: "2026-01-15"  # Add this!
 
 tech_stack:
@@ -373,7 +373,7 @@ git push origin update-workflow-core
 ## PR: Update ai_workflow_core
 
 ### Current Version
-v1.0.0 (commit abc123d)
+v1.0.1 (commit abc123d)
 
 ### New Version
 v1.1.0 (commit def456e)
@@ -393,7 +393,7 @@ None
 - ✅ Tested in local development
 
 ### Rollback Plan
-If issues arise: `git revert <commit>` or checkout v1.0.0
+If issues arise: `git revert <commit>` or checkout v1.0.1
 
 ### Related Issues
 Closes #123
@@ -559,10 +559,10 @@ git commit -m "Update submodule"
 **Solution:**
 ```bash
 cd .workflow_core
-git checkout v1.0.0  # Use tag or branch
+git checkout v1.0.1  # Use tag or branch
 cd ..
 git add .workflow_core
-git commit -m "Pin to v1.0.0"
+git commit -m "Pin to v1.0.1"
 ```
 
 ### Pitfall 3: Modifying Submodule Files Directly
@@ -664,7 +664,7 @@ If submodule gets into weird state:
 # Nuclear option: remove and re-add
 git rm -f .workflow_core
 git submodule add https://github.com/mpbarbosa/ai_workflow_core.git .workflow_core
-cd .workflow_core && git checkout v1.0.0 && cd ..
+cd .workflow_core && git checkout v1.0.1 && cd ..
 git add .workflow_core .gitmodules
 git commit -m "Reset submodule to clean state"
 ```
@@ -708,4 +708,4 @@ git commit -m "Reset submodule to clean state"
 ---
 
 **Last Updated:** 2026-01-29  
-**Document Version:** 1.0.0
+**Document Version:** 1.0.1

@@ -27,9 +27,9 @@ cd .workflow_core && git fetch --tags && git tag -l && cd ..
 
 ### Pin to Stable Version (Production)
 ```bash
-cd .workflow_core && git checkout v1.0.0 && cd ..
+cd .workflow_core && git checkout v1.0.1 && cd ..
 git add .workflow_core
-git commit -m "Pin ai_workflow_core to v1.0.0"
+git commit -m "Pin ai_workflow_core to v1.0.1"
 ```
 
 ### Track Latest Stable (Development)
@@ -91,9 +91,9 @@ git revert HEAD  # If last commit was submodule update
 
 ### Manual Rollback
 ```bash
-cd .workflow_core && git checkout v1.0.0 && cd ..
+cd .workflow_core && git checkout v1.0.1 && cd ..
 git add .workflow_core
-git commit -m "Rollback ai_workflow_core to v1.0.0"
+git commit -m "Rollback ai_workflow_core to v1.0.1"
 ```
 
 ---
@@ -173,6 +173,6 @@ diff <(grep -E '^[a-z_]+:' .workflow_core/config/.workflow-config.yaml.template 
 
 ---
 
-**Version:** 1.0.0  
+**Version:** 1.0.1  
 **Last Updated:** 2026-01-29  
 **Print this page for quick reference at your desk!**

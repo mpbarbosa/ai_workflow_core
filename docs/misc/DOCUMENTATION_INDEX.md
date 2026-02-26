@@ -1,6 +1,6 @@
 # AI Workflow Core - Documentation Index
 
-**Version**: 1.0.0  
+**Version**: 1.0.1  
 **Last Updated**: 2026-02-12  
 **Purpose**: Master index of all documentation in ai_workflow_core
 
@@ -46,10 +46,10 @@
 
 | Document | Content | Lines | Version |
 |----------|---------|-------|---------|
-| [CONFIG_REFERENCE.md](docs/api/CONFIG_REFERENCE.md) | `.workflow-config.yaml` field reference | 695 | 1.0.0 |
-| [PLACEHOLDER_REFERENCE.md](docs/api/PLACEHOLDER_REFERENCE.md) | Placeholder patterns & substitution | 756 | 1.0.0 |
+| [CONFIG_REFERENCE.md](docs/api/CONFIG_REFERENCE.md) | `.workflow-config.yaml` field reference | 695 | 1.0.1 |
+| [PLACEHOLDER_REFERENCE.md](docs/api/PLACEHOLDER_REFERENCE.md) | Placeholder patterns & substitution | 756 | 1.0.1 |
 | [PROJECT_KINDS_SCHEMA.md](docs/api/PROJECT_KINDS_SCHEMA.md) | Project kinds schema (8 types) | 777 | 1.2.0 |
-| [AI_HELPERS_REFERENCE.md](docs/api/AI_HELPERS_REFERENCE.md) | AI personas & token efficiency | 1,177 | 1.0.0 |
+| [AI_HELPERS_REFERENCE.md](docs/api/AI_HELPERS_REFERENCE.md) | AI personas & token efficiency | 1,177 | 1.0.1 |
 | [AI_PROMPTS_REFERENCE.md](docs/api/AI_PROMPTS_REFERENCE.md) | Project-specific AI prompts | 1,197 | 1.2.0 |
 | [docs/api/README.md](docs/api/README.md) | API documentation overview | - | - |
 
@@ -228,7 +228,7 @@ See [PROJECT_KINDS_SCHEMA.md](docs/api/PROJECT_KINDS_SCHEMA.md) for full definit
 | `{{PROJECT_NAME}}` | "My Project" | Display name |
 | `{{PROJECT_TYPE}}` | "nodejs-application" | Type (hyphenated) |
 | `{{PROJECT_KIND}}` | "nodejs_api" | Validation (underscored) |
-| `{{VERSION}}` | "1.0.0" | Version (no 'v' prefix) |
+| `{{VERSION}}` | "1.0.1" | Version (no 'v' prefix) |
 | `{{LANGUAGE}}` | "javascript" | Primary language |
 | `{{TEST_COMMAND}}` | "npm test" | Test execution |
 | `{{LINT_COMMAND}}` | "eslint ." | Code linting |
@@ -325,7 +325,7 @@ See [AI_WORKFLOW_DIRECTORY.md](docs/AI_WORKFLOW_DIRECTORY.md) for details.
 **Schema Versions**:
 - project_kinds.yaml: v1.2.0
 - AI prompts: v1.2.0
-- Core templates: v1.0.0
+- Core templates: v1.0.1
 
 ---
 
@@ -370,5 +370,5 @@ See [AI_WORKFLOW_DIRECTORY.md](docs/AI_WORKFLOW_DIRECTORY.md) for details.
 ---
 
 **Last Updated**: 2026-02-07  
-**Document Version**: 1.0.0  
+**Document Version**: 1.0.1  
 **Maintained By**: ai_workflow_core team

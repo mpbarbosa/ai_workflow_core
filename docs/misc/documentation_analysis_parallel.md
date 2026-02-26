@@ -234,7 +234,7 @@ I've analyzed all 5 guides documentation files. Here's the summary:
 
 **HIGH:**
 - Verify `.pre-commit-config.yaml` exists in root
-- Add clarity about v1.0.0 directory structure
+- Add clarity about v1.0.1 directory structure
 - Fix cleanup script references
 
 **Strengths:**
@@ -448,7 +448,7 @@ docs/
 
 **Line 3-4:**
 ```markdown
-**Version**: 1.0.0  
+**Version**: 1.0.1  
 **Last Updated**: 2026-02-07
 ```
 
@@ -529,15 +529,15 @@ Consider custom project kind when:
 
 But copilot-instructions.md says:
 ```markdown
-**ai_workflow_core version**: 1.0.0
+**ai_workflow_core version**: 1.0.1
 ```
 
-**Issue**: Template authoring guide claims v2.0.0 but core is v1.0.0. Confusing versioning.
+**Issue**: Template authoring guide claims v2.0.0 but core is v1.0.1. Confusing versioning.
 
 **Recommendation:** Clarify that document version ≠ ai_workflow_core version:
 ```markdown
 **Document Version**: 2.0.0 (documentation iteration)  
-**Compatible with**: ai_workflow_core v1.0.0+
+**Compatible with**: ai_workflow_core v1.0.1+
 ```
 
 ---
@@ -611,7 +611,7 @@ view docs/advanced/CUSTOM_WORKFLOW_CREATION.md --view-range [100, 200]
 
 **❌ Issues:**
 1. **No mention of CUSTOM_WORKFLOW_CREATION.md** - Should cross-reference for GitHub Actions templates
-2. **Line 779:** Says "Template Version: 2.0.0" but doesn't explain relationship to ai_workflow_core v1.0.0
+2. **Line 779:** Says "Template Version: 2.0.0" but doesn't explain relationship to ai_workflow_core v1.0.1
 
 **Recommendations:**
 ```markdown
@@ -673,7 +673,7 @@ Replace lines 356-507 with:
 | Version | Date | Changes |
 |---------|------|---------|
 | 2.0.0 | 2026-02-07 | Major rewrite, added multi-platform examples |
-| 1.0.0 | 2026-01-31 | Initial version |
+| 1.0.1 | 2026-01-31 | Initial version |
 
 ## Feedback
 
@@ -698,7 +698,7 @@ Found an issue or have suggestions?
 5. **Standardize metadata headers** - Use consistent format across all docs
 6. **Extract version management guide** - Reduce INTEGRATION.md length
 7. **Add document history section** - Track changes per document
-8. **Clarify document vs product versioning** - Template guide v2.0.0 vs core v1.0.0
+8. **Clarify document vs product versioning** - Template guide v2.0.0 vs core v1.0.1
 
 ### 🟢 **Low Priority** (Nice to Have)
 

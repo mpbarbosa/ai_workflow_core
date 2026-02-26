@@ -1,6 +1,6 @@
 # AI Workflow Core - Architecture
 
-**Version**: 1.0.0  
+**Version**: 1.0.1  
 **Last Updated**: 2026-01-31  
 **Status**: Stable
 
@@ -278,7 +278,7 @@ user_project/
 | `{{PROJECT_NAME}}` | Human-readable | "My Application" | Display name |
 | `{{PROJECT_TYPE}}` | Hyphenated | "nodejs-application" | Technical type |
 | `{{PROJECT_KIND}}` | Underscored | "nodejs_api" | Schema reference |
-| `{{VERSION}}` | Semver | "1.0.0" | Version number |
+| `{{VERSION}}` | Semver | "1.0.1" | Version number |
 | `{{LANGUAGE}}` | Lowercase | "javascript" | Primary language |
 | `{{TEST_COMMAND}}` | Command | "npm test" | Test execution |
 
@@ -444,7 +444,7 @@ Checks:
 **Decision**: 
 - `project_kinds.yaml` version: 1.2.0
 - `ai_prompts_project_kinds.yaml` version: 1.2.0
-- Core repository version: 1.0.0
+- Core repository version: 1.0.1
 
 **Rationale:**
 - Schemas evolve independently
@@ -621,4 +621,4 @@ git submodule add <your-fork-url> .workflow_core
 ---
 
 **Version History:**
-- v1.0.0 (2026-01-31): Initial architecture documentation
+- v1.0.1 (2026-01-31): Initial architecture documentation

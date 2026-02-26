@@ -2,7 +2,7 @@
 
 **Welcome to ai_workflow_core development!**
 
-**Version**: 1.0.0  
+**Version**: 1.0.1  
 **Last Updated**: 2026-02-12  
 **Audience**: New contributors and developers
 
@@ -272,7 +272,7 @@ See [PROJECT_KINDS_SCHEMA.md](api/PROJECT_KINDS_SCHEMA.md) for details.
 - `{{PROJECT_TYPE}}` - Hyphenated type: `"nodejs-application"`
 - `{{PROJECT_KIND}}` - Underscored kind: `"nodejs_api"`
 - `{{LANGUAGE}}` - Primary language: `"javascript"`
-- `{{VERSION}}` - Semver without 'v': `"1.0.0"`
+- `{{VERSION}}` - Semver without 'v': `"1.0.1"`
 
 **Terminology**:
 - `PROJECT_TYPE`: Uses hyphens (display format)
@@ -594,6 +594,6 @@ We're excited to have you contribute to ai_workflow_core. Don't hesitate to ask 
 
 ---
 
-**Document Version**: 1.0.0  
+**Document Version**: 1.0.1  
 **Last Updated**: 2026-02-12  
 **Maintained By**: ai_workflow_core team

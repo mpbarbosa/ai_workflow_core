@@ -52,7 +52,7 @@ When adding new advanced documentation to this directory:
    ```markdown
    # Advanced Guide: Topic
    
-   **Version**: 1.0.1
+   **Version**: 1.0.2
    **Last Updated**: YYYY-MM-DD
    **Difficulty**: Advanced
    **Prerequisites**: List advanced requirements

@@ -1,6 +1,6 @@
 # Workflow Automation Documentation
 
-**Version**: 1.0.1  
+**Version**: 1.0.2  
 **Last Updated**: 2026-02-10  
 **Audience**: Users integrating ai_workflow_core with CI/CD systems
 

@@ -1,6 +1,6 @@
 # Quick Start Guide
 
-**Version**: 1.0.1  
+**Version**: 1.0.2  
 **Last Updated**: 2026-02-07  
 **Estimated Time**: 5-10 minutes
 
@@ -81,7 +81,7 @@ project:
   type: "{{PROJECT_TYPE}}"              # → "nodejs-application" (hyphenated)
   description: "{{PROJECT_DESCRIPTION}}" # → "REST API for users"
   kind: "{{PROJECT_KIND}}"              # → "nodejs_api" (underscored)
-  version: "{{VERSION}}"                # → "1.0.1" (no 'v' prefix)
+  version: "{{VERSION}}"                # → "1.0.2" (no 'v' prefix)
 
 tech_stack:
   primary_language: "{{LANGUAGE}}"      # → "javascript"
@@ -95,7 +95,7 @@ project:
   type: "nodejs-application"
   description: "RESTful API for user management"
   kind: "nodejs_api"
-  version: "1.0.1"
+  version: "1.0.2"
 
 tech_stack:
   primary_language: "javascript"
@@ -136,7 +136,7 @@ EOF
 
 ```bash
 git add .gitmodules .workflow_core .workflow-config.yaml .gitignore
-git commit -m "chore: integrate ai_workflow_core v1.0.1"
+git commit -m "chore: integrate ai_workflow_core v1.0.2"
 ```
 
 **✅ Done!** You've successfully integrated ai_workflow_core.
@@ -150,7 +150,7 @@ git commit -m "chore: integrate ai_workflow_core v1.0.1"
 ```bash
 # Check submodule is properly initialized
 git submodule status
-# Should show: <commit-hash> .workflow_core (v1.0.1 or similar)
+# Should show: <commit-hash> .workflow_core (v1.0.2 or similar)
 ```
 
 ### Verify Configuration
@@ -208,7 +208,7 @@ git submodule add https://github.com/mpbarbosa/ai_workflow_core.git .workflow_co
 **Solution**: You missed some placeholders. Common ones:
 - `{{PROJECT_NAME}}` → Replace with your project name
 - `{{PROJECT_KIND}}` → Must match one from `project_kinds.yaml`
-- `{{VERSION}}` → Use "1.0.1" format (no 'v' prefix)
+- `{{VERSION}}` → Use "1.0.2" format (no 'v' prefix)
 
 **Tip**: Search and replace in your editor:
 1. Find: `{{PROJECT_NAME}}`
@@ -333,10 +333,10 @@ For production stability:
 
 ```bash
 cd .workflow_core
-git checkout v1.0.1  # Pin to specific version
+git checkout v1.0.2  # Pin to specific version
 cd ..
 git add .workflow_core
-git commit -m "chore: pin ai_workflow_core to v1.0.1"
+git commit -m "chore: pin ai_workflow_core to v1.0.2"
 ```
 
 **Read**: `docs/guides/VERSION_MANAGEMENT.md` - Version management strategies

@@ -1,6 +1,6 @@
 # Validation Rules Reference
 
-**Version**: 1.0.1  
+**Version**: 1.0.2  
 **Last Updated**: 2026-02-13  
 **Schema Version**: project_kinds.yaml v1.2.0
 
@@ -465,14 +465,14 @@ if config['project']['kind'] not in VALID_PROJECT_KINDS:
 **Format**: Semantic versioning without 'v' prefix
 
 **Valid**:
-- `1.0.1`
+- `1.0.2`
 - `2.1.3`
 - `0.9.0-beta.1`
 
 **Invalid**:
-- `v1.0.1` ❌ (has 'v' prefix)
+- `v1.0.2` ❌ (has 'v' prefix)
 - `1.0` ❌ (incomplete semver)
-- `1.0.1.0` ❌ (too many parts)
+- `1.0.2.0` ❌ (too many parts)
 
 **Validation regex**:
 ```python
@@ -980,8 +980,8 @@ jobs:
 ❌ Invalid project_kind: "nodejs-app"
    Must use underscores: "nodejs_api"
 
-❌ Invalid version format: "v1.0.1"
-   Remove 'v' prefix: "1.0.1"
+❌ Invalid version format: "v1.0.2"
+   Remove 'v' prefix: "1.0.2"
 
 ❌ Required field missing: tech_stack.test_command
 ```
@@ -1177,5 +1177,5 @@ This project extends standard validation with:
 ---
 
 **Last Updated**: 2026-02-13  
-**Document Version**: 1.0.1  
+**Document Version**: 1.0.2  
 **Maintained By**: ai_workflow_core team

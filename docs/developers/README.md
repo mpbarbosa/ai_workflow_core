@@ -43,7 +43,7 @@ When adding new developer documentation to this directory:
    ```markdown
    # Developer Guide: Topic
    
-   **Version**: 1.0.1
+   **Version**: 1.0.2
    **Last Updated**: YYYY-MM-DD
    **Audience**: Contributors and maintainers
    

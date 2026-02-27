@@ -1,6 +1,6 @@
 # Getting Started with ai_workflow_core
 
-**Version**: 1.0.1  
+**Version**: 1.0.2  
 **Last Updated**: 2026-02-10  
 **Audience**: New users  
 **Estimated time**: 10 minutes
@@ -33,7 +33,7 @@ ai_workflow_core is a **configuration and template library** that provides:
 
 **Used as**: Git submodule in your project  
 **Language**: Language-agnostic (works with any language)  
-**Version**: 1.0.1
+**Version**: 1.0.2
 
 ---
 
@@ -192,7 +192,7 @@ project:
   type: "{{PROJECT_TYPE}}"              # → "nodejs-application"
   description: "{{PROJECT_DESCRIPTION}}" # → "RESTful API for user management"
   kind: "{{PROJECT_KIND}}"              # → "nodejs_api"
-  version: "{{VERSION}}"                # → "1.0.1"
+  version: "{{VERSION}}"                # → "1.0.2"
 
 tech_stack:
   primary_language: "{{LANGUAGE}}"      # → "javascript"
@@ -318,7 +318,7 @@ touch .ai_workflow/checkpoints/.gitkeep
 git add .ai_workflow/
 
 # Commit
-git commit -m "feat: integrate ai_workflow_core v1.0.1
+git commit -m "feat: integrate ai_workflow_core v1.0.2
 
 - Add ai_workflow_core as Git submodule
 - Configure project as {{YOUR_PROJECT_KIND}}
@@ -505,7 +505,7 @@ project:
   type: "your-project-type"
   description: "One-line description"
   kind: "chosen_project_kind"
-  version: "1.0.1"
+  version: "1.0.2"
 ```
 
 #### 2. Tech Stack

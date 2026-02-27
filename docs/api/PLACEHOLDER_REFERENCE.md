@@ -1,6 +1,6 @@
 # Placeholder Reference Guide
 
-**Version**: 1.0.1  
+**Version**: 1.0.2  
 **Last Updated**: 2026-02-01  
 **Format**: `{{PLACEHOLDER_NAME}}`
 
@@ -205,22 +205,22 @@ kind: "nodejs_api"      # Underscored
 **Format**: `"MAJOR.MINOR.PATCH[-PRERELEASE][+BUILD]"`
 
 **Valid Values**:
-- `"1.0.1"` - Initial release
+- `"1.0.2"` - Initial release
 - `"2.1.3"` - Stable version
-- `"1.0.1-alpha"` - Pre-release
+- `"1.0.2-alpha"` - Pre-release
 - `"2.0.0-beta.1"` - Beta version
 - `"1.2.3-rc.1+build.123"` - Release candidate with build metadata
 
 **Examples**:
 ```yaml
-version: "1.0.1"        # Initial stable release
+version: "1.0.2"        # Initial stable release
 version: "2.3.1"        # Maintenance release
 version: "3.0.0-beta"   # Beta version
 ```
 
 **Tips**:
-- Start new projects at `"1.0.1"` or `"0.1.0"`
-- No 'v' prefix (use `"1.0.1"` not `"v1.0.1"`)
+- Start new projects at `"1.0.2"` or `"0.1.0"`
+- No 'v' prefix (use `"1.0.2"` not `"v1.0.2"`)
 - Follow semantic versioning rules
 - Update in both `.workflow-config.yaml` and `package.json`
 
@@ -557,7 +557,7 @@ sed -i 's/{{PROJECT_NAME}}/My Project/g' .workflow-config.yaml
 sed -i \
   -e 's/{{PROJECT_NAME}}/User API/g' \
   -e 's/{{PROJECT_TYPE}}/nodejs-api/g' \
-  -e 's/{{VERSION}}/1.0.1/g' \
+  -e 's/{{VERSION}}/1.0.2/g' \
   .workflow-config.yaml
 ```
 
@@ -570,7 +570,7 @@ sed -i \
 PROJECT_NAME="User Management API"
 PROJECT_TYPE="nodejs-api"
 PROJECT_KIND="nodejs_api"
-VERSION="1.0.1"
+VERSION="1.0.2"
 LANGUAGE="javascript"
 
 sed -i \
@@ -594,7 +594,7 @@ sed -i \
 {{PROJECT_TYPE}} → "nodejs-api"
 {{PROJECT_DESCRIPTION}} → "RESTful API for user authentication"
 {{PROJECT_KIND}} → "nodejs_api"
-{{VERSION}} → "1.0.1"
+{{VERSION}} → "1.0.2"
 {{LANGUAGE}} → "javascript"
 {{BUILD_SYSTEM}} → "npm"
 {{TEST_FRAMEWORK}} → "jest"
@@ -626,7 +626,7 @@ sed -i \
 {{PROJECT_TYPE}} → "configuration-library"
 {{PROJECT_DESCRIPTION}} → "Language-agnostic foundational templates"
 {{PROJECT_KIND}} → "configuration_library"
-{{VERSION}} → "1.0.1"
+{{VERSION}} → "1.0.2"
 {{LANGUAGE}} → "yaml"
 {{BUILD_SYSTEM}} → "none"
 {{TEST_FRAMEWORK}} → "validation-scripts"
@@ -753,4 +753,4 @@ yq '.tech_stack.primary_language' .workflow-config.yaml
 ---
 
 **Last Updated**: 2026-02-01  
-**Document Version**: 1.0.1
+**Document Version**: 1.0.2

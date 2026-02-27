@@ -1622,5 +1622,5 @@ persona1:
 ---
 
 **Last Updated**: 2026-02-07  
-**Document Version**: 1.0.1  
+**Document Version**: 1.0.2  
 **Schema Version**: 5.0.0 (ai_helpers.yaml)

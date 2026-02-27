@@ -1,6 +1,6 @@
 # Testing & Validation Guide
 
-**Version**: 1.0.1  
+**Version**: 1.0.2  
 **Last Updated**: 2026-02-07  
 **Audience**: Users, integrators, contributors
 
@@ -123,7 +123,7 @@ grep -r "{{.*}}" .workflow-config.yaml
 # ❌ These need replacement
 project:
   name: "{{PROJECT_NAME}}"  # ❌ Not replaced
-  version: "1.0.1"          # ✅ Replaced
+  version: "1.0.2"          # ✅ Replaced
 ```
 
 #### 3. Required Fields Check
@@ -388,14 +388,14 @@ Test updating submodule to a specific version:
 
 cd .workflow_core
 git fetch --tags
-git checkout v1.0.1  # Or latest version
+git checkout v1.0.2  # Or latest version
 cd ..
 
 # Verify submodule updated
 SUBMODULE_VERSION=$(cd .workflow_core && git describe --tags)
 echo "Submodule version: $SUBMODULE_VERSION"
 
-if [ "$SUBMODULE_VERSION" = "v1.0.1" ]; then
+if [ "$SUBMODULE_VERSION" = "v1.0.2" ]; then
     echo "✅ Submodule updated successfully"
 else
     echo "❌ Submodule update failed"
@@ -418,7 +418,7 @@ cp .workflow_core/config/.workflow-config.yaml.template .workflow-config.yaml
 sed -i 's/{{PROJECT_NAME}}/Test Project/g' .workflow-config.yaml
 sed -i 's/{{PROJECT_TYPE}}/nodejs-application/g' .workflow-config.yaml
 sed -i 's/{{PROJECT_KIND}}/nodejs_api/g' .workflow-config.yaml
-sed -i 's/{{VERSION}}/1.0.1/g' .workflow-config.yaml
+sed -i 's/{{VERSION}}/1.0.2/g' .workflow-config.yaml
 sed -i 's/{{LANGUAGE}}/javascript/g' .workflow-config.yaml
 
 # Validate no placeholders remain
@@ -628,7 +628,7 @@ jobs:
           sed -i 's/{{PROJECT_NAME}}/Test Project/g' .workflow-config.yaml
           sed -i 's/{{PROJECT_TYPE}}/nodejs-application/g' .workflow-config.yaml
           sed -i 's/{{PROJECT_KIND}}/nodejs_api/g' .workflow-config.yaml
-          sed -i 's/{{VERSION}}/1.0.1/g' .workflow-config.yaml
+          sed -i 's/{{VERSION}}/1.0.2/g' .workflow-config.yaml
           sed -i 's/{{LANGUAGE}}/javascript/g' .workflow-config.yaml
           sed -i 's/{{BUILD_SYSTEM}}/npm/g' .workflow-config.yaml
           sed -i 's/{{TEST_FRAMEWORK}}/jest/g' .workflow-config.yaml
@@ -979,5 +979,5 @@ After setting up testing:
 ---
 
 **Last Updated**: 2026-02-07  
-**Document Version**: 1.0.1  
+**Document Version**: 1.0.2  
 **Maintained By**: ai_workflow_core team

@@ -1,6 +1,6 @@
 # Troubleshooting Guide
 
-**Version**: 1.0.1  
+**Version**: 1.0.2  
 **Last Updated**: 2026-02-07
 
 > **Purpose**: Solutions to common problems when integrating and using ai_workflow_core. Organized by problem category with step-by-step fixes.
@@ -417,7 +417,7 @@ sed -i 's/{{LANGUAGE}}/javascript/g' .workflow-config.yaml
 - `{{PROJECT_TYPE}}` → Use hyphens (e.g., "nodejs-application")
 - `{{PROJECT_KIND}}` → Use underscores (e.g., "nodejs_api")
 - `{{PROJECT_DESCRIPTION}}` → Brief description
-- `{{VERSION}}` → Version without 'v' prefix (e.g., "1.0.1")
+- `{{VERSION}}` → Version without 'v' prefix (e.g., "1.0.2")
 - `{{LANGUAGE}}` → Primary language (e.g., "javascript", "python", "bash")
 - `{{TEST_COMMAND}}` → Command to run tests (e.g., "npm test")
 - `{{LINT_COMMAND}}` → Command to run linter (e.g., "eslint .")
@@ -434,7 +434,7 @@ sed -i 's/{{LANGUAGE}}/javascript/g' .workflow-config.yaml
 ```yaml
 # ❌ Wrong: Includes 'v' prefix
 project:
-  version: "v1.0.1"
+  version: "v1.0.2"
 
 # ❌ Wrong: Not semantic versioning
 project:
@@ -442,7 +442,7 @@ project:
 
 # ✅ Correct: Semantic versioning, no 'v'
 project:
-  version: "1.0.1"
+  version: "1.0.2"
 ```
 
 ---
@@ -469,10 +469,10 @@ head -5 .workflow_core/README.md | grep -i version
 # Update to latest stable
 cd .workflow_core
 git fetch --tags
-git checkout v1.0.1  # or latest version
+git checkout v1.0.2  # or latest version
 cd ..
 git add .workflow_core
-git commit -m "chore: update ai_workflow_core to v1.0.1"
+git commit -m "chore: update ai_workflow_core to v1.0.2"
 ```
 
 ---
@@ -489,7 +489,7 @@ git commit -m "chore: update ai_workflow_core to v1.0.1"
 3. If too complex, rollback:
    ```bash
    cd .workflow_core
-   git checkout v1.0.1  # Previous working version
+   git checkout v1.0.2  # Previous working version
    cd ..
    git add .workflow_core
    git commit -m "chore: rollback ai_workflow_core"
@@ -504,7 +504,7 @@ git commit -m "chore: update ai_workflow_core to v1.0.1"
 **Cause**: Incompatible versions.
 
 **Compatibility**:
-- ai_workflow_core v1.0.1 → ai_workflow v1.1.0+
+- ai_workflow_core v1.0.2 → ai_workflow v1.1.0+
 
 **Solution**:
 ```bash
@@ -537,7 +537,7 @@ cd .workflow_core && git describe --tags && cd ..
 
 **Symptom**: `check_integration_health.sh` not found.
 
-**Cause**: Script doesn't exist in v1.0.1 (may be future feature).
+**Cause**: Script doesn't exist in v1.0.2 (may be future feature).
 
 **Workaround**:
 ```bash
@@ -755,7 +755,7 @@ ls -la .ai_workflow/ 2>&1
 
 **Environment**:
 - OS: [Linux/macOS/Windows]
-- ai_workflow_core version: [e.g., v1.0.1]
+- ai_workflow_core version: [e.g., v1.0.2]
 - Git version: [e.g., 2.34.1]
 
 **Steps to Reproduce**:
@@ -784,4 +784,4 @@ ls -la .ai_workflow/ 2>&1
 ---
 
 **Last Updated**: 2026-02-07  
-**Document Version**: 1.0.1
+**Document Version**: 1.0.2

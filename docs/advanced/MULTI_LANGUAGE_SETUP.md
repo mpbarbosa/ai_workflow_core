@@ -1,6 +1,6 @@
 # Multi-Language Project Setup
 
-**Version**: 1.0.1  
+**Version**: 1.0.2  
 **Last Updated**: 2026-02-07  
 **Audience**: Advanced users managing polyglot projects
 
@@ -221,7 +221,7 @@ project:
   name: "Full-Stack App"
   type: "full-stack-application"
   kind: "generic"  # No single project kind fits
-  version: "1.0.1"
+  version: "1.0.2"
 
 tech_stack:
   primary_language: "javascript"  # Node.js backend dominates
@@ -285,7 +285,7 @@ project:
   name: "Microservices Platform"
   type: "microservices-platform"
   kind: "generic"
-  version: "1.0.1"
+  version: "1.0.2"
 
 tech_stack:
   primary_language: "multiple"  # No single primary
@@ -346,7 +346,7 @@ project:
   name: "ML Library"
   type: "library-with-bindings"
   kind: "generic"
-  version: "1.0.1"
+  version: "1.0.2"
 
 tech_stack:
   primary_language: "c++"  # Core implementation
@@ -1119,4 +1119,4 @@ indent_size = 4
 ---
 
 **Last Updated**: 2026-02-07  
-**Document Version**: 1.0.1
+**Document Version**: 1.0.2

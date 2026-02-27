@@ -135,7 +135,7 @@ sed -i 's/{{PROJECT_NAME}}/My Awesome Project/g' "$CONFIG_FILE"
 sed -i 's/{{PROJECT_TYPE}}/nodejs-application/g' "$CONFIG_FILE"
 sed -i 's/{{PROJECT_DESCRIPTION}}/Web application for task management/g' "$CONFIG_FILE"
 sed -i 's/{{PROJECT_KIND}}/nodejs_api/g' "$CONFIG_FILE"
-sed -i 's/{{VERSION}}/1.0.1/g' "$CONFIG_FILE"
+sed -i 's/{{VERSION}}/1.0.2/g' "$CONFIG_FILE"
 sed -i 's/{{LANGUAGE}}/javascript/g' "$CONFIG_FILE"
 sed -i 's/{{BUILD_SYSTEM}}/npm/g' "$CONFIG_FILE"
 sed -i 's/{{TEST_FRAMEWORK}}/jest/g' "$CONFIG_FILE"
@@ -156,7 +156,7 @@ project:
   type: "bash-automation-framework"
   description: "Shell script automation tools"
   kind: "shell_script_automation"
-  version: "1.0.1"
+  version: "1.0.2"
 
 tech_stack:
   primary_language: "bash"
@@ -186,7 +186,7 @@ project:
   type: "nodejs-application"
   description: "Node.js web application"
   kind: "nodejs_api"
-  version: "1.0.1"
+  version: "1.0.2"
 
 tech_stack:
   primary_language: "javascript"
@@ -217,7 +217,7 @@ project:
   type: "python-package"
   description: "Python utility library"
   kind: "library"
-  version: "1.0.1"
+  version: "1.0.2"
 
 tech_stack:
   primary_language: "python"
@@ -283,7 +283,7 @@ Example structure:
 # GitHub Copilot Instructions - My Project
 
 **Repository**: my_project
-**Version**: 1.0.1
+**Version**: 1.0.2
 **Language**: JavaScript/Node.js
 
 ## Project Overview
@@ -441,8 +441,8 @@ If a v2.0.0 is released with breaking changes:
 ```bash
 # 1. Review changes
 cd .workflow_core
-git log --oneline v1.0.1..v2.0.0
-git diff v1.0.1..v2.0.0 -- config/.workflow-config.yaml.template
+git log --oneline v1.0.2..v2.0.0
+git diff v1.0.2..v2.0.0 -- config/.workflow-config.yaml.template
 cd ..
 
 # 2. Update submodule in feature branch
@@ -466,7 +466,7 @@ npm run lint
 
 # 7. Commit and create PR
 git add .workflow_core .workflow-config.yaml
-git commit -m "Upgrade ai_workflow_core from v1.0.1 to v2.0.0"
+git commit -m "Upgrade ai_workflow_core from v1.0.2 to v2.0.0"
 ```
 
 ### Health Checks After Updates
@@ -497,10 +497,10 @@ git revert HEAD
 
 # Or manually checkout previous version
 cd .workflow_core
-git checkout v1.0.1  # Previous version
+git checkout v1.0.2  # Previous version
 cd ..
 git add .workflow_core
-git commit -m "Rollback ai_workflow_core to v1.0.1"
+git commit -m "Rollback ai_workflow_core to v1.0.2"
 ```
 
 See [Version Management Guide](guides/VERSION_MANAGEMENT.md) for detailed rollback procedures.
@@ -580,7 +580,7 @@ diff <(grep -E '^[a-z_]+:' .workflow_core/config/.workflow-config.yaml.template)
 
 # Review what's new in template
 cd .workflow_core
-git log --oneline v1.0.1..HEAD -- config/.workflow-config.yaml.template
+git log --oneline v1.0.2..HEAD -- config/.workflow-config.yaml.template
 cd ..
 ```
 
@@ -591,7 +591,7 @@ cd ..
 **Solution:**
 ```bash
 # Rollback immediately
-cd .workflow_core && git checkout v1.0.1 && cd ..
+cd .workflow_core && git checkout v1.0.2 && cd ..
 git add .workflow_core
 git commit -m "Rollback submodule update"
 
@@ -609,10 +609,10 @@ cd .workflow_core && git checkout v1.1.0 && cd ..
 ```bash
 # Set explicit submodule version in documentation
 # Add to README.md:
-echo "Required ai_workflow_core version: v1.0.1" >> README.md
+echo "Required ai_workflow_core version: v1.0.2" >> README.md
 
 # Everyone syncs:
-cd .workflow_core && git checkout v1.0.1 && cd ..
+cd .workflow_core && git checkout v1.0.2 && cd ..
 git submodule update --init --recursive
 ```
 
@@ -651,10 +651,10 @@ Pin to a specific version:
 
 ```bash
 cd .workflow_core
-git checkout v1.0.1
+git checkout v1.0.2
 cd ..
 git add .workflow_core
-git commit -m "Pin ai_workflow_core to v1.0.1"
+git commit -m "Pin ai_workflow_core to v1.0.2"
 ```
 
 ### Forking for Customization
@@ -701,7 +701,7 @@ project_b/
 ### Version Management Strategy
 
 **Production systems:**
-- Pin to specific version tags (e.g., `v1.0.1`)
+- Pin to specific version tags (e.g., `v1.0.2`)
 - Update quarterly or as-needed for security
 - Test updates in staging first
 - Document rollback plan
@@ -726,7 +726,7 @@ See [Integration Best Practices](guides/INTEGRATION_BEST_PRACTICES.md) for compr
 
 ---
 
-**Version**: 1.0.1  
+**Version**: 1.0.2  
 **Last Updated**: 2026-01-31
 
 **Next Steps**: 

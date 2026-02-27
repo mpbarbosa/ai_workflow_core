@@ -1151,7 +1151,7 @@ documentation_specialist:
 - Added `configuration_library` project kind
 - Added `client_spa` project kind
 
-**Version 1.0.1 (estimated)**:
+**Version 1.0.2 (estimated)**:
 - Initial release with core project kinds
 
 ### Migration Path
@@ -1193,5 +1193,5 @@ project_kinds:
 ---
 
 **Last Updated**: 2026-02-07  
-**Document Version**: 1.0.1  
+**Document Version**: 1.0.2  
 **Schema Version**: 2.0.0 (ai_prompts_project_kinds.yaml)

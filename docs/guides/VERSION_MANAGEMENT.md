@@ -1,6 +1,6 @@
 # Version Management Guide - AI Workflow Core
 
-**Version:** 1.0.1  
+**Version:** 1.0.2  
 **Last Updated:** 2026-01-29  
 **Audience:** Developers integrating ai_workflow_core into dynamic codebases
 
@@ -40,7 +40,7 @@ When integrating `ai_workflow_core` as a Git submodule into live, dynamic codeba
 
 - **MAJOR** (v2.0.0): Breaking changes requiring migration
 - **MINOR** (v1.1.0): New features, backward-compatible
-- **PATCH** (v1.0.1): Bug fixes, backward-compatible
+- **PATCH** (v1.0.2): Bug fixes, backward-compatible
 
 ### Version Tags
 
@@ -50,7 +50,7 @@ Check available versions:
 cd .workflow_core
 git fetch --tags
 git tag -l
-# Output: v1.0.1, v1.0.1, v1.1.0, etc.
+# Output: v1.0.2, v1.0.2, v1.1.0, etc.
 ```
 
 ### Release Branches
@@ -70,10 +70,10 @@ Pin to specific release tags for maximum stability:
 ```bash
 cd .workflow_core
 git fetch --tags
-git checkout v1.0.1
+git checkout v1.0.2
 cd ..
 git add .workflow_core
-git commit -m "Pin ai_workflow_core to v1.0.1"
+git commit -m "Pin ai_workflow_core to v1.0.2"
 ```
 
 **Pros:**
@@ -166,7 +166,7 @@ cd .workflow_core && git describe --tags && cd ..
 cd .workflow_core && git fetch --tags && git tag -l && cd ..
 
 # 3. Read changelog
-cd .workflow_core && git log --oneline v1.0.1..v1.1.0 && cd ..
+cd .workflow_core && git log --oneline v1.0.2..v1.1.0 && cd ..
 
 # 4. Update in feature branch
 git checkout -b update-workflow-core
@@ -174,7 +174,7 @@ cd .workflow_core
 git checkout v1.1.0
 cd ..
 git add .workflow_core
-git commit -m "Update ai_workflow_core from v1.0.1 to v1.1.0"
+git commit -m "Update ai_workflow_core from v1.0.2 to v1.1.0"
 
 # 5. Test thoroughly
 npm test  # or your test command
@@ -334,10 +334,10 @@ For critical production issues:
 # 1. Immediately revert to last known-good tag
 cd .workflow_core
 git fetch --tags
-git checkout v1.0.1  # Known-good version
+git checkout v1.0.2  # Known-good version
 cd ..
 git add .workflow_core
-git commit -m "EMERGENCY: Rollback ai_workflow_core to v1.0.1"
+git commit -m "EMERGENCY: Rollback ai_workflow_core to v1.0.2"
 git push
 
 # 2. Deploy immediately
@@ -357,7 +357,7 @@ Track the version in your project documentation:
 <!-- README.md -->
 ## Dependencies
 
-- **ai_workflow_core**: v1.0.1 (pinned)
+- **ai_workflow_core**: v1.0.2 (pinned)
 - Last updated: 2026-01-15
 - Update policy: Quarterly review
 ```
@@ -371,13 +371,13 @@ Keep a log of submodule updates:
 # AI Workflow Core Update Log
 
 ## v1.1.0 (2026-01-29)
-- Updated from v1.0.1
+- Updated from v1.0.2
 - Reason: New project kind support for TypeScript
 - Testing: All tests passed
 - Issues: None
-- Rollback plan: Revert to v1.0.1 if issues arise
+- Rollback plan: Revert to v1.0.2 if issues arise
 
-## v1.0.1 (2025-12-01)
+## v1.0.2 (2025-12-01)
 - Initial integration
 ```
 
@@ -388,7 +388,7 @@ In your project's integration guide:
 ```markdown
 ## Requirements
 
-- ai_workflow_core: >= v1.0.1, < v2.0.0 (no breaking changes)
+- ai_workflow_core: >= v1.0.2, < v2.0.0 (no breaking changes)
 - Recommended: v1.1.0 or later for enhanced features
 ```
 
@@ -409,7 +409,7 @@ Maintain compatibility across versions:
 # .github/workflows/integration-test.yml
 strategy:
   matrix:
-    workflow_core_version: ['v1.0.1', 'v1.1.0', 'main']
+    workflow_core_version: ['v1.0.2', 'v1.1.0', 'main']
 ```
 
 ### Version Compatibility Matrix
@@ -418,10 +418,10 @@ Document compatibility:
 
 | Your Project | ai_workflow_core | Status | Notes |
 |--------------|------------------|--------|-------|
-| v2.0.0       | v1.0.1          | ✅ Supported | Stable |
+| v2.0.0       | v1.0.2          | ✅ Supported | Stable |
 | v2.0.0       | v1.1.0          | ✅ Supported | Recommended |
 | v2.0.0       | v2.0.0          | ⚠️ Testing | Breaking changes |
-| v1.x.x       | v1.0.1          | ✅ Supported | LTS |
+| v1.x.x       | v1.0.2          | ✅ Supported | LTS |
 
 ---
 
@@ -540,4 +540,4 @@ git tag -l  # List available tags
 ---
 
 **Last Updated:** 2026-01-29  
-**Document Version:** 1.0.1
+**Document Version:** 1.0.2

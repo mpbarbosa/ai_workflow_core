@@ -2,7 +2,7 @@
 
 **ai_workflow_core - Essential Commands & Concepts**
 
-**Version**: 1.0.1 | **Last Updated**: 2026-02-12 | **Print-Friendly**: Yes
+**Version**: 1.0.2 | **Last Updated**: 2026-02-12 | **Print-Friendly**: Yes
 
 ---
 
@@ -59,7 +59,7 @@ git clone --recurse-submodules <repo-url>
 | `{{PROJECT_TYPE}}` | "nodejs-application" | Hyphenated |
 | `{{PROJECT_KIND}}` | "nodejs_api" | Underscored |
 | `{{LANGUAGE}}` | "javascript" | Lowercase |
-| `{{VERSION}}` | "1.0.1" | Semver (no 'v') |
+| `{{VERSION}}` | "1.0.2" | Semver (no 'v') |
 | `{{TEST_COMMAND}}` | "npm test" | Shell command |
 | `{{LINT_COMMAND}}` | "eslint ." | Shell command |
 
@@ -304,7 +304,7 @@ grep -r "{{" .workflow-config.yaml
 | Config Keys | Underscored | `primary_language` |
 | Placeholders | Uppercase + Underscored | `{{PROJECT_NAME}}` |
 | Template Files | `.template` extension | `cleanup_artifacts.sh.template` |
-| Version Numbers | Semver (no 'v') | `1.0.1` |
+| Version Numbers | Semver (no 'v') | `1.0.2` |
 
 ---
 
@@ -362,7 +362,7 @@ repos:
 ## 💡 Pro Tips
 
 ### Performance
-- Pin submodule to specific tag for stability: `git checkout v1.0.1`
+- Pin submodule to specific tag for stability: `git checkout v1.0.2`
 - Cache validation results in CI/CD
 - Use `--quiet` flag in automation
 
@@ -399,4 +399,4 @@ repos:
 
 ---
 
-**ai_workflow_core** v1.0.1 | MIT License | © 2026
+**ai_workflow_core** v1.0.2 | MIT License | © 2026

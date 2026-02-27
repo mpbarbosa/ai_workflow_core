@@ -1,6 +1,6 @@
 # Security Best Practices
 
-**Version**: 1.0.1  
+**Version**: 1.0.2  
 **Last Updated**: 2026-02-07  
 **Audience**: All users, security-conscious developers
 
@@ -301,7 +301,7 @@ git checkout main
 ```bash
 # ✅ Safe: Use specific version
 cd .workflow_core
-git checkout v1.0.1
+git checkout v1.0.2
 
 # Or use commit hash
 git checkout abc123def456...
@@ -320,10 +320,10 @@ git checkout abc123def456...
 # Review changes before updating
 cd .workflow_core
 git fetch --tags
-git log v1.0.1..v1.1.0  # Review commits between versions
+git log v1.0.2..v1.1.0  # Review commits between versions
 
 # Check for suspicious changes
-git diff v1.0.1..v1.1.0  # Review code changes
+git diff v1.0.2..v1.1.0  # Review code changes
 
 # If satisfied, update
 git checkout v1.1.0
@@ -341,9 +341,9 @@ git commit -m "chore: update ai_workflow_core to v1.1.0"
 git submodule status
 
 # Output format:
-# abc123... .workflow_core (v1.0.1)  # ✅ Clean
-# +abc123... .workflow_core (v1.0.1) # ⚠️  Modified
-# -abc123... .workflow_core (v1.0.1) # ⚠️  Not initialized
+# abc123... .workflow_core (v1.0.2)  # ✅ Clean
+# +abc123... .workflow_core (v1.0.2) # ⚠️  Modified
+# -abc123... .workflow_core (v1.0.2) # ⚠️  Not initialized
 
 # Verify submodule is clean
 cd .workflow_core
@@ -852,6 +852,6 @@ ai_workflow_core is committed to security:
 ---
 
 **Last Updated**: 2026-02-07  
-**Document Version**: 1.0.1  
+**Document Version**: 1.0.2  
 **Security Policy Version**: 1.0  
 **Maintained By**: ai_workflow_core security team

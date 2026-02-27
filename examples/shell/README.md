@@ -68,7 +68,7 @@ git init
 
 # Add submodule (pinned to specific version for stability)
 git submodule add https://github.com/mpbarbosa/ai_workflow_core.git .workflow_core
-cd .workflow_core && git checkout v1.0.1 && cd ..
+cd .workflow_core && git checkout v1.0.2 && cd ..
 git submodule update --init --recursive
 
 # Copy and customize configuration
@@ -108,7 +108,7 @@ git commit -m "Initial commit with ai_workflow_core integration"
 
 ```bash
 cd .workflow_core && git describe --tags && cd ..
-# Output: v1.0.1
+# Output: v1.0.2
 ```
 
 ### Update to New Version
@@ -118,7 +118,7 @@ cd .workflow_core && git describe --tags && cd ..
 cd .workflow_core && git fetch --tags && cd ..
 
 # 2. Review changes
-cd .workflow_core && git log --oneline v1.0.1..v1.1.0 && cd ..
+cd .workflow_core && git log --oneline v1.0.2..v1.1.0 && cd ..
 
 # 3. Update in feature branch
 git checkout -b update-workflow-core
@@ -137,7 +137,7 @@ git commit -m "chore: update ai_workflow_core to v1.1.0"
 
 ```
 my_shell_project/
-├── .workflow_core/           # ai_workflow_core submodule (pinned to v1.0.1)
+├── .workflow_core/           # ai_workflow_core submodule (pinned to v1.0.2)
 ├── .ai_workflow/             # Workflow artifacts (gitignored)
 ├── .workflow-config.yaml     # Customized workflow config
 ├── .gitignore                # Git ignore patterns
@@ -162,10 +162,10 @@ project:
   type: "shell-script-automation"
   description: "Shell script automation tools"
   kind: "shell_script_automation"
-  version: "1.0.1"
+  version: "1.0.2"
   
   # Track submodule version
-  workflow_core_version: "v1.0.1"
+  workflow_core_version: "v1.0.2"
   workflow_core_updated: "2026-01-29"
 
 tech_stack:

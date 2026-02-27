@@ -1255,6 +1255,6 @@ metadata:
     - version: "1.1.0"
       date: "2025-12-22"
       changes: "Added client_spa project kind for vanilla JS SPAs with Bootstrap"
-    - version: "1.0.1"
+    - version: "1.0.2"
       date: "2025-12-18"
       changes: "Initial project kinds configuration"

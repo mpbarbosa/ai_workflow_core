@@ -46,7 +46,7 @@ readonly NC='\033[0m' # No Color
 # Script directory and repository root
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-# Updated to use .ai_workflow/ directory (standard since v1.0.1)
+# Updated to use .ai_workflow/ directory (standard since v1.0.2)
 WORKFLOW_DIR="${REPO_ROOT}/.ai_workflow"
 
 # Default options

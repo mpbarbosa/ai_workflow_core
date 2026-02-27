@@ -54,7 +54,7 @@
     },
     "validate_structure.py": {
       "status": "EXCELLENT",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "executable": true,
       "documented": true,
       "issues": []

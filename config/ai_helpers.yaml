@@ -2608,7 +2608,7 @@ markdown_lint_prompt:
 
 # Step 04: Configuration Specialist Prompt Template
 # Purpose: Validate and analyze configuration files for syntax, security, and best practices
-# Version: 1.0.1 (v3.2.0 - Configuration Files as 4th Category feature)
+# Version: 1.0.2 (v3.2.0 - Configuration Files as 4th Category feature)
 configuration_specialist_prompt:
   # Split role into prefix + guidelines for token efficiency
   role_prefix: |
@@ -2698,7 +2698,7 @@ configuration_specialist_prompt:
     **Reference Standards:**
     - JSON: RFC 8259, JSON Schema validation
     - YAML: YAML 1.2 spec, safe loading practices
-    - TOML: TOML v1.0.1 spec
+    - TOML: TOML v1.0.2 spec
     - Docker: Best practices from Docker docs
     - CI/CD: Platform-specific guidelines (GitHub Actions, GitLab CI, etc.)
   
@@ -3793,7 +3793,7 @@ javascript_developer_prompt:
 
     3. **Project Metadata**:
        - `name`: lowercase, hyphenated, no spaces (e.g., `my-app`)
-       - `version`: valid semver (e.g., `1.0.1`), no `v` prefix
+       - `version`: valid semver (e.g., `1.0.2`), no `v` prefix
        - `description`: concise one-line summary
        - `license`: valid SPDX identifier (e.g., `MIT`, `Apache-2.0`, `UNLICENSED`)
        - `main`: CommonJS entry point (e.g., `dist/index.js`)

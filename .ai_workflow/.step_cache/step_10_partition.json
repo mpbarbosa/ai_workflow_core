@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "partitionIndex": 0,
+  "totalPartitions": 1,
+  "filesHash": "a266d575",
+  "partitionLabels": [
+    "package-lock.json, package.json, scripts"
+  ],
+  "updatedAt": "2026-02-27T00:42:51.241Z"
+}

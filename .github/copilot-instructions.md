@@ -29,7 +29,7 @@
 - **Configuration-Driven**: Uses YAML templates with placeholder substitution patterns
 - **Dual Nature**: You're working on both the core templates AND the system that consumes them
 
-**Version**: 1.0.1  
+**Version**: 1.0.2  
 **Parent Project**: [mpbarbosa/ai_workflow](https://github.com/mpbarbosa/ai_workflow) v1.3.0 (Phase 8 Complete)  
 **License**: MIT  
 **Originally extracted from**: [mpbarbosa/ai_workflow](https://github.com/mpbarbosa/ai_workflow)
@@ -182,7 +182,7 @@ Configuration files use `{{PLACEHOLDER}}` syntax for values that projects must c
 | `{{PROJECT_TYPE}}` | Technical project type (hyphenated) | "nodejs-application", "configuration-library" |
 | `{{PROJECT_DESCRIPTION}}` | Brief project description | "RESTful API for user management" |
 | `{{PROJECT_KIND}}` | Project kind from project_kinds.yaml (underscored) | "nodejs_api", "shell_script_automation", "configuration_library" |
-| `{{VERSION}}` | Project version (semver, no 'v' prefix) | "1.0.1" |
+| `{{VERSION}}` | Project version (semver, no 'v' prefix) | "1.0.2" |
 | `{{LANGUAGE}}` | Primary programming language | "javascript", "bash", "python", "yaml" |
 | `{{BUILD_SYSTEM}}` | Build system/package manager | "npm", "webpack", "maven", "none" |
 | `{{TEST_FRAMEWORK}}` | Testing framework | "jest", "pytest", "shell-script", "validation-scripts" |
@@ -192,7 +192,7 @@ Configuration files use `{{PLACEHOLDER}}` syntax for values that projects must c
 **Terminology Note:**
 - `PROJECT_TYPE` uses hyphens: `"nodejs-application"`, `"configuration-library"`
 - `PROJECT_KIND` uses underscores: `"nodejs_api"`, `"configuration_library"`
-- Version format: `"1.0.1"` (no 'v' prefix in config values)
+- Version format: `"1.0.2"` (no 'v' prefix in config values)
 
 ### Configuration Template Example
 
@@ -204,7 +204,7 @@ project:
   type: "{{PROJECT_TYPE}}"  # hyphenated: nodejs-application, configuration-library
   description: "{{PROJECT_DESCRIPTION}}"
   kind: "{{PROJECT_KIND}}"  # underscored: nodejs_api, configuration_library
-  version: "{{VERSION}}"    # no 'v' prefix: 1.0.1
+  version: "{{VERSION}}"    # no 'v' prefix: 1.0.2
 
 tech_stack:
   primary_language: "{{LANGUAGE}}"  # javascript, bash, python, yaml
@@ -228,7 +228,7 @@ project:
   name: "AI Workflow Core"
   type: "configuration-library"  # hyphenated
   kind: "configuration_library"   # underscored
-  version: "1.0.1"                # no 'v' prefix
+  version: "1.0.2"                # no 'v' prefix
 
 tech_stack:
   primary_language: "yaml"
@@ -655,7 +655,7 @@ Always clarify which context applies to the current task.
 
 ### Version Compatibility
 
-- **ai_workflow_core version**: 1.0.1
+- **ai_workflow_core version**: 1.0.2
 - **project_kinds.yaml schema version**: 1.2.0 (last updated: 2026-01-30)
 - Maintain backward compatibility within major version
 - Document breaking changes in CHANGELOG.md
@@ -683,7 +683,7 @@ Always clarify which context applies to the current task.
 - Project type field: Use hyphens (e.g., `type: "nodejs-application"`, `type: "configuration-library"`)
 - Project kind field: Use underscores (e.g., `kind: "nodejs_api"`, `kind: "configuration_library"`)
 - YAML keys: Use underscores (e.g., `project_kinds`, `shell_script_automation`)
-- Version format: No 'v' prefix in config values (e.g., `version: "1.0.1"` not `"v1.0.1"`)
+- Version format: No 'v' prefix in config values (e.g., `version: "1.0.2"` not `"v1.0.2"`)
 
 ### Integration Pattern
 

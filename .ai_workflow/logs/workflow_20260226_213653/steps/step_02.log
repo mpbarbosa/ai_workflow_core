@@ -1,0 +1,40 @@
+[2026-02-27T00:37:58.580Z] 
+→ Starting: Consistency Analysis
+[2026-02-27T00:37:58.580Z] ════════════════════════════════════════════════════════════
+[2026-02-27T00:37:58.580Z] 🔷  Step 2: Documentation Consistency Analysis
+[2026-02-27T00:37:58.580Z] ════════════════════════════════════════════════════════════
+[2026-02-27T00:37:58.588Z] Found 69 documentation files
+[2026-02-27T00:37:58.589Z] Expected version: 1.0.1
+[2026-02-27T00:37:58.593Z] Version check: 168 issue(s) found
+[2026-02-27T00:37:58.605Z] Link check: 231 broken link(s) found
+[2026-02-27T00:37:59.883Z] ✓ GitHub Copilot SDK initialized successfully
+[2026-02-27T00:38:01.028Z] Available Copilot models (13): claude-sonnet-4.5, claude-haiku-4.5, claude-opus-4.5, claude-sonnet-4, gemini-3-pro-preview, gpt-5.2-codex, gpt-5.2, gpt-5.1-codex-max, gpt-5.1-codex, gpt-5.1, gpt-5.1-codex-mini, gpt-5-mini, gpt-4.1
+[2026-02-27T00:38:01.090Z] [DEBUG] AI cache initialized: .ai_workflow/.ai_cache
+[2026-02-27T00:38:01.094Z] [DEBUG] Cache miss: 439877f3...
+[2026-02-27T00:38:01.094Z] [DEBUG] Request Options: {"model":"gpt-4.1","temperature":0.7,"maxTokens":4000,"stream":false,"persona":"code_quality_analyst","cache":true}
+[2026-02-27T00:38:01.094Z] [DEBUG] Persona: code_quality_analyst
+[2026-02-27T00:38:01.094Z] [DEBUG] Model: gpt-4.1
+[2026-02-27T00:38:01.094Z] [AI] SDK call starting — persona: code_quality_analyst, model: gpt-4.1, prompt_chars: 24920
+[2026-02-27T00:38:01.094Z] [DEBUG] Executing AI request (attempt 1/3)
+[2026-02-27T00:38:01.094Z] [DEBUG] AiHelper._sendRequest called
+[2026-02-27T00:38:01.094Z] [Copilot SDK] Calling sendMessage — model: gpt-4.1, prompt_length: 24920 chars
+[2026-02-27T00:38:01.094Z] [DEBUG] Sending prompt...
+[2026-02-27T00:40:01.103Z] ⚠ [AI] SDK call failed — persona: code_quality_analyst, model: gpt-4.1, error: Timeout after 120000ms waiting for session.idle
+[2026-02-27T00:40:01.104Z] [AI] Retrying in 1000ms (attempt 2/3)...
+[2026-02-27T00:40:02.131Z] [AI] Session recreated for retry
+[2026-02-27T00:40:02.131Z] [AI] Timeout detected — increasing timeout to 240000ms for retry
+[2026-02-27T00:40:02.131Z] [DEBUG] Executing AI request (attempt 2/3)
+[2026-02-27T00:40:02.131Z] [DEBUG] AiHelper._sendRequest called
+[2026-02-27T00:40:02.131Z] [Copilot SDK] Calling sendMessage — model: gpt-4.1, prompt_length: 24920 chars
+[2026-02-27T00:40:02.131Z] [DEBUG] Sending prompt...
+[2026-02-27T00:40:50.093Z] [Copilot SDK] sendAndWait returned — model: gpt-4.1
+[2026-02-27T00:40:50.093Z] [AI] SDK call completed — persona: code_quality_analyst, model: gpt-4.1, response_chars: 2454, latency: 47962ms
+[2026-02-27T00:40:50.094Z] ✓ AI request completed successfully
+[2026-02-27T00:40:50.095Z] [DEBUG] Prompt logged to: 2026-02-27T00-40-50-094Z_0001_code_quality_analyst.md
+[2026-02-27T00:40:50.096Z] [DEBUG] Response cached: 439877f3...
+[2026-02-27T00:40:50.097Z] ⚠ Step 2 completed - 399 issue(s) found
+[2026-02-27T00:40:50.097Z] ✓ Step step_02 completed in 171518ms
+[2026-02-27T00:40:50.097Z] [DEBUG] [Performance] step_02: 2m 52s
+[2026-02-27T00:40:50.097Z] ✗ [CRITICAL] Operation 'step_02' took 2m 52s (memory: 18.35MB)
+[2026-02-27T00:40:50.097Z] [DEBUG] Recorded outcome for step_02: success
+[2026-02-27T00:40:50.097Z] ✓ Completed: Consistency Analysis (172s)

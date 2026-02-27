@@ -2,7 +2,7 @@
 
 All notable changes to the AI Workflow Core project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.1/),
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.2/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
@@ -131,7 +131,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added section on Source ai_workflow v4.0.0 breaking changes (config-driven execution)
   - Added section on Migration Target ai_workflow.js v1.3.0 (Phase 8 complete)
   - Documented step renaming: `step_01` → `documentation_updates`, etc.
-  - Updated notable changes for v1.0.1 section with detailed project status
+  - Updated notable changes for v1.0.2 section with detailed project status
   - Clarified 100% backward compatibility in source ai_workflow v4.0.0
 
 ### Added
@@ -165,7 +165,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated cache cleanup to use `.incremental_cache/` (was `.ai_cache/`)
   - Added note about Node.js cleanup_handlers.js implementation (v2.0.0) in parent project
   - Aligned directory structure with current .ai_workflow/ standard
-  - Updated version from 1.0.1 to 2.0.0, date from 2025-12-20 to 2026-02-01
+  - Updated version from 1.0.2 to 2.0.0, date from 2025-12-20 to 2026-02-01
 - **Parent Project Status Update** (2026-02-09)
   - **Source ai_workflow (Bash)** updated to v4.0.0 (released 2026-02-08)
   - **Major Breaking Changes in Source v4.0.0**:
@@ -350,7 +350,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - `config/paths.yaml` - Removed as it's project-specific and should be created by consuming projects, not provided as a template
 
-## [1.0.1] - 2026-01-29
+## [1.0.2] - 2026-01-29
 
 ### Added
 - Initial release of ai_workflow_core as standalone repository
@@ -400,7 +400,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
-- **1.0.1** (2026-01-29) - Initial release
+- **1.0.2** (2026-01-29) - Initial release
 
 ## Migration Notes
 

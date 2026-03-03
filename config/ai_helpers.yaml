@@ -335,7 +335,6 @@ doc_analysis_prompt:
     **REQUIRED ACTIONS**:
     1. **Read the changes**: Examine what was modified in each changed file
     2. **Identify documentation impact**: Determine which docs need updates:
-       - .github/copilot-instructions.md (project overview, architecture, key files)
        - README.md (features, setup instructions, usage examples)
        - Technical docs (architecture changes, new features)
        - Module READMEs (if code in that module changed)
@@ -346,6 +345,8 @@ doc_analysis_prompt:
     **OUTPUT FORMAT**: Use edit blocks showing before/after, or provide specific line-by-line changes.
   
   approach: |
+    Analyze ONLY the documentation files explicitly listed above. Do not reference, invent, or assume documentation not in that list.
+
     **Methodology**:
     1. **Analyze Changes**: Use `@workspace` to examine what was modified in each changed file
        - Read the actual file contents to understand the changes
@@ -374,8 +375,6 @@ doc_analysis_prompt:
     - Specify exact file paths and line numbers when possible
     - Group related changes together
     - Be concrete and actionable - no suggestions, only edits
-    
-    **Language-Specific Standards:** {language_specific_documentation}
     
     **Critical Guidelines**:
     - ALWAYS provide specific edits or explicitly state "No updates needed"
@@ -629,9 +628,9 @@ technical_writer_prompt:
     4. **Exit Cleanly**: Do NOT generate new documentation files or major content
     
     **OUTPUT FORMAT**:
-    - **Always start with**: "Documentation Necessity Evaluation" section with PASS/FAIL decision
-    - **If PASS (needed)**: Show criteria met → "Documentation Gap Analysis" → complete missing documentation
-    - **If FAIL (not needed)**: Show criteria evaluation → "No new documentation required" → exit with optional minor suggestions
+    - **Always start with**: "Documentation Necessity Evaluation" section with ACTION NEEDED / NO ACTION NEEDED decision
+    - **If ACTION NEEDED**: Show criteria met → "Documentation Gap Analysis" → complete missing documentation
+    - **If NO ACTION NEEDED**: Show criteria evaluation → "No new documentation required" → exit with optional minor suggestions
     - **Never generate** "just in case" documentation - only when criteria clearly indicate need
     - NEVER end with questions or requests for input - always provide definitive decision
   
@@ -1014,6 +1013,8 @@ e2e_test_engineer_prompt:
     - Provide debugging strategies for common E2E test issues
   
   approach: |
+    Analyze ONLY the E2E test results and files explicitly provided above. Do not reference, invent, or assume test scenarios not present in that data.
+
     **E2E Testing Methodology**:
     
     1. **Test Pyramid Approach**: Focus E2E tests on critical user journeys
@@ -1084,8 +1085,6 @@ e2e_test_engineer_prompt:
     - ✅ Test execution in CI/CD pipeline
     - ✅ Test reports and failure notifications configured
     - ✅ Video recording for failed tests enabled
-    
-    **Language-Specific Standards:** {language_specific_documentation}
     
     **E2E Testing Best Practices**:
     - Test user behavior, not implementation details
@@ -1458,13 +1457,15 @@ requirements_engineer_prompt:
     4. **Exit Cleanly**: Do NOT generate new requirements documents or major content
     
     **OUTPUT FORMAT**:
-    - **Always start with**: "Requirements Necessity Evaluation" section with PASS/FAIL decision
-    - **If PASS (needed)**: Show criteria met → "Requirements Gap Analysis" → generate missing requirements
-    - **If FAIL (not needed)**: Show criteria evaluation → "No new requirements required" → exit with optional minor suggestions
+    - **Always start with**: "Requirements Necessity Evaluation" section with ACTION NEEDED / NO ACTION NEEDED decision
+    - **If ACTION NEEDED**: Show criteria met → "Requirements Gap Analysis" → generate missing requirements
+    - **If NO ACTION NEEDED**: Show criteria evaluation → "No new requirements required" → exit with optional minor suggestions
     - **Never generate** "just in case" requirements - only when criteria clearly indicate need
     - NEVER end with questions or requests for input - always provide definitive decision
   
   approach: |
+    Analyze ONLY the project files explicitly listed above. Do not reference, invent, or assume requirements not present in that list.
+
     **Requirements Engineering Necessity-First Strategy**:
     
     **Phase 0: Necessity Check** (REQUIRED FIRST STEP):
@@ -1521,8 +1522,6 @@ requirements_engineer_prompt:
     - Use tables, lists, and clear formatting for readability
     - Include priority and rationale for requirements
     - Add examples and scenarios to clarify intent
-    
-    **Language-Specific Standards:** {language_specific_requirements}
     
     **Requirements Engineering Best Practices**:
     - **SMART Requirements**: Specific, Measurable, Achievable, Relevant, Testable
@@ -1592,6 +1591,10 @@ test_strategy_prompt:
        - Estimate testing effort (small/medium/large)
   
   approach: |
+    Analyse only the **{project_name}** codebase described above. Do not reference ai_workflow.js or any other project not in the context.
+
+    Review the coverage stats and test files listed to identify gaps, prioritize recommendations, and produce a clear strategic roadmap.
+
     **Output:**
     - Coverage gap analysis with severity levels (Critical/High/Medium/Low)
     - Prioritized list of testing recommendations
@@ -1628,7 +1631,42 @@ test_strategy_prompt:
     - Test async chain execution with timing scenarios
     - Include race condition test coverage
 
-# Code Quality Validation Prompt Template
+# Per-File Test Generation Prompt Template
+# Used by step_07 to generate a runnable test file for a single source file.
+# Variables: {source_file}, {language}, {test_framework}, {source_ext}, {source_content}
+single_file_test_prompt:
+  role: "You are a senior test engineer specializing in writing complete, runnable test suites that cover happy paths, edge cases, and error scenarios."
+
+  task_template: |
+    Generate a complete, runnable test file for the source file below.
+
+    **Source file**: `{source_file}`
+    **Language / framework**: {test_framework}
+
+    **Requirements**:
+    - Output ONLY the test file content inside a single fenced code block (```{source_ext} ... ```)
+    - Cover: happy paths, edge cases, and error scenarios
+    - Use {test_framework} idioms and conventions
+    - Use descriptive test names
+    - Do NOT include explanations outside the code block
+
+    ```{source_ext}
+    {source_content}
+    ```
+
+    Now generate the test file:
+
+  approach: |
+    Analyse only the **{source_file}** source code shown above. Do not reference any files or modules not visible in the context.
+
+    Generate a self-contained test file that:
+    - Imports from the source file using the correct relative path
+    - Uses {test_framework} idioms and conventions
+    - Covers happy paths, edge cases, and error handling
+    - Uses descriptive `describe`/`it` (or equivalent) blocks with clear test names
+    - Does NOT include any explanations outside the code block
+
+
 # Quality Prompt - Quick File-Level Code Review
 # Use for: Targeted code reviews, specific file analysis, quick quality checks
 # Focus: File-level issues, immediate problems, practical improvements
@@ -1741,7 +1779,7 @@ step2_consistency_prompt:
     - Primary Language: {primary_language}
     - Documentation files: {doc_count} markdown files
     - Scope: {change_scope}
-    - Recent changes: {modified_count} files modified
+    - Files in this partition: {modified_count}
     
     **Tasks:**
     
@@ -1763,14 +1801,16 @@ step2_consistency_prompt:
     
     4. **Broken Reference Root Cause Analysis:**
     
-       The following references were flagged as potentially broken by automated checks:
+       The following broken links were detected by automated checks.
+       Each entry is formatted as `source_file:line_number → broken_target_path`.
+       The SOURCE files all exist — what is missing is the TARGET they point to.
        {broken_refs_content}
     
-       **Your task**: For each flagged reference, perform systematic root cause analysis.
+       **Your task**: For each `source:line → target` entry, perform systematic root cause analysis on the MISSING TARGET.
     
-       **Analysis Framework** (apply to each reference):
+       **Analysis Framework** (apply to each entry):
     
-       a) **False Positive Check**: Is this truly broken or a false positive?
+       a) **False Positive Check**: Is the target truly missing or a false positive?
           - Generated files (build artifacts, coverage reports, compiled outputs)
           - External URLs (may be temporarily unavailable but valid)
           - Intentional references (placeholders, future files, templates)
@@ -1778,7 +1818,7 @@ step2_consistency_prompt:
           
           If false positive: Document why and recommend no action.
     
-       b) **Root Cause Determination**: If truly broken, what caused it?
+       b) **Root Cause Determination**: If truly missing, what caused it?
           - **Renamed file**: File exists but at different name
           - **Moved location**: File exists but in different directory
           - **Typo in reference**: Reference has spelling/path error
@@ -1826,8 +1866,9 @@ step2_consistency_prompt:
     {doc_files}
   
   approach: |
+    Analyze ONLY the documentation files and broken references explicitly listed above. Do not invent file paths, version numbers, or cross-references not present in the provided context.
+
     **Output:**
-    - List of inconsistencies found with specific file:line references
     - Recommendations for fixes with rationale
     - Priority level (Critical/High/Medium/Low) for each issue
     - Actionable remediation steps
@@ -1923,6 +1964,8 @@ step3_script_refs_prompt:
     - Deployment/automation scripts (deploy/, scripts/, bin/ directories)
   
   approach: |
+    Analyze ONLY the scripts explicitly listed under "Available Scripts" above. Do not reference, invent, or assume the existence of any scripts not in that list.
+
     **Output:**
     - List of script reference issues with file:line locations
     - Missing or incomplete script documentation
@@ -1993,8 +2036,6 @@ step4_directory_prompt:
     
     4. **Best Practice Compliance:**
        {language_specific_directory_standards}
-       # NOTE: This will be dynamically populated from language_specific_documentation[{primary_language}]
-       # If no language-specific standards exist, generic standards below are used
        - Source vs build output directory separation
        - Documentation organization (docs/ location and structure)
        - Configuration file locations (conventional paths)
@@ -2008,6 +2049,8 @@ step4_directory_prompt:
        - Potential restructuring recommendations
   
   approach: |
+    Analyze ONLY the directories explicitly listed under "Current Directory Structure" above. Do not reference, invent, or assume the existence of any directories, files, or documentation not present in that list.
+
     **Output:**
     - List of structure issues with specific directory paths
     - Documentation mismatches (documented but missing, or undocumented but present)
@@ -2052,6 +2095,9 @@ step5_test_review_prompt:
     **Existing Test Files:**
     {test_files}
     
+    **Test File Contents:**
+    {test_file_contents}
+    
     **Tasks:**
     
     1. **Test Code Quality Assessment:**
@@ -2093,16 +2139,19 @@ step5_test_review_prompt:
        - Suggest test execution optimization strategies
   
   approach: |
+    Analyze ONLY the test files explicitly listed above. Do not invent test files or
+    assume a project structure that is not reflected in the provided context.
+
+    Review each listed test file for code quality, best practices, and framework usage.
+    Provide specific line-level feedback where applicable.
+
     **Output:**
     - Test code quality assessment with specific file:line references
     - Best practice violations with concrete examples
     - Refactoring recommendations with before/after code snippets
     - Framework-specific improvement suggestions
     - Performance optimization opportunities
-    
-    **Testing Standards to Apply:**
-    {language_specific_testing_standards}
-    
+
     **Tactical Focus:**
     - Review actual test code, not coverage strategy
     - Provide code-level improvements, not portfolio analysis
@@ -2136,9 +2185,11 @@ step7_test_exec_prompt:
     **Context:**
     - Project: {project_name} ({project_description})
     - Primary Language: {primary_language}
-    - Test Config: {test_framework} via `{test_command}`
+    - Test Framework: {test_framework} via `{test_command}`
     - Exit Code: {test_exit_code}
     - Results: {tests_passed}/{tests_total} passed, {tests_failed} failed
+    - Coverage Threshold: {coverage_threshold}%
+    - Coverage Gaps: {coverage_gaps}
     
     **Test Execution Results:**
     {execution_summary}
@@ -2187,6 +2238,11 @@ step7_test_exec_prompt:
        - Recommend test parallelization approaches
   
   approach: |
+    Analyze ONLY the test execution results explicitly provided above. Do not invent
+    test files, module names, or coverage metrics that are not in the provided context.
+    Review the execution output, exit code, and pass/fail counts to diagnose issues.
+    Provide specific, actionable recommendations grounded in the supplied data.
+
     **Output:**
     - Root cause analysis for each failure with file:line:test references
     - Specific code fixes or test modifications needed
@@ -2282,6 +2338,11 @@ step8_dependencies_prompt:
        - Suggest automation (Dependabot, Renovate)
   
   approach: |
+    Analyze ONLY the dependencies and audit results explicitly listed above. Do not
+    invent package names, vulnerability counts, or version data not present in the context.
+    Review the provided dependency lists, audit summary, and outdated packages.
+    Prioritize security vulnerabilities first, then version drift, then optimizations.
+
     **Output:**
     - Security vulnerability assessment with severity levels
     - Immediate action items for critical vulnerabilities
@@ -2375,12 +2436,14 @@ step9_code_quality_prompt:
        - Identify technical debt priorities
   
   approach: |
+    Analyse only the **{project_name}** files shown above. Do not reference ai_workflow.js, node_modules, or any other project not present in the context.
+
+    Review code quality, anti-patterns, technical debt, and maintainability for the provided code samples. Focus on actionable findings with specific file references.
+
     **Output:**
     - **Assessment**: Quality grade (A-F), maintainability score, standards compliance
     - **Findings**: Anti-patterns, violations, tech debt with file:line references
     - **Recommendations**: Top 5 refactoring priorities with effort estimates (quick wins vs long-term)
-    
-    **Language-Specific Standards:** {language_specific_quality}
     
     Please provide a comprehensive code quality assessment with specific, actionable recommendations.
 
@@ -2437,7 +2500,7 @@ step11_git_commit_prompt:
     **Changed Files:**
     {changed_files}
     
-    **Diff Statistics:**
+    **Staged Commit Statistics (includes workflow artifacts):**
     {diff_summary}
     
     **Detailed Context:**
@@ -2484,6 +2547,8 @@ step11_git_commit_prompt:
        - Follow 72-character line wrap
   
   approach: |
+    Review ONLY the staged changes listed above. Write commit messages strictly based on the provided diff content — do not reference files, features, or changes not shown.
+
     **Commit Message Format:**
     
     type(scope): subject line here
@@ -2583,6 +2648,8 @@ markdown_lint_prompt:
        - Workflow automation improvements
   
   approach: |
+    Analyze ONLY the markdown files and lint results explicitly listed above. Do not report violations for rules not in the enabled set.
+
     **Scope**: Analyze only enabled rules (MD007, MD009, MD026, MD047).
     Disabled rules (MD001, MD002, MD012, MD013, MD022, MD029, MD031, MD032)
     are intentionally relaxed for AI-generated content and should not be
@@ -2629,6 +2696,9 @@ configuration_specialist_prompt:
     - Tech Stack: {tech_stack}
     - Total Config Files: {config_count}
     
+    **File Contents:**
+    {config_files_content}
+    
     **Validation Tasks:**
     
     1. **Syntax Validation**:
@@ -2665,6 +2735,8 @@ configuration_specialist_prompt:
        - Ensure behavioral_guidelines usage for consistency
   
   approach: |
+    Analyze ONLY the configuration files explicitly listed above. Do not reference, invent, or assume files not in that list.
+
     **Validation Priority:**
     1. Security issues (CRITICAL - exposed secrets, weak defaults)
     2. Syntax errors (HIGH - will break builds/deployments)
@@ -2813,6 +2885,24 @@ language_specific_documentation:
        */
       async function getUser(userId) { ... }
   
+  typescript:
+    key_points: |
+      • Use TSDoc format (@param, @returns, @typeParam, @remarks, @throws)
+      • Document generic type parameters with @typeParam T
+      • Document interfaces, type aliases, and enums explicitly
+      • Maintain declaration files (.d.ts) in sync with implementation
+      • Use TypeDoc to generate API documentation from source
+    doc_format: "TSDoc (TypeDoc)"
+    example_snippet: |
+      /**
+       * Fetches a typed resource from the API.
+       * @typeParam T - The expected response shape
+       * @param url - Endpoint URL
+       * @returns Promise resolving to the typed resource
+       * @throws {NetworkError} If the request fails
+       */
+      async function fetchResource<T>(url: string): Promise<T> { ... }
+  
   python:
     key_points: |
       • Follow PEP 257 docstring conventions
@@ -2956,6 +3046,28 @@ language_specific_quality:
       - "Use ESLint and Prettier"
       - "Implement proper error handling"
       - "Write testable, pure functions"
+  
+  typescript:
+    focus_areas:
+      - "Strict mode compliance (strict: true in tsconfig.json)"
+      - "Avoiding 'any' type — use 'unknown' for unsafe values"
+      - "Non-null assertion overuse (!)"
+      - "Generic constraint correctness"
+      - "Type narrowing and discriminated unions"
+    
+    antipatterns:
+      - "Using 'any' to bypass type checking"
+      - "Excessive 'as' type assertions"
+      - "Non-null assertions without prior guards (!)"
+      - "Unconstrained generic parameters"
+      - "Mixing ESM and CJS module patterns"
+    
+    best_practices:
+      - "Enable strict mode in tsconfig.json"
+      - "Prefer 'unknown' over 'any' for unsafe input"
+      - "Use discriminated unions for state modelling"
+      - "Leverage utility types (Partial, Required, Pick, Omit, Readonly)"
+      - "Write types alongside implementation, not after"
   
   python:
     focus_areas:
@@ -3129,6 +3241,23 @@ language_specific_testing:
       describe('UserService', () => {
         it('fetches user by ID', async () => {
           expect((await UserService.getUser('123')).id).toBe('123');
+        });
+      });
+  
+  typescript:
+    framework: "Jest + ts-jest"
+    patterns:
+      - "Configure ts-jest in jest.config.js for TypeScript compilation"
+      - "Use @types/jest for typed assertions"
+      - "Type mock return values with jest.mocked()"
+      - "Test discriminated union branches explicitly"
+      - "Avoid 'as any' in mocks — use Partial<T> or jest.mocked()"
+    
+    example: |
+      describe('GeoPosition', () => {
+        it('calculates distance correctly', () => {
+          const pos: GeoPosition = new GeoPosition({ lat: 0, lon: 0 });
+          expect(pos.distanceTo({ lat: 1, lon: 1 })).toBeCloseTo(157.4, 0);
         });
       });
   
@@ -3398,6 +3527,8 @@ async_flow_debugger_prompt:
     - Race conditions in parallel async operations
   
   approach: |
+    Analyze ONLY the source files and async patterns explicitly listed above. Do not assume or invent code paths, promise chains, or event handlers not shown in the provided context.
+
     **Step 1: Async Chain Mapping**
     Create execution flow with step numbers:
     ```
@@ -3752,7 +3883,7 @@ javascript_developer_prompt:
   behavioral_guidelines: *behavioral_actionable
 
   task_template: |
-    **YOUR TASK**: Create, review, or update package.json to accurately reflect project dependencies, scripts, and metadata following JavaScript ecosystem best practices.
+    **YOUR TASK**: Review and improve the existing package.json to accurately reflect project dependencies, scripts, and metadata following JavaScript ecosystem best practices. Do NOT replace or reinvent existing correct values — only propose changes where a genuine issue exists.
 
     **Project Context:**
     - Project: {project_name} ({project_description})
@@ -3763,6 +3894,11 @@ javascript_developer_prompt:
     - Test Command: {test_command}
     - Lint Command: {lint_command}
     - Modified Files: {modified_count}
+
+    **Current package.json:**
+    ```json
+    {current_package_json}
+    ```
 
     **ANALYSIS PHASE**: Evaluate the package.json across the following dimensions:
     1. **Dependencies**: Are all required libraries listed? Are versions appropriate (not too loose, not unnecessarily pinned)?
@@ -3821,6 +3957,8 @@ javascript_developer_prompt:
     - Note any breaking changes that require developer action (e.g., Node.js version upgrade)
 
   approach: |
+    Analyze ONLY the packages and dependencies explicitly listed above. Do not reference packages, version ranges, or vulnerabilities not present in the provided dependency lists.
+
     **JavaScript Developer Methodology**:
 
     1. **Dependency Classification**:

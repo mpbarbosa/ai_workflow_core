@@ -8,6 +8,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **TypeScript Developer Persona "Strider"** (2026-03-03, v6.6.0)
+  - Added `typescript_developer_prompt`: Senior TypeScript Developer persona for type-safe application development
+  - **Target audience**: Developers building or reviewing TypeScript codebases across any project type
+  - **Expertise areas**:
+    - Core TypeScript type system: Generics, interfaces, unions, intersections, and mapped types
+    - Advanced type features: Type guards, type narrowing, utility types (`Partial`, `Pick`, `Record`, `Omit`, `ReturnType`), conditional types; `unknown`/`never` over `any`
+    - tsconfig configuration: `strict` mode, `paths`, `moduleResolution`, `noUnusedLocals`, `outDir`/`rootDir`
+    - TypeScript-aware linting: `@typescript-eslint` plugin, `no-explicit-any`, `no-floating-promises`, `consistent-type-imports`
+    - JavaScript ES6+ proficiency: Closures, destructuring, async/await, Promises, ESM/CJS modules
+    - Frontend frameworks: React (typed props/hooks/reducers), Angular (decorators/DI), Vue.js (Composition API with typed refs)
+    - Backend & API development: Node.js, Express typed handlers, tRPC, TypeGraphQL, REST/GraphQL type generation
+    - Build tooling & testing: Webpack, Vite, ts-jest, Vitest, type-level testing (`tsd`, `expect-type`)
+    - Architecture & performance: Scalable type design, dependency inversion, state management, technical debt reduction
+  - **Methodology**: Type-first design, strict mode discipline, generics over duplication, runtime/type-system bridge (Zod/Valibot), framework integration patterns
+  - **Quality checklist**: 11 checks covering strict mode, no-any, annotated signatures, runtime validation, error handling, ESLint, import types, ts-expect-error, typed mocks, and CI type-check
+  - **Complements existing personas**:
+    - `javascript_developer_prompt`: package.json management and JS ecosystem tooling
+    - `front_end_developer_prompt`: UI/UX implementation and front-end architecture
+  - **Total personas**: 19 (was 18)
+  - **Updated files**:
+    - `config/ai_helpers.yaml`: v6.5.0 → v6.6.0 (new persona appended, version header and changelog updated)
+    - `CHANGELOG.md`: Entry added under [Unreleased]
+
 - **JavaScript Developer Persona** (2026-02-26, v6.5.0)
   - Added `javascript_developer_prompt`: JavaScript Developer persona for `package.json` management
   - **Target audience**: Developers & Project Teams creating, maintaining, and updating package.json

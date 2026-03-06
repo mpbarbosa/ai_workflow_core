@@ -1,10 +1,10 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 6.6.0 (TypeScript Developer Persona "Strider" - 2026-03-03)
+# Version: 6.7.6 (Phase 1 Refinement Complete - 2026-03-06)
 #
 # CUMULATIVE TOKEN EFFICIENCY SUMMARY:
 # =====================================
-# Total Savings per Workflow: ~1,400-1,500 tokens (vs. v3.0.0 baseline)
+# Total Savings per Workflow: ~1,560-1,755 tokens (vs. v3.0.0 baseline)
 #
 # Breakdown by Optimization Type:
 # - Output format simplification (v4.0.0): ~550 tokens
@@ -14,15 +14,17 @@
 # - Verbose section headers (v3.5.0): ~105-210 tokens
 # - Redundant output warnings (v3.6.0): ~40-50 tokens
 # - Test strategy separation (v3.3.0): ~100-150 tokens
+# - Remove legacy role fields (v6.7.0): ~110-165 tokens
+# - behavioral_generative anchor (v6.7.3): ~20-40 tokens
 #
 # Cost Impact (GPT-4 @ $0.03/1K input tokens):
-# - Per workflow: ~$0.042-0.045 saved
-# - 500 workflows/month: ~$21-22.50/month = ~$252-270/year
+# - Per workflow: ~$0.047-0.053 saved
+# - 500 workflows/month: ~$23-26.50/month = ~$282-318/year
 #
 # Authority Enhancements (value-add, minimal cost):
 # - Quality prompt role strengthened (+20 tokens)
 # - DevOps validation expanded (+50 tokens)
-# Net efficiency gain: Still ~1,330-1,430 tokens saved per workflow
+# Net efficiency gain: Still ~1,490-1,685 tokens saved per workflow
 #
 # YAML Anchors for Token Efficiency:
 # - Common behavioral guidelines defined once using anchors (&name)
@@ -33,6 +35,41 @@
 # =============================================================================
 # VERSION HISTORY - TOKEN EFFICIENCY OPTIMIZATIONS
 # =============================================================================
+#
+# Phase 1 Refinement (v6.7.x - 2026-03-06):
+# v6.7.0 - Remove legacy role fields from 12 personas
+#   - Removed redundant role: field from: test_strategy_prompt, quality_prompt,
+#     issue_extraction_prompt, step2_consistency_prompt, step3_script_refs_prompt,
+#     step4_directory_prompt, step5_test_review_prompt, step7_test_exec_prompt,
+#     step8_dependencies_prompt, step9_code_quality_prompt, step11_git_commit_prompt,
+#     markdown_lint_prompt
+#   - role_prefix is the authoritative field since v4.0.0
+#   - Token savings: ~110-165 tokens/workflow
+# v6.7.1 - Modernize single_file_test_prompt
+#   - Migrated from legacy role: pattern to standard 4-field composition
+#   - Added role_prefix, behavioral_guidelines (*behavioral_generative)
+#   - Retained existing task_template and approach content
+# v6.7.2 - Expand version_manager_prompt
+#   - Added task_template with full context variable injection
+#   - Changed behavioral_guidelines from *behavioral_actionable to *behavioral_generative
+# v6.7.3 - Add behavioral_generative anchor (3rd behavioral anchor)
+#   - New anchor for pure-generation tasks (commit messages, test files, version bumps)
+#   - Applied to: single_file_test_prompt, step11_git_commit_prompt, version_manager_prompt
+#   - Token savings: ~20-40 tokens across affected workflows
+# v6.7.4 - Move non-standard fields to approach blocks
+#   - test_strategy_prompt: debugging_test_strategy → integrated into approach
+#   - quality_prompt: debugging_expertise → integrated into approach
+#   - configuration_specialist_prompt: debugging_configuration → integrated into approach
+#   - Schema now consistently uses standard 4-5 field model
+# v6.7.5 - Add C# and Kotlin to language tables
+#   - Added csharp and kotlin entries to language_specific_documentation
+#   - Added csharp and kotlin entries to language_specific_quality
+#   - Added csharp and kotlin entries to language_specific_testing
+#   - Language coverage: 9 → 11 languages
+# v6.7.6 - Clarify quality_prompt vs step9_code_quality_prompt boundary
+#   - quality_prompt role_prefix: emphasizes quick/targeted/file-level
+#   - step9_code_quality_prompt role_prefix: emphasizes system-wide/architectural/comprehensive
+#   - Added disambiguation comments to both persona headers
 #
 # New Persona Addition (v6.6.0 - 2026-03-03):
 # - Added typescript_developer_prompt "Strider": Senior TypeScript Developer for type-safe application development
@@ -332,6 +369,15 @@ _behavioral_structured: &behavioral_structured |
   - Subjective preference differences without user impact
   - All examples work correctly and align with current codebase
   - Cross-references are valid and terminology is internally consistent
+
+# Pure-generation guidelines for commit messages, test files, version bumps
+_behavioral_generative: &behavioral_generative |
+  **Critical Behavioral Guidelines**:
+  - Generate output directly — do not ask clarifying questions
+  - Apply the provided context exactly as given
+  - Produce complete, ready-to-use output in the specified format
+  - Default to the most conservative/safe interpretation when context is ambiguous
+  - Never add explanatory preamble outside the requested output format
 
 # ==============================================================================
 # AI PERSONA DEFINITIONS
@@ -1569,8 +1615,6 @@ test_strategy_prompt:
   
   behavioral_guidelines: *behavioral_structured
   
-  role: "You are a test strategy architect specializing in coverage analysis and test planning. Your focus is on high-level strategy, identifying coverage gaps, and recommending test priorities rather than writing specific test cases. You analyze what needs to be tested and why, not how to implement the tests."
-  
   task_template: |
     Analyze test coverage and provide strategic recommendations for test portfolio improvement.
     
@@ -1628,23 +1672,22 @@ test_strategy_prompt:
     - Recommend WHAT to test, not HOW to implement
     - Provide clear prioritization rationale
     - Focus on coverage metrics and quality gates
-  
-  debugging_test_strategy: |
-    **Test Reality Validation**:
+    
+    **Test Reality Validation** (when reviewing existing tests):
     - Compare test mock structures to real API responses
     - Identify tests passing with incorrect data structures
     - Flag browser API mocks that don't match real behavior
     - Recommend updating mocks to match production usage
     - Suggest adding integration tests for critical paths
     
-    **Observer Pattern Testing**:
+    **Observer Pattern Testing** (when event-driven code is present):
     - Verify tests validate event type filtering
     - Check tests for parameter structure matching
     - Ensure tests cover observer registration/unregistration
     - Validate multi-phase notification chain testing
     - Test both accepted and rejected event scenarios
     
-    **Browser API Testing Patterns**:
+    **Browser API Testing Patterns** (when browser APIs are tested):
     - Recommend real browser testing for APIs with getters
     - Suggest enumerable property checks for spread operator usage
     - Validate CORS retry logic with network failure tests
@@ -1655,7 +1698,10 @@ test_strategy_prompt:
 # Used by step_07 to generate a runnable test file for a single source file.
 # Variables: {source_file}, {language}, {test_framework}, {source_ext}, {source_content}
 single_file_test_prompt:
-  role: "You are a senior test engineer specializing in writing complete, runnable test suites that cover happy paths, edge cases, and error scenarios."
+  role_prefix: |
+    You are a senior test engineer specializing in writing complete, runnable test suites
+    that cover happy paths, edge cases, and error scenarios.
+  behavioral_guidelines: *behavioral_generative
 
   task_template: |
     Generate a complete, runnable test file for the source file below.
@@ -1691,18 +1737,18 @@ single_file_test_prompt:
 # Use for: Targeted code reviews, specific file analysis, quick quality checks
 # Focus: File-level issues, immediate problems, practical improvements
 # NOT for: Architectural analysis, comprehensive system review
+# Boundary: Use quality_prompt for quick/targeted/file-level reviews.
+#            Use step9_code_quality_prompt for system-wide/architectural/comprehensive audits.
 quality_prompt:
   # Split role into prefix + guidelines for token efficiency
   role_prefix: |
-    You are a senior code review specialist with 10+ years experience in targeted file-level 
-    quality assessments. Your expertise includes identifying anti-patterns, enforcing language 
-    best practices, and improving code maintainability through practical, actionable reviews. 
-    You conduct quick, focused reviews examining specific files for common problems, best 
-    practices violations, and maintainability concerns.
+    You are a senior code review specialist focused on quick, targeted, file-level quality
+    assessments. You examine specific files for immediate problems: anti-patterns, language
+    best practice violations, and maintainability issues. Your reviews are practical and
+    surgical — you report what matters in the files provided, not the broader codebase.
+    (For system-wide architectural audits, use step9_code_quality_prompt instead.)
   
   behavioral_guidelines: *behavioral_actionable
-  
-  role: "You are a senior code review specialist with 10+ years experience in targeted file-level quality assessments. Your expertise includes identifying anti-patterns, enforcing language best practices, and improving code maintainability through practical, actionable reviews. You conduct quick, focused reviews examining specific files for common problems, best practices violations, and maintainability concerns."
   
   task_template: |
     Review the following files for code quality: {files_to_review}
@@ -1721,23 +1767,22 @@ quality_prompt:
     - Suggest concrete improvements
     - Prioritize findings by severity
     - Provide code examples for recommended fixes
-  
-  debugging_expertise: |
-    **Observer Pattern & Event-Driven Code Reviews**:
+    
+    **Observer Pattern & Event-Driven Code** (when applicable):
     - Check for event type validation in observer.update() methods
     - Verify parameter structures match between notifier and observer
     - Identify missing null/undefined checks in notification chains
     - Validate observer registration and unsubscription patterns
     - Look for event name inconsistencies (typos, case sensitivity)
     
-    **Data Structure Validation**:
+    **Data Structure Validation** (when applicable):
     - Compare API contracts between producer and consumer
     - Identify spread operator usage on objects with non-enumerable properties
     - Check for type mismatches in function parameters
     - Verify test mocks match real API response structures
     - Flag destructuring that assumes specific object shapes
     
-    **Visual Flow Analysis**:
+    **Visual Flow Analysis** (for complex flows):
     - When reviewing complex flows, create ASCII diagrams showing:
       * Notification chains with all observers
       * Data flow between components
@@ -1753,8 +1798,6 @@ issue_extraction_prompt:
     and documentation organization.
   
   behavioral_guidelines: *behavioral_structured
-  
-  role: "You are a technical project manager specialized in issue extraction, categorization, and documentation organization."
   
   task_template: |
     Analyze the following GitHub Copilot session log from a documentation update workflow and extract all issues, recommendations, and action items.
@@ -1788,8 +1831,6 @@ step2_consistency_prompt:
     in documentation quality assurance, technical writing standards, and cross-reference validation.
   
   behavioral_guidelines: *behavioral_structured
-  
-  role: "You are a senior technical documentation specialist and information architect with expertise in documentation quality assurance, technical writing standards, and cross-reference validation."
   
   task_template: |
     Perform a comprehensive documentation consistency analysis for this project.
@@ -1913,8 +1954,6 @@ step3_script_refs_prompt:
   
   behavioral_guidelines: *behavioral_structured
   
-  role: "You are a senior technical documentation specialist and DevOps documentation expert with expertise in shell script documentation, automation workflow documentation, and command-line tool reference guides."
-  
   task_template: |
     Perform comprehensive validation of shell script references and documentation quality for this project's automation scripts.
     
@@ -2013,8 +2052,6 @@ step4_directory_prompt:
   
   behavioral_guidelines: *behavioral_structured
   
-  role: "You are a senior software architect and technical documentation specialist with expertise in project structure conventions, architectural patterns, code organization best practices, and documentation alignment."
-  
   task_template: |
     Perform comprehensive validation of directory structure and architectural organization for this project.
     
@@ -2097,8 +2134,6 @@ step5_test_review_prompt:
     existing test implementations.
   
   behavioral_guidelines: *behavioral_actionable
-  
-  role: "You are a hands-on test engineer and code quality specialist focused on reviewing existing test implementations, writing new test cases, assessing test code quality, and ensuring testing best practices are followed. You work with actual test code, not just strategy."
   
   task_template: |
     Review existing test implementations and provide tactical recommendations for improving test code quality.
@@ -2197,8 +2232,6 @@ step7_test_exec_prompt:
   
   behavioral_guidelines: *behavioral_structured
   
-  role: "You are a senior CI/CD engineer and test results analyst with expertise in test execution diagnostics, failure root cause analysis, code coverage interpretation, performance optimization, and continuous integration best practices."
-  
   task_template: |
     Analyze test execution results, diagnose failures, and provide actionable recommendations for improving test suite quality and CI/CD integration.
     
@@ -2284,8 +2317,6 @@ step8_dependencies_prompt:
     dependency tree optimization, and environment configuration best practices.
   
   behavioral_guidelines: *behavioral_structured
-  
-  role: "You are a senior DevOps engineer and package management specialist with expertise in dependency management, security vulnerability assessment, version compatibility analysis, dependency tree optimization, and environment configuration best practices."
   
   task_template: |
     Analyze project dependencies, assess security risks, evaluate version compatibility, and provide recommendations for dependency management and environment setup.
@@ -2377,17 +2408,19 @@ step8_dependencies_prompt:
 # Use for: Workflow Step 9, architectural reviews, technical debt assessment, system-wide analysis
 # Focus: Comprehensive quality, maintainability, design patterns, architectural concerns
 # NOT for: Quick file reviews, simple syntax checks
+# Boundary: Use step9_code_quality_prompt for system-wide/architectural/comprehensive audits.
+#            Use quality_prompt for quick/targeted/file-level reviews.
 step9_code_quality_prompt:
   # Split role into prefix + guidelines for token efficiency
   role_prefix: |
-    You are a comprehensive software quality engineer specializing in architectural analysis, 
-    technical debt assessment, and long-term maintainability. You perform in-depth code quality 
-    reviews considering design patterns, scalability, system-wide implications, and holistic 
-    code health. Your analysis goes beyond file-level issues to examine overall system quality.
+    You are a comprehensive software quality engineer specializing in system-wide architectural
+    analysis, technical debt assessment, and long-term maintainability. You perform in-depth
+    codebase-wide reviews examining design patterns, scalability, cross-file dependencies, and
+    holistic code health. Your analysis goes beyond individual files to evaluate the overall
+    system architecture and strategic quality trajectory.
+    (For quick targeted file reviews, use quality_prompt instead.)
   
   behavioral_guidelines: *behavioral_structured
-  
-  role: "You are a comprehensive software quality engineer specializing in architectural analysis, technical debt assessment, and long-term maintainability. You perform in-depth code quality reviews considering design patterns, scalability, system-wide implications, and holistic code health. Your analysis goes beyond file-level issues to examine overall system quality."
   
   task_template: |
     Perform comprehensive code quality review, identify anti-patterns, assess maintainability, and provide recommendations for improving code quality and reducing technical debt.
@@ -2482,13 +2515,7 @@ step11_git_commit_prompt:
     commit types defined below to generate clear, informative commit messages
     that follow best practices.
   
-  behavioral_guidelines: *behavioral_actionable
-  
-  role: "You are a senior git workflow specialist and technical communication
-    expert with expertise in conventional commits, semantic versioning, git
-    best practices, and commit message optimization. Use the conventional
-    commit types defined below to generate clear, informative commit messages
-    that follow best practices."
+  behavioral_guidelines: *behavioral_generative
   
   commit_types: |
     - feat: New feature or capability
@@ -2596,10 +2623,6 @@ markdown_lint_prompt:
     workflows.
   
   behavioral_guidelines: *behavioral_actionable
-  
-  role: "You are a Technical Documentation Specialist with expertise in
-    markdown best practices, AI-generated content quality, and automated
-    linting workflows."
   
   task_template: |
     Review the markdown linting results and provide actionable
@@ -2793,35 +2816,18 @@ configuration_specialist_prompt:
     - TOML: TOML v1.0.2 spec
     - Docker: Best practices from Docker docs
     - CI/CD: Platform-specific guidelines (GitHub Actions, GitLab CI, etc.)
-  
-  debugging_configuration: |
-    **Logging Best Practices for Debugging**:
+    
+    **Debugging-Oriented Config Review** (when logging/instrumentation configs are present):
     - Verify timestamp formats in logs (ISO 8601 recommended)
     - Check log levels configured appropriately (DEBUG for development)
     - Ensure structured logging for complex event-driven systems
     - Validate log rotation and retention policies
-    - Recommend console logging patterns for observer chains
-    
-    **Debugging Instrumentation**:
     - Validate source map configuration (tsconfig.json, webpack.config.js)
     - Check debug mode settings (NODE_ENV, DEBUG flags)
     - Verify error reporting configuration (Sentry, Rollbar, etc.)
-    - Ensure performance timing APIs enabled
-    - Validate browser console integration settings
-    
-    **Browser Console Integration**:
-    - Check logging library configuration (loglevel, debug, etc.)
-    - Verify console.log preservation in production (or intentional suppression)
-    - Validate error boundary configuration for React/Vue
-    - Ensure unhandled promise rejection logging
+    - Validate browser console integration settings and error boundary config
     - Check network request logging (Fetch API, Axios interceptors)
-    
-    **Performance Timing Configuration**:
-    - Validate Performance API usage configuration
-    - Check timing mark/measure setup
-    - Verify custom timing instrumentation
-    - Ensure timing data export configuration
-    - Validate observer pattern timing hooks
+    - Validate Performance API usage configuration and timing instrumentation
 
 
 # Step 13: Prompt Engineer Analysis Prompt Template
@@ -3039,6 +3045,45 @@ language_specific_documentation:
       # Returns: 0 on success, 1 on failure
       # Example: backup_database "mydb" "/backup"
       backup_database() { ... }
+  
+  csharp:
+    key_points: |
+      • Use XML doc comments (/// <summary>) for all public members
+      • Document parameters with /// <param name="x">
+      • Document return values with /// <returns>
+      • Document exceptions with /// <exception cref="T">
+      • Use Sandcastle/DocFX to generate HTML documentation
+    doc_format: "XML Doc Comments (DocFX)"
+    example_snippet: |
+      /// <summary>
+      /// Calculates the total price including tax.
+      /// </summary>
+      /// <param name="basePrice">The pre-tax price.</param>
+      /// <param name="taxRate">Tax rate as a decimal (e.g., 0.08 for 8%).</param>
+      /// <returns>The total price with tax applied.</returns>
+      /// <exception cref="ArgumentOutOfRangeException">
+      /// Thrown when basePrice or taxRate is negative.
+      /// </exception>
+      public decimal CalculateTotal(decimal basePrice, decimal taxRate)
+  
+  kotlin:
+    key_points: |
+      • Use KDoc format (/** */) for all public declarations
+      • Document parameters with @param, return values with @return
+      • Document exceptions with @throws
+      • Use Dokka to generate API documentation
+      • Follow Kotlin coding conventions for documentation style
+    doc_format: "KDoc (Dokka)"
+    example_snippet: |
+      /**
+       * Calculates the total price including tax.
+       *
+       * @param basePrice The pre-tax price; must be non-negative.
+       * @param taxRate Tax rate as a decimal (e.g., 0.08 for 8%).
+       * @return The total price with tax applied.
+       * @throws IllegalArgumentException if basePrice or taxRate is negative.
+       */
+      fun calculateTotal(basePrice: Double, taxRate: Double): Double
 
 # Language-Specific Code Quality Standards
 # NOTE: These templates are injected into step prompts based on detected PRIMARY_LANGUAGE
@@ -3242,6 +3287,50 @@ language_specific_quality:
       - "Use [[ ]] over [ ]"
       - "Check exit codes explicitly"
       - "Run shellcheck regularly"
+  
+  csharp:
+    focus_areas:
+      - "Nullable reference types (enable in .csproj)"
+      - "async/await correctness in .NET (avoid async void)"
+      - "LINQ query efficiency and deferred execution"
+      - "IDisposable / using statement patterns"
+      - "Exception handling best practices (.NET)"
+    
+    antipatterns:
+      - "Ignoring nullable warnings (#nullable disable)"
+      - "async void outside event handlers"
+      - "N+1 queries via lazy LINQ evaluation on EF collections"
+      - "Catching Exception base type without rethrowing"
+      - "Not disposing IDisposable resources"
+    
+    best_practices:
+      - "Enable <Nullable>enable</Nullable> in .csproj"
+      - "Use ConfigureAwait(false) in library code"
+      - "Prefer records for immutable data models"
+      - "Use pattern matching and switch expressions"
+      - "Run Roslyn analyzers (StyleCop, SonarAnalyzer)"
+  
+  kotlin:
+    focus_areas:
+      - "Null safety operator usage (?., ?:, !!)"
+      - "Coroutine scope and dispatcher correctness"
+      - "Data class and sealed class design"
+      - "Kotlin DSL and extension function clarity"
+      - "Kotlin/JVM interoperability (@JvmStatic, @JvmOverloads)"
+    
+    antipatterns:
+      - "Using !! (non-null assertion) without prior null check"
+      - "Blocking coroutine threads with Thread.sleep()"
+      - "Mutable shared state in coroutines without synchronization"
+      - "Java-style null checks instead of Kotlin idiomatic let/run"
+      - "Ignoring sealed class exhaustiveness in when expressions"
+    
+    best_practices:
+      - "Prefer val over var; use immutable data classes"
+      - "Use Kotlin coroutines with structured concurrency"
+      - "Leverage sealed classes for exhaustive state modeling"
+      - "Use scope functions (let, run, apply, also, with) idiomatically"
+      - "Run ktlint and detekt for code style and static analysis"
 
 # Language-Specific Test Patterns
 # NOTE: These templates are injected into step prompts based on detected PRIMARY_LANGUAGE
@@ -3392,12 +3481,61 @@ language_specific_testing:
       @test "script fails on invalid input" {
         run myscript --invalid; [ "$status" -ne 0 ]
       }
+  
+  csharp:
+    framework: "xUnit / NUnit / MSTest"
+    patterns:
+      - "Use xUnit [Fact] and [Theory] with [InlineData] for parameterized tests"
+      - "Use NUnit [Test] and [TestCase] as alternative"
+      - "Mock dependencies with Moq (mock.Setup, mock.Verify)"
+      - "Use FluentAssertions for expressive assertions"
+      - "Organize with nested classes (for xUnit) or TestFixture (NUnit)"
+    
+    example: |
+      public class CalculatorTests
+      {
+          [Theory]
+          [InlineData(2, 3, 5)]
+          [InlineData(-1, 1, 0)]
+          public void Add_ReturnsCorrectSum(int a, int b, int expected)
+          {
+              var calc = new Calculator();
+              calc.Add(a, b).Should().Be(expected);
+          }
+      }
+  
+  kotlin:
+    framework: "JUnit 5 + MockK + Kotest"
+    patterns:
+      - "Use @Test annotation from JUnit 5 (org.junit.jupiter.api)"
+      - "Mock with MockK (mockk<T>(), every { }, verify { })"
+      - "Use Kotest for expressive BDD-style specs (StringSpec, BehaviorSpec)"
+      - "Test coroutines with runTest from kotlinx-coroutines-test"
+      - "Use assertSoftly for grouped non-fatal assertions"
+    
+    example: |
+      class CalculatorTest : StringSpec({
+          "add returns correct sum" {
+              val calc = Calculator()
+              calc.add(2, 3) shouldBe 5
+          }
+          "divide throws on zero" {
+              shouldThrow<ArithmeticException> { Calculator().divide(1, 0) }
+          }
+      })
 
 # Version Manager AI Persona (Step 15)
 # Purpose: Determine semantic version bump type based on change analysis
 version_manager_prompt:
   role_prefix: "You are a Version Manager and Semantic Versioning Expert"
-  behavioral_guidelines: *behavioral_actionable
+  behavioral_guidelines: *behavioral_generative
+  
+  task_template: |
+    **YOUR TASK**: Determine the correct semantic version bump for the provided changes.
+    **Project**: {project_name} ({project_description})
+    **Current Version**: {current_version}
+    **Changed Files**: {changed_files}
+    **Git Context**: {git_context}
   
   specific_expertise: |
     Analyze code changes and determine appropriate semantic version bumps following semver.org:

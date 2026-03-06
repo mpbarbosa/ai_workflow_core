@@ -7,6 +7,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed — Phase 1 Refinement (2026-03-06, v6.7.6)
+
+Phase 1 of ROADMAP.md implemented: 7 backward-compatible structural improvements to `config/ai_helpers.yaml`. No new personas added. Net token savings: ~160–255 tokens/workflow (running total vs. v3.0.0: ~1,560–1,755 tokens).
+
+- **v6.7.0 — Remove legacy `role` fields** (R-01)
+  - Removed redundant `role:` field from 12 personas: `test_strategy_prompt`, `quality_prompt`, `issue_extraction_prompt`, `step2_consistency_prompt`, `step3_script_refs_prompt`, `step4_directory_prompt`, `step5_test_review_prompt`, `step7_test_exec_prompt`, `step8_dependencies_prompt`, `step9_code_quality_prompt`, `step11_git_commit_prompt`, `markdown_lint_prompt`
+  - `role_prefix` is the authoritative field since v4.0.0; `role` was vestigial
+  - Token savings: ~110–165 tokens/workflow
+
+- **v6.7.1 — Modernize `single_file_test_prompt`** (R-02)
+  - Migrated from legacy `role:` pattern to standard 4-field composition model
+  - Added `role_prefix` and `behavioral_guidelines: *behavioral_generative`
+  - Retained existing `task_template` and `approach` content unchanged
+
+- **v6.7.2 — Expand `version_manager_prompt`** (R-03)
+  - Added `task_template` with full context variable injection (`project_name`, `project_description`, `current_version`, `changed_files`, `git_context`)
+  - Changed `behavioral_guidelines` from `*behavioral_actionable` to `*behavioral_generative`
+
+- **v6.7.3 — Add `behavioral_generative` anchor** (R-04)
+  - Introduced third YAML behavioral anchor for pure-generation tasks
+  - Content: generate output directly, no clarifying questions, produce complete ready-to-use output
+  - Applied to: `single_file_test_prompt`, `step11_git_commit_prompt`, `version_manager_prompt`
+  - Token savings: ~20–40 tokens across affected workflows
+
+- **v6.7.4 — Move non-standard fields to `approach` blocks** (R-05)
+  - `test_strategy_prompt`: `debugging_test_strategy` field integrated into `approach` as contextual sub-sections
+  - `quality_prompt`: `debugging_expertise` field integrated into `approach` as contextual sub-sections
+  - `configuration_specialist_prompt`: `debugging_configuration` field integrated into `approach` as contextual sub-section
+  - Schema is now consistently the standard 5-field model (`role_prefix`, `behavioral_guidelines`, `task_template`, `approach`, `output_format`)
+
+- **v6.7.5 — Add C# and Kotlin to language tables** (R-06)
+  - Added `csharp` entry to `language_specific_documentation`: XML doc comments, DocFX format
+  - Added `csharp` entry to `language_specific_quality`: nullable refs, LINQ, async/await, Roslyn analyzers
+  - Added `csharp` entry to `language_specific_testing`: xUnit/NUnit/MSTest, Moq, FluentAssertions
+  - Added `kotlin` entry to `language_specific_documentation`: KDoc format, Dokka
+  - Added `kotlin` entry to `language_specific_quality`: null safety operators, coroutines, ktlint/detekt
+  - Added `kotlin` entry to `language_specific_testing`: JUnit 5, MockK, Kotest, runTest
+  - Language coverage: 9 → 11 languages
+
+- **v6.7.6 — Clarify `quality_prompt` vs `step9_code_quality_prompt` boundary** (R-07)
+  - `quality_prompt` `role_prefix`: now explicitly emphasizes *quick, targeted, file-level* reviews
+  - `step9_code_quality_prompt` `role_prefix`: now explicitly emphasizes *system-wide, architectural, comprehensive* audits
+  - Added disambiguation comments to both persona headers pointing to the other persona
+
 ### Added
 - **TypeScript Developer Persona "Strider"** (2026-03-03, v6.6.0)
   - Added `typescript_developer_prompt`: Senior TypeScript Developer persona for type-safe application development

@@ -1,8 +1,8 @@
 # Roadmap: `config/ai_helpers.yaml` — Persona & Prompt Set Progression
 
 **Source File**: `config/ai_helpers.yaml`  
-**Current Version**: v6.6.0 (19 core personas, 6 supplemental specialists)  
-**Document Date**: 2026-03-05  
+**Current Version**: v6.7.6 (Phase 1 Refinement Complete — 7 items)  
+**Document Date**: 2026-03-06  
 **Repository**: `mpbarbosa/ai_workflow_core`
 
 ---
@@ -159,9 +159,10 @@
 
 ---
 
-## 3. Phase 1 — Refinement (v6.7.x)
+## 3. Phase 1 — Refinement (v6.7.x) ✅ Complete
 
-**Goal**: Improve structural consistency and quality without adding net new personas. Backward compatible.
+**Goal**: Improve structural consistency and quality without adding net new personas. Backward compatible.  
+**Status**: All 7 items implemented (2026-03-06). `ai_helpers.yaml` bumped to v6.7.6.
 
 ### 3.1 Remove Legacy `role` Fields (v6.7.0)
 
@@ -169,7 +170,7 @@ Remove the redundant `role` field from the 11 personas that carry both `role_pre
 
 **Affected personas**: `test_strategy_prompt`, `quality_prompt`, `issue_extraction_prompt`, `step2_consistency_prompt`, `step3_script_refs_prompt`, `step4_directory_prompt`, `step5_test_review_prompt`, `step7_test_exec_prompt`, `step8_dependencies_prompt`, `step9_code_quality_prompt`, `step11_git_commit_prompt`, `markdown_lint_prompt`.
 
-**Prerequisite**: Confirm parent `ai_workflow` execution engine reads `role_prefix` exclusively (not `role`).  
+**Prerequisite**: Confirm parent `ai_workflow.js` execution engine reads `role_prefix` exclusively (not `role`).  
 **Token savings**: ~110–165 tokens/workflow (12 personas × ~10–14 tokens each).  
 **Risk**: Low — additive to v4.0.0+ consumers; requires confirmation from `ai_workflow`.
 
@@ -279,6 +280,7 @@ Update `role_prefix` of `step9_code_quality_prompt` to emphasize: *"system-wide,
 **Rationale**: Python is the 3rd most common project language after JavaScript/TypeScript. The `javascript_developer_prompt` and `typescript_developer_prompt` have no Python equivalent. Python package management has significant complexity (pip, poetry, pyproject.toml, requirements.txt, virtual environments, conda).
 
 **Expertise areas**:
+
 - `pyproject.toml` authoring (PEP 517/518/621 metadata, build backends: setuptools, hatchling, flit, poetry)
 - `requirements.txt` vs `pyproject.toml` dependency specification
 - Virtual environment management (venv, virtualenv, conda, pyenv)
@@ -290,6 +292,7 @@ Update `role_prefix` of `step9_code_quality_prompt` to emphasize: *"system-wide,
 
 **Behavioral anchor**: `*behavioral_actionable`  
 **Differentiates from**:
+
 - `configuration_specialist_prompt`: validates config syntax; does not author or optimize
 - `step8_dependencies_prompt`: analyzes vulnerability/version drift; does not author manifests
 
@@ -300,6 +303,7 @@ Update `role_prefix` of `step9_code_quality_prompt` to emphasize: *"system-wide,
 **Rationale**: No persona currently addresses API contract design — only documentation and code review personas exist. API design is a distinct discipline covering REST resource modeling, OpenAPI/Swagger specification, GraphQL schema design, versioning strategies, and contract-first development.
 
 **Expertise areas**:
+
 - REST API design (resource naming, HTTP methods, status codes, HATEOAS)
 - OpenAPI 3.x / Swagger specification authoring and validation
 - GraphQL schema design (types, queries, mutations, subscriptions, directives)
@@ -312,6 +316,7 @@ Update `role_prefix` of `step9_code_quality_prompt` to emphasize: *"system-wide,
 
 **Behavioral anchor**: `*behavioral_actionable`  
 **Differentiates from**:
+
 - `requirements_engineer_prompt`: defines functional requirements; does not specify API contracts
 - `technical_writer_prompt`: documents existing APIs; does not design them
 - `front_end_developer_prompt`: consumes APIs; does not design the contract
@@ -323,6 +328,7 @@ Update `role_prefix` of `step9_code_quality_prompt` to emphasize: *"system-wide,
 **Rationale**: Security is covered only incidentally across several personas (`configuration_specialist_prompt` checks for exposed secrets; `aws_cloud_architect_prompt` covers AWS IAM). No persona focuses on application security: OWASP Top 10, SAST findings, threat modeling, input validation, or secure coding patterns.
 
 **Expertise areas**:
+
 - OWASP Top 10 vulnerability identification (injection, broken auth, XSS, IDOR, SSRF)
 - Secure coding patterns (input validation, output encoding, parameterized queries)
 - Authentication and authorization review (JWT security, OAuth 2.0 flows, session management)
@@ -336,6 +342,7 @@ Update `role_prefix` of `step9_code_quality_prompt` to emphasize: *"system-wide,
 **Behavioral anchor**: `*behavioral_structured`  
 **Necessity gate**: Yes — structured 5-point gate (parallel to `technical_writer_prompt`'s 7-point gate)  
 **Differentiates from**:
+
 - `step9_code_quality_prompt`: quality and maintainability focus; not security-focused
 - `aws_cloud_architect_prompt`: infrastructure security; not application-layer security
 - `configuration_specialist_prompt`: config file secrets; not code-level security patterns
@@ -347,6 +354,7 @@ Update `role_prefix` of `step9_code_quality_prompt` to emphasize: *"system-wide,
 **Rationale**: Database design — schema evolution, indexing strategy, query optimization, migration management — has no coverage in the current persona set. Every non-trivial application has a data layer; this gap creates a blind spot in all project kinds except `configuration_library`.
 
 **Expertise areas**:
+
 - Relational schema design (normalization, denormalization, entity-relationship modeling)
 - NoSQL data modeling (document, key-value, graph, time-series patterns)
 - Migration management (Flyway, Liquibase, Alembic, Django migrations, Prisma)
@@ -359,6 +367,7 @@ Update `role_prefix` of `step9_code_quality_prompt` to emphasize: *"system-wide,
 
 **Behavioral anchor**: `*behavioral_structured`  
 **Differentiates from**:
+
 - `aws_cloud_architect_prompt`: infrastructure-level (RDS selection, Multi-AZ); not schema design
 - `step9_code_quality_prompt`: code patterns; not data model design
 
@@ -369,6 +378,7 @@ Update `role_prefix` of `step9_code_quality_prompt` to emphasize: *"system-wide,
 **Rationale**: Go is growing in backend, CLI tooling, and infrastructure tooling (Kubernetes ecosystem, Terraform providers). The `go` language is covered in the language tables but has no developer persona for `go.mod` management, module versioning, or Go-specific tooling.
 
 **Expertise areas**:
+
 - `go.mod` / `go.sum` authoring and management
 - Module versioning strategy (v1 → v2+ major version paths)
 - Workspace mode (`go.work`) for multi-module development
@@ -387,6 +397,7 @@ Update `role_prefix` of `step9_code_quality_prompt` to emphasize: *"system-wide,
 **Rationale**: `aws_cloud_architect_prompt` is the only cloud persona. GCP is widely used for data/ML workloads, Kubernetes-native deployments (GKE), and Firebase-based projects.
 
 **Expertise areas**:
+
 - GCP core services: GCE, GCS, Cloud SQL/Spanner, GKE, Cloud Run, Pub/Sub, BigQuery, Firestore
 - Infrastructure-as-Code: Terraform on GCP, Deployment Manager, Config Connector
 - IAM: service accounts, Workload Identity Federation, org policies
@@ -419,6 +430,7 @@ _persona_schema:
 ```
 
 This enables:
+
 - Automated schema validation in CI (`yamllint` extended with custom rules)
 - Consumer compatibility checking (prompt builder can detect schema version)
 - Clean deprecation of the legacy `role` field (fully removed in v8.0.0, not just emptied)
@@ -434,6 +446,7 @@ _necessity_gate_template: &necessity_gate_template |
 ```
 
 Apply abbreviated necessity gates to all output-generating personas:
+
 - `technical_writer_prompt` — already has full 7-point gate ✅
 - `requirements_engineer_prompt` — already has full 9-point gate ✅
 - `api_designer_prompt` — add 5-point gate (Phase 2 addition)
@@ -617,13 +630,13 @@ Items sorted by value/effort ratio (highest priority first):
 
 | ID | Item | Effort | Impact |
 |----|------|--------|--------|
-| R-01 | Remove legacy `role` fields from 11 personas | Low | Medium — token savings, schema cleanliness |
-| R-02 | Modernize `single_file_test_prompt` to v6.x pattern | Low | Medium — behavioral consistency |
-| R-03 | Add `task_template` to `version_manager_prompt` | Low | Medium — consistent context injection |
-| R-04 | Add `behavioral_generative` anchor | Low | Medium — better fit for pure-generation tasks |
-| R-05 | Move non-standard fields to `approach` blocks | Low | Low — schema cleanliness |
-| R-06 | Add C# and Kotlin to language tables | Medium | High — covers enterprise/Android ecosystem |
-| R-07 | Clarify `quality_prompt` vs `step9` differentiation | Low | Medium — reduces usage confusion |
+| R-01 | ~~Remove legacy `role` fields from 11 personas~~ ✅ | Low | Medium — token savings, schema cleanliness |
+| R-02 | ~~Modernize `single_file_test_prompt` to v6.x pattern~~ ✅ | Low | Medium — behavioral consistency |
+| R-03 | ~~Add `task_template` to `version_manager_prompt`~~ ✅ | Low | Medium — consistent context injection |
+| R-04 | ~~Add `behavioral_generative` anchor~~ ✅ | Low | Medium — better fit for pure-generation tasks |
+| R-05 | ~~Move non-standard fields to `approach` blocks~~ ✅ | Low | Low — schema cleanliness |
+| R-06 | ~~Add C# and Kotlin to language tables~~ ✅ | Medium | High — covers enterprise/Android ecosystem |
+| R-07 | ~~Clarify `quality_prompt` vs `step9` differentiation~~ ✅ | Low | Medium — reduces usage confusion |
 
 ### Near-Term (v7.0.x — new high-value personas)
 
@@ -655,5 +668,5 @@ Items sorted by value/effort ratio (highest priority first):
 
 ---
 
-*Document version: 1.0.0 — Covers ai_helpers.yaml v6.6.0 baseline*  
-*Next review: After Phase 1 (v6.7.x) is complete*
+*Document version: 1.1.0 — Phase 1 (v6.7.x) complete as of 2026-03-06*  
+*Next review: After Phase 2 (v7.x.x) first persona (python_developer_prompt) is complete*

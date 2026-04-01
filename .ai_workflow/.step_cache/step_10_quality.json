@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "fileScores": {
+    "package-lock.json": {
+      "score": 100,
+      "issueCount": 0,
+      "lastAnalyzed": "2026-04-01T21:05:16.440Z"
+    },
+    "package.json": {
+      "score": 100,
+      "issueCount": 0,
+      "lastAnalyzed": "2026-04-01T21:05:16.440Z"
+    },
+    "tsconfig.json": {
+      "score": 100,
+      "issueCount": 0,
+      "lastAnalyzed": "2026-04-01T21:05:16.440Z"
+    },
+    "jest.config.ts": {
+      "score": 100,
+      "issueCount": 0,
+      "lastAnalyzed": "2026-04-01T21:05:16.440Z"
+    }
+  }
+}

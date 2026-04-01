@@ -1,0 +1,10 @@
+# Minimal prompt_roles.yaml fixture for unit tests
+roles:
+  test_role_a:
+    description: "Role A for testing"
+    role_prefix: |
+      You are a senior test engineer specializing in unit testing.
+  test_role_b:
+    description: "Role B for testing"
+    role_prefix: |
+      You are a senior documentation specialist.

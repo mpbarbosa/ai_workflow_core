@@ -48,56 +48,92 @@ Add these patterns to your project's `.gitignore` file to exclude workflow artif
 
 ## AI Prompt Configuration Files
 
+### `prompt_roles.yaml` *(new in v1.2.0)*
+**Single source of truth for all AI persona role definitions.**
+
+Contains 29 named role entries, each with:
+- `description` — one-line summary of the role's expertise
+- `role_prefix` — the full identity/role text injected into the AI prompt
+
+Personas in `ai_helpers.yaml` reference these roles via a `role_ref:` key instead of
+inlining the role text directly. The TypeScript config-loader (`src/loader.ts`) resolves
+references at load time.
+
+**Schema:**
+```yaml
+roles:
+  <role_key>:
+    description: "One-line summary"
+    role_prefix: |
+      You are a senior ...
+```
+
+**Adding a new role:**
+1. Add an entry under `roles:` with a unique snake_case key.
+2. Provide `description:` and `role_prefix:` fields.
+3. Reference it in `ai_helpers.yaml` with `role_ref: <your_key>`.
+4. Run `npm test` to verify the reference resolves correctly.
+
+See `docs/api/PROMPT_ROLES_REFERENCE.md` for the full API reference.
+
 ### `ai_helpers.yaml`
-Core AI prompt templates for workflow automation. Contains 2,927+ lines (v6.3.0) of optimized prompts for 16 AI personas including:
+Core AI prompt templates for workflow automation. Contains 29 personas across
+documentation, front-end, testing, development, debugging, and cloud categories.
 
-**Documentation Personas:**
-- **Documentation Specialist** (`doc_analysis_prompt`) - Incremental change-driven documentation updates
-- **Technical Writer** (`technical_writer_prompt`) - Comprehensive from-scratch documentation creation (v4.1.0)
-- **Requirements Engineer** (`requirements_engineer_prompt`) - Requirements elicitation, analysis, specification, and validation (v6.1.0)
-- **Consistency Analyst** (`consistency_prompt`) - Documentation quality assurance and auditing
+As of v1.2.0, each persona uses `role_ref: <key>` to reference its role definition
+from `prompt_roles.yaml`, instead of inlining the role text:
 
-**Front-End Development Personas:**
-- **Front-End Developer** (`front_end_developer_prompt`) - Front-end code implementation, architecture, and optimization (v4.2.0)
-- **UI/UX Designer** (`ui_ux_designer_prompt`) - User experience design, visual design, and interaction patterns (v6.0.0)
-- **E2E Test Engineer** (`e2e_test_engineer_prompt`) - NEW v6.3.0: End-to-end testing, browser automation, and visual testing
+```yaml
+# v1.2.0+ pattern
+doc_analysis_prompt:
+  role_ref: doc_analysis          # resolved from config/prompt_roles.yaml
+  behavioral_guidelines: ...
+  task_template: |
+    ...
+  approach: |
+    ...
+```
 
-**Testing & Quality Personas:**
-- Test Strategy Architect (`test_strategy_prompt`) - Strategic test coverage analysis
-- Test Review Specialist (`step5_test_review_prompt`) - Tactical test code quality review
-- Code Quality Analyst
-- Dependency Auditor
-
-**Development Personas:**
-- DevOps Specialist
-- Git Commit Message Expert
-- Markdown Linter
-- Prompt Engineer
-- Version Manager
+Uses YAML anchors (`&behavioral_actionable`, `&behavioral_structured`,
+`&behavioral_generative`) for token-efficient sharing of behavioral guidelines
+across personas.
 
 **Usage Guidelines:**
 - Use `technical_writer_prompt` for: New projects, major rewrites, undocumented codebases
 - Use `doc_analysis_prompt` for: Incremental updates after code changes
 - Use `consistency_prompt` for: Documentation audits and quality assurance
-- Use `e2e_test_engineer_prompt` for: E2E testing strategy for front-end projects (client_spa, react_spa, static_website)
+- Use `e2e_test_engineer_prompt` for: E2E testing strategy for front-end projects
 - Use `test_strategy_prompt` for: Strategic test coverage analysis (WHAT to test)
 - Use `front_end_developer_prompt` for: Front-end code implementation and unit testing
-
-Uses YAML anchors for token efficiency and reduced duplication.
 
 ### `ai_prompts_project_kinds.yaml`
 Language-specific prompt customizations for different project types (bash, javascript, python, etc.).
 
 ### `project_kinds.yaml`
-Project kind definitions and their characteristics.
+Project kind definitions and their characteristics (8 kinds: shell_script_automation, nodejs_api,
+react_spa, python_app, client_spa, static_website, configuration_library, generic).
 
 ### Usage
 
 These files work together with the workflow automation system:
-1. `ai_helpers.yaml` provides base prompt templates
-2. `ai_prompts_project_kinds.yaml` adds language-specific context
-3. `project_kinds.yaml` defines project types
+1. `prompt_roles.yaml` provides the central role/identity definitions
+2. `ai_helpers.yaml` provides base prompt templates (references roles via `role_ref:`)
+3. `ai_prompts_project_kinds.yaml` adds language-specific context
+4. `project_kinds.yaml` defines project types
+
+The TypeScript config-loader (`src/`) loads and resolves these files programmatically:
+
+```typescript
+import { loadPromptRoles, loadPersonas, resolveAllPersonas } from 'ai_workflow_core';
+
+const roles = loadPromptRoles('config/prompt_roles.yaml');
+const personas = loadPersonas('config/ai_helpers.yaml');
+const resolved = resolveAllPersonas(personas, roles);
+
+console.log(resolved['doc_analysis_prompt'].role_prefix); // full role text
+```
 
 Copy these to your project if you're building a workflow automation system that needs AI prompt management.
 
 **Note:** Path configurations should be defined in your project-specific configuration files, not in the core templates.
+

@@ -13,7 +13,7 @@ tech_stack:
   primary_language: "yaml"
   build_system: "none"
   test_framework: "validation-scripts"
-  test_command: "python scripts/validate_context_blocks.py"
+  test_command: "python3 scripts/validate_context_blocks.py config/ai_helpers.yaml"
   lint_commands:
     yaml: "yamllint -d relaxed config/"
 
@@ -148,7 +148,7 @@ workflow:
       phase: "testing"
       can_parallelize: false
       dependencies: ["07"]
-      test_command: "python scripts/validate_context_blocks.py && python scripts/validate_structure.py"
+      test_command: "python3 scripts/validate_context_blocks.py && python3 scripts/validate_structure.py"
 
     # Quality Phase (09-10)
     - id: "09"

@@ -418,7 +418,7 @@ When assisting with this project, reference these critical documents:
 
 ### API Documentation References
 
-13. **docs/api/CONFIG_REFERENCE.md**: Complete `.workflow-config.yaml` field reference (835 lines, v1.1.0 - updated 2026-02-10)
+13. **docs/api/CONFIG_REFERENCE.md**: Complete `.workflow-config.yaml` field reference (835 lines, v1.2.0 - updated 2026-02-10)
 14. **docs/api/PLACEHOLDER_REFERENCE.md**: Placeholder patterns and substitution guide (756 lines)
 15. **docs/api/PROJECT_KINDS_SCHEMA.md**: Project kinds schema v1.2.0 reference (777 lines)
 16. **docs/api/AI_HELPERS_REFERENCE.md**: AI persona definitions, YAML anchors, token efficiency system (1,590 lines, v6.2.1)
@@ -782,6 +782,6 @@ pre-commit run --all-files
 ---
 
 **Last Updated**: 2026-02-13  
-**Document Version**: 1.1.0  
+**Document Version**: 1.2.0  
 **For**: GitHub Copilot assistance within ai_workflow_core repository  
 **For**: GitHub Copilot assistance within ai_workflow_core repository

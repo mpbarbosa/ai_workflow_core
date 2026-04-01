@@ -3,7 +3,7 @@
 **Foundational configuration and templates for AI-powered workflow automation across multiple languages**
 
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](docs/LICENSE)
-[![Version](https://img.shields.io/badge/version-1.0.2-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)]()
 
 ## Overview
 
@@ -72,7 +72,7 @@ tech_stack:
 
 ```bash
 # Create artifact directory structure
-mkdir -p .ai_workflow/{backlog,summaries,logs,metrics,checkpoints,prompts,ml_models,.incremental_cache}
+mkdir -p .ai_workflow/{analysis,backlog,summaries,logs,metrics,checkpoints,prompts,ml_models,.incremental_cache}
 ```
 
 ## Placeholder Reference
@@ -152,6 +152,7 @@ cp .workflow_core/config/.workflow-config.yaml.template .workflow-config.yaml
 - **[PROJECT_KINDS_SCHEMA.md](docs/api/PROJECT_KINDS_SCHEMA.md)** - Project kinds schema v1.2.0 reference
 - **[AI_HELPERS_REFERENCE.md](docs/api/AI_HELPERS_REFERENCE.md)** - AI persona definitions and token efficiency system
 - **[AI_PROMPTS_REFERENCE.md](docs/api/AI_PROMPTS_REFERENCE.md)** - Project-specific AI prompt templates
+- **[PROMPT_ROLES_REFERENCE.md](docs/api/PROMPT_ROLES_REFERENCE.md)** *(v1.2.0)* - Central role definitions, `role_ref:` pattern, TypeScript loader API
 
 ### User Guides
 - **[QUICK_START.md](docs/guides/QUICK_START.md)** - 5-minute setup guide
@@ -170,7 +171,28 @@ cp .workflow_core/config/.workflow-config.yaml.template .workflow-config.yaml
 ### Visual Aids
 - **[diagrams/README.md](docs/diagrams/README.md)** - 20+ Mermaid diagrams for architecture, flows, and structures
 
-## Development
+### Development
+
+### TypeScript Config Loader *(v1.2.0)*
+
+A typed module for loading and resolving prompt role references programmatically:
+
+```bash
+npm install        # install dependencies
+npm test           # run unit tests (36 tests)
+npm run build      # compile TypeScript to dist/
+```
+
+```typescript
+import { loadPromptRoles, loadPersonas, resolveAllPersonas } from 'ai_workflow_core';
+
+const roles = loadPromptRoles('config/prompt_roles.yaml');
+const config = loadPersonas('config/ai_helpers.yaml');
+const resolved = resolveAllPersonas(config, roles);
+console.log(resolved['doc_analysis_prompt'].role_prefix);
+```
+
+See [docs/api/PROMPT_ROLES_REFERENCE.md](docs/api/PROMPT_ROLES_REFERENCE.md) for the full API.
 
 ### Validation Scripts
 
@@ -236,7 +258,7 @@ MIT License - See [docs/LICENSE](docs/LICENSE)
 
 Part of [AI Workflow Automation](https://github.com/mpbarbosa/ai_workflow) project.
 
-**Parent Project Status**: v1.1.0 (Phase 3 Complete - File Operations & Utilities)
+**Parent Project Status**: v1.2.0 (Phase 3 Complete - File Operations & Utilities)
 
 ---
 

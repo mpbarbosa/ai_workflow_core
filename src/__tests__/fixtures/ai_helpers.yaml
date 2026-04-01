@@ -1,0 +1,21 @@
+# Minimal ai_helpers.yaml fixture for unit tests
+persona_alpha:
+  role_ref: test_role_a
+  behavioral_guidelines: "be concise"
+  task_template: |
+    Analyse {file} and report issues.
+  approach: |
+    1. Read the file
+    2. List issues
+
+persona_beta:
+  role_ref: test_role_b
+  task_template: |
+    Update documentation for {module}.
+
+# language_specific_* entries do not have role_ref — they should be skipped
+language_specific_docs:
+  javascript:
+    key_points: "Use JSDoc"
+  python:
+    key_points: "Use Google docstrings"

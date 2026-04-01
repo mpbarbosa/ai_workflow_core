@@ -1,0 +1,3 @@
+# Bad YAML fixture — intentionally malformed
+roles:
+  broken: [unclosed bracket

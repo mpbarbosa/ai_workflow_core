@@ -407,12 +407,12 @@ cd .workflow_core && git describe --tags && cd ..
 # 2. Update to latest
 cd .workflow_core
 git fetch --tags
-git checkout v1.1.0  # Or latest tag
+git checkout v1.2.0  # Or latest tag
 cd ..
 
 # 3. Update reference
 git add .workflow_core
-git commit -m "chore: update ai_workflow_core to v1.1.0"
+git commit -m "chore: update ai_workflow_core to v1.2.0"
 
 # 4. Verify integration
 bash .workflow_core/scripts/check_integration_health.sh

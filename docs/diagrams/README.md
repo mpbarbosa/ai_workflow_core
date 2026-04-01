@@ -200,7 +200,7 @@ flowchart LR
     B -->|Yes| D[Create feature<br/>branch]
     D --> E[cd .workflow_core]
     E --> F[git fetch --tags]
-    F --> G[git checkout<br/>v1.1.0]
+    F --> G[git checkout<br/>v1.2.0]
     G --> H[cd ..]
     H --> I[Test integration]
     I --> J{Tests<br/>pass?}

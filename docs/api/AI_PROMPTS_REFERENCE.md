@@ -1147,7 +1147,7 @@ documentation_specialist:
 - Renamed `web_application` → `react_spa` to match project_kinds.yaml
 - Updated comments to note alignment with project_kinds.yaml
 
-**Version 1.1.0 (estimated)**:
+**Version 1.2.0 (estimated)**:
 - Added `configuration_library` project kind
 - Added `client_spa` project kind
 

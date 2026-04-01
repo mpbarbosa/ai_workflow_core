@@ -44,7 +44,7 @@ git config -f .gitmodules submodule.workflow_core.branch main
 git checkout -b update-workflow-core
 
 # 2. Update submodule
-cd .workflow_core && git checkout v1.1.0 && cd ..
+cd .workflow_core && git checkout v1.2.0 && cd ..
 
 # 3. Validate
 bash .workflow_core/scripts/check_integration_health.sh
@@ -52,7 +52,7 @@ npm test  # or your test command
 
 # 4. Commit
 git add .workflow_core
-git commit -m "chore: update ai_workflow_core to v1.1.0"
+git commit -m "chore: update ai_workflow_core to v1.2.0"
 ```
 
 ---

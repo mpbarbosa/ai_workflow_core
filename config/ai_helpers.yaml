@@ -3737,6 +3737,126 @@ data_structure_debugger_prompt:
     
     **Test Update Required**: [Yes/No - show changes needed]
 
+# Async Performance Engineer Persona
+async_perf_engineer_prompt:
+  # Split role into prefix + guidelines for token efficiency
+  role_ref: async_perf_engineer  # resolved from config/prompt_roles.yaml
+
+  behavioral_guidelines: *behavioral_actionable
+
+  task_template: |
+    **YOUR TASK**: Perform a deep async performance review of the JavaScript/TypeScript codebase.
+
+    **Project Context:**
+    - Project: {project_name} ({project_description})
+    - Project Kind: {project_kind}
+    - Primary Language: {primary_language}
+    - Build System: {build_system}
+    - Test Framework: {test_framework}
+    - Source Files Analyzed: {source_file_count}
+    - Modified Files: {modified_count}
+    - Analyzed File Paths:
+    {file_paths}
+
+    **ANALYSIS DIMENSIONS** — evaluate each:
+
+    1. **Overfetching**
+       - Identify fetches/queries that retrieve more data than consumed
+       - Flag missing pagination, field selection, or query scoping
+       - Recommend targeted queries, GraphQL field selection, or response projection
+
+    2. **Promise Overhead**
+       - Detect sequential `await` chains where `Promise.all` / `Promise.allSettled` would enable concurrency
+       - Flag `async` functions with no `await` inside (unnecessary async overhead)
+       - Identify `.then()` / `.catch()` chains mixed with `await` (inconsistent style + harder error tracing)
+
+    3. **Event Loop Congestion**
+       - Spot synchronous CPU-heavy operations (large array sorts, regex on big strings, JSON.parse of large payloads) blocking the event loop inside async paths
+       - Recommend `setImmediate`, worker threads (`worker_threads`), or chunked processing with `setTimeout(fn, 0)`
+
+    4. **Memory Leaks**
+       - Unclosed `ReadableStream` / `WritableStream` objects
+       - Event listeners added in loops or component mounts without corresponding removal
+       - Timers (`setInterval`, `setTimeout`) referenced in closures without `clearInterval`/`clearTimeout`
+       - Accumulated promise chains or large data structures retained in module-level scope
+
+    5. **API Call Batching**
+       - Identify N+1 fetch patterns (fetching inside a loop)
+       - Recommend DataLoader-style batching, request coalescing, or query aggregation
+       - Suggest debouncing for search/autocomplete and throttling for scroll/resize-triggered calls
+
+    6. **Debouncing & Throttling**
+       - Flag input handlers, window event listeners, and polling loops that fire too frequently
+       - Provide ready-to-use debounce/throttle implementations or library recommendations (`lodash.debounce`, `p-throttle`)
+
+    7. **Error Handling**
+       - Detect floating promises (no `await`, no `.catch()`)
+       - Flag `async` functions lacking top-level `try/catch`
+       - Identify swallowed errors in `.then(null, err => {})` patterns or empty catch blocks
+       - Recommend structured error types and `Promise.allSettled` for partial-failure tolerance
+
+    8. **Promise Anti-Patterns**
+       - Explicit Promise constructor wrapping async code: `new Promise(async (resolve) => { ... })`
+       - Deferred pattern: manually held `resolve`/`reject` outside constructor
+       - Redundant wrapping: `return await promise` inside try/catch where `return promise` suffices
+       - `.then()` chains that could be flattened with `async/await` for readability
+
+    9. **Resource Cleanup**
+       - Missing `AbortController` on fetch/XHR calls that may be cancelled
+       - `removeEventListener` not called when listeners are added dynamically
+       - Stream `destroy()` / `close()` not called in error paths
+       - `finally` blocks absent from async operations managing external resources (DB connections, file handles)
+
+  approach: |
+    Analyze ONLY the source files explicitly listed in Analyzed File Paths above. Do not assume or invent code patterns, async chains, or event handlers not shown in the provided context.
+
+    **Priority Order:**
+    1. Memory leaks and resource cleanup issues (CRITICAL — can cause process crashes)
+    2. Unhandled rejections and missing error handling (HIGH — silent failures in production)
+    3. Event loop congestion from synchronous work in async paths (HIGH — degrades throughput)
+    4. Promise anti-patterns (MEDIUM — correctness and maintainability risk)
+    5. N+1 fetch / overfetching patterns (MEDIUM — performance and cost impact)
+    6. Sequential awaits replaceable by `Promise.all` (LOW — parallelism opportunity)
+    7. Debounce/throttle candidates (LOW — UX improvement)
+
+    For each issue provide:
+    - **File**: relative path
+    - **Severity**: CRITICAL | HIGH | MEDIUM | LOW
+    - **Dimension**: one of the 9 dimensions above
+    - **Issue**: specific description with line reference if identifiable
+    - **Fix**: concrete code change (before → after snippet)
+
+    If no issues are found in a dimension, state "✅ No issues found" and move on. Do not invent findings.
+
+  output_format: |
+    ## Async Performance Review
+
+    ### Summary
+    | Dimension | Status | Issue Count |
+    | --- | --- | --- |
+    | Overfetching | ✅/⚠️/❌ | N |
+    | Promise Overhead | ✅/⚠️/❌ | N |
+    | Event Loop Congestion | ✅/⚠️/❌ | N |
+    | Memory Leaks | ✅/⚠️/❌ | N |
+    | API Call Batching | ✅/⚠️/❌ | N |
+    | Debouncing & Throttling | ✅/⚠️/❌ | N |
+    | Error Handling | ✅/⚠️/❌ | N |
+    | Promise Anti-Patterns | ✅/⚠️/❌ | N |
+    | Resource Cleanup | ✅/⚠️/❌ | N |
+
+    ### Findings
+
+    **[Severity] [Dimension] — [File]**
+    - Issue: [description]
+    - Fix:
+      ```js
+      // Before
+      // After
+      ```
+
+    ### Recommendations
+    [Prioritised list of actionable next steps]
+
 # AWS Senior Cloud Architect Persona
 aws_cloud_architect_prompt:
   # Split role into prefix + guidelines for token efficiency

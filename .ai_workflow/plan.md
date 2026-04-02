@@ -45,7 +45,7 @@
 - **Path:** docs/workflow-automation
 - **Description:** The `docs/workflow-automation/` directory has its own README but is not referenced from the root `README.md` or `docs/ARCHITECTURE.md`, so users navigating top-level docs cannot discover it.
 - **Fix:** Add a link to `docs/workflow-automation/README.md` in the "Key Documentation References" section of the root `README.md` and in the directory listing of `docs/ARCHITECTURE.md`.
-- **Status:** open
+- **Status:** done
 
 ---
 

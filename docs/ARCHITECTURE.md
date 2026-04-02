@@ -617,6 +617,7 @@ git submodule add <your-fork-url> .workflow_core
 - **Contributing Guide**: [docs/CONTRIBUTING.md](CONTRIBUTING.md)
 - **Project Kinds Schema**: [config/project_kinds.yaml](../config/project_kinds.yaml)
 - **AI Prompts**: [config/ai_prompts_project_kinds.yaml](../config/ai_prompts_project_kinds.yaml)
+- **Workflow Automation Guide**: [docs/workflow-automation/README.md](workflow-automation/README.md)
 
 ---
 

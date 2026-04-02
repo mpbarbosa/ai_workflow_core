@@ -167,6 +167,7 @@ cp .workflow_core/config/.workflow-config.yaml.template .workflow-config.yaml
 - **[MULTI_LANGUAGE_SETUP.md](docs/advanced/MULTI_LANGUAGE_SETUP.md)** - Polyglot project configurations
 - **[CUSTOM_WORKFLOW_CREATION.md](docs/advanced/CUSTOM_WORKFLOW_CREATION.md)** - Custom automation workflows
 - **[CI_CD_INTEGRATION.md](docs/advanced/CI_CD_INTEGRATION.md)** - Integration with 5 CI/CD platforms
+- **[workflow-automation/README.md](docs/workflow-automation/README.md)** - Comprehensive workflow automation guide
 
 ### Visual Aids
 - **[diagrams/README.md](docs/diagrams/README.md)** - 20+ Mermaid diagrams for architecture, flows, and structures

@@ -58,7 +58,7 @@
 - **Path:** docs/architecture/OVERVIEW.md
 - **Description:** Line 442 links to `INTEGRATION_PATTERNS.md` inside `docs/architecture/`, but that file does not exist.
 - **Fix:** Create a stub `docs/architecture/INTEGRATION_PATTERNS.md` (with a brief description and link to `docs/INTEGRATION.md`) or update the link to point to `docs/INTEGRATION.md`.
-- **Status:** open
+- **Status:** done
 
 ---
 

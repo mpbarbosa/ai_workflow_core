@@ -32,7 +32,7 @@
 - **Path:** src/__tests__/fixtures
 - **Description:** The `src/__tests__/fixtures` directory contains YAML test data files (`ai_helpers.yaml`, `prompt_roles.yaml`, `bad_yaml.yaml`) but has no `README.md`, leaving contributors uncertain about its contents and conventions.
 - **Fix:** Add a brief `README.md` in `src/__tests__/fixtures/` describing each fixture file's purpose and how to add new ones.
-- **Status:** open
+- **Status:** done
 
 ---
 

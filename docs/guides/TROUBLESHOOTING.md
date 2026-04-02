@@ -1,6 +1,6 @@
 # Troubleshooting Guide
 
-**Version**: 1.0.2  
+**Version**: 1.0.2
 **Last Updated**: 2026-02-07
 
 > **Purpose**: Solutions to common problems when integrating and using ai_workflow_core. Organized by problem category with step-by-step fixes.
@@ -255,7 +255,7 @@ project:
   name: "My API"
   type: "nodejs-application"  # Hyphenated (describes project broadly)
   kind: "nodejs_api"          # Underscored (matches project_kinds.yaml)
-  
+
 # ❌ Wrong (swapped)
 project:
   type: "nodejs_api"          # Wrong: don't use underscore here
@@ -783,5 +783,5 @@ ls -la .ai_workflow/ 2>&1
 
 ---
 
-**Last Updated**: 2026-02-07  
+**Last Updated**: 2026-02-07
 **Document Version**: 1.0.2

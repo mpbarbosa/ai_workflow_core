@@ -1,8 +1,8 @@
 # Roadmap: `config/ai_helpers.yaml` — Persona & Prompt Set Progression
 
-**Source File**: `config/ai_helpers.yaml`  
-**Current Version**: v6.7.6 (Phase 1 Refinement Complete — 7 items)  
-**Document Date**: 2026-03-06  
+**Source File**: `config/ai_helpers.yaml`
+**Current Version**: v6.7.6 (Phase 1 Refinement Complete — 7 items)
+**Document Date**: 2026-03-06
 **Repository**: `mpbarbosa/ai_workflow_core`
 
 ---
@@ -64,8 +64,8 @@
 | `javascript_developer_prompt` | Language | Full (anchor) | ✅ Mature |
 | `typescript_developer_prompt` | Language | Full (anchor) | ✅ Mature (v6.6.0) |
 
-**Total Defined Prompts**: 29 keys  
-**Behavioral Anchors**: 2 (`behavioral_actionable`, `behavioral_structured`)  
+**Total Defined Prompts**: 29 keys
+**Behavioral Anchors**: 2 (`behavioral_actionable`, `behavioral_structured`)
 **Language Tables**: 3 tables × 9 languages = 27 entries
 
 ### 1.2 Behavioral Anchor Usage
@@ -161,7 +161,7 @@
 
 ## 3. Phase 1 — Refinement (v6.7.x) ✅ Complete
 
-**Goal**: Improve structural consistency and quality without adding net new personas. Backward compatible.  
+**Goal**: Improve structural consistency and quality without adding net new personas. Backward compatible.
 **Status**: All 7 items implemented (2026-03-06). `ai_helpers.yaml` bumped to v6.7.6.
 
 ### 3.1 Remove Legacy `role` Fields (v6.7.0)
@@ -170,8 +170,8 @@ Remove the redundant `role` field from the 11 personas that carry both `role_pre
 
 **Affected personas**: `test_strategy_prompt`, `quality_prompt`, `issue_extraction_prompt`, `step2_consistency_prompt`, `step3_script_refs_prompt`, `step4_directory_prompt`, `step5_test_review_prompt`, `step7_test_exec_prompt`, `step8_dependencies_prompt`, `step9_code_quality_prompt`, `step11_git_commit_prompt`, `markdown_lint_prompt`.
 
-**Prerequisite**: Confirm parent `ai_workflow.js` execution engine reads `role_prefix` exclusively (not `role`).  
-**Token savings**: ~110–165 tokens/workflow (12 personas × ~10–14 tokens each).  
+**Prerequisite**: Confirm parent `ai_workflow.js` execution engine reads `role_prefix` exclusively (not `role`).
+**Token savings**: ~110–165 tokens/workflow (12 personas × ~10–14 tokens each).
 **Risk**: Low — additive to v4.0.0+ consumers; requires confirmation from `ai_workflow`.
 
 ### 3.2 Modernize `single_file_test_prompt` (v6.7.1)
@@ -266,7 +266,7 @@ Add explicit disambiguation comments and update `role_prefix` to sharpen differe
 | `quality_prompt` | Single file or small set of files; immediate issues; quick review | Targeted PR review, pre-commit check, on specific files |
 | `step9_code_quality_prompt` | Entire codebase; architectural debt; cross-file patterns | Workflow step 9/10; system-wide audit; technical debt sprint |
 
-Update `role_prefix` of `quality_prompt` to emphasize: *"quick, targeted, file-level"*  
+Update `role_prefix` of `quality_prompt` to emphasize: *"quick, targeted, file-level"*
 Update `role_prefix` of `step9_code_quality_prompt` to emphasize: *"system-wide, architectural, comprehensive"*
 
 ---
@@ -290,7 +290,7 @@ Update `role_prefix` of `step9_code_quality_prompt` to emphasize: *"system-wide,
 - Dev dependency separation (`dev`, `test`, `docs` optional dependency groups)
 - Python version management (`.python-version`, `pyenv`, `tox`)
 
-**Behavioral anchor**: `*behavioral_actionable`  
+**Behavioral anchor**: `*behavioral_actionable`
 **Differentiates from**:
 
 - `configuration_specialist_prompt`: validates config syntax; does not author or optimize
@@ -314,7 +314,7 @@ Update `role_prefix` of `step9_code_quality_prompt` to emphasize: *"system-wide,
 - Contract-first development workflow (spec → code generation)
 - API documentation standards (OpenAPI, AsyncAPI, API Blueprint)
 
-**Behavioral anchor**: `*behavioral_actionable`  
+**Behavioral anchor**: `*behavioral_actionable`
 **Differentiates from**:
 
 - `requirements_engineer_prompt`: defines functional requirements; does not specify API contracts
@@ -339,8 +339,8 @@ Update `role_prefix` of `step9_code_quality_prompt` to emphasize: *"system-wide,
 - Compliance mapping (OWASP ASVS, NIST, CIS Controls)
 - Security code review methodology (file-by-file, trust boundary analysis)
 
-**Behavioral anchor**: `*behavioral_structured`  
-**Necessity gate**: Yes — structured 5-point gate (parallel to `technical_writer_prompt`'s 7-point gate)  
+**Behavioral anchor**: `*behavioral_structured`
+**Necessity gate**: Yes — structured 5-point gate (parallel to `technical_writer_prompt`'s 7-point gate)
 **Differentiates from**:
 
 - `step9_code_quality_prompt`: quality and maintainability focus; not security-focused
@@ -365,7 +365,7 @@ Update `role_prefix` of `step9_code_quality_prompt` to emphasize: *"system-wide,
 - Database security (row-level security, encryption at rest, audit logging)
 - Sharding and partitioning strategies for scale
 
-**Behavioral anchor**: `*behavioral_structured`  
+**Behavioral anchor**: `*behavioral_structured`
 **Differentiates from**:
 
 - `aws_cloud_architect_prompt`: infrastructure-level (RDS selection, Multi-AZ); not schema design
@@ -389,7 +389,7 @@ Update `role_prefix` of `step9_code_quality_prompt` to emphasize: *"system-wide,
 - Go build constraints and cross-compilation
 - Performance profiling tooling (`pprof`, `trace`)
 
-**Behavioral anchor**: `*behavioral_actionable`  
+**Behavioral anchor**: `*behavioral_actionable`
 **Version target**: v7.4.0
 
 ### 4.6 `gcp_cloud_architect_prompt` (v7.5.0)
@@ -408,7 +408,7 @@ Update `role_prefix` of `step9_code_quality_prompt` to emphasize: *"system-wide,
 - Cost optimization: Committed Use Discounts, preemptible/spot VMs, budget alerts
 - GCP Migration: FAST landing zone, migration assessment
 
-**Behavioral anchor**: `*behavioral_actionable`  
+**Behavioral anchor**: `*behavioral_actionable`
 **Version target**: v7.5.0
 
 ---
@@ -466,7 +466,7 @@ debugging_specialist_prompt:
   task_template: |
     **ROUTING**: Based on the error description, select the appropriate debugging mode:
     - Observer/Event issues → Observer Pattern Mode
-    - Async/Promise/CORS → Async Flow Mode  
+    - Async/Promise/CORS → Async Flow Mode
     - API contract/type mismatches → Data Structure Mode
     [Mode-specific task templates embedded]
 ```
@@ -601,7 +601,7 @@ Current coverage (✅ = in all 3 tables, ⚠️ = partial, ❌ = missing):
 | **PHP** | ❌ | ❌ | ❌ | ❌ |
 | **Dart** | ❌ | ❌ | ❌ | ❌ |
 
-**Target after Phase 1**: 11 languages (add C#, Kotlin)  
+**Target after Phase 1**: 11 languages (add C#, Kotlin)
 **Target after Phase 3**: 13 languages (add Swift, PHP)
 
 ---
@@ -617,7 +617,7 @@ Current coverage (✅ = in all 3 tables, ⚠️ = partial, ❌ = missing):
 | v8.2.0 | Composite debugging persona (replace 3 with 1) | −300 to −500 tokens if all 3 debug specialists load |
 | v8.3.0 | Multi-language developer persona (replace N with 1) | −300 tokens per language persona eliminated |
 
-**Cumulative Phase 1 net savings**: ~160–255 tokens/workflow  
+**Cumulative Phase 1 net savings**: ~160–255 tokens/workflow
 **Running total** (vs v3.0.0 baseline after Phase 1): ~1,490–1,755 tokens saved per workflow
 
 ---
@@ -668,5 +668,5 @@ Items sorted by value/effort ratio (highest priority first):
 
 ---
 
-*Document version: 1.2.0 — Phase 1 (v6.7.x) complete as of 2026-03-06*  
+*Document version: 1.2.0 — Phase 1 (v6.7.x) complete as of 2026-03-06*
 *Next review: After Phase 2 (v7.x.x) first persona (python_developer_prompt) is complete*

@@ -1,8 +1,8 @@
 # Getting Started with ai_workflow_core
 
-**Version**: 1.0.2  
-**Last Updated**: 2026-02-10  
-**Audience**: New users  
+**Version**: 1.0.2
+**Last Updated**: 2026-02-10
+**Audience**: New users
 **Estimated time**: 10 minutes
 
 > **Purpose**: Complete guide to setting up ai_workflow_core in your project from scratch
@@ -25,14 +25,14 @@
 
 ai_workflow_core is a **configuration and template library** that provides:
 
-✅ **Configuration templates** for workflow automation  
-✅ **Project type definitions** with validation rules  
-✅ **Directory structures** for workflow artifacts  
-✅ **GitHub Actions workflows** for CI/CD  
-✅ **Utility scripts** for validation and cleanup  
+✅ **Configuration templates** for workflow automation
+✅ **Project type definitions** with validation rules
+✅ **Directory structures** for workflow artifacts
+✅ **GitHub Actions workflows** for CI/CD
+✅ **Utility scripts** for validation and cleanup
 
-**Used as**: Git submodule in your project  
-**Language**: Language-agnostic (works with any language)  
+**Used as**: Git submodule in your project
+**Language**: Language-agnostic (works with any language)
 **Version**: 1.0.2
 
 ---
@@ -366,8 +366,8 @@ What's your primary language?
 - Command-line tools
 - System administration scripts
 
-**Test framework**: `bash_unit` or `BATS`  
-**Linters**: `shellcheck`, `shfmt`  
+**Test framework**: `bash_unit` or `BATS`
+**Linters**: `shellcheck`, `shfmt`
 **Coverage**: Not typically measured
 
 **Example**:
@@ -388,8 +388,8 @@ tech_stack:
 - GraphQL servers
 - Backend microservices
 
-**Test framework**: `jest`, `mocha`, or `vitest`  
-**Linters**: `eslint`, `prettier`  
+**Test framework**: `jest`, `mocha`, or `vitest`
+**Linters**: `eslint`, `prettier`
 **Coverage**: 80% threshold
 
 **Example**:
@@ -409,8 +409,8 @@ tech_stack:
 - React single-page applications
 - React with TypeScript
 
-**Test framework**: `jest` + React Testing Library  
-**Linters**: `eslint`, `prettier`  
+**Test framework**: `jest` + React Testing Library
+**Linters**: `eslint`, `prettier`
 **Build**: Required (`npm run build`)
 
 **Example**:
@@ -432,8 +432,8 @@ tech_stack:
 - Data processing scripts
 - Web apps (Flask/Django)
 
-**Test framework**: `pytest` or `unittest`  
-**Linters**: `pylint`, `black`, `mypy`  
+**Test framework**: `pytest` or `unittest`
+**Linters**: `pylint`, `black`, `mypy`
 **Coverage**: 80% threshold
 
 **Example**:
@@ -454,8 +454,8 @@ tech_stack:
 - Configuration libraries
 - Submodule-based libraries (like ai_workflow_core itself)
 
-**Test framework**: Validation scripts  
-**Linters**: `yamllint`  
+**Test framework**: Validation scripts
+**Linters**: `yamllint`
 **Build**: Not required
 
 **Example**:

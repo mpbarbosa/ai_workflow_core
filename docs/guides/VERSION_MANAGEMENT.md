@@ -1,7 +1,7 @@
 # Version Management Guide - AI Workflow Core
 
-**Version:** 1.0.2  
-**Last Updated:** 2026-01-29  
+**Version:** 1.0.2
+**Last Updated:** 2026-01-29
 **Audience:** Developers integrating ai_workflow_core into dynamic codebases
 
 ---
@@ -471,16 +471,16 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: true
-      
+
       - name: Update submodule
         run: |
           git submodule update --remote .workflow_core
-          
+
       - name: Check for changes
         id: changes
         run: |
           git diff --quiet .workflow_core || echo "changed=true" >> $GITHUB_OUTPUT
-          
+
       - name: Create Pull Request
         if: steps.changes.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v5
@@ -488,7 +488,7 @@ jobs:
           title: 'chore: update ai_workflow_core submodule'
           body: |
             Automated submodule update
-            
+
             Please review changelog and test before merging.
           branch: update-workflow-core
 ```
@@ -539,5 +539,5 @@ git tag -l  # List available tags
 
 ---
 
-**Last Updated:** 2026-01-29  
+**Last Updated:** 2026-01-29
 **Document Version:** 1.0.2

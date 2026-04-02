@@ -136,4 +136,4 @@
 - **Path:** docs/ (597 violations across 40+ files; top offenders: docs/advanced/CUSTOM_WORKFLOW_CREATION.md, docs/advanced/CI_CD_INTEGRATION.md, docs/diagrams/README.md)
 - **Description:** 597 lines across the `docs/` tree contain trailing whitespace, violating MD009 and causing unnecessary diffs and formatting inconsistencies.
 - **Fix:** Run `find docs -name "*.md" -exec sed -i 's/[[:space:]]\+$//' {} +` to strip all trailing spaces from markdown files under `docs/`; also run against root-level `.md` files.
-- **Status:** open
+- **Status:** done

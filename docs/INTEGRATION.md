@@ -113,7 +113,7 @@ Choose from these standard kinds for `{{PROJECT_KIND}}` (must match `config/proj
 
 - `shell_script_automation` - Bash/shell script projects
 - `nodejs_api` - Node.js backend APIs
-- `static_website` - HTML/CSS/JS static sites  
+- `static_website` - HTML/CSS/JS static sites
 - `client_spa` - Vanilla JS SPAs with Bootstrap (no frameworks)
 - `react_spa` - React single-page applications
 - `python_app` - Python applications
@@ -717,7 +717,7 @@ See [Integration Best Practices](guides/INTEGRATION_BEST_PRACTICES.md) for compr
 ## Getting Help
 
 - **Health Check**: Run `bash .workflow_core/scripts/check_integration_health.sh` first
-- **Documentation**: 
+- **Documentation**:
   - [Version Management Guide](guides/VERSION_MANAGEMENT.md) - Tracking and updating versions
   - [Integration Best Practices](guides/INTEGRATION_BEST_PRACTICES.md) - Maintaining dynamic codebases
 - **Issues**: [GitHub Issues](https://github.com/mpbarbosa/ai_workflow_core/issues)
@@ -726,10 +726,10 @@ See [Integration Best Practices](guides/INTEGRATION_BEST_PRACTICES.md) for compr
 
 ---
 
-**Version**: 1.0.2  
+**Version**: 1.0.2
 **Last Updated**: 2026-01-31
 
-**Next Steps**: 
+**Next Steps**:
 - See [examples/](examples/) for complete integration examples
 - Read [Version Management Guide](guides/VERSION_MANAGEMENT.md) for update strategies
 - Review [Integration Best Practices](guides/INTEGRATION_BEST_PRACTICES.md) for maintenance tips

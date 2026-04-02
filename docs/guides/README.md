@@ -46,13 +46,13 @@ When adding new user guides to this directory:
 2. **Follow the structure**:
    ```markdown
    # Guide Title
-   
+
    **Version**: 1.0.2
    **Last Updated**: YYYY-MM-DD
    **Audience**: Beginners/Intermediate/Advanced
-   
+
    > **Purpose**: One-line description of what user will learn
-   
+
    ## Table of Contents
    ## Prerequisites
    ## Step-by-Step Instructions

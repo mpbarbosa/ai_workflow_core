@@ -1,7 +1,7 @@
 # Custom Workflow Creation
 
-**Version**: 2.0.0  
-**Last Updated**: 2026-02-07  
+**Version**: 2.0.0
+**Last Updated**: 2026-02-07
 **Audience**: Advanced users creating custom automation workflows
 
 > **Purpose**: Learn how to create custom workflows using ai_workflow_core as a foundation. This guide covers workflow design patterns, script creation, automation strategies, and integration with the template system.
@@ -39,9 +39,9 @@ A **custom workflow** is an automated sequence of tasks tailored to your project
 
 ### Why Create Custom Workflows?
 
-✅ **Project-specific requirements** not covered by standard workflows  
-✅ **Domain-specific automation** (e.g., ML pipelines, infrastructure provisioning)  
-✅ **Tool integration** with your specific tech stack  
+✅ **Project-specific requirements** not covered by standard workflows
+✅ **Domain-specific automation** (e.g., ML pipelines, infrastructure provisioning)
+✅ **Tool integration** with your specific tech stack
 ✅ **Team processes** unique to your organization
 
 ---
@@ -280,24 +280,24 @@ function retry() {
   local delay=$2
   shift 2
   local command="$@"
-  
+
   local attempt=1
   while [ $attempt -le $max_attempts ]; do
     echo "Attempt $attempt/$max_attempts: $command"
-    
+
     if eval "$command"; then
       return 0
     fi
-    
+
     if [ $attempt -lt $max_attempts ]; then
       echo "⏳ Waiting ${delay}s before retry..."
       sleep $delay
       delay=$((delay * 2))  # Exponential backoff
     fi
-    
+
     attempt=$((attempt + 1))
   done
-  
+
   echo "❌ Command failed after $max_attempts attempts"
   return 1
 }
@@ -344,13 +344,13 @@ source "${SCRIPT_DIR}/lib/utils.sh"
 
 function validate_environment() {
   log "INFO" "Validating environment"
-  
+
   # Check required files
   if [[ ! -f "$PROJECT_ROOT/.workflow-config.yaml" ]]; then
     log "ERROR" "Configuration file not found"
     exit 1
   fi
-  
+
   # Check required tools
   for tool in git npm node; do
     if ! command -v $tool &> /dev/null; then
@@ -358,7 +358,7 @@ function validate_environment() {
       exit 1
     fi
   done
-  
+
   log "INFO" "Environment validation passed"
 }
 
@@ -383,15 +383,15 @@ function cleanup() {
 
 function main() {
   log "INFO" "Starting workflow: $PROJECT_NAME v$PROJECT_VERSION"
-  
+
   # Setup cleanup trap
   trap cleanup EXIT
-  
+
   # Execute workflow steps
   validate_environment
   step_1_example
   step_2_example
-  
+
   log "INFO" "✅ Workflow completed successfully"
 }
 
@@ -415,7 +415,7 @@ function log() {
   shift
   local message="$@"
   local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-  
+
   case "$level" in
     ERROR)
       echo "[$timestamp] ❌ ERROR: $message" >&2
@@ -436,7 +436,7 @@ function log() {
 function get_config_value() {
   local key=$1
   local config_file="${PROJECT_ROOT}/.workflow-config.yaml"
-  
+
   grep "$key:" "$config_file" | cut -d'"' -f2
 }
 
@@ -454,18 +454,18 @@ function execute_with_retry() {
   local max_attempts=$1
   shift
   local command="$@"
-  
+
   for attempt in $(seq 1 $max_attempts); do
     if eval "$command"; then
       return 0
     fi
-    
+
     if [ $attempt -lt $max_attempts ]; then
       log "WARN" "Attempt $attempt failed, retrying..."
       sleep 2
     fi
   done
-  
+
   log "ERROR" "Command failed after $max_attempts attempts"
   return 1
 }
@@ -474,7 +474,7 @@ function execute_with_retry() {
 function ensure_artifact_dir() {
   local subdir=$1
   local dir="${WORKFLOW_DIR}/${subdir}"
-  
+
   if [[ ! -d "$dir" ]]; then
     mkdir -p "$dir"
     log "INFO" "Created artifact directory: $dir"
@@ -486,12 +486,12 @@ function save_artifact() {
   local name=$1
   local content=$2
   local subdir=${3:-logs}
-  
+
   ensure_artifact_dir "$subdir"
-  
+
   local timestamp=$(date '+%Y%m%d_%H%M%S')
   local filename="${WORKFLOW_DIR}/${subdir}/${name}_${timestamp}.log"
-  
+
   echo "$content" > "$filename"
   log "INFO" "Artifact saved: $filename"
 }
@@ -520,21 +520,21 @@ def load_config():
     if not config_file.exists():
         print("❌ Configuration file not found")
         sys.exit(1)
-    
+
     with open(config_file) as f:
         return yaml.safe_load(f)
 
 def main():
     config = load_config()
-    
+
     project_name = config['project']['name']
     project_kind = config['project']['kind']
     test_command = config['tech_stack']['test_command']
-    
+
     print(f"Running workflow for: {project_name}")
     print(f"Project kind: {project_kind}")
     print(f"Test command: {test_command}")
-    
+
     # Execute test command from config
     import subprocess
     result = subprocess.run(test_command, shell=True)
@@ -588,12 +588,12 @@ workflows:
     approval_required:
       staging: false
       production: true
-  
+
   release:
     changelog_required: true
     version_bump: "minor"  # major, minor, patch
     create_tag: true
-  
+
   backup:
     schedule: "0 2 * * *"  # Daily at 2 AM
     retention_days: 30
@@ -641,9 +641,9 @@ for i in "${!WORKFLOWS[@]}"; do
   workflow="${WORKFLOWS[$i]}"
   step=$((i + 1))
   total=${#WORKFLOWS[@]}
-  
+
   log "INFO" "[$step/$total] Executing: $workflow"
-  
+
   if bash "$workflow"; then
     log "SUCCESS" "[$step/$total] Completed: $workflow"
   else
@@ -688,7 +688,7 @@ FAILED=()
 for i in "${!WORKFLOWS[@]}"; do
   workflow="${WORKFLOWS[$i]}"
   pid="${PIDS[$i]}"
-  
+
   if wait "$pid"; then
     log "SUCCESS" "Completed: $workflow"
   else
@@ -792,7 +792,7 @@ STATE_DIR="${WORKFLOW_DIR}/state"
 function save_state() {
   local key=$1
   local value=$2
-  
+
   mkdir -p "$STATE_DIR"
   echo "$value" > "${STATE_DIR}/${key}.state"
 }
@@ -800,7 +800,7 @@ function save_state() {
 function load_state() {
   local key=$1
   local default=${2:-""}
-  
+
   local state_file="${STATE_DIR}/${key}.state"
   if [[ -f "$state_file" ]]; then
     cat "$state_file"
@@ -818,12 +818,12 @@ function clear_state() {
 function acquire_lock() {
   local workflow=$1
   local lock_file="${STATE_DIR}/${workflow}.lock"
-  
+
   if [[ -f "$lock_file" ]]; then
     log "ERROR" "Workflow already running (lock file exists)"
     exit 1
   fi
-  
+
   echo "$$" > "$lock_file"  # Save process ID
 }
 
@@ -869,18 +869,18 @@ source workflows/lib/utils.sh
 function error_handler() {
   local exit_code=$?
   local line_number=$1
-  
+
   log "ERROR" "Workflow failed at line $line_number with exit code $exit_code"
-  
+
   # Save error details
   save_artifact "error" "Exit code: $exit_code\nLine: $line_number\nTime: $(date)"
-  
+
   # Send notification (optional)
   # notify_team "Workflow failed: $exit_code"
-  
+
   # Cleanup
   cleanup_on_error
-  
+
   exit "$exit_code"
 }
 
@@ -890,13 +890,13 @@ trap 'error_handler $LINENO' ERR
 # Cleanup function
 function cleanup_on_error() {
   log "WARN" "Cleaning up after error"
-  
+
   # Stop background processes
   jobs -p | xargs -r kill 2>/dev/null || true
-  
+
   # Remove temporary files
   rm -rf /tmp/workflow-temp-*
-  
+
   # Restore backups if needed
   if [[ -f ".backup" ]]; then
     mv .backup .original
@@ -906,19 +906,19 @@ function cleanup_on_error() {
 # Main workflow with error handling
 function main() {
   log "INFO" "Starting workflow"
-  
+
   # Step with error handling
   if ! npm run build; then
     log "ERROR" "Build failed"
     return 1
   fi
-  
+
   # Step with retry
   if ! execute_with_retry 3 "npm test"; then
     log "ERROR" "Tests failed after retries"
     return 1
   fi
-  
+
   log "SUCCESS" "Workflow completed"
 }
 
@@ -961,19 +961,19 @@ steps:
     description: "Validate branch and configuration"
     script: "workflows/validate.sh"
     required: true
-  
+
   - name: "Lint"
     description: "Run code quality checks"
     script: "workflows/lint.sh"
     required: true
     parallel: true
-  
+
   - name: "Test"
     description: "Run test suite"
     script: "workflows/test.sh"
     required: true
     coverage_threshold: 80
-  
+
   - name: "Build"
     description: "Build application"
     script: "workflows/build.sh"
@@ -981,7 +981,7 @@ steps:
     artifacts:
       - dist/
       - build/
-  
+
   - name: "Preview Deploy"
     description: "Deploy to preview environment"
     script: "workflows/deploy-preview.sh"
@@ -1020,20 +1020,20 @@ case "$PROJECT_KIND" in
     npm test
     npm run build
     ;;
-  
+
   python_app)
     log "INFO" "Python application detected"
     pylint src/
     pytest
     python setup.py build
     ;;
-  
+
   shell_script_automation)
     log "INFO" "Shell scripts detected"
     shellcheck **/*.sh
     bash tests/run_tests.sh
     ;;
-  
+
   *)
     log "WARN" "Unknown project kind: $PROJECT_KIND"
     ;;
@@ -1094,57 +1094,57 @@ ENVIRONMENT=${1:-staging}
 
 function validate_deployment() {
   log "INFO" "Validating deployment prerequisites"
-  
+
   # Check environment
   if [[ ! "$ENVIRONMENT" =~ ^(staging|production)$ ]]; then
     log "ERROR" "Invalid environment: $ENVIRONMENT"
     exit 1
   fi
-  
+
   # Check credentials
   if [[ -z "${DEPLOY_TOKEN:-}" ]]; then
     log "ERROR" "DEPLOY_TOKEN not set"
     exit 1
   fi
-  
+
   # Check version
   VERSION=$(get_config_value "version")
   LAST_VERSION=$(load_state "last_deploy_version_${ENVIRONMENT}" "0.0.0")
-  
+
   log "INFO" "Current version: $VERSION"
   log "INFO" "Last deployed: $LAST_VERSION"
 }
 
 function run_pre_deploy_checks() {
   log "INFO" "Running pre-deployment checks"
-  
+
   # Lint
   npm run lint || return 1
-  
+
   # Test
   npm test || return 1
-  
+
   # Security audit
   npm audit --audit-level=moderate || return 1
 }
 
 function build_artifacts() {
   log "INFO" "Building deployment artifacts"
-  
+
   npm run build || return 1
-  
+
   # Create deployment package
   tar -czf "deploy-${VERSION}.tar.gz" dist/
-  
+
   log "SUCCESS" "Artifacts built: deploy-${VERSION}.tar.gz"
 }
 
 function deploy_to_environment() {
   log "INFO" "Deploying to $ENVIRONMENT"
-  
+
   # Upload artifacts
   execute_with_retry 3 "scp deploy-${VERSION}.tar.gz deploy@${ENVIRONMENT}.example.com:/tmp/"
-  
+
   # Extract and deploy
   ssh deploy@${ENVIRONMENT}.example.com << EOF
     cd /app
@@ -1152,13 +1152,13 @@ function deploy_to_environment() {
     pm2 reload ecosystem.config.js
     pm2 save
 EOF
-  
+
   log "SUCCESS" "Deployed to $ENVIRONMENT"
 }
 
 function verify_deployment() {
   log "INFO" "Verifying deployment"
-  
+
   # Health check
   for i in {1..10}; do
     if curl -sf "https://${ENVIRONMENT}.example.com/health"; then
@@ -1168,7 +1168,7 @@ function verify_deployment() {
     log "WARN" "Health check attempt $i/10 failed, retrying..."
     sleep 5
   done
-  
+
   log "ERROR" "Health check failed after 10 attempts"
   return 1
 }
@@ -1182,16 +1182,16 @@ function save_deployment_info() {
 function main() {
   acquire_lock "deploy"
   trap "release_lock deploy" EXIT
-  
+
   log "INFO" "Starting deployment workflow for $ENVIRONMENT"
-  
+
   validate_deployment
   run_pre_deploy_checks
   build_artifacts
   deploy_to_environment
   verify_deployment
   save_deployment_info
-  
+
   log "SUCCESS" "Deployment completed successfully"
 }
 
@@ -1219,7 +1219,7 @@ function validate_release() {
     log "ERROR" "Releases must be created from main branch"
     exit 1
   fi
-  
+
   # Must have clean working directory
   if ! git diff-index --quiet HEAD --; then
     log "ERROR" "Working directory has uncommitted changes"
@@ -1230,10 +1230,10 @@ function validate_release() {
 function bump_version() {
   CURRENT_VERSION=$(get_config_value "version")
   log "INFO" "Current version: $CURRENT_VERSION"
-  
+
   # Simple version bumping (use npm version, poetry version, etc. in real projects)
   IFS='.' read -r major minor patch <<< "$CURRENT_VERSION"
-  
+
   case "$BUMP_TYPE" in
     major)
       NEW_VERSION="$((major + 1)).0.0"
@@ -1249,39 +1249,39 @@ function bump_version() {
       exit 1
       ;;
   esac
-  
+
   log "INFO" "New version: $NEW_VERSION"
   echo "$NEW_VERSION"
 }
 
 function update_version_files() {
   local new_version=$1
-  
+
   # Update .workflow-config.yaml
   sed -i "s/version: \".*\"/version: \"$new_version\"/" .workflow-config.yaml
-  
+
   # Update package.json (if exists)
   if [[ -f "package.json" ]]; then
     npm version "$new_version" --no-git-tag-version
   fi
-  
+
   log "SUCCESS" "Version files updated to $new_version"
 }
 
 function generate_changelog() {
   local new_version=$1
-  
+
   log "INFO" "Generating changelog"
-  
+
   # Get commits since last tag
   LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-  
+
   if [[ -n "$LAST_TAG" ]]; then
     COMMITS=$(git log ${LAST_TAG}..HEAD --pretty=format:"- %s (%h)" --no-merges)
   else
     COMMITS=$(git log --pretty=format:"- %s (%h)" --no-merges)
   fi
-  
+
   # Prepend to CHANGELOG.md
   cat > CHANGELOG.tmp << EOF
 ## [${new_version}] - $(date +%Y-%m-%d)
@@ -1289,38 +1289,38 @@ function generate_changelog() {
 ${COMMITS}
 
 EOF
-  
+
   if [[ -f "CHANGELOG.md" ]]; then
     cat CHANGELOG.md >> CHANGELOG.tmp
     mv CHANGELOG.tmp CHANGELOG.md
   else
     mv CHANGELOG.tmp CHANGELOG.md
   fi
-  
+
   log "SUCCESS" "Changelog generated"
 }
 
 function create_release_commit() {
   local new_version=$1
-  
+
   git add .workflow-config.yaml CHANGELOG.md package.json 2>/dev/null || true
   git commit -m "chore: release v${new_version}"
   git tag -a "v${new_version}" -m "Release v${new_version}"
-  
+
   log "SUCCESS" "Release commit and tag created"
 }
 
 function main() {
   log "INFO" "Starting release workflow ($BUMP_TYPE)"
-  
+
   validate_release
-  
+
   NEW_VERSION=$(bump_version)
-  
+
   update_version_files "$NEW_VERSION"
   generate_changelog "$NEW_VERSION"
   create_release_commit "$NEW_VERSION"
-  
+
   log "SUCCESS" "Release v${NEW_VERSION} created"
   log "INFO" "Push with: git push origin main --tags"
 }
@@ -1418,7 +1418,7 @@ source workflows/lib/utils.sh
 
 function test_log_function() {
   local output=$(log "INFO" "test message" 2>&1)
-  
+
   if [[ "$output" =~ "INFO: test message" ]]; then
     echo "✅ test_log_function passed"
     return 0
@@ -1436,7 +1436,7 @@ function test_retry_function() {
     echo "❌ test_retry_function (success) failed"
     return 1
   fi
-  
+
   # Test failed retry
   if execute_with_retry 2 "false"; then
     echo "❌ test_retry_function (failure) failed"
@@ -1494,5 +1494,5 @@ fi
 
 ---
 
-**Last Updated**: 2026-02-07  
+**Last Updated**: 2026-02-07
 **Document Version**: 2.0.0

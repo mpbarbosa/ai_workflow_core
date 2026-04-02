@@ -2,7 +2,7 @@
 
 # Script API Reference
 
-**Scripts Directory**: [`scripts/`](../../scripts/)  
+**Scripts Directory**: [`scripts/`](../../scripts/)
 **Last Updated**: 2026-02-09
 
 ## Table of Contents
@@ -45,8 +45,8 @@ The `scripts/` directory contains utility scripts for validation, health checks,
 
 **Purpose**: Validates standardized context block structure in AI helper prompts
 
-**File**: `scripts/validate_context_blocks.py`  
-**Language**: Python 3.6+  
+**File**: `scripts/validate_context_blocks.py`
+**Language**: Python 3.6+
 **Dependencies**: `yaml` (standard library)
 
 #### Usage
@@ -135,8 +135,8 @@ Validating Context Block Structure...
 
 # Scripts Comprehensive Usage Guide
 
-**Version**: 1.0.2  
-**Last Updated**: 2026-02-16  
+**Version**: 1.0.2
+**Last Updated**: 2026-02-16
 **Target Audience**: Developers, DevOps Engineers, Project Maintainers
 
 ## Table of Contents
@@ -185,9 +185,9 @@ The `ai_workflow_core` repository provides **4 production-ready scripts** for va
 
 **Purpose**: Validates that workflow step prompts follow standardized context block structure.
 
-**Location**: `scripts/validate_context_blocks.py`  
-**Language**: Python 3.9+  
-**Dependencies**: `pyyaml`  
+**Location**: `scripts/validate_context_blocks.py`
+**Language**: Python 3.9+
+**Dependencies**: `pyyaml`
 **Exit Codes**:
 - `0` - All validations passed
 - `1` - Validation failures found
@@ -264,4 +264,4 @@ repos:
       - id: validate-context-blocks
         name: Validate Context Blocks
         entry: python3 scripts/validate_context_blocks.py
-   
+

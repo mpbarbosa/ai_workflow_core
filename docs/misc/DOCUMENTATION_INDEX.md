@@ -1,7 +1,7 @@
 # AI Workflow Core - Documentation Index
 
-**Version**: 1.0.2  
-**Last Updated**: 2026-02-12  
+**Version**: 1.0.2
+**Last Updated**: 2026-02-12
 **Purpose**: Master index of all documentation in ai_workflow_core
 
 > 📚 **Quick Navigation**: Use this index to find the right documentation for your needs.
@@ -279,9 +279,9 @@ See [AI_WORKFLOW_DIRECTORY.md](docs/AI_WORKFLOW_DIRECTORY.md) for details.
 
 ### By Audience
 
-**Beginner** → Start with [README.md](README.md) and [QUICK_START.md](docs/guides/QUICK_START.md)  
-**Intermediate** → Explore [User Guides](#user-guides) and [Examples](#examples--templates)  
-**Advanced** → Review [Advanced Topics](#advanced-topics) and [API References](#api-references)  
+**Beginner** → Start with [README.md](README.md) and [QUICK_START.md](docs/guides/QUICK_START.md)
+**Intermediate** → Explore [User Guides](#user-guides) and [Examples](#examples--templates)
+**Advanced** → Review [Advanced Topics](#advanced-topics) and [API References](#api-references)
 **Contributors** → Read [Developer Documentation](#developer-documentation)
 
 ### By File Type
@@ -314,14 +314,14 @@ See [AI_WORKFLOW_DIRECTORY.md](docs/AI_WORKFLOW_DIRECTORY.md) for details.
 
 ## Documentation Statistics
 
-**Total Documentation**: 32 markdown files, 15,000+ lines  
-**API References**: 5 files, 4,602 lines  
-**User Guides**: 11 files, 3,000+ lines  
-**Examples**: 2 complete integrations (shell, nodejs)  
-**Configuration Files**: 5 YAML files  
-**Workflow Templates**: 5 GitHub Actions workflows  
+**Total Documentation**: 32 markdown files, 15,000+ lines
+**API References**: 5 files, 4,602 lines
+**User Guides**: 11 files, 3,000+ lines
+**Examples**: 2 complete integrations (shell, nodejs)
+**Configuration Files**: 5 YAML files
+**Workflow Templates**: 5 GitHub Actions workflows
 
-**Last Major Update**: 2026-02-07  
+**Last Major Update**: 2026-02-07
 **Schema Versions**:
 - project_kinds.yaml: v1.2.0
 - AI prompts: v1.2.0
@@ -369,6 +369,6 @@ See [AI_WORKFLOW_DIRECTORY.md](docs/AI_WORKFLOW_DIRECTORY.md) for details.
 
 ---
 
-**Last Updated**: 2026-02-07  
-**Document Version**: 1.0.2  
+**Last Updated**: 2026-02-07
+**Document Version**: 1.0.2
 **Maintained By**: ai_workflow_core team

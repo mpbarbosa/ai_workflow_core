@@ -1,8 +1,8 @@
 # Structure Validation Tutorial
 
-**Version**: 1.0.2  
-**Last Updated**: 2026-02-07  
-**Audience**: Developers and contributors  
+**Version**: 1.0.2
+**Last Updated**: 2026-02-07
+**Audience**: Developers and contributors
 **Difficulty**: Beginner
 
 > **Purpose**: Step-by-step tutorial for setting up and using automated structure validation in your project.
@@ -29,7 +29,7 @@ This tutorial teaches you how to implement automated directory structure validat
 2. **Pre-commit hooks** - Automatic validation before commits
 3. **CI/CD validation** - Automatic validation on push/pull requests
 
-**Time required**: 15 minutes  
+**Time required**: 15 minutes
 **Difficulty**: Beginner
 
 ---
@@ -117,7 +117,7 @@ Repository structure is clean and documented.
 Found 2 issues:
   • Empty directory: docs/old_drafts/
   • Empty directory: tests/temp/
-  
+
 Tip: Run with --fix to automatically remove empty directories
 ======================================================================
 ```
@@ -277,7 +277,7 @@ git push
 **Example workflow output**:
 ```
 ✅ Run structure validation
-✅ Check for empty directories  
+✅ Check for empty directories
 ✅ Verify required directories
 ✅ Generate structure report
 ```
@@ -454,7 +454,7 @@ Create project-specific validation rules:
 def custom_validation(root_dir):
     """Add custom validation logic."""
     issues = []
-    
+
     # Check: All docs subdirs must have README.md
     docs_dir = root_dir / 'docs'
     for subdir in docs_dir.iterdir():
@@ -462,7 +462,7 @@ def custom_validation(root_dir):
             readme = subdir / 'README.md'
             if not readme.exists():
                 issues.append(f"Missing README.md in {subdir}")
-    
+
     return issues
 
 # Add to main validation function
@@ -632,7 +632,7 @@ You now have a robust, three-layer structure validation system that:
 
 ---
 
-**Last Updated**: 2026-02-07  
-**Document Version**: 1.0.2  
+**Last Updated**: 2026-02-07
+**Document Version**: 1.0.2
 **Tutorial Duration**: 15 minutes
 

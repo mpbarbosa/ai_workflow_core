@@ -1,7 +1,7 @@
 # AI Workflow Core - Architecture
 
-**Version**: 1.0.2  
-**Last Updated**: 2026-01-31  
+**Version**: 1.0.2
+**Last Updated**: 2026-01-31
 **Status**: Stable
 
 > **Purpose**: This document provides a high-level architectural overview of ai_workflow_core as a configuration and template library. For AI-specific guidance, see [.github/copilot-instructions.md](../.github/copilot-instructions.md).
@@ -329,16 +329,16 @@ project_kind_name:
     required_files: [...]      # Must exist
     required_directories: [...] # Must exist
     file_patterns: [...]        # Expected patterns
-    
+
   testing:
     test_framework: "..."       # Framework name
     test_command: "..."         # Command to run
     coverage_threshold: N       # Min coverage %
-    
+
   quality:
     linters: [...]             # Linting tools
     documentation_required: bool
-    
+
   ai_guidance:
     testing_standards: [...]   # Best practices
     style_guides: [...]        # Style references
@@ -375,7 +375,7 @@ Checks:
 
 ### ADR-001: Use Git Submodules for Distribution
 
-**Status**: Accepted  
+**Status**: Accepted
 **Date**: 2026-01-29
 
 **Context**: Need a way to distribute templates to multiple projects.
@@ -397,12 +397,12 @@ Checks:
 
 ### ADR-002: Separate `.github/` and `workflow-templates/` Directories
 
-**Status**: Accepted  
+**Status**: Accepted
 **Date**: 2026-01-31
 
 **Context**: Prevent confusion between GitHub metadata and workflow templates.
 
-**Decision**: 
+**Decision**:
 - `.github/` in ai_workflow_core = GitHub metadata for THIS repository (DO NOT COPY)
   - Contains: copilot-instructions.md, DESCRIPTION.md
 - `workflow-templates/` = Workflow templates for OTHER projects to copy (COPY THESE)
@@ -419,7 +419,7 @@ Checks:
 
 ### ADR-003: Placeholder Format `{{UPPERCASE}}`
 
-**Status**: Accepted  
+**Status**: Accepted
 **Date**: 2026-01-29
 
 **Context**: Need consistent placeholder format.
@@ -436,12 +436,12 @@ Checks:
 
 ### ADR-004: Version Schemas Separately from Core
 
-**Status**: Accepted  
+**Status**: Accepted
 **Date**: 2026-01-30
 
 **Context**: Schema changes vs. core library changes.
 
-**Decision**: 
+**Decision**:
 - `project_kinds.yaml` version: 1.2.0
 - `ai_prompts_project_kinds.yaml` version: 1.2.0
 - Core repository version: 1.0.2
@@ -455,12 +455,12 @@ Checks:
 
 ### ADR-005: Use Underscores for PROJECT_KIND, Hyphens for PROJECT_TYPE
 
-**Status**: Accepted  
+**Status**: Accepted
 **Date**: 2026-01-30
 
 **Context**: Naming convention for project identifiers.
 
-**Decision**: 
+**Decision**:
 - `PROJECT_TYPE`: hyphenated ("nodejs-application")
 - `PROJECT_KIND`: underscored ("nodejs_api")
 

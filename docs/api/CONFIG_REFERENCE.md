@@ -1,7 +1,7 @@
 # Configuration Reference
 
-**Version**: 1.2.0  
-**Last Updated**: 2026-02-10  
+**Version**: 1.2.0
+**Last Updated**: 2026-02-10
 **Status**: Complete Reference
 
 > **Purpose**: Complete reference documentation for `.workflow-config.yaml` configuration file. This document describes every field, its purpose, valid values, and examples.
@@ -29,8 +29,8 @@
 
 The `.workflow-config.yaml` file is the main configuration file for projects using ai_workflow_core. It defines project metadata, technology stack, directory structure, and workflow preferences.
 
-**File Location**: `<project-root>/.workflow-config.yaml`  
-**Template Source**: `.workflow_core/config/.workflow-config.yaml.template`  
+**File Location**: `<project-root>/.workflow-config.yaml`
+**Template Source**: `.workflow_core/config/.workflow-config.yaml.template`
 **Format**: YAML (strict syntax)
 
 ### Quick Start
@@ -195,7 +195,7 @@ project:
 - **Type**: `string`
 - **Required**: Yes
 - **Description**: Command to run tests
-- **Example**: 
+- **Example**:
   - `"npm test"`
   - `"./tests/run_tests.sh"`
   - `"pytest tests/"`
@@ -237,7 +237,7 @@ tech_stack:
 - **Required**: Yes
 - **Description**: Source code directories
 - **Default**: `["src"]`
-- **Example**: 
+- **Example**:
   ```yaml
   source_dirs:
     - src
@@ -394,7 +394,7 @@ phases:
   analysis:
     description: "Documentation analysis and validation"
     steps: ["01", "02", "03"]
-  
+
   testing:
     description: "Test review, generation, and execution"
     steps: ["06", "07", "08"]
@@ -422,7 +422,7 @@ workflow:
   auto_commit: false
   multi_stage_pipeline: false
   ml_optimize: false
-  
+
   # Workflow step execution order
   steps:
     # Pre-Flight Phase (0x)
@@ -432,7 +432,7 @@ workflow:
       description: "Pre-increment version for development cycle"
       phase: "pre-flight"
       can_parallelize: false
-      
+
     - id: "00"
       name: "Pre-Analysis"
       file: "step_00_analyze.sh"
@@ -450,9 +450,9 @@ workflow:
       can_parallelize: true
       dependencies: ["00"]
       ai_persona: "documentation_specialist"
-    
+
     # ... (additional steps 02-15)
-    
+
     # Git Completion - MUST BE LAST STEP
     - id: "16"
       name: "Git Finalization"
@@ -468,13 +468,13 @@ workflow:
     pre-flight:
       description: "Initial setup and analysis"
       steps: ["0a", "0b", "00"]
-      
+
     analysis:
       description: "Documentation analysis and validation"
       steps: ["01", "02", "03"]
-      
+
     # ... (additional phases)
-    
+
     completion:
       description: "Final git operations - ALWAYS RUNS LAST"
       steps: ["16"]
@@ -831,5 +831,5 @@ yamllint .workflow-config.yaml
 
 ---
 
-**Last Updated**: 2026-02-01  
+**Last Updated**: 2026-02-01
 **Document Version**: 1.0.2

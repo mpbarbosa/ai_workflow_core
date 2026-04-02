@@ -42,13 +42,13 @@ When adding new developer documentation to this directory:
 2. **Follow the structure**:
    ```markdown
    # Developer Guide: Topic
-   
+
    **Version**: 1.0.2
    **Last Updated**: YYYY-MM-DD
    **Audience**: Contributors and maintainers
-   
+
    > **Purpose**: What developers will learn
-   
+
    ## Prerequisites
    ## Understanding the System
    ## Step-by-Step Guide

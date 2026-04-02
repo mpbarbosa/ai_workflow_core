@@ -1,7 +1,7 @@
 # Template System Architecture
 
-**Version**: 1.0.2  
-**Last Updated**: 2026-02-09  
+**Version**: 1.0.2
+**Last Updated**: 2026-02-09
 **Status**: Stable
 
 ---
@@ -291,7 +291,7 @@ Schema defined in `config/project_kinds.yaml`:
 project_kinds:
   nodejs_api:
     description: "Node.js backend APIs and services"
-    
+
     validation:
       required_files:
         - package.json
@@ -306,14 +306,14 @@ project_kinds:
         tests:
           - "tests/**/*.test.js"
           - "__tests__/**/*.js"
-    
+
     testing:
       frameworks: [jest, mocha, vitest, ava]
       coverage_threshold: 80
       test_patterns:
         - "*.test.js"
         - "*.spec.js"
-    
+
     quality:
       linters:
         - eslint
@@ -396,34 +396,34 @@ Each project kind defines:
 project_kinds:
   example_kind:
     description: "Human-readable description"
-    
+
     validation:
       required_files: []      # Must exist files
       required_directories: [] # Must exist directories
       file_patterns: {}       # Expected file patterns
-    
+
     testing:
       frameworks: []          # Allowed test frameworks
       coverage_threshold: 0   # Min coverage percentage
       test_patterns: []       # Test file patterns
-    
+
     quality:
       linters: []            # Recommended linters
       required_docs: []       # Required documentation
-    
+
     dependencies:
       package_files: []       # Package management files
       security_audit_cmd: ""  # Security audit command
-    
+
     build:
       required: false         # Is build step required?
       build_command: ""       # Build command
       output_dirs: []         # Build output directories
-    
+
     deployment:
       type: ""               # Deployment type
       artifact_patterns: []   # Deployment artifacts
-    
+
     ai_guidance:
       testing_standards: ""   # Testing best practices
       style_guide: ""        # Code style guide
@@ -436,7 +436,7 @@ project_kinds:
 ```yaml
 nodejs_api:
   description: "Node.js backend APIs and services"
-  
+
   validation:
     required_files:
       - package.json
@@ -451,7 +451,7 @@ nodejs_api:
       tests:
         - "tests/**/*.test.js"
         - "__tests__/**/*.js"
-  
+
   testing:
     frameworks: [jest, mocha, vitest, ava]
     coverage_threshold: 80
@@ -459,7 +459,7 @@ nodejs_api:
       - "*.test.js"
       - "*.spec.js"
       - "*.test.ts"
-  
+
   quality:
     linters:
       - eslint
@@ -468,24 +468,24 @@ nodejs_api:
       - README.md
       - API.md
       - CONTRIBUTING.md
-  
+
   dependencies:
     package_files:
       - package.json
       - package-lock.json
     security_audit_cmd: "npm audit"
-  
+
   build:
     required: false
     build_command: ""
     output_dirs: []
-  
+
   deployment:
     type: "containerized"
     artifact_patterns:
       - "dist/**/*"
       - "node_modules/**/*"
-  
+
   ai_guidance:
     testing_standards: "Jest with >80% coverage"
     style_guide: "Airbnb JavaScript Style Guide"
@@ -597,24 +597,24 @@ Always include header documentation:
 # ============================================================================
 # AI Workflow Automation Configuration Template
 # ============================================================================
-# 
+#
 # INSTRUCTIONS:
 #   1. Copy this file to your project root as .workflow-config.yaml
 #   2. Replace all {{PLACEHOLDER}} values with your project-specific values
 #   3. Validate against your project kind schema
 #   4. Commit to version control
-# 
+#
 # PLACEHOLDERS:
 #   {{PROJECT_NAME}}   - Human-readable project name
 #   {{PROJECT_KIND}}   - Project type from project_kinds.yaml
 #   {{TEST_COMMAND}}   - Command to execute tests
 #   {{LINT_COMMAND}}   - Command to run linter
-# 
+#
 # For detailed documentation, see:
 #   - docs/api/CONFIG_REFERENCE.md
 #   - docs/api/PLACEHOLDER_REFERENCE.md
 #   - docs/INTEGRATION.md
-# 
+#
 # ============================================================================
 
 project:
@@ -645,6 +645,6 @@ python .workflow_core/scripts/validate_structure.py
 
 ---
 
-**Last Updated**: 2026-02-09  
-**Document Version**: 1.0.2  
+**Last Updated**: 2026-02-09
+**Document Version**: 1.0.2
 **Related Version**: ai_workflow_core v1.0.2

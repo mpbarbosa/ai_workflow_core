@@ -1,7 +1,7 @@
 # Project Kinds Schema Reference
 
-**Version**: 1.2.0  
-**Last Updated**: 2026-01-30  
+**Version**: 1.2.0
+**Last Updated**: 2026-01-30
 **Schema File**: `config/project_kinds.yaml`
 
 > **Purpose**: Complete reference for the `project_kinds.yaml` schema. This document explains all 8 supported project kinds, their validation rules, testing requirements, quality standards, and AI guidance.
@@ -39,8 +39,8 @@ The `project_kinds.yaml` file defines 8 standardized project types with specific
 - Provide AI guidance for best practices
 - Ensure consistency across similar projects
 
-**File Location**: `config/project_kinds.yaml`  
-**Current Version**: 1.2.0  
+**File Location**: `config/project_kinds.yaml`
+**Current Version**: 1.2.0
 **Last Updated**: 2026-01-30
 
 ---
@@ -54,13 +54,13 @@ project_kinds:
   <kind_name>:
     name: "Human Readable Name"
     description: "Brief description"
-    
+
     validation:
       required_files: []          # Files that must exist
       required_directories: []    # Directories that must exist
       optional_files: []          # Recommended files
       file_patterns: []           # Expected file extensions
-    
+
     testing:
       test_framework: ""          # Testing framework(s)
       test_directory: ""          # Test directory name(s)
@@ -68,31 +68,31 @@ project_kinds:
       test_command: ""            # Command to run tests
       coverage_required: bool     # Whether coverage is required
       coverage_threshold: int     # Minimum coverage percentage
-      
+
     quality:
       linters: []                 # Linter configurations
       documentation_required: bool
       inline_comments_recommended: bool
       readme_required: bool
       # Additional quality fields per project type
-    
+
     dependencies:
       package_files: []           # Package manifest files
       lock_files: []              # Lock file names
       validation_required: bool
       security_audit_required: bool
       audit_command: ""
-    
+
     build:
       required: bool              # Whether build is required
       build_command: ""           # Build command
       output_directory: ""        # Build output directory
-    
+
     deployment:
       type: ""                    # Deployment type
       requires_build: bool
       artifact_patterns: []
-    
+
     ai_guidance:
       testing_standards: []       # Testing best practices
       style_guides: []            # Style guide references
@@ -321,13 +321,13 @@ Provides AI assistants with best practices and standards.
 shell_script_automation:
   name: "Shell Script Automation"
   description: "Bash/shell script based automation tools and utilities"
-  
+
   validation:
     required_files: ["*.sh"]
     required_directories: ["src"]
     optional_files: ["README.md", ".gitignore"]
     file_patterns: ["*.sh", "*.bash"]
-  
+
   testing:
     test_framework: "bash_unit"
     test_directory: "tests"
@@ -335,7 +335,7 @@ shell_script_automation:
     test_command: "bash"
     coverage_required: false
     coverage_threshold: 0
-    
+
   quality:
     linters:
       - name: "shellcheck"
@@ -351,33 +351,33 @@ shell_script_automation:
     documentation_required: true
     inline_comments_recommended: true
     readme_required: true
-  
+
   dependencies:
     package_files: []
     lock_files: []
     validation_required: false
-  
+
   build:
     required: false
     build_command: ""
     output_directory: ""
-  
+
   deployment:
     type: "script"
     requires_build: false
     artifact_patterns: ["*.sh"]
-  
+
   ai_guidance:
     testing_standards:
       - "BATS testing conventions and best practices"
       - "Test with set -euo pipefail for strict error handling"
       - "Mock external commands and dependencies"
       - "Test both success and failure scenarios"
-    
+
     style_guides:
       - "Google Shell Style Guide"
       - "ShellCheck recommendations"
-    
+
     best_practices:
       - "Quote all variable expansions: \"${var}\""
       - "Use [[ ]] for conditionals instead of [ ]"
@@ -385,7 +385,7 @@ shell_script_automation:
       - "Add error handling with trap"
       - "Use local for function variables"
       - "Avoid eval and command substitution pitfalls"
-    
+
     directory_standards:
       - "Separate source (src/), tests (tests/), and docs (docs/)"
       - "Keep scripts in bin/ or scripts/ directory"
@@ -410,7 +410,7 @@ shell_script_automation:
 nodejs_api:
   name: "Node.js API"
   description: "Node.js backend API with Express or similar framework"
-  
+
   validation:
     required_files:
       - "package.json"
@@ -425,7 +425,7 @@ nodejs_api:
       - "*.js"
       - "*.ts"
       - "*.mjs"
-  
+
   testing:
     test_framework: "jest|mocha|vitest"
     test_directory: "test|tests|__tests__"
@@ -433,7 +433,7 @@ nodejs_api:
     test_command: "npm test"
     coverage_required: true
     coverage_threshold: 80
-    
+
   quality:
     linters:
       - name: "eslint"
@@ -446,31 +446,31 @@ nodejs_api:
         command: "npx prettier"
         args: ["--check", "."]
         file_pattern: "*.js|*.ts|*.json"
-    
+
     documentation_required: true
     inline_comments_recommended: true
     readme_required: true
     api_documentation_required: true
     api_documentation_format: "openapi|swagger|jsdoc"
-  
+
   dependencies:
     package_files: ["package.json"]
     lock_files: ["package-lock.json", "yarn.lock", "pnpm-lock.yaml"]
     validation_required: true
     security_audit_required: true
     audit_command: "npm audit"
-  
+
   build:
     required: false  # May be true for TypeScript
     build_command: "npm run build"
     output_directory: "dist|build"
-  
+
   deployment:
     type: "service"
     requires_build: false
     artifact_patterns: ["package.json", "*.js", "src/**/*"]
     environment_required: true
-  
+
   ai_guidance:
     testing_standards:
       - "Jest/Vitest/Mocha best practices"
@@ -478,12 +478,12 @@ nodejs_api:
       - "Mock external services and databases"
       - "Test middleware and error handlers"
       - "Use fixtures for test data"
-    
+
     style_guides:
       - "Airbnb JavaScript Style Guide"
       - "Node.js Best Practices"
       - "Express.js security best practices"
-    
+
     best_practices:
       - "Use async/await for async operations"
       - "Handle errors with proper HTTP status codes"
@@ -491,7 +491,7 @@ nodejs_api:
       - "Use environment variables for configuration"
       - "Implement proper logging (winston, pino)"
       - "Follow RESTful API design principles"
-    
+
     directory_standards:
       - "Separate routes/, controllers/, models/, services/"
       - "Configuration in config/ directory"
@@ -595,7 +595,7 @@ nodejs_api:
 configuration_library:
   name: "Configuration Library"
   description: "Template and configuration repository"
-  
+
   validation:
     required_files:
       - "README.md"
@@ -611,7 +611,7 @@ configuration_library:
       - "*.yml"
       - "*.json"
       - "*.template"
-  
+
   testing:
     test_framework: "validation-scripts"
     test_directory: "tests|scripts"
@@ -619,7 +619,7 @@ configuration_library:
     test_command: "python scripts/validate.py"
     coverage_required: false
     coverage_threshold: 0
-    
+
   quality:
     linters:
       - name: "yamllint"
@@ -632,46 +632,46 @@ configuration_library:
         command: "jsonlint"
         args: ["-q"]
         file_pattern: "*.json"
-    
+
     documentation_required: true
     inline_comments_recommended: true
     readme_required: true
     integration_guide_required: true
     placeholder_documentation_required: true
-  
+
   dependencies:
     package_files: []
     lock_files: []
     validation_required: false
-  
+
   build:
     required: false
     build_command: ""
     output_directory: ""
-  
+
   deployment:
     type: "submodule"
     requires_build: false
     artifact_patterns: ["config/**/*", "templates/**/*", "*.md"]
-  
+
   ai_guidance:
     testing_standards:
       - "Validate YAML/JSON syntax"
       - "Check placeholder consistency"
       - "Verify example completeness"
       - "Test documentation links"
-    
+
     style_guides:
       - "YAML Style Guide"
       - "Configuration Best Practices"
-    
+
     best_practices:
       - "Use consistent placeholder format"
       - "Document all configuration fields"
       - "Provide complete examples"
       - "Maintain backward compatibility"
       - "Version configuration schema"
-    
+
     directory_standards:
       - "Configuration in config/ directory"
       - "Templates in templates/ or root"
@@ -772,6 +772,6 @@ File patterns support pipe-separated alternatives:
 
 ---
 
-**Last Updated**: 2026-01-30  
-**Document Version**: 1.0.2  
+**Last Updated**: 2026-01-30
+**Document Version**: 1.0.2
 **Schema Version**: 1.2.0

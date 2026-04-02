@@ -1,7 +1,7 @@
 # Quick Start Guide
 
-**Version**: 1.0.2  
-**Last Updated**: 2026-02-07  
+**Version**: 1.0.2
+**Last Updated**: 2026-02-07
 **Estimated Time**: 5-10 minutes
 
 > **Purpose**: Get ai_workflow_core integrated into your project in under 10 minutes. This guide focuses on the essential steps to get started quickly.

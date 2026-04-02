@@ -1,7 +1,7 @@
 # AI Workflow Automation - Project Reference
 
-**SINGLE SOURCE OF TRUTH**  
-**Version**: v1.3.0 (Updated from v4.0.0)  
+**SINGLE SOURCE OF TRUTH**
+**Version**: v1.3.0 (Updated from v4.0.0)
 **Last Updated**: 2026-02-09
 
 > ⚠️ **Context**: This document references the **parent ai_workflow project** (workflow execution engine, now in Node.js), NOT ai_workflow_core (configuration templates). This documentation was included for reference but describes features not present in this repository.

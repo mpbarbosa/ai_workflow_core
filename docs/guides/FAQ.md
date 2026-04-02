@@ -1,6 +1,6 @@
 # Frequently Asked Questions (FAQ)
 
-**Version**: 1.0.2  
+**Version**: 1.0.2
 **Last Updated**: 2026-02-07
 
 > **Purpose**: Quick answers to common questions about ai_workflow_core. Organized by topic for easy navigation.
@@ -48,11 +48,11 @@
 
 **A**: Use ai_workflow_core if you want:
 
-✅ **Standardized configuration** across multiple projects  
-✅ **Language-agnostic templates** that work with any programming language  
-✅ **Consistent directory structures** for artifacts and documentation  
-✅ **Project-specific validation rules** (e.g., test coverage, linters)  
-✅ **Version-controlled template updates** via Git submodules  
+✅ **Standardized configuration** across multiple projects
+✅ **Language-agnostic templates** that work with any programming language
+✅ **Consistent directory structures** for artifacts and documentation
+✅ **Project-specific validation rules** (e.g., test coverage, linters)
+✅ **Version-controlled template updates** via Git submodules
 ✅ **Foundation for workflow automation** that can integrate with AI tools
 
 **Don't use it if**:
@@ -828,5 +828,5 @@ project:
 
 ---
 
-**Last Updated**: 2026-02-07  
+**Last Updated**: 2026-02-07
 **Document Version**: 1.0.2

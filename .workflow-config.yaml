@@ -19,6 +19,7 @@ tech_stack:
 
 structure:
   src_dirs:
+    - src
     - config
     - workflow-templates/workflows
     - scripts

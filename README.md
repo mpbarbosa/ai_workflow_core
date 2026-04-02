@@ -9,7 +9,7 @@
 
 `ai_workflow_core` provides language-agnostic foundational files for building AI-powered workflow automation systems. Extract configuration, templates, GitHub workflows, and directory structures to share across projects written in different languages (Shell, JavaScript/Node.js, Python, etc.).
 
-**Originally extracted from**: [mpbarbosa/ai_workflow](https://github.com/mpbarbosa/ai_workflow)  
+**Originally extracted from**: [mpbarbosa/ai_workflow](https://github.com/mpbarbosa/ai_workflow)
 **Use as**: Git submodule
 
 ## What's Included
@@ -141,10 +141,10 @@ cp .workflow_core/config/.workflow-config.yaml.template .workflow-config.yaml
 > ⚠️ **Context Note**: Some guides in `docs/guides/` reference the **parent ai_workflow project** (workflow execution engine). Focus on configuration templates, project_kinds schemas, and integration patterns when using ai_workflow_core as a configuration library.
 
 ### Core Documentation
-- **[ARCHITECTURE.md](docs/ARCHITECTURE.md)** - System architecture and design decisions  
-- **[INTEGRATION.md](docs/INTEGRATION.md)** - Detailed integration guide  
+- **[ARCHITECTURE.md](docs/ARCHITECTURE.md)** - System architecture and design decisions
+- **[INTEGRATION.md](docs/INTEGRATION.md)** - Detailed integration guide
 - **[CONTRIBUTING.md](docs/CONTRIBUTING.md)** ⚠️ - Contributing guidelines (references parent project features)
-- **[AI_WORKFLOW_DIRECTORY.md](docs/AI_WORKFLOW_DIRECTORY.md)** - Artifact directory structure  
+- **[AI_WORKFLOW_DIRECTORY.md](docs/AI_WORKFLOW_DIRECTORY.md)** - Artifact directory structure
 
 ### API References
 - **[CONFIG_REFERENCE.md](docs/api/CONFIG_REFERENCE.md)** - Complete `.workflow-config.yaml` field reference
@@ -244,11 +244,11 @@ pre-commit run --all-files
 
 ## Features
 
-✅ Language-agnostic templates  
-✅ GitHub Actions workflows  
-✅ GitHub Copilot integration  
-✅ Standardized directory structure  
-✅ Utility scripts  
+✅ Language-agnostic templates
+✅ GitHub Actions workflows
+✅ GitHub Copilot integration
+✅ Standardized directory structure
+✅ Utility scripts
 ✅ Comprehensive documentation
 
 ## License

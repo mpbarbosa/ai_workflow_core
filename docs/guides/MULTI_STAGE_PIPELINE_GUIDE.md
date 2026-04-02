@@ -1,7 +1,7 @@
 # Multi-Stage Pipeline Guide
 
-**Version**: 2.8.0  
-**Status**: Production Ready  
+**Version**: 2.8.0
+**Status**: Production Ready
 **Last Updated**: 2026-01-01
 
 > ⚠️ **Context**: This document describes features from the **parent ai_workflow project** (workflow execution engine), NOT ai_workflow_core (configuration templates). This guide was included for reference but describes execution features not present in this configuration library.
@@ -39,7 +39,7 @@ The Multi-Stage Pipeline provides progressive validation that intelligently dete
 ### Stage 1: Fast Validation (Target: 2 minutes)
 **Always Runs** - Mandatory baseline validation
 
-**Steps**: 
+**Steps**:
 - Step 0: Pre-Analysis
 
 **Purpose**: Quick smoke test and change impact analysis
@@ -244,7 +244,7 @@ Start
             ├─[Pass]──> Check Triggers
             │
             └─[Fail]──> Exit (1)
-                        
+
 Check Stage 2 Triggers
   │
   ├─[Docs/Scripts/Structure Changes]
@@ -433,7 +433,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Run Multi-Stage Validation
         run: |
           /path/to/ai_workflow/src/workflow/execute_tests_docs_workflow.sh \
@@ -441,7 +441,7 @@ jobs:
             --smart-execution \
             --parallel \
             --auto
-      
+
       - name: Upload Stage Metrics
         uses: actions/upload-artifact@v3
         with:
@@ -522,6 +522,6 @@ STAGE_3_TRIGGER="stage_2_success AND manual"  # Only with --manual-trigger
 
 ---
 
-**Last Updated**: 2026-01-01  
-**Version**: 2.8.0  
+**Last Updated**: 2026-01-01
+**Version**: 2.8.0
 **Author**: Marcelo Pereira Barbosa ([@mpbarbosa](https://github.com/mpbarbosa))

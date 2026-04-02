@@ -1,7 +1,7 @@
 # Model Selection Rules API Reference
 
-**Version**: 3.2.0  
-**Configuration File**: [`config/model_selection_rules.yaml`](../../config/model_selection_rules.yaml)  
+**Version**: 3.2.0
+**Configuration File**: [`config/model_selection_rules.yaml`](../../config/model_selection_rules.yaml)
 **Last Updated**: 2026-02-09
 
 ## Table of Contents
@@ -248,7 +248,7 @@ complexity_weights:
 
 **Calculation Formula:**
 ```
-code_complexity = (lines_changed / lines_per_point) * cyclomatic_multiplier 
+code_complexity = (lines_changed / lines_per_point) * cyclomatic_multiplier
                 + (nesting_depth * function_depth_multiplier)
                 + semantic_factor
 ```
@@ -587,11 +587,11 @@ tier_preferences:
 Step 1 (Documentation update - 200 words):
   Complexity: 8 → Tier 1
   Model: claude-haiku-4.5
-  
+
 Step 3 (Script refactor - 150 lines):
   Complexity: 35 → Tier 2
   Model: claude-sonnet-4.5
-  
+
 Step 13 (Prompt engineering):
   Override: force_tier = tier_3_deep
   Model: claude-opus-4.5
@@ -938,6 +938,6 @@ fallback:
 
 ---
 
-**Last Updated**: 2026-02-09  
-**Version**: 3.2.0  
+**Last Updated**: 2026-02-09
+**Version**: 3.2.0
 **Maintainer**: ai_workflow_core team

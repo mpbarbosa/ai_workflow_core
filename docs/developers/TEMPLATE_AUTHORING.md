@@ -1,7 +1,7 @@
 # Template Authoring Guide
 
-**Version**: 2.0.0  
-**Last Updated**: 2026-02-07  
+**Version**: 2.0.0
+**Last Updated**: 2026-02-07
 **Audience**: Developers creating or modifying template files
 
 > **Purpose**: Learn how to create and maintain template files in ai_workflow_core. This guide covers placeholder patterns, YAML best practices, and template conventions.
@@ -50,8 +50,8 @@ Templates in ai_workflow_core are files with **placeholders** that users replace
 
 ### 1. Configuration Templates
 
-**Location**: `config/*.yaml.template`  
-**Extension**: `.template`  
+**Location**: `config/*.yaml.template`
+**Extension**: `.template`
 **Purpose**: Main configuration files users customize
 
 **Example**: `.workflow-config.yaml.template`
@@ -92,8 +92,8 @@ structure:
 
 ### 2. Script Templates
 
-**Location**: `scripts/*.sh.template`, `scripts/*.py.template`  
-**Extension**: `.template`  
+**Location**: `scripts/*.sh.template`, `scripts/*.py.template`
+**Extension**: `.template`
 **Purpose**: Utility scripts users copy and customize
 
 **Example**: `cleanup_artifacts.sh.template`
@@ -137,8 +137,8 @@ function cleanup_logs() {
 
 ### 3. Schema Templates
 
-**Location**: `config/*.yaml` (no .template)  
-**Extension**: `.yaml`  
+**Location**: `config/*.yaml` (no .template)
+**Extension**: `.yaml`
 **Purpose**: Define structure and validation rules
 
 **Example**: `project_kinds.yaml` (excerpt)
@@ -156,7 +156,7 @@ project_kinds:
     metadata:
       name: "Shell Script Automation"
       description: "Bash/shell script projects with automated testing"
-      
+
     validation:
       required_files:
         - README.md
@@ -166,13 +166,13 @@ project_kinds:
         - tests/
       file_patterns:
         - "*.sh"
-        
+
     testing:
       framework: "bash_unit/BATS"
       commands:
         - "bash tests/run_tests.sh"
       coverage_threshold: 0  # Shell doesn't have standard coverage tools
-      
+
     quality:
       linters:
         - name: "shellcheck"
@@ -192,8 +192,8 @@ project_kinds:
 
 ### 4. GitHub Workflow Templates
 
-**Location**: `workflow-templates/workflows/*.yml`  
-**Extension**: `.yml`  
+**Location**: `workflow-templates/workflows/*.yml`
+**Extension**: `.yml`
 **Purpose**: CI/CD workflow files
 
 **Example**: `code-quality.yml`
@@ -211,12 +211,12 @@ jobs:
   lint:
     name: Run Linters
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v3
         with:
           submodules: recursive
-          
+
       # Language-agnostic: Read from config
       - name: Read config
         id: config
@@ -224,7 +224,7 @@ jobs:
           # Extract lint command from .workflow-config.yaml
           LINT_CMD=$(grep "lint_command:" .workflow-config.yaml | cut -d'"' -f2)
           echo "lint_command=$LINT_CMD" >> $GITHUB_OUTPUT
-          
+
       - name: Run linter
         run: ${{ steps.config.outputs.lint_command }}
 ```
@@ -311,12 +311,12 @@ project:
   # Required: Human-readable project name (1-50 characters)
   # Example: "User Management API"
   name: "{{PROJECT_NAME}}"
-  
+
   # Required: Semantic version without 'v' prefix
   # Format: MAJOR.MINOR.PATCH
   # Example: "2.0.0"
   version: "{{VERSION}}"
-  
+
   # Optional: Additional contact email
   # Format: valid email address
   # Example: "admin@example.com"
@@ -383,7 +383,7 @@ subsection:
   # Example: "npm test"
   # Default: "make test"
   field: "{{PLACEHOLDER}}"
-  
+
   # Multi-line explanation
   # Line 2 of explanation
   # Line 3 of explanation
@@ -448,7 +448,7 @@ Every script template should start with:
 # Description
 # ============================================================================
 # Detailed description of what this script does.
-# 
+#
 # Usage:
 #   bash <script-name>.sh [options]
 #
@@ -539,7 +539,7 @@ function log() {
   local level=$1
   shift
   local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-  
+
   case "$level" in
     ERROR)
       echo "[$timestamp] ERROR: $*" >&2
@@ -628,21 +628,21 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: recursive
-      
+
       # Read language from config
       - name: Detect language
         id: lang
         run: |
           LANG=$(grep "primary_language:" .workflow-config.yaml | cut -d'"' -f2)
           echo "language=$LANG" >> $GITHUB_OUTPUT
-      
+
       # Conditional setup based on language
       - name: Setup Node.js
         if: steps.lang.outputs.language == 'javascript'
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-      
+
       - name: Setup Python
         if: steps.lang.outputs.language == 'python'
         uses: actions/setup-python@v4
@@ -747,7 +747,7 @@ Before writing template code:
 # Basic configuration (always visible)
 project:
   name: "{{PROJECT_NAME}}"
-  
+
 # Advanced options (commented, users uncomment if needed)
 # advanced:
 #   custom_option: "value"  # Uncomment to enable
@@ -810,12 +810,12 @@ fi
 # config/.workflow-config.yaml.template
 tech_stack:
   primary_language: "{{LANGUAGE}}"
-  
+
   # Language-specific configuration
   javascript:
     package_manager: "{{JS_PACKAGE_MANAGER}}"  # npm, yarn, pnpm
     node_version: "{{NODE_VERSION}}"            # 18, 20, etc.
-    
+
   python:
     package_manager: "{{PY_PACKAGE_MANAGER}}"  # pip, poetry, pipenv
     python_version: "{{PYTHON_VERSION}}"       # 3.9, 3.11, etc.
@@ -933,5 +933,5 @@ echo "✅ All placeholders documented"
 
 ---
 
-**Last Updated**: 2026-02-07  
+**Last Updated**: 2026-02-07
 **Document Version**: 2.0.0

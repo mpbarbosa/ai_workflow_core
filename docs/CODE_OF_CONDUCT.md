@@ -179,6 +179,6 @@ If you have questions about this Code of Conduct, please:
 
 ---
 
-**Version**: 2.1 (Contributor Covenant) + Project-specific additions  
-**Last Updated**: 2026-02-07  
+**Version**: 2.1 (Contributor Covenant) + Project-specific additions
+**Last Updated**: 2026-02-07
 **Status**: ✅ Official Code of Conduct

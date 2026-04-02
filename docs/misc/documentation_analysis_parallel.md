@@ -448,7 +448,7 @@ docs/
 
 **Line 3-4:**
 ```markdown
-**Version**: 1.0.2  
+**Version**: 1.0.2
 **Last Updated**: 2026-02-07
 ```
 
@@ -523,7 +523,7 @@ Consider custom project kind when:
 
 **Lines 3-4:**
 ```markdown
-**Version**: 2.0.0  
+**Version**: 2.0.0
 **Last Updated**: 2026-02-07
 ```
 
@@ -536,7 +536,7 @@ But copilot-instructions.md says:
 
 **Recommendation:** Clarify that document version ≠ ai_workflow_core version:
 ```markdown
-**Document Version**: 2.0.0 (documentation iteration)  
+**Document Version**: 2.0.0 (documentation iteration)
 **Compatible with**: ai_workflow_core v1.0.2+
 ```
 
@@ -559,7 +559,7 @@ But copilot-instructions.md says:
 **Recommendations:**
 ```markdown
 Add breadcrumb at top:
-> **Location**: `docs/advanced/CI_CD_INTEGRATION.md`  
+> **Location**: `docs/advanced/CI_CD_INTEGRATION.md`
 > **See also**: [Integration Guide](../INTEGRATION.md), [Custom Workflows](CUSTOM_WORKFLOW_CREATION.md)
 
 Update Resources section:
@@ -633,9 +633,9 @@ All files use similar structure BUT:
 
 **Recommendation:** Standardize metadata header:
 ```markdown
-**Document Version**: X.Y.Z  
-**Last Updated**: YYYY-MM-DD  
-**Audience**: [Who should read this]  
+**Document Version**: X.Y.Z
+**Last Updated**: YYYY-MM-DD
+**Audience**: [Who should read this]
 **Status**: [Stable/Draft/Deprecated]
 ```
 

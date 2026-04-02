@@ -1,7 +1,7 @@
 # Deployment Guide
 
-**Version**: 1.0.2  
-**Last Updated**: 2026-02-13  
+**Version**: 1.0.2
+**Last Updated**: 2026-02-13
 **Audience**: DevOps engineers, project maintainers, technical leads
 
 > **Purpose**: Comprehensive guide to deploying and managing ai_workflow_core as a Git submodule in production environments.
@@ -179,7 +179,7 @@ deployment_plan:
     - name: "docs-site"
       priority: low
       project_kind: "static_website"
-  
+
   version_strategy: "locked"  # locked | latest | fork
   rollout_approach: "phased"  # phased | all-at-once
   testing_required: true
@@ -455,7 +455,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: true
-      
+
       - name: Check for updates
         id: check
         run: |
@@ -465,11 +465,11 @@ jobs:
           LATEST=$(git describe --tags "$(git rev-list --tags --max-count=1)")
           echo "current=$CURRENT" >> $GITHUB_OUTPUT
           echo "latest=$LATEST" >> $GITHUB_OUTPUT
-          
+
           if [ "$CURRENT" != "$LATEST" ]; then
             echo "update_available=true" >> $GITHUB_OUTPUT
           fi
-      
+
       - name: Create update PR
         if: steps.check.outputs.update_available == 'true'
         uses: peter-evans/create-pull-request@v5
@@ -477,10 +477,10 @@ jobs:
           title: "chore: Update ai_workflow_core to ${{ steps.check.outputs.latest }}"
           body: |
             Automated update of ai_workflow_core submodule.
-            
+
             **Current version**: ${{ steps.check.outputs.current }}
             **New version**: ${{ steps.check.outputs.latest }}
-            
+
             Please review [CHANGELOG](https://github.com/mpbarbosa/ai_workflow_core/blob/main/CHANGELOG.md) for breaking changes.
           branch: update/workflow-core-${{ steps.check.outputs.latest }}
 ```
@@ -507,28 +507,28 @@ TARGET_VERSION=${1:-"v1.0.2"}
 
 for repo in "${REPOS[@]}"; do
   echo "Updating $repo..."
-  
+
   # Clone if not exists
   repo_name=$(basename "$repo")
   if [ ! -d "$repo_name" ]; then
     git clone "https://$repo" "$repo_name"
   fi
-  
+
   cd "$repo_name"
-  
+
   # Update submodule
   cd .workflow_core
   git fetch origin --tags
   git checkout "$TARGET_VERSION"
   cd ../..
-  
+
   # Commit and push
   cd "$repo_name"
   git add .workflow_core
   git commit -m "chore: Update ai_workflow_core to $TARGET_VERSION"
   git push origin main
   cd ..
-  
+
   echo "✅ Updated $repo"
 done
 ```
@@ -574,21 +574,21 @@ phases:
     success_criteria:
       - "No critical issues"
       - "Team feedback positive"
-  
+
   - name: "Phase 2: Non-Critical"
     projects: ["docs-site", "monitoring-dashboard"]
     duration_days: 14
     success_criteria:
       - "No production incidents"
       - "Performance maintained"
-  
+
   - name: "Phase 3: Production"
     projects: ["api-backend", "frontend"]
     duration_days: 30
     success_criteria:
       - "All tests passing"
       - "Zero downtime"
-  
+
   - name: "Phase 4: Complete"
     projects: ["all-remaining"]
     duration_days: 30
@@ -834,11 +834,11 @@ BASELINE="baseline-config.yaml"
 
 for config in projects/*/.workflow-config.yaml; do
   project=$(dirname "$config")
-  
+
   # Compare critical fields
   diff_output=$(diff -u <(grep "^project:" -A10 "$BASELINE") \
                         <(grep "^project:" -A10 "$config") || true)
-  
+
   if [ -n "$diff_output" ]; then
     echo "⚠️  Drift detected in $project"
     echo "$diff_output"
@@ -864,21 +864,21 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: true
-      
+
       - name: Verify submodule
         run: |
           cd .workflow_core
           VERSION=$(git describe --tags --exact-match 2>/dev/null || echo "unknown")
           echo "::notice::Current version: $VERSION"
-          
+
           # Check if outdated
           git fetch origin --tags
           LATEST=$(git describe --tags "$(git rev-list --tags --max-count=1)")
-          
+
           if [ "$VERSION" != "$LATEST" ]; then
             echo "::warning::Outdated version: $VERSION (latest: $LATEST)"
           fi
-      
+
       - name: Validate configuration
         run: |
           yamllint .workflow-config.yaml
@@ -1003,6 +1003,6 @@ After successful deployment:
 
 ---
 
-**Last Updated**: 2026-02-13  
-**Document Version**: 1.0.2  
+**Last Updated**: 2026-02-13
+**Document Version**: 1.0.2
 **Maintainers**: DevOps Team, Platform Engineering

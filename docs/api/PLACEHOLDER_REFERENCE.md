@@ -1,7 +1,7 @@
 # Placeholder Reference Guide
 
-**Version**: 1.0.2  
-**Last Updated**: 2026-02-01  
+**Version**: 1.0.2
+**Last Updated**: 2026-02-01
 **Format**: `{{PLACEHOLDER_NAME}}`
 
 > **Purpose**: Complete reference for all placeholder patterns used in ai_workflow_core templates. This guide explains what each placeholder means, valid values, examples, and substitution patterns.
@@ -74,12 +74,12 @@ name: "{{PROJECT-NAME}}"    # ❌ Hyphens instead of underscores
 
 #### `{{PROJECT_NAME}}`
 
-**Description**: Human-readable project name  
-**Type**: String  
-**Required**: Yes  
+**Description**: Human-readable project name
+**Type**: String
+**Required**: Yes
 **Used In**: `.workflow-config.yaml`
 
-**Valid Values**: Any descriptive project name  
+**Valid Values**: Any descriptive project name
 **Length**: 3-100 characters recommended
 
 **Examples**:
@@ -105,9 +105,9 @@ name: "Infrastructure Automation Scripts"
 
 #### `{{PROJECT_TYPE}}`
 
-**Description**: Technical project type (hyphenated format)  
-**Type**: String (kebab-case)  
-**Required**: Yes  
+**Description**: Technical project type (hyphenated format)
+**Type**: String (kebab-case)
+**Required**: Yes
 **Used In**: `.workflow-config.yaml`
 
 **Valid Values**:
@@ -136,12 +136,12 @@ type: "configuration-library"  # Config/template library
 
 #### `{{PROJECT_DESCRIPTION}}`
 
-**Description**: Brief one-line project description  
-**Type**: String  
-**Required**: Yes  
+**Description**: Brief one-line project description
+**Type**: String
+**Required**: Yes
 **Used In**: `.workflow-config.yaml`
 
-**Valid Values**: Any concise description  
+**Valid Values**: Any concise description
 **Length**: 50-200 characters recommended
 
 **Examples**:
@@ -162,9 +162,9 @@ description: "Language-agnostic configuration templates for workflows"
 
 #### `{{PROJECT_KIND}}`
 
-**Description**: Project kind from `project_kinds.yaml` (underscored format)  
-**Type**: String (snake_case)  
-**Required**: Yes  
+**Description**: Project kind from `project_kinds.yaml` (underscored format)
+**Type**: String (snake_case)
+**Required**: Yes
 **Used In**: `.workflow-config.yaml`
 
 **Valid Values** (must match `config/project_kinds.yaml`):
@@ -197,9 +197,9 @@ kind: "nodejs_api"      # Underscored
 
 #### `{{VERSION}}`
 
-**Description**: Project version (semantic versioning, no 'v' prefix)  
-**Type**: String (semver format)  
-**Required**: Yes  
+**Description**: Project version (semantic versioning, no 'v' prefix)
+**Type**: String (semver format)
+**Required**: Yes
 **Used In**: `.workflow-config.yaml`
 
 **Format**: `"MAJOR.MINOR.PATCH[-PRERELEASE][+BUILD]"`
@@ -230,9 +230,9 @@ version: "3.0.0-beta"   # Beta version
 
 #### `{{LANGUAGE}}`
 
-**Description**: Primary programming language  
-**Type**: String (lowercase)  
-**Required**: Yes  
+**Description**: Primary programming language
+**Type**: String (lowercase)
+**Required**: Yes
 **Used In**: `.workflow-config.yaml`
 
 **Valid Values**:
@@ -270,9 +270,9 @@ primary_language: "yaml"
 
 #### `{{BUILD_SYSTEM}}`
 
-**Description**: Build system or package manager  
-**Type**: String (lowercase)  
-**Required**: Yes  
+**Description**: Build system or package manager
+**Type**: String (lowercase)
+**Required**: Yes
 **Used In**: `.workflow-config.yaml`
 
 **Valid Values**:
@@ -319,9 +319,9 @@ build_system: "pip"
 
 #### `{{TEST_FRAMEWORK}}`
 
-**Description**: Testing framework  
-**Type**: String (lowercase)  
-**Required**: Yes  
+**Description**: Testing framework
+**Type**: String (lowercase)
+**Required**: Yes
 **Used In**: `.workflow-config.yaml`
 
 **Valid Values by Language**:
@@ -365,9 +365,9 @@ test_framework: "validation-scripts"
 
 #### `{{TEST_COMMAND}}`
 
-**Description**: Command to execute tests  
-**Type**: String (shell command)  
-**Required**: Yes  
+**Description**: Command to execute tests
+**Type**: String (shell command)
+**Required**: Yes
 **Used In**: `.workflow-config.yaml`
 
 **Format**: Complete command including arguments
@@ -404,9 +404,9 @@ test_command: "./scripts/validate_all.sh"
 
 #### `{{LINT_COMMAND}}`
 
-**Description**: Command to run linter  
-**Type**: String (shell command)  
-**Required**: Yes  
+**Description**: Command to run linter
+**Type**: String (shell command)
+**Required**: Yes
 **Used In**: `.workflow-config.yaml`
 
 **Format**: Complete linting command including arguments
@@ -449,9 +449,9 @@ lint_command: "yamllint config/ docs/"
 
 #### `{{PROJECT_ROOT}}`
 
-**Description**: Project root directory path  
-**Type**: String (absolute path)  
-**Required**: Context-dependent  
+**Description**: Project root directory path
+**Type**: String (absolute path)
+**Required**: Context-dependent
 **Used In**: Script templates
 
 **Format**: Absolute path to project root
@@ -483,9 +483,9 @@ cd "${PROJECT_ROOT}" || exit 1
 
 #### `{{ARTIFACT_DIR}}`
 
-**Description**: Workflow artifact directory path  
-**Type**: String (relative or absolute path)  
-**Required**: Context-dependent  
+**Description**: Workflow artifact directory path
+**Type**: String (relative or absolute path)
+**Required**: Context-dependent
 **Used In**: Script templates
 
 **Default Value**: `.ai_workflow`
@@ -752,5 +752,5 @@ yq '.tech_stack.primary_language' .workflow-config.yaml
 
 ---
 
-**Last Updated**: 2026-02-01  
+**Last Updated**: 2026-02-01
 **Document Version**: 1.0.2

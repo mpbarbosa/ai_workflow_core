@@ -1,7 +1,7 @@
 # Developer Guide: Adding Project Kinds
 
-**Version**: 1.0.2  
-**Last Updated**: 2026-02-10  
+**Version**: 1.0.2
+**Last Updated**: 2026-02-10
 **Audience**: Contributors extending ai_workflow_core
 
 > **Purpose**: Learn how to add new project types to `config/project_kinds.yaml`
@@ -295,7 +295,7 @@ metadata:
 project_kinds:
   rust_cli_app:
     description: "Rust command-line applications"
-    
+
     validation:
       required_files:
         - "Cargo.toml"
@@ -309,7 +309,7 @@ project_kinds:
           description: "Rust source files"
         - pattern: "src/main.rs"
           description: "Main entry point"
-    
+
     testing:
       framework: "cargo test"
       commands:
@@ -320,7 +320,7 @@ project_kinds:
         threshold: 80
         tool: "tarpaulin"
         command: "cargo tarpaulin --out Xml"
-    
+
     quality:
       linters:
         - name: "clippy"
@@ -336,7 +336,7 @@ project_kinds:
           - "Document all public APIs with doc comments"
           - "Include usage examples in README"
           - "Provide installation instructions"
-    
+
     dependencies:
       package_files:
         - "Cargo.toml"
@@ -344,7 +344,7 @@ project_kinds:
       security:
         audit_command: "cargo audit"
         update_command: "cargo update"
-    
+
     build:
       required: true
       commands:
@@ -353,7 +353,7 @@ project_kinds:
       output_dir: "target"
       artifacts:
         - "target/release/app_name"
-    
+
     deployment:
       type: "binary"
       artifacts:
@@ -363,26 +363,26 @@ project_kinds:
         - "Direct binary distribution"
         - "Package via cargo"
         - "System package managers (Homebrew, apt)"
-    
+
     ai_guidance:
       testing_standards:
         - "Write unit tests for all public functions"
         - "Integration tests for CLI commands"
         - "Test edge cases and error handling"
         - "Aim for 80%+ test coverage"
-      
+
       style_guides:
         - "Follow Rust API Guidelines"
         - "Use idiomatic Rust patterns"
         - "Follow naming conventions from std library"
-      
+
       best_practices:
         - "Use Result/Option for error handling"
         - "Leverage Rust's type system for safety"
         - "Write documentation comments for public APIs"
         - "Use clap or structopt for CLI parsing"
         - "Handle errors gracefully with meaningful messages"
-      
+
       directory_standards:
         - "src/ for source code"
         - "src/main.rs for CLI entry point"

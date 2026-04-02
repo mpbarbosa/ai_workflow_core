@@ -2,8 +2,8 @@
 
 **Visual Guide to ai_workflow_core System Design**
 
-**Version**: 1.0.2  
-**Last Updated**: 2026-02-12  
+**Version**: 1.0.2
+**Last Updated**: 2026-02-12
 **Purpose**: Visual documentation of system architecture
 
 ---
@@ -147,18 +147,18 @@ ai_workflow_core (submodule)
 │                                       │
 │                                       ▼
 └─────────────────────────────────────────────────
-                                                  
-Parent Project (editable)                         
-│                                                 
+
+Parent Project (editable)
+│
 ├─ .workflow_core/ ◄───────────────── Submodule reference
-│                                                 
+│
 ├─ .workflow-config.yaml ◄─────────── Copied & customized
-│  ({{PLACEHOLDERS}} → actual values)            
-│                                                 
+│  ({{PLACEHOLDERS}} → actual values)
+│
 └─ .ai_workflow/ ◄───────────────────── Created by user
-   ├─ backlog/                                    
-   ├─ summaries/                                  
-   └─ logs/                                       
+   ├─ backlog/
+   ├─ summaries/
+   └─ logs/
 ```
 
 ---
@@ -528,6 +528,6 @@ Start Workflow
 
 ---
 
-**Document Version**: 1.0.2  
-**Last Updated**: 2026-02-12  
+**Document Version**: 1.0.2
+**Last Updated**: 2026-02-12
 **Maintained By**: ai_workflow_core team

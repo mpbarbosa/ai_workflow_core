@@ -37,10 +37,10 @@ When adding new API reference documentation to this directory:
 2. **Follow the structure**:
    ```markdown
    # Component Reference
-   
+
    **Version**: X.X.X
    **Last Updated**: YYYY-MM-DD
-   
+
    ## Overview
    ## Schema Definition
    ## Field Reference

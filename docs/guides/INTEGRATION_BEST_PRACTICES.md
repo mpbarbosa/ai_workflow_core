@@ -1,7 +1,7 @@
 # Integration Best Practices for Dynamic Codebases
 
-**Version:** 1.0.2  
-**Last Updated:** 2026-01-29  
+**Version:** 1.0.2
+**Last Updated:** 2026-01-29
 **For:** Projects using ai_workflow_core with frequently changing source code
 
 ---
@@ -129,7 +129,7 @@ project:
   description: "Fast-paced web application"
   kind: "web_application"
   version: "2.5.3"
-  
+
   # Metadata for tracking
   workflow_core_version: "v1.0.2"  # Add this!
   workflow_core_updated: "2026-01-15"  # Add this!
@@ -140,7 +140,7 @@ tech_stack:
   test_framework: "jest"
   test_command: "npm test"
   lint_command: "eslint ."
-  
+
   # Validation - add this!
   test_timeout: 30000
   coverage_threshold: 80
@@ -157,13 +157,13 @@ const yaml = require('js-yaml');
 
 function validateConfig() {
   const config = yaml.load(fs.readFileSync('.workflow-config.yaml', 'utf8'));
-  
+
   // Check for placeholders
   const configStr = JSON.stringify(config);
   if (configStr.includes('{{')) {
     throw new Error('Configuration contains unreplaced placeholders');
   }
-  
+
   // Check required fields
   const required = [
     'project.name',
@@ -171,19 +171,19 @@ function validateConfig() {
     'tech_stack.primary_language',
     'tech_stack.test_command'
   ];
-  
+
   for (const field of required) {
     const value = field.split('.').reduce((obj, key) => obj?.[key], config);
     if (!value) {
       throw new Error(`Missing required field: ${field}`);
     }
   }
-  
+
   // Check version format
   if (!/^\d+\.\d+\.\d+$/.test(config.project.version)) {
     throw new Error('Invalid version format (should be semver)');
   }
-  
+
   console.log('✓ Configuration is valid');
 }
 
@@ -259,15 +259,15 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: true
-      
+
       - name: Run health check
         run: |
           bash .workflow_core/scripts/check_integration_health.sh
-      
+
       - name: Validate configuration
         run: |
           npm run validate:config
-      
+
       - name: Check for config drift
         run: |
           bash scripts/check-config-drift.sh
@@ -285,17 +285,17 @@ const { execSync } = require('child_process');
 
 function getMetrics() {
   const config = yaml.load(fs.readFileSync('.workflow-config.yaml', 'utf8'));
-  
+
   // Get submodule info
   const submoduleCommit = execSync('cd .workflow_core && git rev-parse HEAD')
     .toString().trim();
   const submoduleVersion = execSync('cd .workflow_core && git describe --tags 2>/dev/null || echo "unknown"')
     .toString().trim();
-  
+
   // Get last update time
   const lastUpdate = execSync('git log -1 --format=%ci .workflow_core')
     .toString().trim();
-  
+
   return {
     timestamp: new Date().toISOString(),
     project: config.project.name,
@@ -450,7 +450,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: true
-      
+
       - name: Update submodule
         id: update
         run: |
@@ -459,27 +459,27 @@ jobs:
           git pull origin main
           NEW_VERSION=$(git describe --tags)
           cd ..
-          
+
           echo "old=$OLD_VERSION" >> $GITHUB_OUTPUT
           echo "new=$NEW_VERSION" >> $GITHUB_OUTPUT
-          
+
           if git diff --quiet .workflow_core; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             echo "changed=true" >> $GITHUB_OUTPUT
           fi
-      
+
       - name: Run health check
         if: steps.update.outputs.changed == 'true'
         run: |
           bash .workflow_core/scripts/check_integration_health.sh
-      
+
       - name: Run tests
         if: steps.update.outputs.changed == 'true'
         run: |
           npm ci
           npm test
-      
+
       - name: Create PR
         if: steps.update.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v5
@@ -487,13 +487,13 @@ jobs:
           title: 'chore: update ai_workflow_core ${{ steps.update.outputs.old }} → ${{ steps.update.outputs.new }}'
           body: |
             Automated submodule update
-            
+
             **Old Version**: ${{ steps.update.outputs.old }}
             **New Version**: ${{ steps.update.outputs.new }}
-            
+
             ✅ Health check passed
             ✅ Tests passed
-            
+
             Please review changelog before merging.
           branch: auto-update-workflow-core
           labels: dependencies,automated
@@ -707,5 +707,5 @@ git commit -m "Reset submodule to clean state"
 
 ---
 
-**Last Updated:** 2026-01-29  
+**Last Updated:** 2026-01-29
 **Document Version:** 1.0.2

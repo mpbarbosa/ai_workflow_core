@@ -1,7 +1,7 @@
 # AI Prompts Project Kinds Reference
 
-**Version**: 2.0.0  
-**Last Updated**: 2026-02-07  
+**Version**: 2.0.0
+**Last Updated**: 2026-02-07
 **Schema File**: `config/ai_prompts_project_kinds.yaml`
 
 > **Purpose**: Complete reference for the `ai_prompts_project_kinds.yaml` configuration file. This document explains project-specific AI prompt templates, role definitions per project type, task context patterns, and verification checklists.
@@ -73,14 +73,14 @@ The `ai_prompts_project_kinds.yaml` file defines **project-specific AI prompt te
     approach: |
       - [Methodology 1]
       - [Methodology 2]
-  
+
   test_engineer:
     role: "You are a [specialized role]..."
     task_context: |
       [Testing focus areas]
     approach: |
       [Testing methodology]
-  
+
   code_reviewer:
     role: "You are a [specialized role]..."
     task_context: |
@@ -933,7 +933,7 @@ The prompt builder composes prompts by:
    ```text
    [Generic role from ai_helpers.yaml]
    [Generic behavioral guidelines]
-   
+
    [Project-specific role enhancement]
    [Project-specific task context]
    [Project-specific approach]
@@ -1009,14 +1009,14 @@ my_new_kind:
     approach: |
       - [Methodology 1]
       - [Methodology 2]
-  
+
   test_engineer:
     role: "You are a [test specialist for this type]..."
     task_context: |
       [Testing focus areas]
     approach: |
       [Testing methodology]
-  
+
   code_reviewer:
     role: "You are a [code review specialist for this type]..."
     task_context: |
@@ -1049,14 +1049,14 @@ nodejs_api:
   documentation_specialist:
     # Modify role to add expertise
     role: "You are a senior backend API architect, GraphQL expert, and technical writer..."
-    
+
     # Add to focus areas
     task_context: |
       This is a Node.js API project. Focus on:
       - GraphQL schema documentation  # NEW
       - API endpoint documentation
       - [...]
-    
+
     # Add to approach
     approach: |
       - Document GraphQL queries and mutations  # NEW
@@ -1101,7 +1101,7 @@ For complex project types:
 documentation_specialist:
   task_context: |
     [...]
-    
+
     **Verification Checklist**:
     - [ ] API endpoints documented with request/response examples
     - [ ] Authentication flows explained with diagrams
@@ -1192,6 +1192,6 @@ project_kinds:
 
 ---
 
-**Last Updated**: 2026-02-07  
-**Document Version**: 1.0.2  
+**Last Updated**: 2026-02-07
+**Document Version**: 1.0.2
 **Schema Version**: 2.0.0 (ai_prompts_project_kinds.yaml)

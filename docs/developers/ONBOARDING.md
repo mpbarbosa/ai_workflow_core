@@ -2,8 +2,8 @@
 
 **Welcome to ai_workflow_core development!**
 
-**Version**: 1.0.2  
-**Last Updated**: 2026-02-12  
+**Version**: 1.0.2
+**Last Updated**: 2026-02-12
 **Audience**: New contributors and developers
 
 ---
@@ -594,6 +594,6 @@ We're excited to have you contribute to ai_workflow_core. Don't hesitate to ask 
 
 ---
 
-**Document Version**: 1.0.2  
-**Last Updated**: 2026-02-12  
+**Document Version**: 1.0.2
+**Last Updated**: 2026-02-12
 **Maintained By**: ai_workflow_core team

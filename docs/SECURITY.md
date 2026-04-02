@@ -1,7 +1,7 @@
 # Security Best Practices
 
-**Version**: 1.0.2  
-**Last Updated**: 2026-02-07  
+**Version**: 1.0.2
+**Last Updated**: 2026-02-07
 **Audience**: All users, security-conscious developers
 
 > **Purpose**: Security guidelines and best practices for using ai_workflow_core safely in your projects.
@@ -29,10 +29,10 @@
 
 ai_workflow_core follows these security principles:
 
-🔒 **Least Privilege**: Only grant minimum necessary permissions  
-🔒 **Defense in Depth**: Multiple layers of security controls  
-🔒 **No Secrets in Code**: Never commit credentials or secrets  
-🔒 **Secure Defaults**: Templates use secure configurations by default  
+🔒 **Least Privilege**: Only grant minimum necessary permissions
+🔒 **Defense in Depth**: Multiple layers of security controls
+🔒 **No Secrets in Code**: Never commit credentials or secrets
+🔒 **Secure Defaults**: Templates use secure configurations by default
 🔒 **Transparency**: Open source allows security auditing
 
 ### Threat Model
@@ -175,7 +175,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      
+
       - name: Deploy
         env:
           # ✅ Secrets from GitHub Actions
@@ -197,7 +197,7 @@ repos:
     hooks:
       - id: detect-secrets
         args: ['--baseline', '.secrets.baseline']
-  
+
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.18.1
     hooks:
@@ -461,7 +461,7 @@ jobs:
     steps:
       - name: Build
         run: npm run build
-  
+
   # ✅ Separate job for deployment
   deploy:
     needs: build
@@ -560,7 +560,7 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 10
-  
+
   # Git submodules
   - package-ecosystem: "gitsubmodule"
     directory: "/"
@@ -754,7 +754,7 @@ on:
    # Use git-filter-repo to remove secret
    pip install git-filter-repo
    git filter-repo --path .env --invert-paths --force
-   
+
    # Force push (after backing up)
    git push --force --all
    ```
@@ -841,17 +841,17 @@ on:
 
 ai_workflow_core is committed to security:
 
-✅ **No secrets in repository**: All templates use environment variables  
-✅ **Secure defaults**: Configuration templates follow security best practices  
-✅ **Regular updates**: Dependencies and submodules updated regularly  
-✅ **Community auditing**: Open source allows security review  
+✅ **No secrets in repository**: All templates use environment variables
+✅ **Secure defaults**: Configuration templates follow security best practices
+✅ **Regular updates**: Dependencies and submodules updated regularly
+✅ **Community auditing**: Open source allows security review
 ✅ **Responsible disclosure**: Security issues handled privately first
 
 **Remember**: Security is a shared responsibility. This document provides guidelines, but you must implement and maintain security in your own projects.
 
 ---
 
-**Last Updated**: 2026-02-07  
-**Document Version**: 1.0.2  
-**Security Policy Version**: 1.0  
+**Last Updated**: 2026-02-07
+**Document Version**: 1.0.2
+**Security Policy Version**: 1.0
 **Maintained By**: ai_workflow_core security team

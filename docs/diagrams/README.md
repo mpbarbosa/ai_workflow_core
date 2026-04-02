@@ -1,7 +1,7 @@
 # Documentation Diagrams and Visual Aids
 
-**Version**: 1.0.2  
-**Last Updated**: 2026-02-07  
+**Version**: 1.0.2
+**Last Updated**: 2026-02-07
 **Audience**: Documentation contributors and visual learners
 
 > **Purpose**: Collection of diagrams, flowcharts, and visual aids to enhance understanding of ai_workflow_core. These diagrams use text-based formats (Mermaid, ASCII art, PlantUML) that render in GitHub and other markdown viewers.
@@ -35,7 +35,7 @@ graph TB
         D[Source Code]
         E[Tests]
     end
-    
+
     subgraph "ai_workflow_core (Submodule)"
         F[.workflow_core/]
         G[config/ templates]
@@ -43,12 +43,12 @@ graph TB
         I[docs/ guides]
         J[examples/]
     end
-    
+
     subgraph "External Systems"
         K[CI/CD Platform]
         L[Parent ai_workflow<br/>Execution Engine]
     end
-    
+
     A --> F
     A --> B
     A --> C
@@ -56,7 +56,7 @@ graph TB
     D --> E
     K -.triggers.-> A
     L -.optional.-> A
-    
+
     style F fill:#e1f5ff
     style G fill:#ffe1e1
     style B fill:#fff4e1
@@ -75,10 +75,10 @@ graph LR
     C --> D[Replace<br/>Placeholders]
     D --> E[Validated Config]
     E --> F[Use in Scripts<br/>& Workflows]
-    
+
     G[project_kinds.yaml] -.defines rules.-> E
     H[Validation Scripts] -.check against.-> E
-    
+
     style A fill:#ffe1e1
     style C fill:#fff4e1
     style E fill:#e1ffe1
@@ -97,18 +97,18 @@ graph TD
         B[.workflow-config.yaml.template<br/>Placeholders]
         C[ai_helpers.yaml<br/>AI personas]
     end
-    
+
     subgraph "Layer 2: Project Config"
         D[.workflow-config.yaml<br/>Customized]
         E[Custom Workflows]
     end
-    
+
     subgraph "Layer 3: Runtime"
         F[CI/CD Jobs]
         G[Local Scripts]
         H[Automation Tools]
     end
-    
+
     A --> D
     B --> D
     C -.guides.-> D
@@ -117,7 +117,7 @@ graph TD
     D --> H
     E --> F
     E --> G
-    
+
     style A fill:#ffe1e1
     style B fill:#ffe1e1
     style C fill:#ffe1e1
@@ -153,7 +153,7 @@ flowchart TD
     K --> L[Update .gitignore]
     L --> M[Commit changes]
     M --> End([Setup Complete])
-    
+
     style Start fill:#e1f5ff
     style End fill:#e1ffe1
     style H fill:#fff4e1
@@ -174,7 +174,7 @@ sequenceDiagram
     participant Validator as yamllint
     participant ProjectKinds as project_kinds.yaml
     participant Script as CI/CD Script
-    
+
     User->>Template: Copy template
     Template-->>Config: Create .workflow-config.yaml
     User->>Config: Replace placeholders
@@ -207,7 +207,7 @@ flowchart LR
     J -->|No| K[Fix issues or<br/>rollback]
     J -->|Yes| L[git add<br/>.workflow_core]
     L --> M[Commit & push]
-    
+
     style B fill:#fff4e1
     style J fill:#fff4e1
     style K fill:#ffe1e1
@@ -370,7 +370,7 @@ flowchart TD
     S --> T{Staging OK?}
     T -->|No| U[Rollback]
     T -->|Yes| V[Deploy to Production]
-    
+
     style A fill:#e1f5ff
     style V fill:#e1ffe1
     style E fill:#fff4e1
@@ -390,25 +390,25 @@ stateDiagram-v2
     Staging --> PreProduction: Manual promotion
     PreProduction --> Production: Manual approval
     Production --> [*]: Deployed
-    
+
     Production --> Rollback: Issues detected
     Rollback --> PreProduction: Fix & redeploy
-    
+
     note right of Development
         Auto-deploy on commit
         Run: lint, test, build
     end note
-    
+
     note right of Staging
         Auto-deploy from develop
         Integration tests
     end note
-    
+
     note right of PreProduction
         Manual gate
         Load testing
     end note
-    
+
     note right of Production
         Manual approval required
         Blue-green deployment
@@ -436,7 +436,7 @@ graph TB
     J -->|No| K[Optimize]
     K --> B
     J -->|Yes| L[Ready to Deploy]
-    
+
     style C fill:#e1f5ff
     style E fill:#e1f0ff
     style G fill:#e1e5ff
@@ -463,7 +463,7 @@ graph LR
     I -->|develop| J[Deploy to Staging]
     I -->|main| K[Deploy to Production]
     I -->|feature/*| L[Preview Deploy]
-    
+
     style A fill:#e1f5ff
     style C fill:#fff4e1
     style J fill:#ffe1e1
@@ -480,34 +480,34 @@ graph TB
     subgraph "Source Control"
         A[Git Push]
     end
-    
+
     subgraph "GitHub Actions"
         B1[Job: Lint]
         B2[Job: Test]
         B3[Job: Build]
     end
-    
+
     subgraph "GitLab CI"
         C1[Stage: Lint]
         C2[Stage: Test]
         C3[Stage: Build]
     end
-    
+
     subgraph "Jenkins"
         D1[Stage: Lint]
         D2[Stage: Test]
         D3[Stage: Build]
     end
-    
+
     subgraph "All Read Same Config"
         E[.workflow-config.yaml<br/>Single Source of Truth]
     end
-    
+
     A --> B1 & C1 & D1
     B1 & C1 & D1 --> E
     E --> B2 & C2 & D2
     B2 & C2 & D2 --> B3 & C3 & D3
-    
+
     style E fill:#fff4e1
 ```
 
@@ -522,23 +522,23 @@ graph TB
 ```mermaid
 graph TD
     Start{What type of<br/>project?}
-    
+
     Start -->|Scripts| A{Primary<br/>language?}
     A -->|Bash/Shell| B[shell_script_automation]
-    
+
     Start -->|Web App| C{Frontend<br/>framework?}
     C -->|React| D[react_spa]
     C -->|Vanilla JS| E[client_spa]
     C -->|Static HTML| F[static_website]
-    
+
     Start -->|Backend| G{Language?}
     G -->|Node.js| H[nodejs_api]
     G -->|Python| I[python_app]
-    
+
     Start -->|Config/Templates| J[configuration_library]
-    
+
     Start -->|Other| K[generic]
-    
+
     style B fill:#e1ffe1
     style D fill:#e1ffe1
     style E fill:#e1ffe1
@@ -556,23 +556,23 @@ graph TD
 ```mermaid
 graph TD
     A[Problem?] --> B{Type?}
-    
+
     B -->|Submodule| C{.workflow_core<br/>empty?}
     C -->|Yes| D[git submodule<br/>update --init]
     C -->|No| E{Shows as<br/>modified?}
     E -->|Yes| F[git submodule<br/>update]
-    
+
     B -->|Config| G{YAML<br/>error?}
     G -->|Yes| H[yamllint<br/>.workflow-config.yaml]
     G -->|No| I{Placeholders<br/>remain?}
     I -->|Yes| J[Replace all<br/>{{PLACEHOLDERS}}]
-    
+
     B -->|Tests| K{Tests<br/>fail?}
     K -->|Yes| L[Check test_command<br/>in config]
-    
+
     B -->|Deployment| M{Deploy<br/>fails?}
     M -->|Yes| N[Check credentials<br/>& permissions]
-    
+
     style D fill:#e1ffe1
     style F fill:#e1ffe1
     style H fill:#e1ffe1
@@ -595,21 +595,21 @@ sequenceDiagram
     participant Template as .yaml.template
     participant Config as .workflow-config.yaml
     participant CI as CI/CD
-    
+
     User->>Git: git init
     User->>Git: git submodule add ai_workflow_core
     Git->>Submodule: Clone submodule
     Submodule-->>Git: Cloned
-    
+
     User->>Template: Copy template
     Template->>Config: Create config file
-    
+
     User->>Config: Edit & replace placeholders
     Config-->>User: Configuration ready
-    
+
     User->>Git: git add & commit
     User->>Git: git push
-    
+
     Git->>CI: Trigger pipeline
     CI->>Submodule: Load submodule
     CI->>Config: Read configuration
@@ -630,10 +630,10 @@ sequenceDiagram
     participant Frontend as React Frontend
     participant CLI as Go CLI
     participant Report as Test Reports
-    
+
     CI->>Config: Read configuration
     Config-->>CI: Multi-language detected
-    
+
     par Parallel Testing
         CI->>Backend: pytest
         Backend-->>Report: Python results
@@ -644,7 +644,7 @@ sequenceDiagram
         CI->>CLI: go test
         CLI-->>Report: Go results
     end
-    
+
     Report->>CI: Aggregate results
     CI->>CI: All passed?
     alt All tests pass
@@ -666,16 +666,16 @@ sequenceDiagram
     participant Staging
     participant Approver
     participant Production
-    
+
     Dev->>Git: Push to main
     Git->>CI: Trigger pipeline
     CI->>CI: Run tests & build
     CI->>Staging: Auto-deploy
     Staging-->>CI: Health check OK
-    
+
     CI->>Approver: Request approval
     Note over Approver: Manual review
-    
+
     alt Approved
         Approver->>CI: Approve deployment
         CI->>Production: Deploy
@@ -869,7 +869,7 @@ graph TD
     B[System Process]
     C[External System]
     D[Decision Point]
-    
+
     style A fill:#e1f5ff
     style B fill:#fff4e1
     style C fill:#ffe1e1
@@ -911,7 +911,7 @@ graph TD
 3. **Follow naming convention**: `diagram-name.mmd` or `diagram-name.md`
 4. **Include metadata**:
    ```markdown
-   <!-- 
+   <!--
    Title: Architecture Overview
    Author: username
    Date: 2026-02-07
@@ -953,7 +953,7 @@ graph TD
 
 ---
 
-**Last Updated**: 2026-02-07  
-**Document Version**: 1.0.2  
+**Last Updated**: 2026-02-07
+**Document Version**: 1.0.2
 **Total Diagrams**: 20+ examples
 

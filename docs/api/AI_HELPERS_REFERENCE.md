@@ -1,7 +1,7 @@
 # AI Helpers Reference
 
-**Version**: 6.2.2  
-**Last Updated**: 2026-02-12  
+**Version**: 6.2.2
+**Last Updated**: 2026-02-12
 **Schema File**: `config/ai_helpers.yaml`
 
 > **Purpose**: Complete reference for the `ai_helpers.yaml` configuration file. This document explains the AI persona system, YAML anchor patterns for token efficiency, language-specific standards injection, and prompt builder integration patterns.
@@ -115,9 +115,10 @@ The file is organized into four main sections:
 # Define once, reference everywhere
 _behavioral_actionable: &behavioral_actionable |
   **Critical Behavioral Guidelines**:
-  - ALWAYS provide concrete, actionable output
+  - Provide concrete, actionable output if needed (e.g., updated markdown sections,
+    corrected config values, specific file patches)
   - Make informed decisions based on available context
-  
+
 # Reference in personas
 doc_analysis_prompt:
   behavioral_guidelines: *behavioral_actionable
@@ -169,11 +170,15 @@ The file defines two reusable behavioral guideline anchors:
 ```yaml
 _behavioral_actionable: &behavioral_actionable |
   **Critical Behavioral Guidelines**:
-  - ALWAYS provide concrete, actionable output (never ask clarifying questions)
+  - Provide concrete, actionable output if needed (see criteria below);
+    acceptable forms include: updated markdown sections, corrected configuration
+    values, specific file patches, or revised code examples
   - If documentation is accurate, explicitly say "No updates needed - documentation is current"
   - Only update what is truly outdated or incorrect
   - Make informed decisions based on available context
   - Default to "no changes" rather than making unnecessary modifications
+  - If evidence is insufficient to determine accuracy, state this explicitly
+    rather than guessing; consult CONTRIBUTING.md and ARCHITECTURE.md before concluding
 ```
 
 **Used By**:
@@ -189,12 +194,14 @@ _behavioral_actionable: &behavioral_actionable |
 ```yaml
 _behavioral_structured: &behavioral_structured |
   **Critical Behavioral Guidelines**:
-  - ALWAYS provide structured, prioritized analysis (never general observations)
+  - Provide structured, prioritized analysis if needed (see criteria below)
   - Identify specific files, line numbers, and exact issues
   - Include concrete recommended fixes for each problem
   - Prioritize issues by severity and impact on user experience
   - Focus on accuracy and consistency over style preferences
   - Default to "no issues found" only when documentation is truly consistent
+  - If evidence is insufficient to determine accuracy, state this explicitly
+    rather than guessing; consult CONTRIBUTING.md and ARCHITECTURE.md first
 ```
 
 **Used By**:
@@ -209,9 +216,9 @@ persona_name_prompt:
   # Modern pattern (v3.2.0+)
   role_prefix: |
     [Specific expertise and domain knowledge]
-  
+
   behavioral_guidelines: *behavioral_actionable  # Reference anchor
-  
+
   # Legacy field (backward compatibility)
   role: |
     [Full combined role text = role_prefix + behavioral_guidelines]
@@ -271,7 +278,7 @@ Domain-specific personas for specialized tasks:
 **`role_prefix`** (lines 138-140):
 ```yaml
 role_prefix: |
-  You are a senior technical documentation specialist with expertise in software 
+  You are a senior technical documentation specialist with expertise in software
   architecture documentation, API documentation, and developer experience (DX) optimization.
 ```
 
@@ -285,16 +292,16 @@ References the `&behavioral_actionable` anchor for consistent behavior across pe
 ```yaml
 task_template: |
   **YOUR TASK**: Analyze the changed files and make specific edits to update the documentation.
-  
+
   **Changed files**: {changed_files}
   **Documentation to review**: {doc_files}
-  
+
   **REQUIRED ACTIONS**:
   1. **Read the changes**: Examine what was modified in each changed file
   2. **Identify documentation impact**: Determine which docs need updates
   3. **Determine changes**: Identify exact sections requiring updates
   4. **Verify accuracy**: Ensure examples and references are still correct
-  
+
   **OUTPUT FORMAT**: Use edit blocks showing before/after, or provide specific line-by-line changes.
 ```
 
@@ -445,7 +452,7 @@ Two-phase approach:
 
 **Critical Instruction** (line 359):
 ```yaml
-**CRITICAL**: You MUST proceed with the analysis and documentation generation. 
+**CRITICAL**: You MUST proceed with the analysis and documentation generation.
 Do NOT ask what to write or for clarification. Use available context to make informed decisions.
 ```
 
@@ -515,7 +522,7 @@ Three-phase necessity-first approach:
    - Current state assessment
    - Gap identification (functional, non-functional, acceptance criteria)
    - Stakeholder analysis
-   
+
 3. **Phase 3: Prioritized Actions**:
    - **If needed**: Elicit → Document → Establish traceability → Validate
    - **If not needed**: Confirm coverage → Provide evidence → Optional minor improvements
@@ -530,7 +537,7 @@ Three-phase necessity-first approach:
 
 **Critical Design Pattern** (lines 1007-1009):
 ```yaml
-**YOUR TASK**: Analyze existing requirements and determine if new requirements 
+**YOUR TASK**: Analyze existing requirements and determine if new requirements
 documentation is truly needed. Generate ONLY when necessary.
 ```
 
@@ -786,7 +793,7 @@ specific_expertise: |
   - MAJOR (X.0.0): Breaking changes, API modifications, removed features
   - MINOR (X.Y.0): New features, enhancements, additive changes
   - PATCH (X.Y.Z): Bug fixes, documentation updates, refactoring
-  
+
   Consider:
   - Scope of changes (files modified, lines changed)
   - Type of modifications (API changes vs internal refactoring)
@@ -887,7 +894,7 @@ Comprehensive front-end implementation template covering:
 
 **Added**: v6.0.1 (2026-02-09)
 
-**Separation of Concerns**: 
+**Separation of Concerns**:
 - **ui_ux_designer_prompt**: User research, visual design, interaction patterns, usability testing
 - **front_end_developer_prompt**: Code implementation, architecture, performance, testing
 
@@ -1117,14 +1124,14 @@ javascript:
     - "Memory leaks in closures"
     - "Event listener cleanup"
     - "Bundle size optimization"
-  
+
   antipatterns:
     - "Callback hell"
     - "Unhandled promise rejections"
     - "Mutation of props in React"
     - "Missing error boundaries"
     - "Synchronous loops with async calls"
-  
+
   best_practices:
     - "Use const/let instead of var"
     - "Prefer async/await over raw promises"
@@ -1376,11 +1383,11 @@ The personas reference configuration from `.workflow-config.yaml`:
 project:
   name: "My Project"
   type: "nodejs-application"
-  
+
 tech_stack:
   primary_language: "javascript"
   test_framework: "jest"
-  
+
 structure:
   source_dirs:
     - src
@@ -1428,29 +1435,29 @@ my_new_persona_prompt:
     You are a [role] with expertise in:
     - [Specific expertise area 1]
     - [Specific expertise area 2]
-  
+
   behavioral_guidelines: *behavioral_actionable  # or *behavioral_structured
-  
+
   # Legacy field (backward compatibility)
   role: |
     [Full combined role text]
-  
+
   task_template: |
     **YOUR TASK**: [Clear task description]
-    
+
     [Context and requirements]
-    
+
     **REQUIRED ACTIONS**:
     1. [Action 1]
     2. [Action 2]
-  
+
   approach: |
     **Methodology**:
     1. [Step 1]
     2. [Step 2]
-    
+
     **Language-Specific Standards:** {language_specific_documentation}
-  
+
   output_format: |
     [Expected output structure]
 ```
@@ -1621,6 +1628,6 @@ persona1:
 
 ---
 
-**Last Updated**: 2026-02-07  
-**Document Version**: 1.0.2  
+**Last Updated**: 2026-02-07
+**Document Version**: 1.0.2
 **Schema Version**: 5.0.0 (ai_helpers.yaml)

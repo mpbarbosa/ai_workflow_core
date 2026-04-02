@@ -1,7 +1,7 @@
 # Workflow Automation Documentation
 
-**Version**: 1.0.2  
-**Last Updated**: 2026-02-10  
+**Version**: 1.0.2
+**Last Updated**: 2026-02-10
 **Audience**: Users integrating ai_workflow_core with CI/CD systems
 
 > **Purpose**: Documentation for automating workflows using ai_workflow_core templates with GitHub Actions, GitLab CI, and other CI/CD platforms.
@@ -342,12 +342,12 @@ Create `Jenkinsfile`:
 ```groovy
 pipeline {
     agent any
-    
+
     environment {
         ARTIFACT_DIR = '.ai_workflow'
         CONFIG_FILE = '.workflow-config.yaml'
     }
-    
+
     stages {
         stage('Checkout') {
             steps {
@@ -355,13 +355,13 @@ pipeline {
                 sh 'git submodule update --init --recursive'
             }
         }
-        
+
         stage('Integration Health') {
             steps {
                 sh 'bash .workflow_core/scripts/check_integration_health.sh'
             }
         }
-        
+
         stage('Code Quality') {
             parallel {
                 stage('YAML Lint') {
@@ -376,13 +376,13 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Validate Structure') {
             steps {
                 sh 'python3 .workflow_core/scripts/validate_structure.py'
             }
         }
-        
+
         stage('Validate Docs') {
             when {
                 changeset "docs/**/*"
@@ -392,7 +392,7 @@ pipeline {
             }
         }
     }
-    
+
     post {
         always {
             cleanWs()
@@ -435,7 +435,7 @@ repos:
         entry: bash .workflow_core/scripts/check_integration_health.sh
         language: system
         pass_filenames: false
-        
+
       - id: validate-structure
         name: Validate directory structure
         entry: python3 .workflow_core/scripts/validate_structure.py

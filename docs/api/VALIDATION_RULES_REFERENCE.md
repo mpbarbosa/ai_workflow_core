@@ -1,7 +1,7 @@
 # Validation Rules Reference
 
-**Version**: 1.0.2  
-**Last Updated**: 2026-02-13  
+**Version**: 1.0.2
+**Last Updated**: 2026-02-13
 **Schema Version**: project_kinds.yaml v1.2.0
 
 > **Purpose**: Complete reference for validation rules, patterns, and error handling in ai_workflow_core.
@@ -847,35 +847,35 @@ def validate_api_endpoints():
     """Ensure all API endpoints are documented."""
     api_files = Path('src/routes').glob('*.js')
     docs_files = Path('docs/api').glob('*.md')
-    
+
     documented_endpoints = set()
     for doc in docs_files:
         # Parse documented endpoints
         pass
-    
+
     implemented_endpoints = set()
     for api_file in api_files:
         # Parse implemented endpoints
         pass
-    
+
     undocumented = implemented_endpoints - documented_endpoints
     if undocumented:
         print(f"❌ Undocumented endpoints: {undocumented}")
         return False
-    
+
     return True
 
 def validate_database_migrations():
     """Ensure migration files follow naming convention."""
     migrations = Path('migrations').glob('*.sql')
     pattern = r'^\d{4}_\d{2}_\d{2}_[a-z_]+\.sql$'
-    
+
     for migration in migrations:
         if not re.match(pattern, migration.name):
             print(f"❌ Invalid migration filename: {migration.name}")
             print(f"   Expected format: YYYY_MM_DD_description.sql")
             return False
-    
+
     return True
 
 if __name__ == '__main__':
@@ -883,7 +883,7 @@ if __name__ == '__main__':
         validate_api_endpoints,
         validate_database_migrations,
     ]
-    
+
     all_passed = all(check() for check in checks)
     sys.exit(0 if all_passed else 1)
 ```
@@ -905,12 +905,12 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: true
-      
+
       - name: Run standard validation
         run: |
           python3 .workflow_core/scripts/validate_structure.py
           python3 .workflow_core/scripts/validate_context_blocks.py docs/
-      
+
       - name: Run custom validation
         run: python3 scripts/validate_custom.py
 ```
@@ -1176,6 +1176,6 @@ This project extends standard validation with:
 
 ---
 
-**Last Updated**: 2026-02-13  
-**Document Version**: 1.0.2  
+**Last Updated**: 2026-02-13
+**Document Version**: 1.0.2
 **Maintained By**: ai_workflow_core team

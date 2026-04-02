@@ -1,7 +1,7 @@
 # Contributing to AI Workflow Automation
 
-**Version**: 1.0.2  
-**Last Updated**: 2026-01-31  
+**Version**: 1.0.2
+**Last Updated**: 2026-01-31
 **Status**: ✅ Official Guidelines
 
 > ⚠️ **Context**: This document was originally written for the **parent ai_workflow project** (workflow execution engine). For ai_workflow_core contributions, focus on: configuration templates, project_kinds schemas, integration examples, and documentation structure. Ignore references to workflow execution, testing framework, and v2.x/v3.x execution features.
@@ -342,7 +342,7 @@ Consistent naming across the project ensures maintainability and clarity. Follow
 project:
   type: "nodejs-application"       # PROJECT_TYPE (hyphenated)
   kind: "nodejs_api"               # PROJECT_KIND (underscored)
-  
+
 tech_stack:
   test_framework: "jest"           # Config key (underscored)
 ```
@@ -415,19 +415,19 @@ GLOBAL_STATE="initial"
 function validate_configuration() {
     # Declare local variables
     local config_file="$1"
-    
+
     # Validate parameters
     if [[ -z "${config_file}" ]]; then
         echo "Error: config_file required" >&2
         return 1
     fi
-    
+
     # Function logic
     if [[ ! -f "${config_file}" ]]; then
         echo "Error: Config file not found: ${config_file}" >&2
         return 1
     fi
-    
+
     # Return success
     return 0
 }
@@ -573,9 +573,9 @@ assert_equals() {
     local expected="$1"
     local actual="$2"
     local test_name="$3"
-    
+
     ((TESTS_RUN++))
-    
+
     if [[ "${expected}" == "${actual}" ]]; then
         ((TESTS_PASSED++))
         echo "✓ ${test_name}"
@@ -593,7 +593,7 @@ assert_equals() {
 test_example_function() {
     local expected="expected_result"
     local actual=$(example_function "input")
-    
+
     assert_equals "${expected}" "${actual}" "example_function returns correct value"
 }
 
@@ -618,10 +618,10 @@ test_function_name() {
     # Arrange
     local input="test_value"
     local expected="expected_result"
-    
+
     # Act
     local actual=$(function_to_test "${input}")
-    
+
     # Assert
     assert_equals "${expected}" "${actual}" "Test description"
 }
@@ -650,10 +650,10 @@ test_1()
 ```bash
 test_creates_temp_file() {
     local temp_file="/tmp/test_$$"
-    
+
     # Test logic
     create_file "${temp_file}"
-    
+
     # Cleanup
     rm -f "${temp_file}"
 }
@@ -1051,6 +1051,6 @@ See ARCHITECTURE.md for complete details on system design, integration patterns,
 
 ---
 
-**Document Version**: 1.0.2  
-**Last Updated**: 2026-01-31  
+**Document Version**: 1.0.2
+**Last Updated**: 2026-01-31
 **Status**: ✅ Official Contributing Guidelines

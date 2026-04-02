@@ -205,9 +205,9 @@ Language-specific prompt customizations for different project types (bash, javas
 
 # PROMPT_ROLES_REFERENCE.md — Prompt Roles API Reference
 
-**Version**: 1.0.0  
-**Last Updated**: 2026-04-01  
-**File**: `config/prompt_roles.yaml`  
+**Version**: 1.0.0
+**Last Updated**: 2026-04-01
+**File**: `config/prompt_roles.yaml`
 **Module**: `src/loader.ts`
 
 ---
@@ -272,7 +272,7 @@ roles:
 ### Naming Convention
 
 - Role keys use **snake_case** (e.g., `doc_analysis`, `e2e_test_engineer`)
-- Role keys are the **logical role name**, not the persona key from `ai_helpers.yaml`  
+- Role keys are the **logical role name**, not the persona key from `ai_helpers.yaml`
   (e.g., `doc_analysis` not `doc_analysis_prompt`)
 - Keys must be unique within the `roles:` mapping
 
@@ -334,4 +334,4 @@ Represents a single entry under `roles:` in `prompt_roles.yaml`.
 ```typescript
 interface PromptRole {
   description: string;  // one-line summary
-  role_prefix: string;  // full 
+  role_prefix: string;  // full

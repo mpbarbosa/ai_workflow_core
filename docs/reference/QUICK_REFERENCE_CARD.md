@@ -323,10 +323,10 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: recursive
-          
+
       - name: Validate Structure
         run: python3 scripts/validate_structure.py
-        
+
       - name: Validate Context
         run: python3 scripts/validate_context_blocks.py config/ai_helpers.yaml
 ```

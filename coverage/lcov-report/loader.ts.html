@@ -200,7 +200,23 @@
 <a name='L135'></a><a href='#L135'>135</a>
 <a name='L136'></a><a href='#L136'>136</a>
 <a name='L137'></a><a href='#L137'>137</a>
-<a name='L138'></a><a href='#L138'>138</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L138'></a><a href='#L138'>138</a>
+<a name='L139'></a><a href='#L139'>139</a>
+<a name='L140'></a><a href='#L140'>140</a>
+<a name='L141'></a><a href='#L141'>141</a>
+<a name='L142'></a><a href='#L142'>142</a>
+<a name='L143'></a><a href='#L143'>143</a>
+<a name='L144'></a><a href='#L144'>144</a>
+<a name='L145'></a><a href='#L145'>145</a>
+<a name='L146'></a><a href='#L146'>146</a>
+<a name='L147'></a><a href='#L147'>147</a>
+<a name='L148'></a><a href='#L148'>148</a>
+<a name='L149'></a><a href='#L149'>149</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -253,6 +269,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-yes">12x</span>
@@ -276,6 +296,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">6x</span>
@@ -285,6 +306,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -341,11 +363,16 @@
  * loader.ts — Config loading and role-reference resolution for the
  * ai_workflow_core prompt system.
  *
- * Public API:
- *   loadPromptRoles(filePath)  → PromptRolesConfig
- *   loadPersonas(filePath)     → AIHelpersConfig
- *   resolvePersona(persona, personaKey, roles) → ResolvedPersona
- *   resolveAllPersonas(config, roles) → Record&lt;string, ResolvedPersona&gt;
+ * Reads two YAML config files and resolves persona role references:
+ *
+ * | File                        | Loader function        | Return type          |
+ * |-----------------------------|------------------------|----------------------|
+ * | `config/prompt_roles.yaml`  | {@link loadPromptRoles} | {@link PromptRolesConfig} |
+ * | `config/ai_helpers.yaml`    | {@link loadPersonas}    | {@link AIHelpersConfig}   |
+ *
+ * After loading, pass both objects to {@link resolveAllPersonas} (or
+ * {@link resolvePersona} for a single entry) to produce
+ * {@link ResolvedPersona} objects with concrete `role_prefix` text.
  */
 &nbsp;
 import { readFileSync } from 'fs';
@@ -385,10 +412,14 @@ function readYamlFile(filePath: string): unknown {
 /**
  * Loads and validates `config/prompt_roles.yaml` (or a custom path).
  *
- * @param filePath - Absolute or relative path to prompt_roles.yaml.
- * @returns        A validated PromptRolesConfig object.
- * @throws         InvalidConfigError if the file is missing, unreadable,
- *                 invalid YAML, or does not have the expected top-level shape.
+ * Validates that the file has the expected top-level shape (`roles:` mapping)
+ * and that every role entry has `description` and `role_prefix` string fields.
+ *
+ * @param filePath - Path to `prompt_roles.yaml`
+ *                   (default usage: `config/prompt_roles.yaml`).
+ * @returns        A validated {@link PromptRolesConfig} object.
+ * @throws         {@link InvalidConfigError} if the file is missing,
+ *                 unreadable, invalid YAML, or fails shape validation.
  */
 export function loadPromptRoles(filePath: string): PromptRolesConfig {
   const raw = readYamlFile(filePath);
@@ -405,12 +436,13 @@ export function loadPromptRoles(filePath: string): PromptRolesConfig {
  * Loads and parses `config/ai_helpers.yaml` (or a custom path).
  *
  * The returned object is a raw parsed YAML map. Individual persona entries
- * are not validated here — use resolvePersona / resolveAllPersonas to
- * validate and resolve role references.
+ * are not validated here — use {@link resolvePersona} or
+ * {@link resolveAllPersonas} to validate and resolve role references.
  *
- * @param filePath - Absolute or relative path to ai_helpers.yaml.
- * @returns        An AIHelpersConfig object (Record&lt;string, unknown&gt;).
- * @throws         InvalidConfigError if the file is missing or contains
+ * @param filePath - Path to `ai_helpers.yaml`
+ *                   (default usage: `config/ai_helpers.yaml`).
+ * @returns        An {@link AIHelpersConfig} object (`Record&lt;string, unknown&gt;`).
+ * @throws         {@link InvalidConfigError} if the file is missing or contains
  *                 invalid YAML.
  */
 export function loadPersonas(filePath: string): AIHelpersConfig {
@@ -425,14 +457,15 @@ export function loadPersonas(filePath: string): AIHelpersConfig {
 }
 &nbsp;
 /**
- * Resolves the `role_ref` key in a single PersonaConfig to the full
- * `role_prefix` text from a PromptRolesConfig.
+ * Resolves the `role_ref` key in a single {@link PersonaConfig} to the full
+ * `role_prefix` text from a {@link PromptRolesConfig}.
  *
- * @param persona    - The raw PersonaConfig (must have a `role_ref` field).
- * @param personaKey - The top-level key used in ai_helpers.yaml (for error msgs).
- * @param roles      - The loaded PromptRolesConfig to look up the ref in.
- * @returns          A ResolvedPersona with `role_prefix` populated.
- * @throws           RoleNotFoundError if persona.role_ref has no match in roles.
+ * @param persona    - A raw {@link PersonaConfig} (must have a `role_ref` field).
+ * @param personaKey - The top-level key from `ai_helpers.yaml` (used in error messages).
+ * @param roles      - The loaded {@link PromptRolesConfig} from `prompt_roles.yaml`.
+ * @returns          A {@link ResolvedPersona} with `role_prefix` populated.
+ * @throws           {@link RoleNotFoundError} if `persona.role_ref` has no matching
+ *                   entry in `roles.roles`.
  */
 export function resolvePersona(
   persona: PersonaConfig,
@@ -450,17 +483,17 @@ export function resolvePersona(
 }
 &nbsp;
 /**
- * Iterates over all entries in an AIHelpersConfig, resolves every entry
- * that is a PersonaConfig (has a `role_ref`), and returns a map of
- * ResolvedPersona objects keyed by persona name.
+ * Iterates over all entries in an {@link AIHelpersConfig}, resolves every entry
+ * that is a {@link PersonaConfig} (has a `role_ref`), and returns a map of
+ * {@link ResolvedPersona} objects keyed by persona name.
  *
- * Non-persona entries (e.g., language_specific_* lookup tables) are silently
+ * Non-persona entries (e.g., `language_specific_*` lookup tables) are silently
  * skipped and not included in the output.
  *
- * @param config - The raw AIHelpersConfig loaded from ai_helpers.yaml.
- * @param roles  - The loaded PromptRolesConfig used for resolution.
- * @returns      A Record mapping persona keys to ResolvedPersona objects.
- * @throws       RoleNotFoundError if any persona's role_ref is unresolvable.
+ * @param config - The raw {@link AIHelpersConfig} loaded from `ai_helpers.yaml`.
+ * @param roles  - The loaded {@link PromptRolesConfig} from `prompt_roles.yaml`.
+ * @returns      A `Record` mapping persona keys to {@link ResolvedPersona} objects.
+ * @throws       {@link RoleNotFoundError} if any persona's `role_ref` is unresolvable.
  */
 export function resolveAllPersonas(
   config: AIHelpersConfig,
@@ -481,7 +514,7 @@ export function resolveAllPersonas(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-04-01T17:49:50.863Z
+                at 2026-04-02T01:03:11.661Z
             </div>
         <script src="prettify.js"></script>
         <script>

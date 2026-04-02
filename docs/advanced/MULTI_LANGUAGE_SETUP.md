@@ -1,7 +1,7 @@
 # Multi-Language Project Setup
 
-**Version**: 1.0.2  
-**Last Updated**: 2026-02-07  
+**Version**: 1.0.2
+**Last Updated**: 2026-02-07
 **Audience**: Advanced users managing polyglot projects
 
 > **Purpose**: Learn how to configure ai_workflow_core for projects that use multiple programming languages. This guide covers monorepo setups, language-specific configurations, and multi-language testing strategies.
@@ -225,13 +225,13 @@ project:
 
 tech_stack:
   primary_language: "javascript"  # Node.js backend dominates
-  
+
   # Secondary languages
   languages:
     - javascript  # Backend
     - typescript  # Frontend
     - python      # Data processing scripts
-  
+
   build_system: "npm"
   test_framework: "jest"  # Primary test framework
   test_command: "npm run test:all"  # Runs all tests
@@ -244,7 +244,7 @@ language_configs:
     test_command: "cd backend && npm test"
     lint_command: "cd backend && eslint ."
     package_file: "backend/package.json"
-  
+
   typescript:
     directory: "frontend/"
     test_command: "cd frontend && npm test"
@@ -252,7 +252,7 @@ language_configs:
     package_file: "frontend/package.json"
     build_required: true
     build_command: "cd frontend && npm run build"
-  
+
   python:
     directory: "scripts/"
     test_command: "cd scripts && pytest"
@@ -289,12 +289,12 @@ project:
 
 tech_stack:
   primary_language: "multiple"  # No single primary
-  
+
   languages:
     - javascript  # API gateway
     - python      # Analytics service
     - go          # Auth service
-  
+
   # Composite commands that run all
   test_command: "bash scripts/test-all.sh"
   lint_command: "bash scripts/lint-all.sh"
@@ -308,14 +308,14 @@ services:
     lint_command: "cd services/gateway && eslint ."
     build_command: "cd services/gateway && npm run build"
     package_file: "package.json"
-  
+
   analytics:
     language: "python"
     directory: "services/analytics"
     test_command: "cd services/analytics && pytest"
     lint_command: "cd services/analytics && pylint src/"
     package_file: "requirements.txt"
-  
+
   auth:
     language: "go"
     directory: "services/auth"
@@ -350,13 +350,13 @@ project:
 
 tech_stack:
   primary_language: "c++"  # Core implementation
-  
+
   languages:
     - c++       # Core
     - python    # Primary bindings
     - javascript # Node.js bindings
     - rust      # Experimental bindings
-  
+
   build_system: "cmake"  # Core build system
   test_command: "bash scripts/test-all-bindings.sh"
 
@@ -373,13 +373,13 @@ bindings:
     test_command: "cd bindings/python && pytest"
     build_command: "cd bindings/python && python setup.py build"
     package_file: "setup.py"
-  
+
   node:
     directory: "bindings/node"
     test_command: "cd bindings/node && npm test"
     build_command: "cd bindings/node && npm run build"
     package_file: "package.json"
-  
+
   rust:
     directory: "bindings/rust"
     test_command: "cd bindings/rust && cargo test"
@@ -617,22 +617,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      
+
       - name: Install dependencies
         run: |
           cd backend
           pip install -r requirements.txt
-      
+
       - name: Run tests
         run: |
           cd backend
           pytest --cov=src
-      
+
       - name: Upload coverage
         uses: codecov/codecov-action@v3
         with:
@@ -644,22 +644,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-      
+
       - name: Install dependencies
         run: |
           cd frontend
           npm ci
-      
+
       - name: Run tests
         run: |
           cd frontend
           npm test -- --coverage
-      
+
       - name: Upload coverage
         uses: codecov/codecov-action@v3
         with:
@@ -671,17 +671,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Setup Go
         uses: actions/setup-go@v4
         with:
           go-version: '1.21'
-      
+
       - name: Run tests
         run: |
           cd cli
           go test -v -race -coverprofile=coverage.out ./...
-      
+
       - name: Upload coverage
         uses: codecov/codecov-action@v3
         with:
@@ -694,24 +694,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       # Setup all languages
       - uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      
+
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
-      
+
       - uses: actions/setup-go@v4
         with:
           go-version: '1.21'
-      
+
       # Install dependencies
       - name: Install all dependencies
         run: bash scripts/install-all.sh
-      
+
       # Run integration tests
       - name: Run integration tests
         run: bash scripts/test-integration.sh
@@ -1023,11 +1023,11 @@ services:
   backend:
     build: ./backend
     # Python dependencies isolated
-  
+
   frontend:
     build: ./frontend
     # Node.js dependencies isolated
-  
+
   cli:
     build: ./cli
     # Go dependencies isolated
@@ -1118,5 +1118,5 @@ indent_size = 4
 
 ---
 
-**Last Updated**: 2026-02-07  
+**Last Updated**: 2026-02-07
 **Document Version**: 1.0.2

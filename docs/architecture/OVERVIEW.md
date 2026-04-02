@@ -1,7 +1,7 @@
 # Architecture Overview
 
-**Version**: 1.0.2  
-**Last Updated**: 2026-02-09  
+**Version**: 1.0.2
+**Last Updated**: 2026-02-09
 **Status**: Stable
 
 ---
@@ -209,20 +209,20 @@ docs/
 ```
 1. ADD SUBMODULE
    Project maintainer adds ai_workflow_core as Git submodule
-   
+
    $ git submodule add \
      https://github.com/mpbarbosa/ai_workflow_core.git \
      .workflow_core
 
 2. COPY TEMPLATE
    Copy configuration template to project root
-   
+
    $ cp .workflow_core/config/.workflow-config.yaml.template \
         .workflow-config.yaml
 
 3. REPLACE PLACEHOLDERS
    Edit configuration with project-specific values
-   
+
    {{PROJECT_NAME}}       → "My Application"
    {{PROJECT_KIND}}       → "nodejs_api"
    {{TEST_COMMAND}}       → "npm test"
@@ -230,12 +230,12 @@ docs/
 
 4. CREATE ARTIFACT DIRECTORY
    Set up standard workflow artifact structure
-   
+
    $ mkdir -p .ai_workflow/{backlog,summaries,logs,metrics}
 
 5. CUSTOMIZE WORKFLOWS
    Copy and adapt GitHub Actions workflows
-   
+
    $ cp .workflow_core/workflow-templates/workflows/*.yml \
         .github/workflows/
 
@@ -406,8 +406,8 @@ This repository uses its own templates:
 
 ### Distribution
 
-**Method**: Git submodule  
-**Repository**: https://github.com/mpbarbosa/ai_workflow_core  
+**Method**: Git submodule
+**Repository**: https://github.com/mpbarbosa/ai_workflow_core
 **Versioning**: Git tags (v1.0.2, v1.2.0, etc.)
 
 ### Integration Workflow
@@ -446,6 +446,6 @@ git commit -m "chore: update ai_workflow_core to v1.2.0"
 
 ---
 
-**Last Updated**: 2026-02-09  
-**Document Version**: 1.0.2  
+**Last Updated**: 2026-02-09
+**Document Version**: 1.0.2
 **Related Version**: ai_workflow_core v1.0.2

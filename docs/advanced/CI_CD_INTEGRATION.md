@@ -1,7 +1,7 @@
 # CI/CD Integration
 
-**Version**: 1.0.2  
-**Last Updated**: 2026-02-07  
+**Version**: 1.0.2
+**Last Updated**: 2026-02-07
 **Audience**: DevOps engineers and developers setting up continuous integration and deployment
 
 > **Purpose**: Learn how to integrate ai_workflow_core with popular CI/CD platforms. This guide covers GitHub Actions, GitLab CI, Jenkins, and other platforms with practical examples and best practices.
@@ -28,14 +28,14 @@
 
 ### What is CI/CD Integration?
 
-**Continuous Integration (CI)**: Automatically build and test code changes  
+**Continuous Integration (CI)**: Automatically build and test code changes
 **Continuous Deployment (CD)**: Automatically deploy verified changes
 
 ### Why Integrate with ai_workflow_core?
 
-✅ **Consistent configuration** across local development and CI/CD  
-✅ **Project kind validation** ensures CI/CD matches project requirements  
-✅ **Standard directory structure** for artifacts  
+✅ **Consistent configuration** across local development and CI/CD
+✅ **Project kind validation** ensures CI/CD matches project requirements
+✅ **Standard directory structure** for artifacts
 ✅ **Language-agnostic** patterns work across platforms
 
 ---
@@ -99,14 +99,14 @@ on:
 jobs:
   ci:
     runs-on: ubuntu-latest
-    
+
     steps:
       # 1. Checkout code with submodules
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           submodules: recursive  # Important: Load .workflow_core
-      
+
       # 2. Read configuration
       - name: Read project configuration
         id: config
@@ -115,12 +115,12 @@ jobs:
           PRIMARY_LANG=$(grep "primary_language:" .workflow-config.yaml | cut -d'"' -f2)
           TEST_CMD=$(grep "test_command:" .workflow-config.yaml | cut -d'"' -f2)
           LINT_CMD=$(grep "lint_command:" .workflow-config.yaml | cut -d'"' -f2)
-          
+
           echo "project_kind=$PROJECT_KIND" >> $GITHUB_OUTPUT
           echo "primary_language=$PRIMARY_LANG" >> $GITHUB_OUTPUT
           echo "test_command=$TEST_CMD" >> $GITHUB_OUTPUT
           echo "lint_command=$LINT_CMD" >> $GITHUB_OUTPUT
-      
+
       # 3. Setup environment (conditional based on language)
       - name: Setup Node.js
         if: steps.config.outputs.primary_language == 'javascript'
@@ -128,20 +128,20 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-      
+
       - name: Setup Python
         if: steps.config.outputs.primary_language == 'python'
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
-      
+
       - name: Setup Go
         if: steps.config.outputs.primary_language == 'go'
         uses: actions/setup-go@v5
         with:
           go-version: '1.21'
-      
+
       # 4. Install dependencies
       - name: Install dependencies
         run: |
@@ -156,15 +156,15 @@ jobs:
               go mod download
               ;;
           esac
-      
+
       # 5. Run linter
       - name: Lint
         run: ${{ steps.config.outputs.lint_command }}
-      
+
       # 6. Run tests
       - name: Test
         run: ${{ steps.config.outputs.test_command }}
-      
+
       # 7. Upload artifacts
       - name: Upload workflow artifacts
         if: always()
@@ -192,17 +192,17 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         node-version: [18, 20]
-    
+
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      
+
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      
+
       - run: npm ci
       - run: npm test
 ```
@@ -244,7 +244,7 @@ jobs:
         with:
           submodules: recursive
       # ... test steps ...
-  
+
   deploy-staging:
     needs: test
     if: github.ref == 'refs/heads/develop'
@@ -252,7 +252,7 @@ jobs:
     steps:
       - name: Deploy to staging
         run: bash .workflow_core/scripts/deploy.sh staging
-  
+
   deploy-production:
     needs: test
     if: github.ref == 'refs/heads/main'
@@ -286,11 +286,11 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      
+
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
-      
+
       - run: npm ci
       - run: npm test
 ```
@@ -307,7 +307,7 @@ jobs:
     uses: ./.github/workflows/reusable-test.yml
     with:
       node-version: '18'
-  
+
   test-node-20:
     uses: ./.github/workflows/reusable-test.yml
     with:
@@ -510,20 +510,20 @@ test:
 ```groovy
 pipeline {
     agent any
-    
+
     environment {
         // Read from configuration
         PROJECT_KIND = sh(
             script: "grep 'kind:' .workflow-config.yaml | cut -d'\"' -f2",
             returnStdout: true
         ).trim()
-        
+
         TEST_COMMAND = sh(
             script: "grep 'test_command:' .workflow-config.yaml | cut -d'\"' -f2",
             returnStdout: true
         ).trim()
     }
-    
+
     stages {
         stage('Checkout') {
             steps {
@@ -531,13 +531,13 @@ pipeline {
                 checkout([
                     $class: 'GitSCM',
                     branches: [[name: '*/main']],
-                    extensions: [[$class: 'SubmoduleOption', 
+                    extensions: [[$class: 'SubmoduleOption',
                                   recursiveSubmodules: true]],
                     userRemoteConfigs: [[url: env.GIT_URL]]
                 ])
             }
         }
-        
+
         stage('Validate') {
             steps {
                 sh '''
@@ -546,7 +546,7 @@ pipeline {
                 '''
             }
         }
-        
+
         stage('Setup') {
             steps {
                 script {
@@ -560,13 +560,13 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Lint') {
             steps {
                 sh 'npm run lint'
             }
         }
-        
+
         stage('Test') {
             steps {
                 sh env.TEST_COMMAND
@@ -582,7 +582,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Build') {
             when {
                 branch 'main'
@@ -591,7 +591,7 @@ pipeline {
                 sh 'npm run build'
             }
         }
-        
+
         stage('Deploy') {
             when {
                 branch 'main'
@@ -602,19 +602,19 @@ pipeline {
             }
         }
     }
-    
+
     post {
         always {
             // Archive workflow artifacts
-            archiveArtifacts artifacts: '.ai_workflow/logs/**/*', 
+            archiveArtifacts artifacts: '.ai_workflow/logs/**/*',
                             allowEmptyArchive: true
         }
         success {
-            slackSend color: 'good', 
+            slackSend color: 'good',
                      message: "Build succeeded: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
         }
         failure {
-            slackSend color: 'danger', 
+            slackSend color: 'danger',
                      message: "Build failed: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
         }
     }
@@ -630,7 +630,7 @@ pipeline {
 ```groovy
 node {
     def config
-    
+
     stage('Checkout') {
         checkout([
             $class: 'GitSCM',
@@ -638,17 +638,17 @@ node {
             userRemoteConfigs: [[url: env.GIT_URL]]
         ])
     }
-    
+
     stage('Load Config') {
         config = readYaml file: '.workflow-config.yaml'
         echo "Project: ${config.project.name}"
         echo "Kind: ${config.project.kind}"
     }
-    
+
     stage('Test') {
         sh config.tech_stack.test_command
     }
-    
+
     if (env.BRANCH_NAME == 'main') {
         stage('Deploy') {
             input message: 'Deploy to production?'
@@ -673,7 +673,7 @@ executors:
     docker:
       - image: cimg/node:20.0
     working_directory: ~/project
-  
+
   python-executor:
     docker:
       - image: cimg/python:3.11
@@ -685,65 +685,65 @@ jobs:
     executor: node-executor
     steps:
       - checkout
-      
+
       # Checkout submodules
       - run:
           name: Checkout submodules
           command: git submodule update --init --recursive
-      
+
       # Cache .workflow_core
       - save_cache:
           key: workflow-core-{{ checksum ".gitmodules" }}
           paths:
             - .workflow_core
-      
+
       # Read and validate config
       - run:
           name: Validate configuration
           command: |
             pip install yamllint
             yamllint .workflow-config.yaml
-      
+
       # Persist to workspace
       - persist_to_workspace:
           root: .
           paths:
             - .
-  
+
   test:
     executor: node-executor
     steps:
       - attach_workspace:
           at: .
-      
+
       # Restore dependencies
       - restore_cache:
           keys:
             - deps-{{ checksum "package-lock.json" }}
             - deps-
-      
+
       - run: npm ci
-      
+
       - save_cache:
           key: deps-{{ checksum "package-lock.json" }}
           paths:
             - node_modules
-      
+
       - run: npm test
-      
+
       # Store test results
       - store_test_results:
           path: test-results
-      
+
       - store_artifacts:
           path: coverage
-  
+
   deploy:
     executor: node-executor
     steps:
       - attach_workspace:
           at: .
-      
+
       - run:
           name: Deploy
           command: bash .workflow_core/scripts/deploy.sh production
@@ -754,11 +754,11 @@ workflows:
   build-test-deploy:
     jobs:
       - checkout-and-validate
-      
+
       - test:
           requires:
             - checkout-and-validate
-      
+
       - deploy:
           requires:
             - test
@@ -807,16 +807,16 @@ stages:
         steps:
           - checkout: self
             submodules: true  # Important: Load .workflow_core
-          
+
           - task: UsePythonVersion@0
             inputs:
               versionSpec: '3.11'
-          
+
           - script: |
               pip install yamllint pyyaml
               yamllint .workflow-config.yaml
             displayName: 'Validate YAML'
-          
+
           - script: |
               python3 << 'EOF'
               import yaml
@@ -827,7 +827,7 @@ stages:
               EOF
             name: readConfig
             displayName: 'Read configuration'
-  
+
   - stage: Test
     dependsOn: Validate
     variables:
@@ -838,39 +838,39 @@ stages:
         steps:
           - checkout: self
             submodules: true
-          
+
           - task: NodeTool@0
             condition: eq(variables['projectKind'], 'nodejs_api')
             inputs:
               versionSpec: '20.x'
-          
+
           - task: UsePythonVersion@0
             condition: eq(variables['projectKind'], 'python_app')
             inputs:
               versionSpec: '3.11'
-          
+
           - script: |
               npm ci
               npm test
             condition: eq(variables['projectKind'], 'nodejs_api')
             displayName: 'Test Node.js project'
-          
+
           - script: |
               pip install -r requirements.txt
               pytest
             condition: eq(variables['projectKind'], 'python_app')
             displayName: 'Test Python project'
-          
+
           - task: PublishTestResults@2
             inputs:
               testResultsFormat: 'JUnit'
               testResultsFiles: '**/test-results/*.xml'
-          
+
           - task: PublishCodeCoverageResults@1
             inputs:
               codeCoverageTool: 'Cobertura'
               summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.xml'
-  
+
   - stage: Deploy
     dependsOn: Test
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
@@ -883,7 +883,7 @@ stages:
               steps:
                 - checkout: self
                   submodules: true
-                
+
                 - script: |
                     bash .workflow_core/scripts/deploy.sh production
                   displayName: 'Deploy to production'
@@ -937,12 +937,12 @@ case "$STAGE" in
     echo "Running linter..."
     eval "$LINT_COMMAND"
     ;;
-  
+
   test)
     echo "Running tests..."
     eval "$TEST_COMMAND"
     ;;
-  
+
   build)
     echo "Building project..."
     case "$PROJECT_KIND" in
@@ -957,12 +957,12 @@ case "$STAGE" in
         ;;
     esac
     ;;
-  
+
   deploy)
     echo "Deploying..."
     bash scripts/deploy.sh "${2:-staging}"
     ;;
-  
+
   *)
     echo "Unknown stage: $STAGE"
     exit 1
@@ -1031,7 +1031,7 @@ withCredentials([
 deploy:
   only:
     - main
-  
+
 # Require manual approval for production
 deploy:production:
   when: manual
@@ -1230,5 +1230,5 @@ key: v2-${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
 ---
 
-**Last Updated**: 2026-02-07  
+**Last Updated**: 2026-02-07
 **Document Version**: 1.0.2

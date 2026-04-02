@@ -51,14 +51,14 @@ When adding new advanced documentation to this directory:
 2. **Follow the structure**:
    ```markdown
    # Advanced Guide: Topic
-   
+
    **Version**: 1.0.2
    **Last Updated**: YYYY-MM-DD
    **Difficulty**: Advanced
    **Prerequisites**: List advanced requirements
-   
+
    > **Purpose**: What advanced users will achieve
-   
+
    ## Overview
    ## Architecture Considerations
    ## Implementation Patterns

@@ -173,6 +173,6 @@ diff <(grep -E '^[a-z_]+:' .workflow_core/config/.workflow-config.yaml.template 
 
 ---
 
-**Version:** 1.0.2  
-**Last Updated:** 2026-01-29  
+**Version:** 1.0.2
+**Last Updated:** 2026-01-29
 **Print this page for quick reference at your desk!**

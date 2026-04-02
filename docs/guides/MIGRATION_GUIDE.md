@@ -1,6 +1,6 @@
 # Migration Guide
 
-**Version**: 1.2.0  
+**Version**: 1.2.0
 **Last Updated**: 2026-02-09
 
 > **Purpose**: Step-by-step instructions for upgrading ai_workflow_core between versions. This guide covers breaking changes, deprecations, and migration strategies.
@@ -85,7 +85,7 @@ ai_workflow_core follows [Semantic Versioning](https://semver.org/):
 
 ### Upgrading to v2.0.0 (Unreleased)
 
-**Status**: 🚧 In development  
+**Status**: 🚧 In development
 **Breaking Changes**: Yes - Directory structure changes
 
 #### Breaking Changes Summary
@@ -235,7 +235,7 @@ git push origin main
 
 ### Upgrading to v1.0.2 (Current)
 
-**Status**: ✅ Stable release  
+**Status**: ✅ Stable release
 **Breaking Changes**: No (initial stable release)
 
 #### From Pre-release (v0.x) to v1.0.2
@@ -312,8 +312,8 @@ git commit -m "chore: upgrade ai_workflow_core to v1.0.2"
 
 #### Cleanup Script Directory Structure
 
-**Component**: `scripts/cleanup_artifacts.sh.template`  
-**Type**: Breaking change  
+**Component**: `scripts/cleanup_artifacts.sh.template`
+**Type**: Breaking change
 **Date**: TBD
 
 **What Changed**:
@@ -340,8 +340,8 @@ WORKFLOW_DIR="${REPO_ROOT}/.ai_workflow"
 
 #### Cache Directory Relocation
 
-**Component**: Incremental cache  
-**Type**: Breaking change  
+**Component**: Incremental cache
+**Type**: Breaking change
 **Date**: TBD
 
 **What Changed**:
@@ -368,7 +368,7 @@ WORKFLOW_DIR="${REPO_ROOT}/.ai_workflow"
 
 ### v1.0.2 (Current)
 
-**Type**: Initial stable release  
+**Type**: Initial stable release
 **Breaking Changes**: None (first major version)
 
 **Notable Changes**:
@@ -531,17 +531,17 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: recursive
-      
+
       - name: Validate config
         run: yamllint .workflow-config.yaml
-      
+
       - name: Check placeholders
         run: |
           if grep -q "{{" .workflow-config.yaml; then
             echo "Error: Placeholders found in config"
             exit 1
           fi
-      
+
       - name: Run tests
         run: npm test
 ```
@@ -589,8 +589,8 @@ echo "✅ Smoke tests passed!"
 
 ### v1.0.2 → v2.0.0 (When Released)
 
-**Complexity**: High  
-**Time**: 30-60 minutes  
+**Complexity**: High
+**Time**: 30-60 minutes
 **Risk**: Medium-High
 
 **Key Changes**:
@@ -602,8 +602,8 @@ echo "✅ Smoke tests passed!"
 
 ### v0.x → v1.0.2
 
-**Complexity**: Low  
-**Time**: 15-20 minutes  
+**Complexity**: Low
+**Time**: 15-20 minutes
 **Risk**: Low
 
 **Key Changes**:
@@ -714,5 +714,5 @@ See `docs/guides/VERSION_MANAGEMENT.md` for complete strategies.
 
 ---
 
-**Last Updated**: 2026-02-09  
+**Last Updated**: 2026-02-09
 **Document Version**: 1.2.0

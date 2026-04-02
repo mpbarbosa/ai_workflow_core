@@ -2,32 +2,52 @@
  * types.ts — Core TypeScript interfaces and type guards for the prompt
  * config-loader module.
  *
- * These types model the two YAML config files:
- *   - config/prompt_roles.yaml  (PromptRole / PromptRolesConfig)
- *   - config/ai_helpers.yaml    (PersonaConfig / AIHelpersConfig)
+ * These types model two YAML config files consumed by loader.ts:
  *
- * and the resolved output produced by loader.ts (ResolvedPersona).
+ * | YAML file                       | Root type           |
+ * |---------------------------------|---------------------|
+ * | `config/prompt_roles.yaml`      | {@link PromptRolesConfig} |
+ * | `config/ai_helpers.yaml`        | {@link AIHelpersConfig}   |
+ *
+ * The resolved output produced by {@link resolvePersona} /
+ * {@link resolveAllPersonas} is represented by {@link ResolvedPersona}.
+ *
+ * **Type guard functions** (`is*`) are exported for runtime validation and
+ * are used internally by loader.ts to validate file contents before returning
+ * them to callers.
  */
 
 // ---------------------------------------------------------------------------
-// prompt_roles.yaml schema
+// config/prompt_roles.yaml schema
 // ---------------------------------------------------------------------------
 
-/** A single named role entry from config/prompt_roles.yaml. */
+/** A single named role entry from config/prompt_roles.yaml.
+ *
+ * @see `config/prompt_roles.yaml` — `roles.<name>` entry
+ */
 export interface PromptRole {
-  /** One-line human-readable summary of what this role does. */
-  description: string;
-  /** The full role/identity text injected at prompt construction time. */
-  role_prefix: string;
+  /** *(required)* One-line human-readable summary of what this role does. */
+  readonly description: string;
+  /** *(required)* The full role/identity text injected at prompt construction time. */
+  readonly role_prefix: string;
 }
 
-/** The top-level shape of config/prompt_roles.yaml. */
+/** The top-level shape of config/prompt_roles.yaml.
+ *
+ * @see `config/prompt_roles.yaml`
+ * @example
+ * ```yaml
+ * roles:
+ *   developer: { description: "...", role_prefix: "..." }
+ * ```
+ */
 export interface PromptRolesConfig {
-  roles: Record<string, PromptRole>;
+  /** *(required)* Map of role name → {@link PromptRole}. */
+  readonly roles: Record<string, PromptRole>;
 }
 
 // ---------------------------------------------------------------------------
-// ai_helpers.yaml schema
+// config/ai_helpers.yaml schema
 // ---------------------------------------------------------------------------
 
 /**
@@ -35,42 +55,53 @@ export interface PromptRolesConfig {
  *
  * After the refactor, personas no longer carry an inline `role_prefix`.
  * Instead they carry a `role_ref` key that points to an entry in
- * PromptRolesConfig.roles.
+ * {@link PromptRolesConfig}.roles.
+ *
+ * @see `config/ai_helpers.yaml` — top-level persona keys
  */
 export interface PersonaConfig {
-  /** Key referencing an entry in PromptRolesConfig.roles. */
+  /** *(required)* Key referencing an entry in {@link PromptRolesConfig}.roles. */
   role_ref: string;
-  /** YAML anchor alias for shared behavioral guidelines (optional). */
+  /** *(optional)* YAML anchor alias for shared behavioral guidelines. */
   behavioral_guidelines?: string;
-  /** Prompt template with `{variable}` placeholders (optional). */
+  /** *(optional)* Prompt template with `{variable}` placeholders. */
   task_template?: string;
-  /** Step-by-step methodology text injected into the prompt (optional). */
+  /** *(optional)* Step-by-step methodology text injected into the prompt. */
   approach?: string;
   /** Any additional fields that may appear in persona definitions. */
   [key: string]: unknown;
 }
 
-/** The top-level shape of config/ai_helpers.yaml. */
-export type AIHelpersConfig = Record<string, PersonaConfig | unknown>;
+/** The top-level shape of config/ai_helpers.yaml.
+ *
+ * The map may contain `PersonaConfig` entries (identified by a `role_ref`
+ * field) as well as arbitrary lookup tables (e.g., `language_specific_*`).
+ * Use {@link isPersonaConfig} to narrow individual values.
+ *
+ * @see `config/ai_helpers.yaml`
+ */
+export type AIHelpersConfig = Record<string, unknown>;
 
 // ---------------------------------------------------------------------------
-// Resolved output
+// Resolved output  (produced by loader.ts resolvePersona / resolveAllPersonas)
 // ---------------------------------------------------------------------------
 
 /**
- * A fully resolved persona — identical to PersonaConfig but with
+ * A fully resolved persona — identical to {@link PersonaConfig} but with
  * `role_ref` replaced by the concrete `role_prefix` text from
- * PromptRolesConfig.
+ * {@link PromptRolesConfig}.
+ *
+ * Produced by {@link resolvePersona} in `src/loader.ts`.
  */
 export interface ResolvedPersona extends Omit<PersonaConfig, 'role_ref'> {
-  /** The resolved role/identity text (no longer a reference key). */
-  role_prefix: string;
-  /** The original role_ref key, preserved for traceability. */
-  role_ref: string;
+  /** *(required)* The resolved role/identity text (no longer a reference key). */
+  readonly role_prefix: string;
+  /** *(required)* The original role_ref key, preserved for traceability. */
+  readonly role_ref: string;
 }
 
 // ---------------------------------------------------------------------------
-// Custom error types
+// Custom error types  (thrown by loader.ts)
 // ---------------------------------------------------------------------------
 
 /** Thrown when a `role_ref` key in ai_helpers.yaml has no matching entry
@@ -104,7 +135,7 @@ export class InvalidConfigError extends Error {
 }
 
 // ---------------------------------------------------------------------------
-// Type guards
+// Type guards  (required: used by loader.ts for runtime YAML validation)
 // ---------------------------------------------------------------------------
 
 /** Returns true if `value` is a valid PromptRole object. */
@@ -116,9 +147,10 @@ export function isPromptRole(value: unknown): value is PromptRole {
 
 /** Returns true if `value` is a valid PromptRolesConfig object. */
 export function isPromptRolesConfig(value: unknown): value is PromptRolesConfig {
-  if (typeof value !== 'object' || value === null) return false;
+  if (typeof value !== 'object' || value === null) { return false; }
   const v = value as Record<string, unknown>;
-  return typeof v['roles'] === 'object' && v['roles'] !== null;
+  if (typeof v['roles'] !== 'object' || v['roles'] === null) { return false; }
+  return Object.values(v['roles'] as Record<string, unknown>).every(isPromptRole);
 }
 
 /** Returns true if `value` is a valid PersonaConfig object (has role_ref). */

@@ -1,7 +1,7 @@
 # Testing & Validation Guide
 
-**Version**: 1.0.2  
-**Last Updated**: 2026-02-07  
+**Version**: 1.0.2
+**Last Updated**: 2026-02-07
 **Audience**: Users, integrators, contributors
 
 > **Purpose**: Comprehensive guide for testing and validating ai_workflow_core configurations, templates, and integrations.
@@ -28,12 +28,12 @@
 
 When working with ai_workflow_core, you should test:
 
-✅ **Configuration validity**: YAML syntax, required fields, placeholder replacement  
-✅ **Template customization**: Proper substitution of placeholders  
-✅ **Directory structure**: Required directories exist and are properly configured  
-✅ **Project kind compatibility**: Configuration matches project kind requirements  
-✅ **Script execution**: Template scripts work after customization  
-✅ **Integration**: Submodule integration works correctly  
+✅ **Configuration validity**: YAML syntax, required fields, placeholder replacement
+✅ **Template customization**: Proper substitution of placeholders
+✅ **Directory structure**: Required directories exist and are properly configured
+✅ **Project kind compatibility**: Configuration matches project kind requirements
+✅ **Script execution**: Template scripts work after customization
+✅ **Integration**: Submodule integration works correctly
 ✅ **CI/CD workflows**: GitHub Actions and other CI/CD workflows function properly
 
 ### Testing Philosophy
@@ -163,24 +163,24 @@ from pathlib import Path
 def validate_config(config_path: Path) -> list:
     """Validate configuration file and return list of errors."""
     errors = []
-    
+
     # 1. Check file exists
     if not config_path.exists():
         return [f"Configuration file not found: {config_path}"]
-    
+
     # 2. Parse YAML
     try:
         with open(config_path, 'r') as f:
             config = yaml.safe_load(f)
     except yaml.YAMLError as e:
         return [f"YAML syntax error: {e}"]
-    
+
     # 3. Check required sections
     required_sections = ['project', 'tech_stack', 'structure']
     for section in required_sections:
         if section not in config:
             errors.append(f"Missing required section: {section}")
-    
+
     # 4. Check required project fields
     if 'project' in config:
         required_project_fields = ['name', 'type', 'kind', 'version']
@@ -189,30 +189,30 @@ def validate_config(config_path: Path) -> list:
                 errors.append(f"Missing required field: project.{field}")
             elif not config['project'][field]:
                 errors.append(f"Empty value for: project.{field}")
-    
+
     # 5. Check for unreplaced placeholders
     config_str = yaml.dump(config)
     placeholders = re.findall(r'{{[^}]+}}', config_str)
     if placeholders:
         errors.append(f"Unreplaced placeholders found: {', '.join(set(placeholders))}")
-    
+
     # 6. Validate project kind format
     if 'project' in config and 'kind' in config['project']:
         kind = config['project']['kind']
         valid_kinds = [
-            'shell_script_automation', 'nodejs_api', 'client_spa', 
-            'react_spa', 'static_website', 'python_app', 
+            'shell_script_automation', 'nodejs_api', 'client_spa',
+            'react_spa', 'static_website', 'python_app',
             'configuration_library', 'generic'
         ]
         if kind not in valid_kinds:
             errors.append(f"Invalid project kind: {kind}. Must be one of: {', '.join(valid_kinds)}")
-    
+
     return errors
 
 def main():
     config_path = Path('.workflow-config.yaml')
     errors = validate_config(config_path)
-    
+
     if errors:
         print("❌ Configuration validation failed:\n")
         for error in errors:
@@ -294,13 +294,13 @@ import re
 
 def check_template_completeness(template_path: str) -> list:
     """Check if template has all required sections."""
-    
+
     with open(template_path, 'r') as f:
         # Replace placeholders with dummy values
         content = f.read()
         content = re.sub(r'{{[^}]*}}', 'PLACEHOLDER', content)
         template = yaml.safe_load(content)
-    
+
     required_sections = [
         'project',
         'tech_stack',
@@ -309,7 +309,7 @@ def check_template_completeness(template_path: str) -> list:
         'ci_cd',
         'workflow'
     ]
-    
+
     missing = [s for s in required_sections if s not in template]
     return missing
 
@@ -486,37 +486,37 @@ from pathlib import Path
 
 def validate_project_kind(config_path: Path, project_root: Path) -> list:
     """Validate project matches its declared kind."""
-    
+
     errors = []
-    
+
     # Load config
     with open(config_path, 'r') as f:
         config = yaml.safe_load(f)
-    
+
     kind = config.get('project', {}).get('kind')
-    
+
     # Load project kind requirements
     kinds_path = Path('.workflow_core/config/project_kinds.yaml')
     with open(kinds_path, 'r') as f:
         kinds = yaml.safe_load(f)
-    
+
     kind_spec = kinds['project_kinds'].get(kind)
     if not kind_spec:
         return [f"Unknown project kind: {kind}"]
-    
+
     # Validate required files
     required_files = kind_spec.get('validation', {}).get('required_files', [])
     for file_pattern in required_files:
         if not list(project_root.glob(file_pattern)):
             errors.append(f"Missing required file pattern: {file_pattern}")
-    
+
     # Validate required directories
     required_dirs = kind_spec.get('validation', {}).get('required_directories', [])
     for dir_name in required_dirs:
         dir_path = project_root / dir_name
         if not dir_path.exists():
             errors.append(f"Missing required directory: {dir_name}")
-    
+
     return errors
 
 # Usage
@@ -554,26 +554,26 @@ on:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           submodules: recursive
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Install dependencies
         run: |
           pip install yamllint pyyaml
-      
+
       - name: Validate YAML syntax
         run: |
           yamllint -d relaxed .workflow-config.yaml
-      
+
       - name: Check for unreplaced placeholders
         run: |
           if grep -q "{{.*}}" .workflow-config.yaml; then
@@ -582,7 +582,7 @@ jobs:
             exit 1
           fi
           echo "✅ No placeholders found"
-      
+
       - name: Validate configuration structure
         run: |
           python3 .workflow_core/scripts/validate_config.py
@@ -603,24 +603,24 @@ on:
 jobs:
   test-fresh-integration:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Create test directory
         run: mkdir -p /tmp/test_project
-      
+
       - name: Initialize git repo
         working-directory: /tmp/test_project
         run: |
           git init
           git config user.name "Test User"
           git config user.email "test@example.com"
-      
+
       - name: Add ai_workflow_core as submodule
         working-directory: /tmp/test_project
         run: |
           git submodule add https://github.com/mpbarbosa/ai_workflow_core.git .workflow_core
           git submodule update --init --recursive
-      
+
       - name: Copy and customize config
         working-directory: /tmp/test_project
         run: |
@@ -634,13 +634,13 @@ jobs:
           sed -i 's/{{TEST_FRAMEWORK}}/jest/g' .workflow-config.yaml
           sed -i 's/{{TEST_COMMAND}}/npm test/g' .workflow-config.yaml
           sed -i 's/{{LINT_COMMAND}}/eslint ./g' .workflow-config.yaml
-      
+
       - name: Validate configuration
         working-directory: /tmp/test_project
         run: |
           pip install yamllint
           yamllint -d relaxed .workflow-config.yaml
-      
+
       - name: Verify no placeholders remain
         working-directory: /tmp/test_project
         run: |
@@ -733,14 +733,14 @@ if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
     echo "Upgrading to $LATEST_VERSION..."
     git checkout "$LATEST_VERSION"
     cd ..
-    
+
     # 4. Test configuration still valid
     yamllint -d relaxed .workflow-config.yaml
-    
+
     # 5. Commit submodule update
     git add .workflow_core
     git commit -m "chore: upgrade ai_workflow_core to $LATEST_VERSION"
-    
+
     echo "✅ Upgrade successful"
 else
     echo "Already on latest version"
@@ -907,7 +907,7 @@ repos:
         entry: yamllint -d relaxed
         language: system
         files: ^\.workflow-config\.yaml$
-      
+
       - id: check-placeholders
         name: Check for unreplaced placeholders
         entry: bash -c 'grep -q "{{.*}}" .workflow-config.yaml && exit 1 || exit 0'
@@ -978,6 +978,6 @@ After setting up testing:
 
 ---
 
-**Last Updated**: 2026-02-07  
-**Document Version**: 1.0.2  
+**Last Updated**: 2026-02-07
+**Document Version**: 1.0.2
 **Maintained By**: ai_workflow_core team

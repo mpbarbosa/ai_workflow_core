@@ -123,7 +123,7 @@
 - **Path:** docs/api/SCRIPT_API_REFERENCE.md
 - **Description:** `docs/api/SCRIPT_API_REFERENCE.md` does not end with a single newline character, violating MD047.
 - **Fix:** Append a trailing newline to `docs/api/SCRIPT_API_REFERENCE.md` (e.g., `echo >> docs/api/SCRIPT_API_REFERENCE.md`).
-- **Status:** open
+- **Status:** done
 
 ---
 

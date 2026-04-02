@@ -84,7 +84,7 @@
 - **Path:** templates/debugging
 - **Description:** The `templates/debugging/` directory contains four checklist markdown files but has no `README.md` and is not referenced from any parent documentation.
 - **Fix:** Add a `README.md` in `templates/debugging/` describing the four checklists and their intended audience, and add a mention in the parent `templates/` documentation.
-- **Status:** open
+- **Status:** done
 
 ---
 

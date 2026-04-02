@@ -71,7 +71,7 @@
 - **Path:** docs/architecture/OVERVIEW.md
 - **Description:** Line 443 links to `ADR.md` (Architecture Decision Records) inside `docs/architecture/`, but that file does not exist.
 - **Fix:** Create a stub `docs/architecture/ADR.md` listing key architectural decisions, or remove the link and replace it with a reference to the ADR section in `docs/ARCHITECTURE.md`.
-- **Status:** open
+- **Status:** done
 
 ---
 

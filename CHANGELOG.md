@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **`config/ai_helpers.yaml`** — Improved `OUTPUT FORMAT` block in `typescript_developer_prompt`:
+  - Clarified that each change justification should be one sentence max.
+  - Added guidance to include file path and line number (or surrounding snippet) per change.
+  - Added guardrail: only suggest type changes backed by concrete evidence of unsafety or a policy violation; avoid speculative fixes.
+  - Appended a short example output block so reviewers have a clear template to follow.
+
 ## [1.2.0] — 2026-04-01
 
 ### Added

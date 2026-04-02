@@ -110,7 +110,7 @@
 - **Path:** CHANGELOG.md
 - **Description:** `CHANGELOG.md` does not end with a single newline character, violating MD047 and causing issues with POSIX tools and file concatenation.
 - **Fix:** Append a trailing newline to `CHANGELOG.md` (e.g., `echo >> CHANGELOG.md`).
-- **Status:** open
+- **Status:** done
 
 ---
 

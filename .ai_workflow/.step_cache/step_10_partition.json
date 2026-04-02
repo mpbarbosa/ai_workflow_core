@@ -1,12 +1,11 @@
 {
   "version": 1,
   "partitionIndex": 1,
-  "totalPartitions": 3,
-  "filesHash": "e7efd822",
+  "totalPartitions": 2,
+  "filesHash": "9bb19beb",
   "partitionLabels": [
-    "package-lock.json, package.json, tsconfig.json, jest.config.ts",
-    "src, .validation_analysis_results.json, .workflow_session_cloc_cache.json",
-    "scripts"
+    "eslint.config.js, .validation_analysis_results.json, .workflow_session_cloc_cache.json, tsconfig.eslint.json",
+    "src, scripts"
   ],
-  "updatedAt": "2026-04-01T21:05:16.442Z"
+  "updatedAt": "2026-04-02T02:34:20.953Z"
 }

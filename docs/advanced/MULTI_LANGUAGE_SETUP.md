@@ -958,7 +958,7 @@ dependencies:
 // frontend/package.json
 {
   "name": "my-app-frontend",
-  "version": "1.2.0"  // ← Keep in sync
+  "version": "1.2.1"  // ← Keep in sync
 }
 ```
 
@@ -966,14 +966,14 @@ dependencies:
 # backend/pyproject.toml
 [tool.poetry]
 name = "my-app-backend"
-version = "1.2.0"  # ← Keep in sync
+version = "1.2.1"  # ← Keep in sync
 ```
 
 ```
 # cli/version.go
 package main
 
-const Version = "1.2.0"  // ← Keep in sync
+const Version = "1.2.1"  // ← Keep in sync
 ```
 
 ### 5. CI/CD Strategy

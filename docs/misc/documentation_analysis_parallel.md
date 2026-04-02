@@ -115,8 +115,8 @@ I've analyzed all three API reference documentation files and created a comprehe
 
 1. **VERSION MISMATCHES** (2 of 3 files):
    - `AI_HELPERS_REFERENCE.md`: Claims v5.0.0, actual is v4.1.0
-   - `AI_PROMPTS_REFERENCE.md`: Claims v2.0.0, actual is v1.2.0
-   - Only `PROJECT_KINDS_SCHEMA.md` has correct version (v1.2.0)
+   - `AI_PROMPTS_REFERENCE.md`: Claims v2.0.0, actual is v1.2.1
+   - Only `PROJECT_KINDS_SCHEMA.md` has correct version (v1.2.1)
 
 2. **PROJECT KIND DISCREPANCY**:
    - `project_kinds.yaml`: 8 kinds (official)
@@ -130,7 +130,7 @@ I've analyzed all three API reference documentation files and created a comprehe
 ### **Priority Actions Required**
 
 **Phase 1 - Critical (20 min)**:
-- Fix version numbers: 5.0.0→4.1.0, 2.0.0→1.2.0
+- Fix version numbers: 5.0.0→4.1.0, 2.0.0→1.2.1
 - Update dates to match config files
 - Fix cross-reference version numbers
 
@@ -591,7 +591,7 @@ view docs/advanced/CUSTOM_WORKFLOW_CREATION.md --view-range [100, 200]
 
 **❌ Issues:**
 1. **Lines 219, 349:** Python project example uses `kind: "library"` - not a valid project kind per `project_kinds.yaml`
-2. **Line 1113:** References `docs/api/PROJECT_KINDS_SCHEMA.md` but doesn't mention 8 kinds align with project_kinds.yaml v1.2.0
+2. **Line 1113:** References `docs/api/PROJECT_KINDS_SCHEMA.md` but doesn't mention 8 kinds align with project_kinds.yaml v1.2.1
 
 **Recommendations:**
 ```yaml

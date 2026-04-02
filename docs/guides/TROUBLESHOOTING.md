@@ -504,7 +504,7 @@ git commit -m "chore: update ai_workflow_core to v1.0.2"
 **Cause**: Incompatible versions.
 
 **Compatibility**:
-- ai_workflow_core v1.0.2 → ai_workflow v1.2.0+
+- ai_workflow_core v1.0.2 → ai_workflow v1.2.1+
 
 **Solution**:
 ```bash

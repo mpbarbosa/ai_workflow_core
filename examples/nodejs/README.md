@@ -437,4 +437,4 @@ jobs:
 
 **Integration Strategy**: Version pinning with quarterly updates  
 **Last Updated**: 2026-01-29  
-**Example Version**: 1.2.0
+**Example Version**: 1.2.1

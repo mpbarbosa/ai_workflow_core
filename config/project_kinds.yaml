@@ -975,7 +975,7 @@ project_kinds:
   # ----------------------------------------------------------------------------
   location_based_service:
     name: "Location-Based Service"
-    description: "Geolocation-aware client SPA with map display, POI browsing, reverse geocoding, and location tracking (e.g., tourist guides, city explorers, geo-search apps)"
+    description: "Geolocation-aware client SPA with map display, POI browsing, reverse geocoding, and location tracking (e.g., tourist guides, city explorers, geo-search apps). Supports vanilla JS, TypeScript, and Vue 3 implementations."
 
     # Auto-detection indicators used by project_kind_detection.js
     detection:
@@ -996,9 +996,13 @@ project_kinds:
         - "@aws-sdk/client-location"
       file_indicators:
         - "GeolocationService.js"
+        - "GeolocationService.ts"
         - "GeoPosition.js"
+        - "GeoPosition.ts"
         - "ReverseGeocoder.js"
+        - "ReverseGeocoder.ts"
         - "PositionManager.js"
+        - "PositionManager.ts"
       confidence: 85
 
     # Validation rules
@@ -1006,14 +1010,15 @@ project_kinds:
       required_files:
         - "index.html|public/index.html|src/index.html"
         - "package.json"
-        - "src/**/*.js"
+        - "src/**/*.js|src/**/*.ts"
       required_directories:
         - "src"
       optional_files:
         - "README.md"
-        - "vite.config.js|webpack.config.js"
-        - "jest.config.js|jest.config.unit.js"
-        - "eslint.config.js"
+        - "vite.config.js|vite.config.ts"
+        - "jest.config.js|jest.config.unit.js|jest.config.ts"
+        - "tsconfig.json"
+        - "eslint.config.js|eslint.config.ts"
         - "service-worker.js|sw.js"
         - ".env.example"
         - "manifest.json"
@@ -1022,17 +1027,17 @@ project_kinds:
         - "*.css"
         - "*.js"
         - "*.mjs"
+        - "*.ts"
+        - "*.vue"
       excluded_patterns:
         - "*.jsx"
-        - "*.tsx"
-        - "*.vue"
         - "angular.json"
 
     # Test execution configuration
     testing:
-      test_framework: "jest|playwright|selenium"
+      test_framework: "jest|playwright|selenium|vitest"
       test_directory: "__tests__|tests"
-      test_file_pattern: "*.test.js|*.spec.js|*.e2e.test.js"
+      test_file_pattern: "*.test.js|*.spec.js|*.e2e.test.js|*.test.ts|*.spec.ts|*.e2e.test.ts"
       test_command: "npm test"
       e2e_command: "npm run test:e2e"
       coverage_required: true
@@ -1044,8 +1049,13 @@ project_kinds:
         - name: "eslint"
           enabled: true
           command: "npx eslint"
-          args: ["src/**/*.js"]
-          file_pattern: "*.js|*.mjs"
+          args: ["src"]
+          file_pattern: "*.js|*.mjs|*.ts|*.vue"
+        - name: "vue-tsc"
+          enabled: true
+          command: "npx vue-tsc"
+          args: ["--noEmit"]
+          file_pattern: "*.ts|*.vue"
         - name: "htmlhint"
           enabled: true
           command: "npx htmlhint"
@@ -1107,11 +1117,11 @@ project_kinds:
         - "Verify location-privacy guards (no coordinates exposed in logs or URLs)"
 
       style_guides:
-        - "Airbnb JavaScript Style Guide (ES6+)"
+        - "Airbnb JavaScript Style Guide (ES6+) / TypeScript ESLint rules for TS projects"
         - "W3C Geolocation API specification patterns"
-        - "Vanilla JS Best Practices (avoiding jQuery)"
+        - "Vue 3 Style Guide (Composition API with <script setup>) for Vue projects"
         - "HTML5 semantic markup guidelines"
-        - "CSS BEM methodology for custom styles"
+        - "CSS BEM methodology / design tokens for custom styles"
 
       best_practices:
         - "Always request geolocation lazily (on user gesture) — never on page load"
@@ -1127,16 +1137,21 @@ project_kinds:
         - "Use vector tiles or cached raster tiles to minimise data usage"
         - "Support reduced-motion preference for map fly-to animations"
         - "Provide ARIA live regions for screen-reader announcements of location updates"
-        - "Use ES6+ modules (import/export) and avoid global namespace pollution"
+        - "Use ES6+/TypeScript modules (import/export) and avoid global namespace pollution"
         - "Implement proper CORS handling for geocoding and tile API calls"
+        - "Use TypeScript strict mode (strict: true) for all new code; zero explicit any"
+        - "Use Vue 3 Composition API (<script setup lang='ts'>) for all Vue components"
+        - "Employ a TimerManager utility to centralise setInterval/setTimeout and prevent memory leaks"
 
       directory_standards:
         - "HTML entry point in root or src/ directory"
         - "Geolocation and map services in src/services/ or src/core/"
-        - "POI data fetching and caching in src/services/ (e.g., PoiService.js)"
-        - "Map rendering logic in src/components/ or src/views/"
+        - "POI data fetching and caching in src/services/"
+        - "Map rendering logic in src/components/ (Vue SFC) or src/views/"
         - "Coordinate utilities (distance, bounding box) in src/utils/"
-        - "Stylesheets in src/ or public/css/"
+        - "Type definitions in src/types/"
+        - "Configuration constants in src/config/"
+        - "Stylesheets in src/ (modular CSS files) or public/css/"
         - "Static assets (icons, tile placeholders) in public/ or assets/"
         - "Service worker at project root (service-worker.js or sw.js)"
         - "Web app manifest (manifest.json) at project root"
@@ -1228,15 +1243,131 @@ project_kinds:
         - "Keep configuration files organized"
         - "Use conventional directory names"
 
+  # ----------------------------------------------------------------------------
+  # TypeScript npm Library
+  # Added for bessa_patterns.ts team alignment — 2026-04-02
+  # ----------------------------------------------------------------------------
+  typescript_library:
+    name: "TypeScript npm Library"
+    description: "Zero-dependency TypeScript library published to npm with dual CJS/ESM output (e.g., design pattern libraries)"
+
+    validation:
+      required_files:
+        - "package.json"
+        - "tsconfig.json"
+        - "src/index.ts"
+        - "README.md"
+        - "CHANGELOG.md"
+      required_directories:
+        - "src"
+        - "test"
+        - "dist"
+        - "docs"
+      optional_files:
+        - "vite.config.ts"
+        - ".nvmrc"
+        - "LICENSE"
+        - ".workflow-config.yaml"
+      file_patterns:
+        - "*.ts"
+        - "*.md"
+        - "*.json"
+
+    testing:
+      test_framework: "jest"
+      test_directory: "test"
+      test_file_pattern: "*.test.ts"
+      test_command: "npm test"
+      coverage_required: true
+      coverage_threshold: 80
+
+    quality:
+      linters:
+        - name: "eslint"
+          enabled: true
+          command: "npm run lint"
+          file_pattern: "*.ts"
+        - name: "prettier"
+          enabled: true
+          command: "npx prettier --check ."
+          file_pattern: "*.ts|*.json|*.md"
+      documentation_required: true
+      inline_comments_recommended: true
+      readme_required: true
+      api_documentation_required: true
+
+    dependencies:
+      package_files:
+        - "package.json"
+      lock_files:
+        - "package-lock.json"
+      validation_required: true
+      security_audit_required: true
+      zero_production_deps_preferred: true
+
+    build:
+      required: true
+      build_command: "npm run build"
+      output_directory: "dist"
+
+    deployment:
+      type: "npm-publish"
+      requires_build: true
+      artifact_patterns:
+        - "dist/index.cjs"
+        - "dist/index.mjs"
+        - "dist/index.d.ts"
+        - "dist/*.map"
+
+    ai_guidance:
+      testing_standards:
+        - "One test file per pattern: test/<PatternName>.test.ts"
+        - "Target 100% line coverage and ≥80% branch coverage per pattern file"
+        - "Test error isolation: each subscriber wrapped in try/catch must not propagate to others"
+        - "Test immutability: observer arrays must use spread + filter, never in-place mutation"
+        - "Cover null/undefined inputs explicitly — distinguish null-as-value from unregistered state"
+        - "Write integration tests for cross-pattern composed behaviour"
+
+      style_guides:
+        - "One pattern per file: src/<PatternName>.ts"
+        - "Concrete, directly instantiable classes — no abstract base class boilerplate"
+        - "Prefix internal methods with _ (e.g., _notifyObservers)"
+        - "JSDoc with @param, @returns, @throws, and @example on every public method"
+        - "Use export type for type-only exports in src/index.ts"
+        - "Named exports only — no default exports"
+
+      best_practices:
+        - "Zero production runtime dependencies — all dependencies must be devDependencies"
+        - "Dual CJS/ESM output via Vite library mode (build.lib with formats: ['es', 'cjs'])"
+        - "package.json exports field must cover 'import', 'require', and 'types' conditions"
+        - "Immutable subscriber collections: spread + filter pattern exclusively"
+        - "Per-subscriber error isolation: try/catch per notification call"
+        - "Run scripts/version-sync.js after every version bump to keep all files consistent"
+        - "Guard npm publish behind: NPM_TOKEN check → test pass → build success"
+        - "Tag alpha/beta/rc releases with appropriate npm dist-tags (not 'latest')"
+
+      directory_standards:
+        - "src/ for pattern implementations (one file per pattern)"
+        - "test/ for Jest test suites (one file per pattern)"
+        - "dist/ for compiled CJS + ESM + .d.ts output (generated, not committed)"
+        - "docs/ for API references (one <PatternName>_API.md per pattern)"
+        - "scripts/ for deploy.sh, version-sync.js, and other release tooling"
+
 # ============================================================================
 # CONFIGURATION METADATA
 # ============================================================================
 
 metadata:
-  schema_version: "1.5.0"
-  last_updated: "2026-02-22"
+  schema_version: "1.7.0"
+  last_updated: "2026-04-02"
   compatible_workflow_version: "2.3.1"
   changelog:
+    - version: "1.7.0"
+      date: "2026-04-02"
+      changes: "Updated location_based_service to support TypeScript + Vue 3 (removed *.vue/*.tsx exclusions, added TS linting via vue-tsc, TypeScript best practices, Vue 3 directory standards)"
+    - version: "1.6.0"
+      date: "2026-04-02"
+      changes: "Added typescript_library project kind for zero-dependency TypeScript npm libraries with dual CJS/ESM output (bessa_patterns.ts team alignment)"
     - version: "1.5.0"
       date: "2026-02-22"
       changes: "Added location_based_service project kind for geolocation-aware client SPAs (tourist guides, map apps, POI browsers)"

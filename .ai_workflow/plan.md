@@ -97,7 +97,7 @@
 - **Path:** src/__tests__/loader.test.ts
 - **Description:** Several `describe` blocks repeat inline calls to `loadPromptRoles(PROMPT_ROLES_YAML)` and `loadPersonas(AI_HELPERS_YAML)` that could be extracted into `beforeEach` setup, and similar error-path tests could use `it.each`.
 - **Fix:** Extract repeated `loadPromptRoles`/`loadPersonas` calls into `beforeEach` blocks within the relevant `describe` groups; optionally consolidate similar `toThrow` tests with `it.each`.
-- **Status:** open
+- **Status:** done
 
 ---
 

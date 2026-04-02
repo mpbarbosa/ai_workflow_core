@@ -17,12 +17,11 @@ import {
   isPromptRolesConfig,
   loadPersonas,
   loadPromptRoles,
-  PersonaConfig,
-  PromptRolesConfig,
   resolveAllPersonas,
   resolvePersona,
   RoleNotFoundError,
 } from '../index';
+import type { PersonaConfig, PromptRolesConfig } from '../index';
 
 // ---------------------------------------------------------------------------
 // Fixture paths
@@ -39,8 +38,13 @@ const MISSING_FILE = path.join(FIXTURES, 'does_not_exist.yaml');
 // ---------------------------------------------------------------------------
 
 describe('loadPromptRoles', () => {
+  let config: PromptRolesConfig;
+
+  beforeEach(() => {
+    config = loadPromptRoles(PROMPT_ROLES_YAML);
+  });
+
   it('loads a valid prompt_roles.yaml and returns PromptRolesConfig', () => {
-    const config = loadPromptRoles(PROMPT_ROLES_YAML);
     expect(config).toHaveProperty('roles');
     expect(typeof config.roles).toBe('object');
     expect(config.roles['test_role_a']).toBeDefined();
@@ -48,7 +52,6 @@ describe('loadPromptRoles', () => {
   });
 
   it('returns roles with correct description and role_prefix fields', () => {
-    const config = loadPromptRoles(PROMPT_ROLES_YAML);
     const roleA = config.roles['test_role_a'];
     expect(roleA.description).toBe('Role A for testing');
     expect(roleA.role_prefix).toContain('senior test engineer');
@@ -75,14 +78,18 @@ describe('loadPromptRoles', () => {
 // ---------------------------------------------------------------------------
 
 describe('loadPersonas', () => {
+  let config: ReturnType<typeof loadPersonas>;
+
+  beforeEach(() => {
+    config = loadPersonas(AI_HELPERS_YAML);
+  });
+
   it('loads a valid ai_helpers.yaml and returns an object', () => {
-    const config = loadPersonas(AI_HELPERS_YAML);
     expect(typeof config).toBe('object');
     expect(config).not.toBeNull();
   });
 
   it('includes persona_alpha and persona_beta from the fixture', () => {
-    const config = loadPersonas(AI_HELPERS_YAML);
     expect(config['persona_alpha']).toBeDefined();
     expect(config['persona_beta']).toBeDefined();
   });
@@ -157,34 +164,32 @@ describe('resolvePersona', () => {
 
 describe('resolveAllPersonas', () => {
   let roles: PromptRolesConfig;
+  let config: ReturnType<typeof loadPersonas>;
 
   beforeEach(() => {
     roles = loadPromptRoles(PROMPT_ROLES_YAML);
+    config = loadPersonas(AI_HELPERS_YAML);
   });
 
   it('resolves all persona entries from ai_helpers.yaml fixture', () => {
-    const config = loadPersonas(AI_HELPERS_YAML);
     const resolved = resolveAllPersonas(config, roles);
     expect(resolved['persona_alpha']).toBeDefined();
     expect(resolved['persona_beta']).toBeDefined();
   });
 
   it('resolved persona has correct role_prefix', () => {
-    const config = loadPersonas(AI_HELPERS_YAML);
     const resolved = resolveAllPersonas(config, roles);
     expect(resolved['persona_alpha'].role_prefix).toContain('senior test engineer');
     expect(resolved['persona_beta'].role_prefix).toContain('documentation specialist');
   });
 
   it('skips non-persona entries (entries without role_ref)', () => {
-    const config = loadPersonas(AI_HELPERS_YAML);
     const resolved = resolveAllPersonas(config, roles);
     // language_specific_docs has no role_ref — must not appear in output
     expect(resolved['language_specific_docs']).toBeUndefined();
   });
 
   it('throws RoleNotFoundError when a persona has an unresolvable role_ref', () => {
-    const config = loadPersonas(AI_HELPERS_YAML);
     // Inject a bad entry
     config['broken_persona'] = { role_ref: 'does_not_exist' };
     expect(() => resolveAllPersonas(config, roles)).toThrow(RoleNotFoundError);

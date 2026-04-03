@@ -1,6 +1,6 @@
 # Migration Guide
 
-**Version**: 1.2.1
+**Version**: 1.2.2
 **Last Updated**: 2026-02-09
 
 > **Purpose**: Step-by-step instructions for upgrading ai_workflow_core between versions. This guide covers breaking changes, deprecations, and migration strategies.
@@ -47,7 +47,7 @@ ai_workflow_core follows [Semantic Versioning](https://semver.org/):
 - **Patch (1.0.X)**: Bug fixes, backward compatible
 
 **Example**:
-- `v1.0.2` → `v1.2.1`: Safe upgrade, no breaking changes
+- `v1.0.2` → `v1.2.2`: Safe upgrade, no breaking changes
 - `v1.0.2` → `v2.0.0`: Breaking changes, follow migration guide
 
 ### Migration Risk Levels
@@ -55,7 +55,7 @@ ai_workflow_core follows [Semantic Versioning](https://semver.org/):
 | Change Type | Risk | Time | Testing Required |
 |------------|------|------|------------------|
 | Patch (1.0.2 → 1.0.2) | 🟢 Low | 5 min | Basic validation |
-| Minor (1.0.2 → 1.2.1) | 🟡 Medium | 15 min | Config validation |
+| Minor (1.0.2 → 1.2.2) | 🟡 Medium | 15 min | Config validation |
 | Major (1.0.2 → 2.0.0) | 🔴 High | 30-60 min | Full integration test |
 
 ---
@@ -715,4 +715,4 @@ See `docs/guides/VERSION_MANAGEMENT.md` for complete strategies.
 ---
 
 **Last Updated**: 2026-02-09
-**Document Version**: 1.2.1
+**Document Version**: 1.2.2

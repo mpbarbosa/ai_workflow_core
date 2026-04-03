@@ -408,7 +408,7 @@ This repository uses its own templates:
 
 **Method**: Git submodule
 **Repository**: https://github.com/mpbarbosa/ai_workflow_core
-**Versioning**: Git tags (v1.0.2, v1.2.1, etc.)
+**Versioning**: Git tags (v1.0.2, v1.2.2, etc.)
 
 ### Integration Workflow
 
@@ -424,7 +424,7 @@ cd .workflow_core
 git pull origin main
 cd ..
 git add .workflow_core
-git commit -m "chore: update ai_workflow_core to v1.2.1"
+git commit -m "chore: update ai_workflow_core to v1.2.2"
 ```
 
 ### Update Strategy

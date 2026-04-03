@@ -40,6 +40,31 @@
       "score": 100,
       "issueCount": 0,
       "lastAnalyzed": "2026-04-02T02:34:20.952Z"
+    },
+    "src/index.ts": {
+      "score": 100,
+      "issueCount": 0,
+      "lastAnalyzed": "2026-04-03T03:11:07.800Z"
+    },
+    "src/loader.ts": {
+      "score": 100,
+      "issueCount": 0,
+      "lastAnalyzed": "2026-04-03T03:11:07.800Z"
+    },
+    "src/types.ts": {
+      "score": 100,
+      "issueCount": 0,
+      "lastAnalyzed": "2026-04-03T03:11:07.800Z"
+    },
+    "scripts/validate_context_blocks.py": {
+      "score": 100,
+      "issueCount": 0,
+      "lastAnalyzed": "2026-04-03T03:11:07.800Z"
+    },
+    "scripts/validate_structure.py": {
+      "score": 100,
+      "issueCount": 0,
+      "lastAnalyzed": "2026-04-03T03:11:07.800Z"
     }
   }
 }

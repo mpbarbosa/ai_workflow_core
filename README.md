@@ -3,7 +3,7 @@
 **Foundational configuration and templates for AI-powered workflow automation across multiple languages**
 
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](docs/LICENSE)
-[![Version](https://img.shields.io/badge/version-1.2.1-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-1.2.2-blue.svg)]()
 
 ## Overview
 
@@ -149,10 +149,10 @@ cp .workflow_core/config/.workflow-config.yaml.template .workflow-config.yaml
 ### API References
 - **[CONFIG_REFERENCE.md](docs/api/CONFIG_REFERENCE.md)** - Complete `.workflow-config.yaml` field reference
 - **[PLACEHOLDER_REFERENCE.md](docs/api/PLACEHOLDER_REFERENCE.md)** - Placeholder patterns and substitution guide
-- **[PROJECT_KINDS_SCHEMA.md](docs/api/PROJECT_KINDS_SCHEMA.md)** - Project kinds schema v1.2.1 reference
+- **[PROJECT_KINDS_SCHEMA.md](docs/api/PROJECT_KINDS_SCHEMA.md)** - Project kinds schema v1.2.2 reference
 - **[AI_HELPERS_REFERENCE.md](docs/api/AI_HELPERS_REFERENCE.md)** - AI persona definitions and token efficiency system
 - **[AI_PROMPTS_REFERENCE.md](docs/api/AI_PROMPTS_REFERENCE.md)** - Project-specific AI prompt templates
-- **[PROMPT_ROLES_REFERENCE.md](docs/api/PROMPT_ROLES_REFERENCE.md)** *(v1.2.1)* - Central role definitions, `role_ref:` pattern, TypeScript loader API
+- **[PROMPT_ROLES_REFERENCE.md](docs/api/PROMPT_ROLES_REFERENCE.md)** *(v1.2.2)* - Central role definitions, `role_ref:` pattern, TypeScript loader API
 
 ### User Guides
 - **[QUICK_START.md](docs/guides/QUICK_START.md)** - 5-minute setup guide
@@ -174,7 +174,7 @@ cp .workflow_core/config/.workflow-config.yaml.template .workflow-config.yaml
 
 ### Development
 
-### TypeScript Config Loader *(v1.2.1)*
+### TypeScript Config Loader *(v1.2.2)*
 
 A typed module for loading and resolving prompt role references programmatically:
 
@@ -259,7 +259,7 @@ MIT License - See [docs/LICENSE](docs/LICENSE)
 
 Part of [AI Workflow Automation](https://github.com/mpbarbosa/ai_workflow) project.
 
-**Parent Project Status**: v1.2.1 (Phase 3 Complete - File Operations & Utilities)
+**Parent Project Status**: v1.2.2 (Phase 3 Complete - File Operations & Utilities)
 
 ---
 

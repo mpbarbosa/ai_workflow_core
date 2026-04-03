@@ -1,5 +1,5 @@
 # Project Kind Configuration Schema
-# Version: 1.2.1
+# Version: 1.8.0
 # Purpose: Define validation rules, test commands, and quality standards per project kind
 # Last Updated: 2026-01-30
 
@@ -1353,15 +1353,152 @@ project_kinds:
         - "docs/ for API references (one <PatternName>_API.md per pattern)"
         - "scripts/ for deploy.sh, version-sync.js, and other release tooling"
 
+  typescript_sdk:
+    name: "TypeScript SDK Wrapper Library"
+    description: "TypeScript wrapper library for an external CLI/process SDK — dual CJS/ESM output via tsc, GitHub-installed dependencies, integration tests against the CLI process, and rich BYOK auth/hook/MCP/skills utilities."
+
+    # Auto-detection indicators used by project_kind_detection.js
+    detection:
+      package_json_keywords:
+        - "copilot"
+        - "sdk"
+        - "llm"
+        - "ai"
+      package_json_dependencies:
+        - "@github/copilot-sdk"
+        - "olinda_copilot_sdk.ts"
+      file_indicators:
+        - "src/core/completions_client.ts"
+        - "src/core/session_client.ts"
+        - "src/core/hooks.ts"
+        - "src/core/auth.ts"
+        - "tsconfig.esm.json"
+      confidence: 90
+
+    validation:
+      required_files:
+        - "package.json"
+        - "tsconfig.json"
+        - "tsconfig.esm.json"
+        - "src/index.ts"
+        - "README.md"
+        - "CHANGELOG.md"
+      required_directories:
+        - "src/core"
+        - "src/utils"
+        - "test"
+        - "dist"
+        - "docs"
+      optional_files:
+        - "src/lib"
+        - "src/core/logger.ts"
+        - "LICENSE"
+        - ".workflow-config.yaml"
+        - "jest.config.js"
+      file_patterns:
+        - "*.ts"
+        - "*.md"
+        - "*.json"
+
+    testing:
+      test_framework: "jest"
+      test_directory: "test"
+      test_file_pattern: "*.test.ts"
+      test_command: "npm test"
+      coverage_required: true
+      coverage_threshold: 80
+
+    quality:
+      linters:
+        - name: "eslint"
+          enabled: true
+          command: "npm run lint"
+          file_pattern: "*.ts"
+        - name: "markdownlint"
+          enabled: true
+          command: "npm run lint:md"
+          file_pattern: "*.md"
+        - name: "tsc"
+          enabled: true
+          command: "npm run validate"
+          file_pattern: "*.ts"
+      documentation_required: true
+      inline_comments_recommended: true
+      readme_required: true
+      api_documentation_required: true
+
+    dependencies:
+      package_files:
+        - "package.json"
+      lock_files:
+        - "package-lock.json"
+      validation_required: true
+      security_audit_required: true
+      github_dependencies_allowed: true
+
+    build:
+      required: true
+      build_command: "npm run build && npm run build:esm"
+      output_directory: "dist"
+
+    deployment:
+      type: "github-package"
+      requires_build: true
+      artifact_patterns:
+        - "dist/src/index.js"
+        - "dist/esm/index.js"
+        - "dist/types/src/index.d.ts"
+
+    ai_guidance:
+      testing_standards:
+        - "Unit tests in test/core/, test/utils/, test/lib/ — mirror src/ structure"
+        - "Integration tests in test/integration/ — smoke test the CJS build artifacts"
+        - "Stubs in test/__stubs__/ — stub out @github/copilot-sdk for unit tests"
+        - "80% coverage threshold on all branches; 100% on pure utility functions"
+        - "Every error class must have a test asserting: instanceof, message, prototype chain"
+        - "Session lifecycle tests must cover: forceStop path, serialization queue, cleanup try-finally"
+
+      style_guides:
+        - "1-tab indent, single quotes, trailing commas in multi-line lists"
+        - "JSDoc required on every exported symbol: @param, @returns, @since, @example"
+        - "Pure utility functions — never throw, no side effects, deterministic output"
+        - "Custom errors: extend CopilotSDKError, call Object.setPrototypeOf, set this.name"
+        - "Cyclomatic complexity ≤ 10 enforced via ESLint; extract methods when exceeded"
+
+      best_practices:
+        - "Use native fetch (Node.js ≥18) — no external HTTP library (axios, node-fetch)"
+        - "Re-export @github/copilot-sdk types from src/index.ts so consumers avoid direct SDK imports"
+        - "Dual CJS/ESM via two tsconfig files (tsconfig.json + tsconfig.esm.json), not Vite"
+        - "Session lifecycle: always cleanup in finally; forceStop fallback if stop() hangs >5s"
+        - "Request serialization: use _sendQueue Promise chain to prevent concurrent sendAndWait calls"
+        - "SSE parsing: use parseSSEStream async generator — never roll custom line buffering"
+        - "BYOK auth: resolve token via resolveGitHubToken() before constructing CopilotClient"
+        - "Type re-exports: use 'export type' for type-only re-exports in src/index.ts"
+
+      directory_standards:
+        - "src/core/ — clients, types, errors, auth, hooks, session config (stateful or typed abstractions)"
+        - "src/utils/ — pure stateless utility functions (message factories, SSE parsing)"
+        - "src/lib/ — application-level helpers (smoke tests, log validators)"
+        - "test/core/ — unit tests for src/core/"
+        - "test/utils/ — unit tests for src/utils/"
+        - "test/lib/ — unit tests for src/lib/"
+        - "test/integration/ — CJS/ESM build smoke tests"
+        - "test/__stubs__/ — SDK stubs for unit tests"
+        - "dist/ — compiled output (CJS via tsconfig.json, ESM via tsconfig.esm.json, types)"
+        - "docs/ — API reference, architecture, getting-started guide"
+
 # ============================================================================
 # CONFIGURATION METADATA
 # ============================================================================
 
 metadata:
-  schema_version: "1.7.0"
+  schema_version: "1.8.0"
   last_updated: "2026-04-02"
   compatible_workflow_version: "2.3.1"
   changelog:
+    - version: "1.8.0"
+      date: "2026-04-02"
+      changes: "Added typescript_sdk project kind for TypeScript SDK wrapper libraries (olinda_copilot_sdk.ts team alignment)"
     - version: "1.7.0"
       date: "2026-04-02"
       changes: "Updated location_based_service to support TypeScript + Vue 3 (removed *.vue/*.tsx exclusions, added TS linting via vue-tsc, TypeScript best practices, Vue 3 directory standards)"
@@ -1380,10 +1517,10 @@ metadata:
     - version: "1.3.0"
       date: "2026-02-20"
       changes: "Added aws_lbs_backend_setup project kind for serverless AWS Location-Based Service backends"
-    - version: "1.2.1"
+    - version: "1.2.2"
       date: "2026-01-30"
       changes: "Added configuration_library project kind for template/config repositories"
-    - version: "1.2.1"
+    - version: "1.2.2"
       date: "2025-12-22"
       changes: "Added client_spa project kind for vanilla JS SPAs with Bootstrap"
     - version: "1.0.2"

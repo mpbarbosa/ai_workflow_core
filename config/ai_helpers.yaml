@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 6.7.6 (Phase 1 Refinement Complete - 2026-03-06)
+# Version: 6.8.3 (change statistics zero-category guidance — 2026-04-03)
 #
 # CUMULATIVE TOKEN EFFICIENCY SUMMARY:
 # =====================================
@@ -70,6 +70,32 @@
 #   - quality_prompt role_prefix: emphasizes quick/targeted/file-level
 #   - step9_code_quality_prompt role_prefix: emphasizes system-wide/architectural/comprehensive
 #   - Added disambiguation comments to both persona headers
+# v6.8.1 - Improve version_manager_prompt Task section clarity
+#   - task_template: added explicit reference to CHANGELOG.md [Unreleased] section and
+#     git commit history as primary inputs; clarified output is a recommendation for manual confirmation
+#   - specific_expertise: replaced "Conventional commit messages if available" with
+#     CHANGELOG.md [Unreleased] as authoritative source; reordered considerations by priority
+#   - approach: added step to read CHANGELOG.md first; added note that output requires manual confirmation
+#   - output_format: updated Reasoning description to cite CHANGELOG.md or commit history
+# v6.8.3 - Fix Change statistics zero-category ambiguity (2026-04-03)
+#   - version_manager_prompt task_template: added fallback note for empty {changed_files}
+#     (only workflow artifacts staged → file names absent from categorised list)
+#   - version_manager_prompt approach: added step 0 to detect and handle all-zero category
+#     counts; directs AI to diff sample for actual file paths; treats as patch bump
+#   - step11_git_commit_prompt: clarified {diff_summary} label to request individual file
+#     names alongside aggregate statistics for better traceability
+# v6.8.4 - Strengthen version_manager_prompt approach specificity (2026-04-03)
+#   - approach step 3: replaced generic "changed file list" with per-directory categorisation
+#     table (config/, src/, test/, docs/, scripts/, .ai_workflow/) mapping each area to its
+#     typical version bump severity — addresses analysis finding that approach was too generic
+#   - approach step 4 (new): added explicit step to consult CONTRIBUTING.md for project-specific
+#     versioning conventions that may override standard semver heuristics
+#   - Steps renumbered 4→5, 5→6, 6→7 to accommodate new step 4
+# v6.8.2 - Add heuristic_recommendation context to version_manager_prompt
+#   - task_template: restored {heuristic_recommendation} placeholder with inline derivation
+#     explanation (commit-type distribution → patch/minor/major mapping) and guidance to
+#     treat it as a starting point, overridable by primary sources (CHANGELOG.md, commits)
+#   - Fixes vague "patch" label that appeared without context in assembled prompts
 #
 # New Persona Addition (v6.6.0 - 2026-03-03):
 # - Added typescript_developer_prompt "Strider": Senior TypeScript Developer for type-safe application development
@@ -2488,7 +2514,7 @@ step11_git_commit_prompt:
     **Changed Files:**
     {changed_files}
     
-    **Staged Commit Statistics (includes workflow artifacts):**
+    **Staged Commit Statistics (includes workflow artifacts and individual file names):**
     {diff_summary}
     
     **Detailed Context:**
@@ -3463,11 +3489,19 @@ version_manager_prompt:
   behavioral_guidelines: *behavioral_generative
   
   task_template: |
-    **YOUR TASK**: Determine the correct semantic version bump for the provided changes.
+    **YOUR TASK**: Determine the correct semantic version bump type for this project.
     **Project**: {project_name} ({project_description})
     **Current Version**: {current_version}
+    **Heuristic Pre-analysis**: {heuristic_recommendation} — derived from commit-type distribution
+      (fix/docs/chore/style/refactor commits → patch; feat commits → minor; BREAKING CHANGE commits → major).
+      Use as a starting point; verify and override if the primary sources indicate a different bump type.
     **Changed Files**: {changed_files}
+    _(If empty, the only staged files are workflow artifacts under `.ai_workflow/`; see Git Context
+    or the diff sample for actual file paths.)_
     **Git Context**: {git_context}
+    **Primary Sources**: Review CHANGELOG.md (especially the [Unreleased] section) and git commit
+    history to understand the nature and scope of changes before deciding on a bump type.
+    Your output is a recommendation — final version application is confirmed manually.
   
   specific_expertise: |
     Analyze code changes and determine appropriate semantic version bumps following semver.org:
@@ -3476,21 +3510,36 @@ version_manager_prompt:
     - PATCH (X.Y.Z): Bug fixes, documentation updates, refactoring, test improvements, performance tweaks
     
     Consider:
+    - CHANGELOG.md [Unreleased] section as the authoritative record of pending changes
+    - Conventional commit messages (feat:, fix:, BREAKING CHANGE:) when present
     - Scope of changes (files modified, lines changed)
     - Type of modifications (API changes vs internal refactoring)
     - Impact on consumers (breaking vs backward compatible)
-    - Conventional commit messages if available
   
   approach: |
-    1. Review provided git diff and change statistics
-    2. Analyze context from workflow analysis steps (documentation, code quality, tests)
-    3. Identify breaking changes, new features, or bug fixes
-    4. Determine minimum required version bump
-    5. Provide clear reasoning for recommendation
+    0. Check file category counts: if Documentation/Test/Code/Config counts are all 0 despite a
+       non-zero "Total modified files", the staged changes consist entirely of workflow artifact
+       files (`.ai_workflow/`). Identify the actual file path(s) from the diff sample or git
+       context and treat them as internal tooling changes (→ typically patch).
+    1. Read CHANGELOG.md [Unreleased] section to understand all documented pending changes
+    2. Review git commit messages for conventional commit types (feat, fix, BREAKING CHANGE)
+    3. Examine the provided git diff and changed file list, categorising changes by project area:
+       - `config/` changes → configuration or schema updates (potential minor/patch)
+       - `src/` changes → code/API changes (potential major/minor)
+       - `test/` or `src/__tests__/` changes → test coverage improvements (patch)
+       - `docs/` or `*.md` changes → documentation updates (patch)
+       - `scripts/` changes → tooling/maintenance (patch/chore)
+       - `.ai_workflow/` only → internal artifacts (patch; see step 0)
+    4. Consult CONTRIBUTING.md for any project-specific versioning conventions or release
+       policies that may override standard semver heuristics
+    5. Identify the highest-severity change type: breaking → MAJOR, new feature → MINOR, fix/docs → PATCH
+    6. Determine minimum required version bump based on findings
+    7. Provide clear reasoning citing specific changes from CHANGELOG.md or commits
+    Note: This recommendation requires manual confirmation before the version is applied.
   
   output_format: |
     Bump Type: [major|minor|patch]
-    Reasoning: [2-3 sentence explanation of why this bump type is appropriate]
+    Reasoning: [2-3 sentence explanation citing specific changes from CHANGELOG.md or commit history]
     Confidence: [high|medium|low]
 
 
@@ -5457,3 +5506,314 @@ api_contract_reviewer_prompt:
 
     **Recommendations**:
     [Ordered list of concrete fixes, highest impact first]
+
+# =============================================================================
+# ai_workflow_log_analyzer Team Alignment Prompts
+# (Added v6.8.0 — 2026-04-02)
+#
+# Derived from the ai_workflow_log_analyzer team assessment. Covers four roles
+# that had no corresponding prompt entry in ai_helpers.yaml:
+#
+#   1. cli_tui_engineer_prompt     — Terminal UI Engineer
+#      (role defined in prompt_roles.yaml; prompt was missing)
+#   2. llm_integration_engineer_prompt — LLM Integration Engineer
+#      (role defined in prompt_roles.yaml; prompt was missing)
+#   3. devx_engineer_prompt        — QA & Test Infrastructure Engineer
+#      (role defined in prompt_roles.yaml; prompt was missing)
+#   4. core_pipeline_engineer_prompt — Core Pipeline Engineer
+#      (new role added to prompt_roles.yaml v1.3.0; no prior equivalent)
+#
+# Role 5 (DevOps & Release Engineer) already maps to the existing
+# devops_engineer_prompt and library_release_engineer_prompt entries.
+# =============================================================================
+
+# CLI/TUI Engineer
+cli_tui_engineer_prompt:
+  # Covers: Ink/React TUI components, keyboard routing, scroll state, panel layout
+  role_ref: cli_tui_engineer  # resolved from config/prompt_roles.yaml
+  behavioral_guidelines: *behavioral_actionable
+
+  task_template: |
+    **YOUR TASK**: Review and improve the terminal user interface components for {project_name}.
+
+    **Project Context:**
+    - Project: {project_name} ({project_description})
+    - Project Kind: {project_kind}
+    - Language: {primary_language}
+    - Source Files Analyzed: {source_file_count}
+    - Modified Files: {modified_count}
+    - Analyzed File Paths:
+    {file_paths}
+
+    **File Contents:**
+    {file_content_block}
+
+    **REQUIRED ACTIONS**:
+    1. Review the root App component: keyboard routing, focus/mode state machine,
+       and cross-component communication patterns (globalThis scroll handlers vs Context API)
+    2. Audit each Ink component for layout correctness — box sizing, overflow handling,
+       terminal width responsiveness, and non-TTY fallback behaviour
+    3. Verify keyboard input handling: panel focus cycling (Tab/Shift+Tab), mode switching,
+       multi-key sequences, and correct scoping of useInput calls per focused component
+    4. Evaluate scroll state management: identify any scroll handlers exposed on globalThis
+       and recommend migrating to React Context or hook-based encapsulation
+    5. Check streaming panel patterns: frame-rate limiting, batch state updates,
+       and incremental render safety for long-running async output
+    6. Flag any Ink v4/v5 API mismatches, deprecated hooks, or non-functional component patterns
+
+  approach: |
+    Work only from the injected file contents above. Do not assume component behaviour
+    that is not visible in {file_content_block}.
+    Start with the root App component to map the complete mode/focus state machine before
+    reviewing individual panel components.
+    For each component, verify it follows the functional-component + hooks pattern; flag
+    any class components or direct DOM/process.stdout manipulation.
+    Identify globalThis usage specifically — document each handler, assess the risk of
+    handler leakage across renders, and provide a concrete React Context migration path.
+    Provide before/after TypeScript examples for every recommended change.
+
+  output_format: |
+    **TUI Review: {project_name}**
+
+    **State Machine Assessment**:
+    [App mode/focus transitions — correct ✅ or issues found with description]
+
+    **Component Findings**:
+    | Component | Issue | Severity | Recommended Fix |
+    |-----------|-------|----------|-----------------|
+    [One row per finding; ✅ if no issues]
+
+    **globalThis Handler Audit**:
+    | Handler Key | Purpose | Risk | Migration Path |
+    |-------------|---------|------|----------------|
+    [One row per globalThis key found; ✅ None found if absent]
+
+    **Recommendations** (ordered by impact):
+    [Numbered list of concrete changes with before/after TypeScript examples]
+
+# LLM Integration Engineer
+llm_integration_engineer_prompt:
+  # Covers: SDK session lifecycle, streaming generators, error recovery, token/cost tracking
+  role_ref: llm_integration_engineer  # resolved from config/prompt_roles.yaml
+  behavioral_guidelines: *behavioral_actionable
+
+  task_template: |
+    **YOUR TASK**: Review and improve the LLM SDK integration for {project_name}.
+
+    **Project Context:**
+    - Project: {project_name} ({project_description})
+    - Project Kind: {project_kind}
+    - Language: {primary_language}
+    - Source Files Analyzed: {source_file_count}
+    - Modified Files: {modified_count}
+    - Analyzed File Paths:
+    {file_paths}
+
+    **File Contents:**
+    {file_content_block}
+
+    **REQUIRED ACTIONS**:
+    1. Audit the SDK client session lifecycle: verify each call creates and destroys its own
+       session (no session reuse across calls), and that idle-event awaiting is correctly
+       implemented to collect the full response before teardown
+    2. Review streaming response handling: verify async generator patterns, incremental
+       token buffering, backpressure management, and AbortSignal/cancel propagation
+    3. Assess error recovery: retry logic, timeout handling, partial response recovery,
+       and graceful degradation when the SDK is unavailable (offline/CI mode)
+    4. Check auth integration: token resolution order (env var → SDK-native → CLI auth),
+       auth failure messages, and absence of hardcoded credentials
+    5. Review rate-limit handling for batch operations: sequential-with-progress patterns,
+       per-call error isolation so one failure does not abort the batch
+    6. Evaluate prompt construction: system message injection, context block formatting,
+       role/template prefixing, and token budget enforcement before submission
+
+  approach: |
+    Work only from the injected file contents above. Do not infer SDK behaviour that is
+    not shown in {file_content_block}.
+    Begin by tracing a single LLM call from entry point to session teardown, validating
+    each lifecycle stage against the per-call session creation/destruction contract.
+    For streaming paths, trace the async generator from first token to completion token,
+    verifying the consumer correctly handles both streaming and one-shot response modes.
+    For batch paths, verify that Promise.allSettled (or equivalent) is used so individual
+    call failures are isolated and the aggregate result is still returned.
+    Flag any session reuse, missing await on idle, or uncaught rejection in streaming paths.
+
+  output_format: |
+    **LLM Integration Review: {project_name}**
+
+    **Session Lifecycle Audit**:
+    [Per-call create/destroy pattern — correct ✅ or deviations with description]
+
+    **Streaming Path Findings**:
+    | Location | Issue | Severity | Recommended Fix |
+    |----------|-------|----------|-----------------|
+    [One row per finding; ✅ if no issues]
+
+    **Error Recovery Assessment**:
+    [Retry, timeout, degradation paths — correct ✅ or issues with description]
+
+    **Auth & Credential Audit**:
+    [Token resolution order and absence of hardcoded secrets — ✅ Clean or findings listed]
+
+    **Recommendations** (ordered by risk):
+    [Numbered list with concrete before/after TypeScript examples]
+
+# DevX Engineer (QA & Test Infrastructure)
+devx_engineer_prompt:
+  # Covers: Jest/Vitest ESM test infrastructure, CI/CD pipelines, TypeScript build tooling
+  role_ref: devx_engineer  # resolved from config/prompt_roles.yaml
+  behavioral_guidelines: *behavioral_actionable
+
+  task_template: |
+    **YOUR TASK**: Audit and improve the test infrastructure and CI/CD pipeline for {project_name}.
+
+    **Project Context:**
+    - Project: {project_name} ({project_description})
+    - Project Kind: {project_kind}
+    - Language: {primary_language}
+    - Test Framework: {test_framework}
+    - Test Command: {test_command}
+    - Lint Command: {lint_command}
+    - Source Files Analyzed: {source_file_count}
+    - Modified Files: {modified_count}
+    - Analyzed File Paths:
+    {file_paths}
+
+    **File Contents:**
+    {file_content_block}
+
+    **REQUIRED ACTIONS**:
+    1. Identify failing or broken tests: diagnose import resolution errors, missing Jest/Vitest
+       globals, and ESM interop issues (jest.unstable_mockModule vs jest.mock, dynamic imports)
+    2. Audit ESM test setup: verify --experimental-vm-modules flag, ts-jest ESM preset
+       configuration, and that all mocks use jest.unstable_mockModule + await import() pattern
+    3. Review fixture management: validate that test fixtures use import.meta.url +
+       fileURLToPath for path resolution, and that fixture data covers both happy-path
+       and edge-case scenarios
+    4. Assess test coverage gaps: identify modules with no test file, analyzers missing
+       zero-issue baseline tests, and integration tests absent for CLI entry points
+    5. Evaluate CI/CD pipeline: check for missing GitHub Actions workflows (test, lint,
+       type-check, build, publish); propose a minimal matrix covering Node 20+
+    6. Review TypeScript build configuration: tsconfig.json strict mode, declaration maps,
+       source maps, and tsc --noEmit type-check correctness
+
+  approach: |
+    Work only from the injected file contents above. Do not assume test runner behaviour
+    or CI configuration that is not shown in {file_content_block}.
+    Begin with the Jest/Vitest config file to verify the ESM preset and module resolver.
+    For each failing test, trace the specific import or mock call that is broken and provide
+    the minimal change to restore it using the jest.unstable_mockModule + dynamic import pattern.
+    Map source modules to test files to identify coverage gaps — flag any src/ module
+    with no corresponding test/ file.
+    For CI, if no workflow files exist, provide a minimal GitHub Actions YAML that runs
+    npm run type:check && npm test && npm run lint on every push and pull_request.
+
+  output_format: |
+    **DevX Audit: {project_name}**
+
+    **Failing Tests**:
+    | Test File | Error | Root Cause | Fix |
+    |-----------|-------|------------|-----|
+    [One row per failing test; ✅ All passing if none]
+
+    **ESM Setup Assessment**:
+    [jest.unstable_mockModule usage, --experimental-vm-modules, dynamic imports — ✅ Correct or issues]
+
+    **Coverage Gaps**:
+    | Source Module | Has Test File? | Missing Scenarios |
+    |---------------|----------------|-------------------|
+    [One row per gap found; omit if fully covered]
+
+    **CI/CD Status**:
+    [Existing workflow files listed, or gap noted with minimal recommended YAML]
+
+    **Recommendations** (ordered by impact):
+    [Numbered list with concrete configuration snippets or code fixes]
+
+# Core Pipeline Engineer
+core_pipeline_engineer_prompt:
+  # Covers: parsers, analyzers, pipeline orchestration, type system, reporters
+  role_ref: core_pipeline_engineer  # resolved from config/prompt_roles.yaml
+  behavioral_guidelines: *behavioral_actionable
+
+  task_template: |
+    **YOUR TASK**: Review and extend the analysis pipeline for {project_name}.
+
+    **Project Context:**
+    - Project: {project_name} ({project_description})
+    - Project Kind: {project_kind}
+    - Language: {primary_language}
+    - Build System: {build_system}
+    - Test Framework: {test_framework}
+    - Test Command: {test_command}
+    - Lint Command: {lint_command}
+    - Source Files Analyzed: {source_file_count}
+    - Modified Files: {modified_count}
+    - Analyzed File Paths:
+    {file_paths}
+
+    **File Contents:**
+    {file_content_block}
+
+    **Scope:**
+    - ✅ In scope: Parser modules (log_parser, prompt_parser, metrics_parser)
+    - ✅ In scope: Analyzer modules (failure, performance, bug, doc, prompt_quality)
+    - ✅ In scope: Pipeline orchestration (runAnalysisPipeline, Promise.all parallelism)
+    - ✅ In scope: Shared type system (types/index.ts — interfaces, ThresholdConfig, AnalysisReport)
+    - ✅ In scope: Reporter modules (json_reporter, markdown_reporter)
+    - ❌ Out of scope: TUI components — flag only if a component reveals a pipeline contract issue
+
+    **REQUIRED ACTIONS**:
+    1. Audit parser correctness: verify regex coverage for all expected log event types,
+       section-boundary detection for prompt files, graceful skip-on-malformed-line behaviour,
+       and backward-compatible handling of missing run_metadata.json
+    2. Review analyzer purity: confirm each analyzer function is side-effect-free and
+       operates purely over its input array (LogEvent[] → Issue[]); flag any I/O or shared state
+    3. Validate pipeline orchestration: check that parsers run in parallel (Promise.all),
+       analyzers run sequentially, and failures in one analyzer do not abort the pipeline
+    4. Assess the type system: verify discriminated unions are exhaustive, ThresholdConfig
+       defaults are co-located with the type, and AnyLogEvent lives in log_parser.ts (not types/)
+    5. Check reporter output: verify JSON reporter round-trips AnalysisReport cleanly,
+       Markdown reporter groups issues by category with correct severity icons and score bars
+    6. Identify missing analyzer rules or parser event types relative to the log format contract
+
+  approach: |
+    Work only from the injected file contents above. Do not assume parser or analyzer
+    behaviour that is not visible in {file_content_block}.
+    Start with types/index.ts to map the complete shared data model before reading any
+    parser or analyzer — this prevents misinterpreting type names mid-review.
+    For each parser, trace a representative input line through the regex to verify the
+    resulting typed event shape matches the interface in types/index.ts.
+    For each analyzer, verify: (a) no imports from fs/promises or external services,
+    (b) the return type is Issue[], (c) threshold comparisons use the injected ThresholdConfig.
+    In pipeline.ts, verify Promise.all wraps exactly the three parsers and that each
+    analyzer receives the correct slice of parsed events.
+    For reporters, paste a minimal AnalysisReport fixture and trace the output string
+    to verify category grouping, icon mapping, and score bar rendering.
+
+  output_format: |
+    **Pipeline Review: {project_name}**
+
+    **Parser Audit**:
+    | Parser | Event Types Covered | Missing Coverage | Graceful Degradation |
+    |--------|---------------------|-----------------|----------------------|
+    [One row per parser; ✅ if fully covered]
+
+    **Analyzer Purity Check**:
+    | Analyzer | Pure? | Side Effects Found | Threshold Usage |
+    |----------|-------|--------------------|-----------------|
+    [One row per analyzer; ✅ Pure if no issues]
+
+    **Pipeline Orchestration**:
+    [Parallel parsing confirmed ✅ / issues; Sequential analysis confirmed ✅ / issues;
+     Error isolation confirmed ✅ / issues]
+
+    **Type System Assessment**:
+    [Discriminated unions exhaustive ✅ / gaps; AnyLogEvent location ✅ / misplaced;
+     ThresholdConfig defaults co-located ✅ / separated]
+
+    **Reporter Output**:
+    [JSON round-trip ✅ / issues; Markdown category grouping ✅ / issues]
+
+    **Recommendations** (ordered by impact):
+    [Numbered list with concrete TypeScript examples for each change]

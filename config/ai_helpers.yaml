@@ -2020,8 +2020,13 @@ step2_consistency_prompt:
   behavioral_guidelines: *behavioral_structured
   
   task_template: |
-    Perform a comprehensive documentation consistency analysis for this project.
-    
+    Perform a comprehensive documentation consistency analysis for this project,
+    covering both **markdown files** (`.md`) and **inline source documentation**
+    (JSDoc comments in `.js`/`.ts` files). "Consistency" means: uniform naming
+    conventions, function signatures and parameter descriptions in inline docs that
+    match actual code, up-to-date examples and version numbers, and style
+    uniformity across all documentation types.
+
     **Context:**
     - Project: {project_name} ({project_description})
     - Primary Language: {primary_language}
@@ -2109,6 +2114,12 @@ step2_consistency_prompt:
        - Outdated version numbers or dates
        - Inconsistent terminology or naming conventions
        - Missing cross-references between related docs
+    
+    6. **Inline Documentation (JSDoc/TypeScript) Checks:**
+       - Verify all exported functions and classes have JSDoc comments
+       - Check that `@param`, `@returns`, and `@throws` tags match actual function signatures
+       - Ensure JSDoc code examples reflect the current API and would compile/run
+       - Confirm `@deprecated` tags are present for removed or renamed symbols
     
     **Files to Analyze:**
     {doc_files}

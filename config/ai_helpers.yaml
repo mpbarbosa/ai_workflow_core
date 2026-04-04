@@ -2032,7 +2032,7 @@ step2_consistency_prompt:
     - Primary Language: {primary_language}
     - Documentation files: {doc_count} markdown files
     - Scope: {change_scope}
-    - Files in this partition: {modified_count}
+    - Files in this analysis batch: {modified_count} (files are batched in groups of ≤50 to stay within AI context limits)
     
     **Tasks:**
     

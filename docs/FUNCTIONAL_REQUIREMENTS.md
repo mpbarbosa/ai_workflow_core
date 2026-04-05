@@ -19,3 +19,6 @@ This document tracks functional requirements and minor issue resolutions for `ai
 | RI-008 | step_13 | CHANGELOG.md missing final newline (MD047) | CHANGELOG.md | Low | done |
 | RI-009 | step_13 | docs/api/SCRIPT_API_REFERENCE.md missing final newline (MD047) | docs/api/SCRIPT_API_REFERENCE.md | Low | done |
 | RI-010 | step_13 | Widespread trailing spaces in markdown files (MD009) | docs/ (40+ files), root .md files | Low | done |
+| RI-011 | step_02 | Broken links to non-existent PROMPT_ROLES_REFERENCE.md in README.md | README.md | Medium | done |
+| RI-012 | step_02 | Broken link to TROUBLESHOOTING.md in docs/TESTING.md (line 965) | docs/TESTING.md | Low | done |
+| RI-013 | step_05 | templates/ directory not listed in ARCHITECTURE.md directory tree | docs/ARCHITECTURE.md | Low | done |

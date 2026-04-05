@@ -962,7 +962,7 @@ make validate-config
 
 After setting up testing:
 
-1. ✅ Review [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for common issues
+1. ✅ Review [TROUBLESHOOTING.md](guides/TROUBLESHOOTING.md) for common issues
 2. ✅ Check [CI_CD_INTEGRATION.md](advanced/CI_CD_INTEGRATION.md) for CI/CD setup
 3. ✅ Read [INTEGRATION_BEST_PRACTICES.md](guides/INTEGRATION_BEST_PRACTICES.md)
 4. ✅ See [examples/](../examples/) for language-specific testing examples

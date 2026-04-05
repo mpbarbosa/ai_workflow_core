@@ -1,3 +1,5 @@
+## FUNCTIONAL_REQUIREMENTS
+
 # Functional Requirements
 
 **Current version**: 1.6.0

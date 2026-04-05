@@ -1977,10 +1977,11 @@ step2_consistency_prompt:
     
        The following broken links were detected by automated checks.
        Each entry is formatted as `source_file:line_number → broken_target_path`.
+       Example: `README.md:15 → docs/getting-started.md` means line 15 of `README.md` links to `docs/getting-started.md`, which does not exist.
        The SOURCE files all exist — what is missing is the TARGET they point to.
        {broken_refs_content}
     
-       **Your task**: For each `source:line → target` entry, perform systematic root cause analysis on the MISSING TARGET.
+       **Your task**: For each `source:line → target` entry, perform systematic root cause analysis on the MISSING TARGET. Use the **Output Format** template at the end of this section for each entry.
     
        **Analysis Framework** (apply to each entry):
     
@@ -2020,6 +2021,7 @@ step2_consistency_prompt:
           - **Low**: Archive docs (historical, deprecated, legacy)
           
           Consider: How many users affected? Does it block usage? Is it discoverable?
+     Note: If the target file is not visible in the provided context (e.g., due to context truncation), assess priority based on the target file's intended audience rather than its content.
     
        **Output Format for Each Reference**:
        

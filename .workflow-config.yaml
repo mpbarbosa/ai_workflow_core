@@ -29,54 +29,104 @@ structure:
     - docs
     - examples
 
+# ============================================================================
+# AI PERSONAS
+# ============================================================================
+# Personas selected for this project (TypeScript config library, no UI, no AWS).
+#
+# ENABLED — matched to this project's stack and characteristics:
+#   prompt_engineer         — this IS the prompt configuration library (most central), Step 14
+#   typescript_reviewer     — TypeScript is the primary language, Step 19
+#   documentation_expert    — large docs/ tree + YAML config reference docs, Steps 1 & 2
+#   technical_writer        — bootstrap & markdown linting, Steps 0b, 13, 21
+#   test_engineer           — Jest + ts-jest suite, Steps 6, 7, 8
+#   code_quality_analyst    — TypeScript source quality & anti-patterns, Steps 9, 10, 18
+#   devops_engineer         — YAML validation is critical (config is the core product), Steps 3, 4, 16
+#   architecture_reviewer   — project-kind schema and loader architecture, Step 5
+#   git_specialist          — distributed as a git submodule, Steps 12, 0f
+#   dependency_analyst      — npm deps (minimal but relevant for security), Step 9
+#
+# DISABLED — not applicable:
+#   async_performance_engineer — no significant async code (YAML config loading only)
+#   ux_analyst              — no UI/web frontend
+#   accessibility_expert    — no HTML/CSS layer
+#   aws_serverless_engineer — no AWS infrastructure
+#   api_designer            — not an HTTP API server
+#   performance_engineer    — no frontend/browser performance concerns
+#   security_expert         — covered by dependency_analyst (npm audit) + devops_engineer (YAML)
+
+ai_personas:
+  enabled:
+    - prompt_engineer
+    - typescript_reviewer
+    - documentation_expert
+    - technical_writer
+    - test_engineer
+    - code_quality_analyst
+    - devops_engineer
+    - architecture_reviewer
+    - git_specialist
+    - dependency_analyst
+  disabled:
+    - async_performance_engineer
+    - ux_analyst
+    - accessibility_expert
+    - aws_serverless_engineer
+    - api_designer
+    - performance_engineer
+    - security_expert
+
+# ============================================================================
+# WORKFLOW EXECUTION CONFIGURATION
+# ============================================================================
+
 workflow:
-  # Enable smart execution to skip unchanged areas
-  smart_execution: true
-  
-  # Enable parallel execution for independent steps
-  parallel_execution: true
-  
-  # AI caching enabled by default (24-hour TTL)
-  ai_cache_enabled: true
-  
-  # Auto-commit workflow artifacts
-  auto_commit: false
-  
-  # Multi-stage pipeline for progressive validation
-  multi_stage_pipeline: false
-  
-  # ML optimization (requires historical data)
-  ml_optimize: false
-  
-  # Workflow step execution order
-  # Steps are executed in the order listed below
+  settings:
+    smart_execution: true        # Skip steps based on change detection
+    parallel_execution: true
+    ai_cache_enabled: true       # 24-hour TTL
+    auto_commit: false
+    multi_stage_pipeline: false
+    ml_optimize: false
+
+  # Step execution pipeline
   # Git Finalization (step 12) MUST be the final step
   steps:
-    # Pre-Analysis
+
+    # -------------------------------------------------------------------------
+    # PRE-PROCESSING
+    # -------------------------------------------------------------------------
+
     - id: "00"
       name: "Pre-Analysis"
       file: "step_00_analyze.js"
-      description: "Analyze project structure and changes"
+      description: "Detect project kind and analyze changed files"
       phase: "analysis"
+      enabled: true
       can_parallelize: false
       dependencies: []
 
-    # Bootstrap Documentation (0b)
+    # -------------------------------------------------------------------------
+    # DOCUMENTATION
+    # -------------------------------------------------------------------------
+
     - id: "0b"
       name: "Bootstrap Documentation"
       file: "step_0b_bootstrap_docs.js"
-      description: "Generate initial documentation from scratch"
+      description: "Generate initial docs for undocumented files"
       phase: "analysis"
+      enabled: true
       can_parallelize: false
       dependencies: ["00"]
       ai_persona: "technical_writer"
+      optional: true              # Only when documentation is missing
 
-    # Analysis & Documentation Phase (01-03)
     - id: "01"
       name: "Documentation Updates"
       file: "step_01_documentation.js"
-      description: "AI-powered documentation analysis and updates"
+      description: "Update documentation based on code and YAML config changes"
       phase: "analysis"
+      enabled: true
       can_parallelize: true
       dependencies: ["00"]
       ai_persona: "documentation_expert"
@@ -84,51 +134,89 @@ workflow:
     - id: "02"
       name: "Consistency Check"
       file: "step_02_consistency.js"
-      description: "Check documentation consistency"
+      description: "Validate cross-document coherence and terminology alignment"
       phase: "analysis"
+      enabled: true
       can_parallelize: true
       dependencies: ["01"]
-      ai_persona: "code_quality_analyst"
+      ai_persona: "documentation_expert"   # fixed: was code_quality_analyst
 
     - id: "02_5"
       name: "Documentation Optimization"
       file: "step_02_5_doc_optimize.js"
-      description: "Optimize and consolidate documentation"
+      description: "Optimize documentation structure and reduce redundancy"
       phase: "analysis"
+      enabled: true
       can_parallelize: true
       dependencies: ["02"]
+      ai_persona: "technical_writer"
+
+    - id: "21"
+      name: "Doc Consolidation"
+      file: "step_21_doc_consolidation.js"
+      description: "Consolidate and de-duplicate documentation across docs/"
+      phase: "analysis"
+      enabled: true
+      can_parallelize: true
+      dependencies: ["02_5"]
+      ai_persona: "technical_writer"
+      optional: true
 
     - id: "03"
       name: "Script References"
       file: "step_03_script_refs.js"
-      description: "Validate cross-references and links"
+      description: "Validate YAML anchor refs and cross-references in docs"
       phase: "analysis"
+      enabled: true
       can_parallelize: true
       dependencies: ["02"]
+      ai_persona: "devops_engineer"
 
-    # Structure & Validation Phase (04-05)
+    - id: "13"
+      name: "Markdown Linting"
+      file: "step_13_markdown_lint.js"
+      description: "Lint and fix markdown formatting across docs/"
+      phase: "analysis"
+      enabled: true
+      can_parallelize: true
+      dependencies: ["01"]
+      ai_persona: "technical_writer"
+
+    # -------------------------------------------------------------------------
+    # VALIDATION
+    # -------------------------------------------------------------------------
+
     - id: "04"
       name: "Configuration Validation"
       file: "step_04_config_validation.js"
-      description: "Validate project configuration"
+      description: "Validate YAML config files (ai_helpers.yaml, prompt_roles.yaml, project_kinds.yaml)"
       phase: "validation"
+      enabled: true
       can_parallelize: true
       dependencies: ["00"]
+      ai_persona: "devops_engineer"
+      # NOTE: config/ is the core product — this step is critical for this project
 
     - id: "05"
       name: "Directory Structure"
       file: "step_05_directory.js"
-      description: "Validate and organize directory structure"
+      description: "Validate directory structure and module organisation"
       phase: "validation"
+      enabled: true
       can_parallelize: false
       dependencies: ["04"]
+      ai_persona: "architecture_reviewer"
 
-    # Testing Phase (06-08)
+    # -------------------------------------------------------------------------
+    # TESTING
+    # -------------------------------------------------------------------------
+
     - id: "06"
       name: "Test Review"
       file: "step_06_test_review.js"
-      description: "Review existing tests and identify gaps"
+      description: "Review Jest + ts-jest tests for quality and coverage"
       phase: "testing"
+      enabled: true
       can_parallelize: false
       dependencies: ["05"]
       ai_persona: "test_engineer"
@@ -136,8 +224,9 @@ workflow:
     - id: "07"
       name: "Test Generation"
       file: "step_07_test_gen.js"
-      description: "Generate new tests based on review"
+      description: "Generate missing tests for loader.ts / types.ts"
       phase: "testing"
+      enabled: true
       can_parallelize: false
       dependencies: ["06"]
       ai_persona: "test_engineer"
@@ -145,18 +234,24 @@ workflow:
     - id: "08"
       name: "Test Execution"
       file: "step_08_test_exec.js"
-      description: "Execute test suite and collect results"
+      description: "Run npm test + python3 scripts/validate_context_blocks.py"
       phase: "testing"
+      enabled: true
       can_parallelize: false
       dependencies: ["07"]
-      test_command: "python3 scripts/validate_context_blocks.py && python3 scripts/validate_structure.py"
+      ai_persona: "test_engineer"
+      test_command: "npm test && python3 scripts/validate_context_blocks.py config/ai_helpers.yaml && python3 scripts/validate_structure.py"
 
-    # Quality Phase (09-10)
+    # -------------------------------------------------------------------------
+    # QUALITY & ANALYSIS
+    # -------------------------------------------------------------------------
+
     - id: "09"
       name: "Dependency Analysis"
       file: "step_09_dependencies.js"
-      description: "Analyze and validate dependencies"
+      description: "Audit npm dependencies for vulnerabilities and updates"
       phase: "quality"
+      enabled: true
       can_parallelize: true
       dependencies: ["08"]
       ai_persona: "dependency_analyst"
@@ -164,95 +259,171 @@ workflow:
     - id: "10"
       name: "Code Quality"
       file: "step_10_code_quality.js"
-      description: "Run code quality checks and linting"
+      description: "TypeScript code quality, anti-patterns, and tech debt review"
       phase: "quality"
+      enabled: true
       can_parallelize: true
       dependencies: ["09"]
-      ai_persona: "architecture_reviewer"
+      ai_persona: "code_quality_analyst"   # fixed: was architecture_reviewer
 
-    # Context & Analysis Phase (11)
-    - id: "11"
-      name: "Context Analysis"
-      file: "step_11_context.js"
-      description: "Analyze project context and relationships"
+    - id: "19"
+      name: "TypeScript Review"
+      file: "step_19_typescript_review.js"
+      description: "Strict-mode compliance and type-safety review (primary language)"
       phase: "quality"
+      enabled: true
+      can_parallelize: true
+      dependencies: ["10"]
+      ai_persona: "typescript_reviewer"
+
+    - id: "18"
+      name: "Debugging Analysis"
+      file: "step_18_debugging.js"
+      description: "AI-powered debugging for YAML loader / type system issues"
+      phase: "quality"
+      enabled: true
       can_parallelize: false
       dependencies: ["10"]
-
-    # Finalization Phase (13-17)
-    - id: "13"
-      name: "Markdown Linting"
-      file: "step_13_markdown_lint.js"
-      description: "Lint and fix markdown documentation"
-      phase: "finalization"
-      can_parallelize: true
-      dependencies: ["11"]
-      ai_persona: "technical_writer"
+      ai_persona: "code_quality_analyst"
+      optional: true
 
     - id: "14"
       name: "Prompt Engineering"
       file: "step_14_prompt_engineer.js"
-      description: "Optimize AI prompts and templates"
-      phase: "finalization"
+      description: "Review and improve AI prompt templates in config/ (core product)"
+      phase: "quality"
+      enabled: true
       can_parallelize: true
-      dependencies: ["13"]
+      dependencies: ["04"]
       ai_persona: "prompt_engineer"
+      # NOTE: prompt_roles.yaml and ai_helpers.yaml are the core deliverable —
+      # prompt quality review is the highest-value step for this project
+
+    # -------------------------------------------------------------------------
+    # FINALIZATION
+    # -------------------------------------------------------------------------
+
+    - id: "11"
+      name: "Context Analysis"
+      file: "step_11_context.js"
+      description: "Capture workflow context and execution metadata"
+      phase: "finalization"
+      enabled: true
+      can_parallelize: false
+      dependencies: ["19", "14"]
+
+    - id: "16"
+      name: "Version Update"
+      file: "step_16_version_update.js"
+      description: "Bump semantic version and generate CHANGELOG entry"
+      phase: "finalization"
+      enabled: true
+      can_parallelize: false
+      dependencies: ["11"]
+      ai_persona: "devops_engineer"
+
+    - id: "17"
+      name: "Workflow Summary"
+      file: "step_17_summary.js"
+      description: "Generate workflow execution summary report"
+      phase: "finalization"
+      enabled: true
+      can_parallelize: false
+      dependencies: ["16"]
+
+    - id: "0f"
+      name: "Commit Artifacts"
+      file: "step_0f_commit_artifacts.js"
+      description: "Commit .ai_workflow/ artifacts to git"
+      phase: "finalization"
+      enabled: true
+      can_parallelize: false
+      dependencies: ["17"]
+      ai_persona: "git_specialist"
+
+    - id: "12"
+      name: "Git Finalization"
+      file: "step_12_git_finalization.js"
+      description: "Generate conventional commit and finalize git state — FINAL STEP"
+      phase: "finalization"
+      enabled: true
+      can_parallelize: false
+      required: true
+      dependencies: ["0f"]
+      ai_persona: "git_specialist"
+
+    - id: "22"
+      name: "Accessibility Review"
+      file: "step_22.js"
+      description: "HTML/CSS accessibility and WCAG compliance audit"
+      phase: "quality"
+      enabled: false
+      reason: "Configuration library with no HTML/CSS output"
+      can_parallelize: true
+      dependencies: ["10"]
+      ai_persona: "accessibility_expert"
+
+    - id: "23"
+      name: "Performance Review"
+      file: "step_23.js"
+      description: "Frontend rendering and load performance review"
+      phase: "quality"
+      enabled: false
+      reason: "No performance-sensitive code paths; YAML config loading only"
+      can_parallelize: true
+      dependencies: ["10"]
+      ai_persona: "performance_engineer"
+
+    # -------------------------------------------------------------------------
+    # DISABLED — not applicable for this project
+    # -------------------------------------------------------------------------
 
     - id: "15"
       name: "UX Analysis"
       file: "step_15_ux_analysis.js"
-      description: "UI/UX and accessibility analysis"
+      description: "UI/UX and accessibility analysis (web projects only)"
       phase: "finalization"
-      can_parallelize: true
-      dependencies: ["14"]
+      enabled: false
+      dependencies: []
       ai_persona: "ux_analyst"
+      reason: "No UI/web frontend"
 
-    # Version Management (16)
-    - id: "16"
-      name: "Version Update"
-      file: "step_16_version_update.js"
-      description: "Finalize version and generate changelog"
-      phase: "finalization"
-      can_parallelize: false
-      dependencies: ["15"]
-      ai_persona: "devops_engineer"
+    - id: "20"
+      name: "Async Performance Review"
+      file: "step_20_async_perf_review.js"
+      description: "Promise patterns and event-loop review (async-heavy projects only)"
+      phase: "quality"
+      enabled: false
+      dependencies: []
+      ai_persona: "async_performance_engineer"
+      reason: "Minimal async code — only YAML config loading"
 
-    # Workflow Summary (17)
-    - id: "17"
-      name: "Workflow Summary"
-      file: "step_17_summary.js"
-      description: "Generate workflow summary report"
-      phase: "finalization"
-      can_parallelize: false
-      dependencies: ["16"]
+    - id: "11_5"
+      name: "AWS LBS Validation"
+      file: "step_11_5_aws_lbs_validation.js"
+      description: "AWS Location-Based Services infrastructure validation"
+      phase: "quality"
+      enabled: false
+      dependencies: []
+      reason: "No AWS infrastructure"
 
-    # Artifact Commit (0f)
-    - id: "0f"
-      name: "Commit Artifacts"
-      file: "step_0f_commit_artifacts.js"
-      description: "Commit workflow artifacts generated during the run"
-      phase: "finalization"
-      can_parallelize: false
-      dependencies: ["17"]
-
-    # Git Completion - MUST BE LAST STEP
-    - id: "12"
-      name: "Git Finalization"
-      file: "step_12_git_finalization.js"
-      description: "Git operations - stage, commit, push - FINAL STEP"
-      phase: "finalization"
-      can_parallelize: false
-      required: true
-      dependencies: ["0f"]
+    - id: "11_6"
+      name: "AWS Serverless Review"
+      file: "step_11_6_aws_serverless_review.js"
+      description: "AWS serverless deployment readiness review"
+      phase: "quality"
+      enabled: false
+      dependencies: []
+      reason: "No AWS infrastructure"
 
   # Step execution phases for multi-stage pipeline
   phases:
     analysis:
       description: "Documentation analysis, validation, and optimization"
-      steps: ["00", "0b", "01", "02", "02_5", "03"]
+      steps: ["00", "0b", "01", "02", "02_5", "21", "03", "13"]
 
     validation:
-      description: "Project structure and configuration validation"
+      description: "YAML config files and directory structure validation"
       steps: ["04", "05"]
 
     testing:
@@ -260,12 +431,12 @@ workflow:
       steps: ["06", "07", "08"]
 
     quality:
-      description: "Code quality, dependency checks, and context analysis"
-      steps: ["09", "10", "11"]
+      description: "TypeScript quality, dependency checks, prompt review, context"
+      steps: ["09", "10", "19", "18", "14", "11"]
 
     finalization:
-      description: "Linting, prompt optimization, UX, versioning, and git - ALWAYS RUNS LAST"
-      steps: ["13", "14", "15", "16", "17", "0f", "12"]
+      description: "Versioning, summary, artifact commit, git — ALWAYS RUNS LAST"
+      steps: ["16", "17", "0f", "12"]
 
 # Configuration-specific settings
 configuration:

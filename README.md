@@ -152,7 +152,7 @@ cp .workflow_core/config/.workflow-config.yaml.template .workflow-config.yaml
 - **[PROJECT_KINDS_SCHEMA.md](docs/api/PROJECT_KINDS_SCHEMA.md)** - Project kinds schema v1.2.2 reference
 - **[AI_HELPERS_REFERENCE.md](docs/api/AI_HELPERS_REFERENCE.md)** - AI persona definitions and token efficiency system
 - **[AI_PROMPTS_REFERENCE.md](docs/api/AI_PROMPTS_REFERENCE.md)** - Project-specific AI prompt templates
-- **[PROMPT_ROLES_REFERENCE.md](docs/api/PROMPT_ROLES_REFERENCE.md)** *(v1.2.2)* - Central role definitions, `role_ref:` pattern, TypeScript loader API
+- **[AI_PROMPTS_REFERENCE.md](docs/api/AI_PROMPTS_REFERENCE.md)** *(v1.2.2)* - Central role definitions, `role_ref:` pattern, TypeScript loader API
 
 ### User Guides
 - **[QUICK_START.md](docs/guides/QUICK_START.md)** - 5-minute setup guide
@@ -193,7 +193,7 @@ const resolved = resolveAllPersonas(config, roles);
 console.log(resolved['doc_analysis_prompt'].role_prefix);
 ```
 
-See [docs/api/PROMPT_ROLES_REFERENCE.md](docs/api/PROMPT_ROLES_REFERENCE.md) for the full API.
+See [docs/api/AI_PROMPTS_REFERENCE.md](docs/api/AI_PROMPTS_REFERENCE.md) for the full API.
 
 ### Validation Scripts
 

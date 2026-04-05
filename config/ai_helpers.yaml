@@ -1942,16 +1942,15 @@ step2_consistency_prompt:
   
   task_template: |
     Perform a comprehensive documentation consistency analysis for this project,
-    covering both **markdown files** (`.md`) and **inline source documentation**
-    (JSDoc comments in `.js`/`.ts` files). "Consistency" means: uniform naming
-    conventions, function signatures and parameter descriptions in inline docs that
-    match actual code, up-to-date examples and version numbers, and style
-    uniformity across all documentation types.
+    covering **markdown documentation files** (`.md`) only. "Consistency" means:
+    uniform naming conventions, up-to-date examples and version numbers, intact
+    cross-references, and style uniformity across all documentation types.
 
     **Context:**
     - Project: {project_name} ({project_description})
     - Primary Language: {primary_language}
-    - Documentation files: {doc_count} markdown files
+    - Documentation files: {doc_count} markdown files (this partition's scope)
+    - TypeScript source files: {ts_source_count} (not included in this partition — JSDoc source coverage is checked in the TypeScript Review step)
     - Scope: {change_scope}
     - Files in this analysis batch: {modified_count} (files are batched in groups of ≤50 to stay within AI context limits)
     
@@ -1961,15 +1960,22 @@ step2_consistency_prompt:
        - Check if all referenced files/directories exist
        - Verify version numbers follow semantic versioning (MAJOR.MINOR.PATCH)
        - Ensure version consistency across documentation and package manifests
-       - Validate command examples match actual scripts/executables
+         (check `package.json`, `package-lock.json`, and ecosystem-equivalent lockfiles)
+       - Validate command examples match actual scripts/executables:
+         npm/yarn scripts defined in `package.json`, shell scripts in `scripts/` or `bin/`,
+         and any executables referenced in README or CONTRIBUTING
     
     2. **Content Synchronization:**
-       - Compare primary documentation files (README, copilot-instructions)
-       - Check if module/component docs match actual code structure
+       - Compare primary documentation files: `README.md`, `.github/copilot-instructions.md`,
+         `docs/ARCHITECTURE.md` (and any `CONTRIBUTING.md` / `CHANGELOG.md` present)
+       - Check if module/component docs match actual code structure; component API docs
+         are expected in `docs/API.md`, `docs/FUNCTIONAL_REQUIREMENTS.md`, or inline JSDoc
        - Verify build/package configuration matches documented commands
     
     3. **Architecture Consistency:**
-       - Validate directory structure matches documented structure
+       - Validate directory structure matches documented structure; the primary source of
+         truth for the documented structure is `docs/ARCHITECTURE.md` (or a "Directory
+         structure" section in README.md if ARCHITECTURE.md is absent)
        - Check if deployment/build steps match actual scripts
        - Verify dependency references are accurate
     
@@ -2034,15 +2040,28 @@ step2_consistency_prompt:
     
     5. **Quality Checks:**
        - Missing documentation for new features
-       - Outdated version numbers or dates
-       - Inconsistent terminology or naming conventions
-       - Missing cross-references between related docs
+       - Outdated version numbers or dates (only flag if the file already carries explicit
+         version numbers; do not invent or assume versioning where none is present)
+       - Inconsistent terminology or naming conventions — flag when the same concept is
+         referred to by different names across files
+         (e.g. a component called "ListPanel" in one doc and "List Panel" in another)
+       - Missing cross-references between related docs — flag when a concept, component,
+         or module is documented in one place but not linked from a closely related file
+         (e.g. `README.md` mentions a component without linking to `docs/API.md`)
     
     6. **Inline Documentation (JSDoc/TypeScript) Checks:**
        - Verify all exported functions and classes have JSDoc comments
        - Check that `@param`, `@returns`, and `@throws` tags match actual function signatures
        - Ensure JSDoc code examples reflect the current API and would compile/run
        - Confirm `@deprecated` tags are present for removed or renamed symbols
+         (skip this check if no symbols have been removed or renamed in the current scope)
+       - Where a project-specific JSDoc convention is documented (e.g. in `CONTRIBUTING.md`
+         or `.github/copilot-instructions.md`), validate inline docs against those
+         conventions rather than applying generic defaults
+       - **Scope note:** These checks apply only to JSDoc visible within the documentation
+         files listed in this partition (e.g. code blocks in `CONTRIBUTING.md`,
+         `.github/copilot-instructions.md`, or `docs/`). Full source-file JSDoc completeness
+         (all exported symbols in `src/`) is validated by the TypeScript Review step.
     
     **Files to Analyze:**
     {doc_files}

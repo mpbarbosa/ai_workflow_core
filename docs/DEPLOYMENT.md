@@ -379,10 +379,10 @@ git fetch origin --tags
 git tag -l "v*"
 
 # 4. Review changes
-git log --oneline $(git describe --tags --abbrev=0)..v1.2.2
+git log --oneline $(git describe --tags --abbrev=0)..v1.2.3
 
 # 5. Update to new version
-git checkout v1.2.2
+git checkout v1.2.3
 cd ..
 
 # 6. Update configuration if needed
@@ -390,7 +390,7 @@ diff .workflow-config.yaml .workflow_core/config/.workflow-config.yaml.template
 
 # 7. Commit update
 git add .workflow_core
-git commit -m "chore: Update ai_workflow_core to v1.2.2"
+git commit -m "chore: Update ai_workflow_core to v1.2.3"
 ```
 
 ### Automated Update with Script
@@ -433,7 +433,7 @@ Usage:
 ./scripts/update-workflow-core.sh
 
 # Update to specific version
-./scripts/update-workflow-core.sh v1.2.2
+./scripts/update-workflow-core.sh v1.2.3
 ```
 
 ### CI/CD Automated Updates
@@ -606,7 +606,7 @@ cd .workflow_core
 git log --oneline -5
 
 # 2. Identify rollback target
-# Example: Rolling back from v1.2.2 to v1.0.2
+# Example: Rolling back from v1.2.3 to v1.0.2
 git checkout v1.0.2
 
 cd ..

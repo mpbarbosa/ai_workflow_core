@@ -119,7 +119,8 @@ I've analyzed all three API reference documentation files and created a comprehe
 
 1. **VERSION MISMATCHES** (2 of 3 files):
    - `AI_HELPERS_REFERENCE.md`: Claims v5.0.0, actual is v4.1.0
-   - 
+   - `AI_PROMPTS_REFERENCE.md`: Claims v2.0.0, actual is v1.2.3
+   - Only `PROJECT_KINDS_SCHEMA.md` has correct version (v1.2.3)
 
 ---
 
@@ -127,9 +128,10 @@ I've analyzed all three API reference documentation files and created a comprehe
 
 # Documentation Analysis Results (Parallel Processing)
 
-**Categories Analyzed**: 3
-**Total Files**: 7
-**Processing Mode**: Parallel (4 max jobs)
+**Phase 1 - Critical (20 min)**:
+- Fix version numbers: 5.0.0→4.1.0, 2.0.0→1.2.3
+- Update dates to match config files
+- Fix cross-reference version numbers
 
 ## Reference Documentation
 
@@ -256,7 +258,331 @@ $ cd /home/mpb/Documents/GitHub/ai_workflow.js && ls -1 src/orchestrator/\*.js
 $ cd /home/mpb/Documents/GitHub/ai_workflow.js && npm test 2>&1 | grep -A 5 "Test Suites:"
 └ 6 lines...
 
-Let me check which modules are missing from git automation:
+## Critical Issues Found
+
+### 1. **`.github/copilot-instructions.md` - Outdated Metadata** ⚠️
+**Lines 696-699:**
+- Last Updated: 2026-02-01 (6 days old)
+- Document Version: 1.0.2
+
+**Issue**: References to documentation structure may be outdated. The file claims:
+- "5 core docs in `docs/` root + 3 guides in `docs/guides/` + 3 API references in `docs/api/`"
+- But we have 3 `docs/advanced/` files being analyzed here, not mentioned in the structure
+
+**Recommendation:**
+```markdown
+Update directory structure section to include:
+docs/
+├── advanced/                # Advanced integration guides
+│   ├── CI_CD_INTEGRATION.md
+│   ├── CUSTOM_WORKFLOW_CREATION.md
+│   └── MULTI_LANGUAGE_SETUP.md
+├── developers/              # Developer documentation
+│   └── TEMPLATE_AUTHORING.md
+```
+
+---
+
+### 2. **Missing Cross-References Between Docs** 🔴
+
+**Issue**: Documents reference each other but paths are inconsistent:
+- `CI_CD_INTEGRATION.md` references `guides/VERSION_MANAGEMENT.md` (doesn't exist)
+- `INTEGRATION.md` references `guides/INTEGRATION_BEST_PRACTICES.md` (doesn't exist)
+- `MULTI_LANGUAGE_SETUP.md` references `docs/INTEGRATION.md` (should be `../INTEGRATION.md`)
+
+**Recommendations:**
+1. **Audit all internal links** - Run: `grep -rn "docs/" docs/ | grep -E "\[.*\]\("`
+2. **Use relative paths consistently** - `../INTEGRATION.md` not `docs/INTEGRATION.md`
+3. **Add missing documents or remove references**
+
+---
+
+### 3. **`CI_CD_INTEGRATION.md` - Outdated Version References** 📅
+
+**Line 3-4:**
+```markdown
+**Version**: 1.0.2
+**Last Updated**: 2026-02-07
+```
+
+**Issue**: Claims to be updated today but references `workflow-templates/workflows/validate-structure.yml` and `integration-health.yml` which may not exist.
+
+**Line 549, 1218:** References to `check_integration_health.sh` script that's not in repository structure.
+
+**Recommendations:**
+1. Verify all referenced files exist
+2. Add TODO section if features are planned but not implemented
+3. Update "Current workflows" list to match actual files
+
+---
+
+### 4. **`ARCHITECTURE.md` - ADR-002 Inconsistency** ⚠️
+
+**Lines 397-418:** ADR-002 states:
+```
+- `.github/` in ai_workflow_core = GitHub metadata for THIS repository (DO NOT COPY)
+- `workflow-templates/` = Workflow templates for OTHER projects to copy
+```
+
+**Issue**: Line 549 in copilot-instructions.md claims there are 5 workflows in `workflow-templates/`:
+- code-quality.yml
+- validate-docs.yml
+- validate-tests.yml
+- validate-structure.yml ← Not found in directory structure
+- integration-health.yml ← Not found in directory structure
+
+**Recommendation:** Update ADR-002 or add missing workflow files.
+
+---
+
+### 5. **`INTEGRATION.md` - Broken Health Check References** 🔴
+
+**Lines 359, 476-489, 624-630, 640:** Multiple references to:
+- `guides/VERSION_MANAGEMENT.md` - File doesn't exist
+- `guides/INTEGRATION_BEST_PRACTICES.md` - File doesn't exist
+- `bash .workflow_core/scripts/check_integration_health.sh` - Script doesn't exist
+
+**Recommendation:** Either:
+- Create these missing guides/scripts
+- Remove references with note: "Coming soon"
+- Replace with existing alternatives
+
+---
+
+### 6. **`MULTI_LANGUAGE_SETUP.md` - Generic Project Kind Overuse** ⚠️
+
+**Lines 223, 287, 349:** All multi-language examples use `kind: "generic"`.
+
+**Issue**: This contradicts `project_kinds.yaml` which has 8 specific project kinds. No guidance on when to use `generic` vs creating custom kind.
+
+**Recommendation:**
+```markdown
+## When to Use Generic vs Custom Project Kind
+
+Use `generic` when:
+- No existing project kind matches (>50% mismatch)
+- Temporary/experimental setup
+- Truly multi-language with no dominant language
+
+Consider custom project kind when:
+- Pattern will be reused across projects
+- Specific validation rules needed
+- Team wants AI guidance tailored to stack
+```
+
+---
+
+### 7. **`TEMPLATE_AUTHORING.md` - Version Discrepancy** 📅
+
+**Lines 3-4:**
+```markdown
+**Version**: 2.0.0
+**Last Updated**: 2026-02-07
+```
+
+But copilot-instructions.md says:
+```markdown
+**ai_workflow_core version**: 1.0.2
+```
+
+**Issue**: Template authoring guide claims v2.0.0 but core is v1.0.2. Confusing versioning.
+
+**Recommendation:** Clarify that document version ≠ ai_workflow_core version:
+```markdown
+**Document Version**: 2.0.0 (documentation iteration)
+**Compatible with**: ai_workflow_core v1.0.2+
+```
+
+---
+
+## Accuracy & Completeness Issues
+
+### `CI_CD_INTEGRATION.md`
+
+**✅ Strengths:**
+- Comprehensive multi-platform coverage
+- Excellent code examples
+- Clear troubleshooting section
+
+**❌ Issues:**
+1. **Line 640:** References script that doesn't exist: `bash .workflow_core/scripts/check_integration_health.sh`
+2. **Lines 1217-1222:** "Resources" section links to non-existent guides
+3. **Missing**: No mention of `docs/advanced/` location in breadcrumb
+
+**Recommendations:**
+```markdown
+Add breadcrumb at top:
+> **Location**: `docs/advanced/CI_CD_INTEGRATION.md`
+> **See also**: [Integration Guide](../INTEGRATION.md), [Custom Workflows](CUSTOM_WORKFLOW_CREATION.md)
+
+Update Resources section:
+- ~~Custom Workflows: `docs/advanced/CUSTOM_WORKFLOW_CREATION.md`~~ → `CUSTOM_WORKFLOW_CREATION.md` (same dir)
+```
+
+---
+
+### `CUSTOM_WORKFLOW_CREATION.md`
+
+**Could not analyze** - File too large (30.2KB). Needs review in sections.
+
+**Recommendation:**
+```bash
+# View in sections
+view docs/advanced/CUSTOM_WORKFLOW_CREATION.md --view-range [1, 100]
+view docs/advanced/CUSTOM_WORKFLOW_CREATION.md --view-range [100, 200]
+# etc.
+```
+
+---
+
+### `MULTI_LANGUAGE_SETUP.md`
+
+**✅ Strengths:**
+- Excellent pattern examples
+- Clear architecture diagrams
+- Practical troubleshooting
+
+**❌ Issues:**
+1. **Lines 219, 349:** Python project example uses `kind: "library"` - not a valid project kind per `project_kinds.yaml`
+2. **Line 1113:** References `docs/api/PROJECT_KINDS_SCHEMA.md` but doesn't mention 8 kinds align with project_kinds.yaml v1.2.3
+
+**Recommendations:**
+```yaml
+# Fix line 219
+- kind: "library"  # ❌ Invalid
++ kind: "python_app"  # ✅ Valid per project_kinds.yaml
+```
+
+---
+
+### `TEMPLATE_AUTHORING.md`
+
+**✅ Strengths:**
+- Extremely detailed and practical
+- Excellent code examples with comments
+- Clear testing guidance
+
+**❌ Issues:**
+1. **No mention of CUSTOM_WORKFLOW_CREATION.md** - Should cross-reference for GitHub Actions templates
+2. **Line 779:** Says "Template Version: 2.0.0" but doesn't explain relationship to ai_workflow_core v1.0.2
+
+**Recommendations:**
+```markdown
+Add "Related Documentation" section:
+- **Custom Workflow Creation**: For advanced GitHub Actions templates
+- **CI/CD Integration**: For platform-specific CI/CD patterns
+```
+
+---
+
+## Clarity & Organization Issues
+
+### Inconsistent Header Styles
+
+All files use similar structure BUT:
+- `CI_CD_INTEGRATION.md` has 6-field header (Version, Last Updated, Audience)
+- `TEMPLATE_AUTHORING.md` has 5-field header (no Audience)
+- `ARCHITECTURE.md` has 3-field header (Version, Last Updated, Status)
+
+**Recommendation:** Standardize metadata header:
+```markdown
+**Document Version**: X.Y.Z
+**Last Updated**: YYYY-MM-DD
+**Audience**: [Who should read this]
+**Status**: [Stable/Draft/Deprecated]
+```
+
+---
+
+### `INTEGRATION.md` - Overwhelming Length
+
+**736 lines** with extensive version management section (lines 356-507).
+
+**Recommendation:** Extract to separate guide:
+```bash
+# Create new guide
+docs/guides/VERSION_MANAGEMENT.md
+
+# Update INTEGRATION.md
+Replace lines 356-507 with:
+> **Version Management**: For detailed strategies, see [Version Management Guide](guides/VERSION_MANAGEMENT.md).
+```
+
+---
+
+## Missing Information
+
+### All Files Missing:
+1. **Changelog section** - When was document last changed and why?
+2. **Feedback mechanism** - How to report doc issues
+3. **Contribution guide** - How to improve these docs
+
+**Recommendation:** Add to each file:
+```markdown
+---
+
+## Document History
+
+| Version | Date | Changes |
+|---------|------|---------|
+| 2.0.0 | 2026-02-07 | Major rewrite, added multi-platform examples |
+| 1.0.2 | 2026-01-31 | Initial version |
+
+## Feedback
+
+Found an issue or have suggestions?
+- **File Issue**: [GitHub Issues](https://github.com/mpbarbosa/ai_workflow_core/issues)
+- **Edit This Doc**: [GitHub Edit](https://github.com/mpbarbosa/ai_workflow_core/edit/main/docs/...)
+```
+
+---
+
+## Priority Recommendations
+
+### 🔴 **High Priority** (Fix Immediately)
+
+1. **Fix broken internal links** - Audit all `docs/` references
+2. **Verify referenced scripts exist** - `check_integration_health.sh`, etc.
+3. **Update copilot-instructions.md** - Add `docs/advanced/` and `docs/developers/` to structure
+4. **Fix invalid project kinds** - Change `"library"` to `"python_app"` or `"generic"`
+
+### 🟡 **Medium Priority** (Fix Soon)
+
+5. **Standardize metadata headers** - Use consistent format across all docs
+6. **Extract version management guide** - Reduce INTEGRATION.md length
+7. **Add document history section** - Track changes per document
+8. **Clarify document vs product versioning** - Template guide v2.0.0 vs core v1.0.2
+
+### 🟢 **Low Priority** (Nice to Have)
+
+9. **Add breadcrumb navigation** - Help users understand doc location
+10. **Create VERSION_MANAGEMENT.md** - Extract from INTEGRATION.md
+11. **Create INTEGRATION_BEST_PRACTICES.md** - Or remove references
+12. **Review CUSTOM_WORKFLOW_CREATION.md** - File too large to analyze in one pass
+
+---
+
+## Summary Statistics
+
+| Document | Lines | Issues | Status |
+|----------|-------|--------|--------|
+| copilot-instructions.md | 700 | 2 | 🟢 Good |
+| ARCHITECTURE.md | 625 | 1 | 🟢 Good |
+| INTEGRATION.md | 736 | 5 | 🟡 Needs fixes |
+| CI_CD_INTEGRATION.md | 1235 | 4 | 🟡 Needs fixes |
+| CUSTOM_WORKFLOW_CREATION.md | Unknown | Unknown | ⚠️ Needs review |
+| MULTI_LANGUAGE_SETUP.md | 1123 | 3 | 🟢 Good |
+| TEMPLATE_AUTHORING.md | 938 | 2 | 🟢 Good |
+
+**Overall**: Documentation quality is **high** but has consistency and broken reference issues that need addressing.
+
+
+Total usage est:        1 Premium request
+API time spent:         54s
+Total session time:     59s
+Total code changes:     +0 -0
+Breakdown by AI model:
+ claude-sonnet-4.5       91.6k in, 3.8k out, 23.6k cached (Est. 1 Premium request)
 
 ● Check git-related modules
 $ cd /home/mpb/Documents/Git

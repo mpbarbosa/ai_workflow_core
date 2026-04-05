@@ -247,6 +247,8 @@ ai_workflow_core/
 ├── docs/                    # Documentation
 │   ├── guides/
 │   └── misc/
+├── templates/               # Reusable debugging & workflow checklists
+│   └── debugging/           # Debugging checklists (async, observer, etc.)
 └── scripts/                 # Utility scripts
     └── validate_context_blocks.py
 ```

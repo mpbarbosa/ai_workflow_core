@@ -1414,7 +1414,7 @@ ui_ux_designer_prompt:
 # Focus: Keyboard navigation, focus management, status display, terminal layout
 # NOT for: Web, mobile, or graphical UI projects
 tui_ux_designer_prompt:
-  role_ref: ui_ux_designer  # reuse existing role — no new prompt_roles.yaml entry needed
+  role_ref: cli_tui_engineer  # terminal UI specialist — keyboard nav, focus management, Ink/React TUI
   behavioral_guidelines: *behavioral_actionable
 
   task_template: |
@@ -2665,6 +2665,70 @@ step9_code_quality_prompt:
     **Tooling Note:** Where project-specific linting or static-analysis tools are visible in the provided context (including tech stack or config files), reference those tools when citing violations. Cite specific rule names only when the tool configuration is clearly visible in the context; otherwise describe the violation generically.
 
     Please provide a comprehensive code quality assessment with specific, actionable recommendations.
+
+# Error Resilience Prompt Template
+# Supplementary per-partition pass run by Step 10 (code quality) for all project kinds
+# except static_website and configuration_library.
+# Focuses on production failure modes that the main quality sweep may miss:
+# uncaught exceptions, unhandled promise rejections, empty catch blocks, missing
+# await, silent failure swallowing, and error-masking patterns.
+error_resilience_prompt:
+  role_ref: software_quality_engineer  # resolved from config/prompt_roles.yaml
+  behavioral_guidelines: *behavioral_actionable
+
+  task_template: |
+    Perform a focused **Error Resilience Review** of the provided source files.
+    Your goal is to surface production-threatening failure modes that are often
+    invisible in standard code-quality sweeps.
+
+    **Context:**
+    - Project: {project_name}
+    - Primary Language: {primary_language}
+
+    **Scope — look exclusively for:**
+
+    1. **Uncaught Exceptions & Unhandled Rejections**
+       - `async` functions called without `await` and without `.catch()`
+       - `Promise.all` / `Promise.allSettled` calls with no rejection handler
+       - Event emitters (`EventEmitter`, DOM `addEventListener`) without error events
+       - Top-level `async` IIFE without a `.catch()` or `try/catch`
+
+    2. **Silent Failure Swallowing**
+       - Empty `catch` blocks: `catch (e) \{\}`  or `catch \{ /* ignored */ \}`
+       - Catch blocks that only log without re-throwing or surfacing the error
+       - Optional chaining (`?.`) used where a missing value should be a hard error
+       - Fallback defaults (`?? defaultVal`) that hide data-contract violations
+
+    3. **Missing `await` on Async Calls**
+       - Calls to `async` functions or Promise-returning APIs whose result is
+         discarded (no `await`, no `.then()`, no variable assignment)
+       - `fs.writeFile`, database writes, HTTP requests left un-awaited
+
+    4. **Error Masking in Control Flow**
+       - `try/catch` that catches broadly and returns `null`/`undefined`/`false`
+         without logging the original error
+       - Error objects converted to strings or generic messages, losing stack traces
+       - Retry loops that swallow errors on the last attempt
+
+    5. **Resource Leak on Error**
+       - File handles, DB connections, or streams opened inside `try` blocks with
+         no `finally` to guarantee closure
+
+    **Files to Review:**
+    {file_content_map}
+
+    **Output Format:**
+    For each finding, output:
+    - **File**: `filename.ext:line` (or best estimate if exact line is unclear)
+    - **Category**: one of Uncaught Rejection / Silent Failure / Missing Await /
+      Error Masking / Resource Leak
+    - **Severity**: Critical (can crash or corrupt) / High (likely silent data loss)
+      / Medium (degrades observability)
+    - **Finding**: one-sentence description of the problem
+    - **Fix**: concrete code-level recommendation
+
+    If no issues are found in a category, skip that category entirely.
+    End with a one-line summary: total findings by severity.
 
 # Step 11: Git Commit Message Generation Prompt Template
 step11_git_commit_prompt:

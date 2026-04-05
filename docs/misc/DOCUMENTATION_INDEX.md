@@ -48,9 +48,9 @@
 |----------|---------|-------|---------|
 | [CONFIG_REFERENCE.md](docs/api/CONFIG_REFERENCE.md) | `.workflow-config.yaml` field reference | 695 | 1.0.2 |
 | [PLACEHOLDER_REFERENCE.md](docs/api/PLACEHOLDER_REFERENCE.md) | Placeholder patterns & substitution | 756 | 1.0.2 |
-| [PROJECT_KINDS_SCHEMA.md](docs/api/PROJECT_KINDS_SCHEMA.md) | Project kinds schema (8 types) | 777 | 1.2.2 |
+| [PROJECT_KINDS_SCHEMA.md](docs/api/PROJECT_KINDS_SCHEMA.md) | Project kinds schema (8 types) | 777 | 1.2.3 |
 | [AI_HELPERS_REFERENCE.md](docs/api/AI_HELPERS_REFERENCE.md) | AI personas & token efficiency | 1,177 | 1.0.2 |
-| [AI_PROMPTS_REFERENCE.md](docs/api/AI_PROMPTS_REFERENCE.md) | Project-specific AI prompts | 1,197 | 1.2.2 |
+| [AI_PROMPTS_REFERENCE.md](docs/api/AI_PROMPTS_REFERENCE.md) | Project-specific AI prompts | 1,197 | 1.2.3 |
 | [docs/api/README.md](docs/api/README.md) | API documentation overview | - | - |
 
 **Use API references when**:
@@ -323,8 +323,8 @@ See [AI_WORKFLOW_DIRECTORY.md](docs/AI_WORKFLOW_DIRECTORY.md) for details.
 
 **Last Major Update**: 2026-02-07
 **Schema Versions**:
-- project_kinds.yaml: v1.2.2
-- AI prompts: v1.2.2
+- project_kinds.yaml: v1.2.3
+- AI prompts: v1.2.3
 - Core templates: v1.0.2
 
 ---

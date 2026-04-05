@@ -233,12 +233,12 @@ git commit -m "chore(config): update project configuration"
 # 1. Update submodule
 cd .workflow_core
 git fetch origin
-git checkout v1.2.2  # Pin to specific version
+git checkout v1.2.3  # Pin to specific version
 cd ..
 
 # 2. Update parent repo
 git add .workflow_core
-git commit -m "chore(deps): upgrade ai_workflow_core to v1.2.2"
+git commit -m "chore(deps): upgrade ai_workflow_core to v1.2.3"
 
 # 3. Review breaking changes
 cat .workflow_core/CHANGELOG.md

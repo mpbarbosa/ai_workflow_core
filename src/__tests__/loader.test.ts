@@ -21,7 +21,7 @@ import {
   resolvePersona,
   RoleNotFoundError,
 } from '../index';
-import type { PersonaConfig, PromptRolesConfig } from '../index';
+import type { AIHelpersConfig, PersonaConfig, PromptRolesConfig } from '../index';
 
 // ---------------------------------------------------------------------------
 // Fixture paths
@@ -40,8 +40,8 @@ const MISSING_FILE = path.join(FIXTURES, 'does_not_exist.yaml');
 describe('loadPromptRoles', () => {
   let config: PromptRolesConfig;
 
-  beforeEach(() => {
-    config = loadPromptRoles(PROMPT_ROLES_YAML);
+  beforeEach(async () => {
+    config = await loadPromptRoles(PROMPT_ROLES_YAML);
   });
 
   it('loads a valid prompt_roles.yaml and returns PromptRolesConfig', () => {
@@ -57,19 +57,19 @@ describe('loadPromptRoles', () => {
     expect(roleA.role_prefix).toContain('senior test engineer');
   });
 
-  it('throws InvalidConfigError for a missing file', () => {
-    expect(() => loadPromptRoles(MISSING_FILE)).toThrow(InvalidConfigError);
-    expect(() => loadPromptRoles(MISSING_FILE)).toThrow(/does_not_exist\.yaml/);
+  it('throws InvalidConfigError for a missing file', async () => {
+    await expect(loadPromptRoles(MISSING_FILE)).rejects.toThrow(InvalidConfigError);
+    await expect(loadPromptRoles(MISSING_FILE)).rejects.toThrow(/does_not_exist\.yaml/);
   });
 
-  it('throws InvalidConfigError for malformed YAML', () => {
-    expect(() => loadPromptRoles(BAD_YAML)).toThrow(InvalidConfigError);
+  it('throws InvalidConfigError for malformed YAML', async () => {
+    await expect(loadPromptRoles(BAD_YAML)).rejects.toThrow(InvalidConfigError);
   });
 
-  it('throws InvalidConfigError when file lacks top-level "roles" key', () => {
+  it('throws InvalidConfigError when file lacks top-level "roles" key', async () => {
     // ai_helpers.yaml has no top-level "roles" key
-    expect(() => loadPromptRoles(AI_HELPERS_YAML)).toThrow(InvalidConfigError);
-    expect(() => loadPromptRoles(AI_HELPERS_YAML)).toThrow(/roles/i);
+    await expect(loadPromptRoles(AI_HELPERS_YAML)).rejects.toThrow(InvalidConfigError);
+    await expect(loadPromptRoles(AI_HELPERS_YAML)).rejects.toThrow(/roles/i);
   });
 });
 
@@ -78,10 +78,10 @@ describe('loadPromptRoles', () => {
 // ---------------------------------------------------------------------------
 
 describe('loadPersonas', () => {
-  let config: ReturnType<typeof loadPersonas>;
+  let config: AIHelpersConfig;
 
-  beforeEach(() => {
-    config = loadPersonas(AI_HELPERS_YAML);
+  beforeEach(async () => {
+    config = await loadPersonas(AI_HELPERS_YAML);
   });
 
   it('loads a valid ai_helpers.yaml and returns an object', () => {
@@ -94,13 +94,13 @@ describe('loadPersonas', () => {
     expect(config['persona_beta']).toBeDefined();
   });
 
-  it('throws InvalidConfigError for a missing file', () => {
-    expect(() => loadPersonas(MISSING_FILE)).toThrow(InvalidConfigError);
-    expect(() => loadPersonas(MISSING_FILE)).toThrow(/does_not_exist\.yaml/);
+  it('throws InvalidConfigError for a missing file', async () => {
+    await expect(loadPersonas(MISSING_FILE)).rejects.toThrow(InvalidConfigError);
+    await expect(loadPersonas(MISSING_FILE)).rejects.toThrow(/does_not_exist\.yaml/);
   });
 
-  it('throws InvalidConfigError for malformed YAML', () => {
-    expect(() => loadPersonas(BAD_YAML)).toThrow(InvalidConfigError);
+  it('throws InvalidConfigError for malformed YAML', async () => {
+    await expect(loadPersonas(BAD_YAML)).rejects.toThrow(InvalidConfigError);
   });
 });
 
@@ -111,8 +111,8 @@ describe('loadPersonas', () => {
 describe('resolvePersona', () => {
   let roles: PromptRolesConfig;
 
-  beforeEach(() => {
-    roles = loadPromptRoles(PROMPT_ROLES_YAML);
+  beforeEach(async () => {
+    roles = await loadPromptRoles(PROMPT_ROLES_YAML);
   });
 
   it('resolves role_ref to role_prefix from PromptRolesConfig', () => {
@@ -164,11 +164,11 @@ describe('resolvePersona', () => {
 
 describe('resolveAllPersonas', () => {
   let roles: PromptRolesConfig;
-  let config: ReturnType<typeof loadPersonas>;
+  let config: AIHelpersConfig;
 
-  beforeEach(() => {
-    roles = loadPromptRoles(PROMPT_ROLES_YAML);
-    config = loadPersonas(AI_HELPERS_YAML);
+  beforeEach(async () => {
+    roles = await loadPromptRoles(PROMPT_ROLES_YAML);
+    config = await loadPersonas(AI_HELPERS_YAML);
   });
 
   it('resolves all persona entries from ai_helpers.yaml fixture', () => {

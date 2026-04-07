@@ -14,7 +14,7 @@
  * {@link ResolvedPersona} objects with concrete `role_prefix` text.
  */
 
-import { readFileSync } from 'fs';
+import { promises as fsPromises } from 'fs';
 import { load as parseYaml } from 'js-yaml';
 import {
   AIHelpersConfig,
@@ -35,9 +35,9 @@ import {
  * Reads and parses a YAML file from `filePath`.
  * Throws InvalidConfigError on any filesystem or YAML parse error.
  */
-function readYamlFile(filePath: string): unknown {
+async function readYamlFile(filePath: string): Promise<unknown> {
   try {
-    const raw = readFileSync(filePath, 'utf8');
+    const raw = await fsPromises.readFile(filePath, 'utf8');
     return parseYaml(raw);
   } catch (err) {
     throw new InvalidConfigError(filePath, err);
@@ -60,8 +60,8 @@ function readYamlFile(filePath: string): unknown {
  * @throws         {@link InvalidConfigError} if the file is missing,
  *                 unreadable, invalid YAML, or fails shape validation.
  */
-export function loadPromptRoles(filePath: string): PromptRolesConfig {
-  const raw = readYamlFile(filePath);
+export async function loadPromptRoles(filePath: string): Promise<PromptRolesConfig> {
+  const raw = await readYamlFile(filePath);
   if (!isPromptRolesConfig(raw)) {
     throw new InvalidConfigError(
       filePath,
@@ -84,8 +84,8 @@ export function loadPromptRoles(filePath: string): PromptRolesConfig {
  * @throws         {@link InvalidConfigError} if the file is missing or contains
  *                 invalid YAML.
  */
-export function loadPersonas(filePath: string): AIHelpersConfig {
-  const raw = readYamlFile(filePath);
+export async function loadPersonas(filePath: string): Promise<AIHelpersConfig> {
+  const raw = await readYamlFile(filePath);
   if (typeof raw !== 'object' || raw === null || Array.isArray(raw)) {
     throw new InvalidConfigError(
       filePath,

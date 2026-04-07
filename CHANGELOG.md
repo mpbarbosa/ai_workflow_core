@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added guardrail: only suggest type changes backed by concrete evidence of unsafety or a policy violation; avoid speculative fixes.
   - Appended a short example output block so reviewers have a clear template to follow.
 
-## [1.2.4] — 2026-04-01
+## [1.2.5] — 2026-04-01
 
 ### Added
 
@@ -69,7 +69,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`config/README.md`** — Updated to document `prompt_roles.yaml`, the `role_ref:` pattern,
   and the TypeScript config-loader usage example.
 
-- **`README.md`** — Updated version badge to 1.2.4, added TypeScript loader section, added
+- **`README.md`** — Updated version badge to 1.2.5, added TypeScript loader section, added
   `PROMPT_ROLES_REFERENCE.md` to API references table.
 
 - **`package.json`** — Added `name`, `version`, `description`, `main`, `types`, `scripts`,
@@ -142,7 +142,7 @@ Add these patterns to your project's `.gitignore` file to exclude workflow artif
 
 ## AI Prompt Configuration Files
 
-### `prompt_roles.yaml` *(new in v1.2.4)*
+### `prompt_roles.yaml` *(new in v1.2.5)*
 **Single source of truth for all AI persona role definitions.**
 
 Contains 29 named role entries, each with:
@@ -174,11 +174,11 @@ See `docs/api/PROMPT_ROLES_REFERENCE.md` for the full API reference.
 Core AI prompt templates for workflow automation. Contains 29 personas across
 documentation, front-end, testing, development, debugging, and cloud categories.
 
-As of v1.2.4, each persona uses `role_ref: <key>` to reference its role definition
+As of v1.2.5, each persona uses `role_ref: <key>` to reference its role definition
 from `prompt_roles.yaml`, instead of inlining the role text:
 
 ```yaml
-# v1.2.4+ pattern
+# v1.2.5+ pattern
 doc_analysis_prompt:
   role_ref: doc_analysis          # resolved from config/prompt_roles.yaml
   behavioral_guidelines: ...
@@ -237,7 +237,7 @@ Language-specific prompt customizations for different project types (bash, javas
 `config/prompt_roles.yaml` is the **single source of truth** for all AI persona role
 definitions in the ai_workflow_core system.
 
-Prior to v1.2.4, each persona in `ai_helpers.yaml` carried its own inline `role_prefix:`
+Prior to v1.2.5, each persona in `ai_helpers.yaml` carried its own inline `role_prefix:`
 block, duplicating large text blobs and making cross-project reuse impossible. The new
 system separates the *what* (role definitions in `prompt_roles.yaml`) from the *how*
 (task templates and approach in `ai_helpers.yaml`):
@@ -286,11 +286,11 @@ roles:
 
 ## role_ref Pattern in ai_helpers.yaml
 
-After the v1.2.4 refactor, persona entries in `ai_helpers.yaml` use `role_ref:` instead
+After the v1.2.5 refactor, persona entries in `ai_helpers.yaml` use `role_ref:` instead
 of the old inline `role_prefix:` block:
 
 ```yaml
-# ✅ v1.2.4+ pattern
+# ✅ v1.2.5+ pattern
 doc_analysis_prompt:
   role_ref: doc_analysis          # key into prompt_roles.yaml > roles
   behavioral_guidelines: *behavioral_actionable

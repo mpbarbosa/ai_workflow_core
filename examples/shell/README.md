@@ -118,11 +118,11 @@ cd .workflow_core && git describe --tags && cd ..
 cd .workflow_core && git fetch --tags && cd ..
 
 # 2. Review changes
-cd .workflow_core && git log --oneline v1.0.2..v1.2.4 && cd ..
+cd .workflow_core && git log --oneline v1.0.2..v1.2.5 && cd ..
 
 # 3. Update in feature branch
 git checkout -b update-workflow-core
-cd .workflow_core && git checkout v1.2.4 && cd ..
+cd .workflow_core && git checkout v1.2.5 && cd ..
 
 # 4. Test
 bash .workflow_core/scripts/check_integration_health.sh
@@ -130,7 +130,7 @@ bash .workflow_core/scripts/check_integration_health.sh
 
 # 5. Commit
 git add .workflow_core
-git commit -m "chore: update ai_workflow_core to v1.2.4"
+git commit -m "chore: update ai_workflow_core to v1.2.5"
 ```
 
 ## Project Structure
@@ -286,4 +286,4 @@ jobs:
 
 **Integration Strategy**: Version pinning with as-needed updates  
 **Last Updated**: 2026-01-29  
-**Example Version**: 1.2.4
+**Example Version**: 1.2.5

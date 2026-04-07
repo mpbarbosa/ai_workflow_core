@@ -1955,6 +1955,9 @@ step2_consistency_prompt:
     uniform naming conventions, up-to-date examples and version numbers, intact
     cross-references, and style uniformity across all documentation types
     (e.g., consistent heading levels, bullet list styles, and fenced code-block language tags).
+    Where project-specific conventions are documented (e.g., in `CONTRIBUTING.md` or
+    `.github/copilot-instructions.md`), treat those as the authoritative style reference
+    for this project and let them take precedence over generic defaults.
 
     **Context:**
     - Project: {project_name} ({project_description})
@@ -1964,6 +1967,7 @@ step2_consistency_prompt:
     - Scope: {change_scope}
     - Files in this analysis batch: {modified_count}
     - Documentation scope: root-level `.md` files (e.g., `README.md`, `CHANGELOG.md`), `docs/` subdirectory, and `.github/` metadata — hidden tool directories (`.workflow_core/`, `node_modules/`) and build outputs (`dist/`, `coverage/`) are excluded unless explicitly listed in the files below
+    - The complete list of files in scope for this partition is provided at the end of this prompt in the **Files to Analyze** section.
     
     **Tasks:**
     
@@ -2051,6 +2055,11 @@ step2_consistency_prompt:
     
     5. **Quality Checks:**
        - Missing documentation for new features
+       - Incomplete documentation (sections present but sparse or stub-level): flag at
+         Medium priority, identify the specific gaps, and do not fabricate content to fill them
+       - Absent documentation (no file exists for a known component, workflow, or feature):
+         flag at High or Critical priority depending on audience impact, and recommend
+         creating a placeholder or stub file with the expected structure
        - Outdated version numbers or dates (only flag if the file already carries explicit
          version numbers; do not invent or assume versioning where none is present)
        - Inconsistent terminology or naming conventions — flag when the same concept is
@@ -4394,9 +4403,9 @@ javascript_developer_prompt:
        - Optional (optionalDependencies): Platform-specific native modules
 
     2. **Semver Version Strategy**:
-       - `^1.2.4` (caret): accepts `>=1.2.4 <2.0.0` — safe for most libraries
-       - `~1.2.4` (tilde): accepts `>=1.2.4 <1.3.0` — conservative, patch updates only
-       - `1.2.4` (exact): pin when upstream has frequent breaking patch releases
+       - `^1.2.5` (caret): accepts `>=1.2.5 <2.0.0` — safe for most libraries
+       - `~1.2.5` (tilde): accepts `>=1.2.5 <1.3.0` — conservative, patch updates only
+       - `1.2.5` (exact): pin when upstream has frequent breaking patch releases
        - Avoid `*` or `latest` — introduces unpredictable builds
 
     3. **Script Composition Patterns**:

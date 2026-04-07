@@ -46,3 +46,42 @@
 - **Description:** The `templates/` directory (containing debugging checklists under `templates/debugging/`) exists in the repo but is not listed in the directory structure section of `docs/ARCHITECTURE.md`, causing the structure validator to flag it as undocumented.
 - **Fix:** Add an entry for `templates/` (and `templates/debugging/`) to the directory tree in `docs/ARCHITECTURE.md` with a brief description.
 - **Status:** done
+
+---
+
+### RI-004 — validate_context_blocks.py fails on config/ai_helpers.yaml
+
+- **ID:** RI-004
+- **Source step:** step_08
+- **Type:** missing-test-coverage
+- **Priority:** Medium
+- **Path:** config/ai_helpers.yaml
+- **Description:** Running `python3 scripts/validate_context_blocks.py config/ai_helpers.yaml` exits with code 1 — "Step 2: Non-bullet lines in context: 3" — meaning three non-bullet lines exist inside a Step 2 context block in the YAML, violating the expected structure.
+- **Fix:** Locate the offending context block under Step 2 in `config/ai_helpers.yaml`, identify the 3 non-bullet lines, and convert them to bullet-list items so the validator passes cleanly.
+- **Status:** done
+
+---
+
+### RI-005 — Markdown list indentation violations (MD007/MD005) in docs/api/AI_HELPERS_REFERENCE.md
+
+- **ID:** RI-005
+- **Source step:** step_13
+- **Type:** markdown-lint
+- **Priority:** Low
+- **Path:** docs/api/AI_HELPERS_REFERENCE.md
+- **Description:** `mdl` reports MD007 (unordered list indentation) and MD005 (inconsistent list indentation at same level) violations in `docs/api/AI_HELPERS_REFERENCE.md` at lines 18, 511–528.
+- **Fix:** Fix list indentation in `docs/api/AI_HELPERS_REFERENCE.md` so all unordered list items use consistent 2-space indentation per level, resolving MD007 and MD005 violations.
+- **Status:** done
+
+---
+
+### RI-006 — src/__tests__ not listed in ARCHITECTURE.md directory tree
+
+- **ID:** RI-006
+- **Source step:** step_05
+- **Type:** undocumented-directory
+- **Priority:** Low
+- **Path:** docs/ARCHITECTURE.md
+- **Description:** The `src/__tests__/` directory (and its `fixtures/` subdirectory) exists and has a local README, but is absent from the `src/` entry in the directory tree in `docs/ARCHITECTURE.md`, leaving the architecture diagram incomplete.
+- **Fix:** Add `src/__tests__/` and `src/__tests__/fixtures/` entries under `src/` in the `docs/ARCHITECTURE.md` directory tree with brief inline comments matching the style of surrounding entries.
+- **Status:** done

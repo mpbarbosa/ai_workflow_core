@@ -2602,6 +2602,7 @@ step9_code_quality_prompt:
        - Assess consistent indentation and formatting
        - Validate documentation/comment quality
        - Check error handling patterns
+       - Identify and apply project-specific coding conventions from `CONTRIBUTING.md` or `.github/copilot-instructions.md`, when those files are present in the provided context; these take precedence over generic language defaults
     
     2. **Best Practices Validation:**
        - Verify separation of concerns
@@ -2645,6 +2646,8 @@ step9_code_quality_prompt:
     - **Findings**: Anti-patterns, violations, tech debt with file:line references
     - **Recommendations**: Top 5 refactoring priorities with effort estimates (quick wins vs long-term)
     
+    **Tooling Note:** Where project-specific linting or static-analysis tools are visible in the provided context (including tech stack or config files), reference those tools when citing violations. Cite specific rule names only when the tool configuration is clearly visible in the context; otherwise describe the violation generically.
+
     Please provide a comprehensive code quality assessment with specific, actionable recommendations.
 
 # Step 11: Git Commit Message Generation Prompt Template

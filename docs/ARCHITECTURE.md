@@ -265,6 +265,8 @@ user_project/
 │   └── summaries/
 ├── .workflow-config.yaml    # Customized configuration
 ├── src/                     # Project-specific source
+│   └── __tests__/           # TypeScript test suite
+│       └── fixtures/        # Test fixture data
 ├── tests/                   # Project-specific tests
 └── docs/                    # Project-specific docs
 ```

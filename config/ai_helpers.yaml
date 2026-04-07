@@ -6152,35 +6152,3 @@ performance_review_prompt:
     For each finding: specify file path, line reference, severity (High/Medium/Low), estimated impact, and a concrete optimisation example with before/after code.
     Include a summary table: | File | Issue Type | Severity | Impact |
     Focus on actionable findings — do not flag theoretical issues without evidence in the provided code.
-
-error_resilience_prompt:
-  # Covers: uncaught exceptions, unhandled promise rejections, silent failures,
-  # error boundary gaps, missing retry logic, and defensive error handling patterns.
-  role_ref: software_quality_engineer  # resolved from config/prompt_roles.yaml
-  behavioral_guidelines: *behavioral_structured
-
-  task_template: |
-    **YOUR TASK**: Perform an error resilience review of {project_name}.
-
-    **Project Context:**
-    - Project: {project_name}
-    - Language: {primary_language}
-
-    **File Contents:**
-    {file_content_map}
-
-    **REQUIRED ACTIONS**:
-    1. Identify uncaught exceptions: missing try/catch blocks in async functions or critical code paths
-    2. Find unhandled promise rejections: .then() chains without .catch(), missing await error handling
-    3. Detect silent failures: error-swallowing patterns (empty catch blocks, catch-and-log-only without recovery)
-    4. Review error boundary coverage: React error boundaries or equivalent for UI components
-    5. Check retry and fallback logic: network calls or I/O operations without retry strategies
-    6. Identify missing input validation: functions that can crash on unexpected null/undefined inputs
-    7. Review error propagation: errors that get lost in event emitters or callback patterns
-    8. Flag missing circuit breakers: external service calls with no timeout or failure threshold
-
-  approach: |
-    Work only from the injected file contents above.
-    For each finding: specify file path, line reference, severity (Critical/High/Medium/Low), failure mode, and a concrete remediation example with before/after code.
-    Include a summary table: | File | Issue Type | Severity | Failure Mode |
-    Focus on actionable findings — do not flag theoretical issues without evidence in the provided code.

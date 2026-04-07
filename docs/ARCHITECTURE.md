@@ -446,8 +446,8 @@ Checks:
 **Context**: Schema changes vs. core library changes.
 
 **Decision**:
-- `project_kinds.yaml` version: 1.2.4
-- `ai_prompts_project_kinds.yaml` version: 1.2.4
+- `project_kinds.yaml` version: 1.2.5
+- `ai_prompts_project_kinds.yaml` version: 1.2.5
 - Core repository version: 1.0.2
 
 **Rationale:**

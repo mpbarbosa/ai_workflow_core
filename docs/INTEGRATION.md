@@ -384,11 +384,11 @@ cd .workflow_core
 git fetch --tags
 
 # Checkout specific version
-git checkout v1.2.4
+git checkout v1.2.5
 
 cd ..
 git add .workflow_core
-git commit -m "Update ai_workflow_core to v1.2.4"
+git commit -m "Update ai_workflow_core to v1.2.5"
 ```
 
 ### Update After Git Clone
@@ -597,7 +597,7 @@ git commit -m "Rollback submodule update"
 
 # Investigate in separate branch
 git checkout -b debug-submodule-update
-cd .workflow_core && git checkout v1.2.4 && cd ..
+cd .workflow_core && git checkout v1.2.5 && cd ..
 # Debug and fix issues
 ```
 

@@ -376,7 +376,7 @@ git push origin update-workflow-core
 v1.0.2 (commit abc123d)
 
 ### New Version
-v1.2.4 (commit def456e)
+v1.2.5 (commit def456e)
 
 ### Changes
 - Feature: New project kind for TypeScript

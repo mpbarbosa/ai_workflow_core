@@ -2,7 +2,7 @@
 
 **Version**: 1.0.2
 **Last Updated**: 2026-02-13
-**Schema Version**: project_kinds.yaml v1.2.4
+**Schema Version**: project_kinds.yaml v1.2.5
 
 > **Purpose**: Complete reference for validation rules, patterns, and error handling in ai_workflow_core.
 

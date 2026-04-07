@@ -145,7 +145,7 @@ function cleanup_logs() {
 
 ```yaml
 # Project Kinds Schema
-# Version: 1.2.4
+# Version: 1.2.5
 # Last Updated: 2026-01-30
 
 project_kinds:

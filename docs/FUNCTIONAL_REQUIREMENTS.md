@@ -25,3 +25,5 @@ This document tracks functional requirements and minor issue resolutions for `ai
 | RI-014 | step_02 | validate_context_blocks.py fails — multi-line context bullet in step2_consistency_prompt | config/ai_helpers.yaml | Low | done |
 | RI-015 | step_13 | MD007/MD005 list indentation violations in AI_HELPERS_REFERENCE.md | docs/api/AI_HELPERS_REFERENCE.md | Low | done |
 | RI-016 | step_05 | src/__tests__/ not listed in ARCHITECTURE.md directory tree | docs/ARCHITECTURE.md | Low | done |
+| RI-017 | step_02 | Broken relative links in docs/misc/DOCUMENTATION_INDEX.md (~30 links) | docs/misc/DOCUMENTATION_INDEX.md | Medium | done |
+| RI-018 | step_23 | readFileSync blocks event loop in src/loader.ts readYamlFile | src/loader.ts | Medium | done |

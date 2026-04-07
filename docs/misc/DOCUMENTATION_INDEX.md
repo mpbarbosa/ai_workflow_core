@@ -27,14 +27,14 @@
 
 | Document | Purpose | Time | Level |
 |----------|---------|------|-------|
-| [README.md](README.md) | Project overview & quick start | 5 min | Beginner |
-| [docs/guides/QUICK_START.md](docs/guides/QUICK_START.md) | Detailed setup guide | 10 min | Beginner |
-| [docs/INTEGRATION.md](docs/INTEGRATION.md) | Integration as Git submodule | 15 min | Beginner |
-| [docs/INTEGRATION_QUICK_REFERENCE.md](docs/INTEGRATION_QUICK_REFERENCE.md) | Quick integration commands | 2 min | All |
+| [README.md](../../README.md) | Project overview & quick start | 5 min | Beginner |
+| [docs/guides/QUICK_START.md](../guides/QUICK_START.md) | Detailed setup guide | 10 min | Beginner |
+| [docs/INTEGRATION.md](../INTEGRATION.md) | Integration as Git submodule | 15 min | Beginner |
+| [docs/INTEGRATION_QUICK_REFERENCE.md](../INTEGRATION_QUICK_REFERENCE.md) | Quick integration commands | 2 min | All |
 
 **First-time setup checklist**:
-1. ✅ Read [README.md](README.md) - Understand what ai_workflow_core is
-2. ✅ Follow [QUICK_START.md](docs/guides/QUICK_START.md) - Set up your project
+1. ✅ Read [README.md](../../README.md) - Understand what ai_workflow_core is
+2. ✅ Follow [QUICK_START.md](../guides/QUICK_START.md) - Set up your project
 3. ✅ Choose your [project kind](#choosing-project-kind) - Select appropriate configuration
 4. ✅ Review [examples](#examples--templates) - See language-specific integration
 
@@ -46,12 +46,12 @@
 
 | Document | Content | Lines | Version |
 |----------|---------|-------|---------|
-| [CONFIG_REFERENCE.md](docs/api/CONFIG_REFERENCE.md) | `.workflow-config.yaml` field reference | 695 | 1.0.2 |
-| [PLACEHOLDER_REFERENCE.md](docs/api/PLACEHOLDER_REFERENCE.md) | Placeholder patterns & substitution | 756 | 1.0.2 |
-| [PROJECT_KINDS_SCHEMA.md](docs/api/PROJECT_KINDS_SCHEMA.md) | Project kinds schema (8 types) | 777 | 1.2.4 |
-| [AI_HELPERS_REFERENCE.md](docs/api/AI_HELPERS_REFERENCE.md) | AI personas & token efficiency | 1,177 | 1.0.2 |
-| [AI_PROMPTS_REFERENCE.md](docs/api/AI_PROMPTS_REFERENCE.md) | Project-specific AI prompts | 1,197 | 1.2.4 |
-| [docs/api/README.md](docs/api/README.md) | API documentation overview | - | - |
+| [CONFIG_REFERENCE.md](../api/CONFIG_REFERENCE.md) | `.workflow-config.yaml` field reference | 695 | 1.0.2 |
+| [PLACEHOLDER_REFERENCE.md](../api/PLACEHOLDER_REFERENCE.md) | Placeholder patterns & substitution | 756 | 1.0.2 |
+| [PROJECT_KINDS_SCHEMA.md](../api/PROJECT_KINDS_SCHEMA.md) | Project kinds schema (8 types) | 777 | 1.2.4 |
+| [AI_HELPERS_REFERENCE.md](../api/AI_HELPERS_REFERENCE.md) | AI personas & token efficiency | 1,177 | 1.0.2 |
+| [AI_PROMPTS_REFERENCE.md](../api/AI_PROMPTS_REFERENCE.md) | Project-specific AI prompts | 1,197 | 1.2.4 |
+| [docs/api/README.md](../api/README.md) | API documentation overview | - | - |
 
 **Use API references when**:
 - Configuring `.workflow-config.yaml` fields
@@ -70,19 +70,19 @@
 
 | Document | Purpose | Audience |
 |----------|---------|----------|
-| [QUICK_START.md](docs/guides/QUICK_START.md) | 5-minute setup guide | Beginners |
-| [FAQ.md](docs/guides/FAQ.md) | 40+ common questions answered | All |
-| [TROUBLESHOOTING.md](docs/guides/TROUBLESHOOTING.md) | 25+ solutions across 8 categories | All |
-| [MIGRATION_GUIDE.md](docs/guides/MIGRATION_GUIDE.md) | Version upgrade procedures | Intermediate |
-| [INTEGRATION_BEST_PRACTICES.md](docs/guides/INTEGRATION_BEST_PRACTICES.md) | Integration recommendations | Intermediate |
+| [QUICK_START.md](../guides/QUICK_START.md) | 5-minute setup guide | Beginners |
+| [FAQ.md](../guides/FAQ.md) | 40+ common questions answered | All |
+| [TROUBLESHOOTING.md](../guides/TROUBLESHOOTING.md) | 25+ solutions across 8 categories | All |
+| [MIGRATION_GUIDE.md](../guides/MIGRATION_GUIDE.md) | Version upgrade procedures | Intermediate |
+| [INTEGRATION_BEST_PRACTICES.md](../guides/INTEGRATION_BEST_PRACTICES.md) | Integration recommendations | Intermediate |
 
 ### Specialized Guides
 
 | Document | Purpose | Audience |
 |----------|---------|----------|
-| [VERSION_MANAGEMENT.md](docs/guides/VERSION_MANAGEMENT.md) | Version management strategies | Intermediate |
-| [STRUCTURE_VALIDATION_TUTORIAL.md](docs/guides/STRUCTURE_VALIDATION_TUTORIAL.md) | Structure validation setup | Intermediate |
-| [docs/guides/README.md](docs/guides/README.md) | Guides directory overview | All |
+| [VERSION_MANAGEMENT.md](../guides/VERSION_MANAGEMENT.md) | Version management strategies | Intermediate |
+| [STRUCTURE_VALIDATION_TUTORIAL.md](../guides/STRUCTURE_VALIDATION_TUTORIAL.md) | Structure validation setup | Intermediate |
+| [docs/guides/README.md](../guides/README.md) | Guides directory overview | All |
 
 ### Parent Project References ⚠️
 
@@ -90,9 +90,9 @@
 
 | Document | Purpose | Context |
 |----------|---------|---------|
-| [PROJECT_REFERENCE.md](docs/guides/PROJECT_REFERENCE.md) | Parent project documentation | Parent project |
-| [ML_OPTIMIZATION_GUIDE.md](docs/guides/ML_OPTIMIZATION_GUIDE.md) | ML optimization for workflows | Parent project |
-| [MULTI_STAGE_PIPELINE_GUIDE.md](docs/guides/MULTI_STAGE_PIPELINE_GUIDE.md) | Pipeline execution patterns | Parent project |
+| [PROJECT_REFERENCE.md](../guides/PROJECT_REFERENCE.md) | Parent project documentation | Parent project |
+| [ML_OPTIMIZATION_GUIDE.md](../guides/ML_OPTIMIZATION_GUIDE.md) | ML optimization for workflows | Parent project |
+| [MULTI_STAGE_PIPELINE_GUIDE.md](../guides/MULTI_STAGE_PIPELINE_GUIDE.md) | Pipeline execution patterns | Parent project |
 
 ---
 
@@ -102,15 +102,15 @@
 
 | Document | Purpose | Audience |
 |----------|---------|----------|
-| [CONTRIBUTING.md](docs/CONTRIBUTING.md) | Contribution guidelines | Contributors |
-| [TEMPLATE_AUTHORING.md](docs/developers/TEMPLATE_AUTHORING.md) | Creating custom templates | Advanced |
-| [docs/developers/README.md](docs/developers/README.md) | Developer docs overview | Contributors |
-| [CODE_OF_CONDUCT.md](docs/CODE_OF_CONDUCT.md) | Community standards | All |
+| [CONTRIBUTING.md](../CONTRIBUTING.md) | Contribution guidelines | Contributors |
+| [TEMPLATE_AUTHORING.md](../developers/TEMPLATE_AUTHORING.md) | Creating custom templates | Advanced |
+| [docs/developers/README.md](../developers/README.md) | Developer docs overview | Contributors |
+| [CODE_OF_CONDUCT.md](../CODE_OF_CONDUCT.md) | Community standards | All |
 
 **Development workflow**:
-1. Read [CONTRIBUTING.md](docs/CONTRIBUTING.md) - Understand contribution process
-2. Review [TEMPLATE_AUTHORING.md](docs/developers/TEMPLATE_AUTHORING.md) - Learn template syntax
-3. Check [CODE_OF_CONDUCT.md](docs/CODE_OF_CONDUCT.md) - Community guidelines
+1. Read [CONTRIBUTING.md](../CONTRIBUTING.md) - Understand contribution process
+2. Review [TEMPLATE_AUTHORING.md](../developers/TEMPLATE_AUTHORING.md) - Learn template syntax
+3. Check [CODE_OF_CONDUCT.md](../CODE_OF_CONDUCT.md) - Community guidelines
 4. Submit contributions following the guidelines
 
 ---
@@ -121,10 +121,10 @@
 
 | Document | Purpose | Lines | Level |
 |----------|---------|-------|-------|
-| [MULTI_LANGUAGE_SETUP.md](docs/advanced/MULTI_LANGUAGE_SETUP.md) | Multi-language project setup | - | Advanced |
-| [CUSTOM_WORKFLOW_CREATION.md](docs/advanced/CUSTOM_WORKFLOW_CREATION.md) | Creating custom workflows | - | Advanced |
-| [CI_CD_INTEGRATION.md](docs/advanced/CI_CD_INTEGRATION.md) | CI/CD platform integration | - | Advanced |
-| [docs/advanced/README.md](docs/advanced/README.md) | Advanced topics overview | - | Advanced |
+| [MULTI_LANGUAGE_SETUP.md](../advanced/MULTI_LANGUAGE_SETUP.md) | Multi-language project setup | - | Advanced |
+| [CUSTOM_WORKFLOW_CREATION.md](../advanced/CUSTOM_WORKFLOW_CREATION.md) | Creating custom workflows | - | Advanced |
+| [CI_CD_INTEGRATION.md](../advanced/CI_CD_INTEGRATION.md) | CI/CD platform integration | - | Advanced |
+| [docs/advanced/README.md](../advanced/README.md) | Advanced topics overview | - | Advanced |
 
 **When to read advanced topics**:
 - Setting up monorepo with multiple languages
@@ -142,9 +142,9 @@
 
 | Example | Language | Lines | Description |
 |---------|----------|-------|-------------|
-| [examples/shell/](examples/shell/) | Bash | 645+ | Shell script automation integration |
-| [examples/nodejs/](examples/nodejs/) | JavaScript | 320+ | Node.js application integration |
-| [examples/README.md](examples/README.md) | - | 350+ | Creating new examples guide |
+| [examples/shell/](../../examples/shell/) | Bash | 645+ | Shell script automation integration |
+| [examples/nodejs/](../../examples/nodejs/) | JavaScript | 320+ | Node.js application integration |
+| [examples/README.md](../../examples/README.md) | - | 350+ | Creating new examples guide |
 
 ### Configuration Templates
 
@@ -163,7 +163,7 @@
 | `validate-structure.yml` | Directory structure validation | `workflow-templates/workflows/` |
 | `integration-health.yml` | Integration health checks | `workflow-templates/workflows/` |
 
-See [workflow-templates/README.md](workflow-templates/README.md) for usage instructions.
+See [workflow-templates/README.md](../../workflow-templates/README.md) for usage instructions.
 
 ---
 
@@ -173,10 +173,10 @@ See [workflow-templates/README.md](workflow-templates/README.md) for usage instr
 
 | Document | Purpose |
 |----------|---------|
-| [CONTRIBUTING.md](docs/CONTRIBUTING.md) | How to contribute |
-| [CODE_OF_CONDUCT.md](docs/CODE_OF_CONDUCT.md) | Community standards (Contributor Covenant 2.1) |
-| [LICENSE](docs/LICENSE) | MIT License |
-| [CHANGELOG.md](CHANGELOG.md) | Version history & changes |
+| [CONTRIBUTING.md](../CONTRIBUTING.md) | How to contribute |
+| [CODE_OF_CONDUCT.md](../CODE_OF_CONDUCT.md) | Community standards (Contributor Covenant 2.1) |
+| [LICENSE](../LICENSE) | MIT License |
+| [CHANGELOG.md](../../CHANGELOG.md) | Version history & changes |
 
 **Get involved**:
 - 🐛 Report bugs via [GitHub Issues](https://github.com/mpbarbosa/ai_workflow_core/issues)
@@ -193,9 +193,9 @@ See [workflow-templates/README.md](workflow-templates/README.md) for usage instr
 
 | Document | Content |
 |----------|---------|
-| [ARCHITECTURE.md](docs/ARCHITECTURE.md) | System architecture, design patterns, ADRs |
-| [AI_WORKFLOW_DIRECTORY.md](docs/AI_WORKFLOW_DIRECTORY.md) | `.ai_workflow/` artifact directory structure |
-| [diagrams/README.md](docs/diagrams/README.md) | 20+ visual diagrams (Mermaid, ASCII art) |
+| [ARCHITECTURE.md](../ARCHITECTURE.md) | System architecture, design patterns, ADRs |
+| [AI_WORKFLOW_DIRECTORY.md](../AI_WORKFLOW_DIRECTORY.md) | `.ai_workflow/` artifact directory structure |
+| [diagrams/README.md](../diagrams/README.md) | 20+ visual diagrams (Mermaid, ASCII art) |
 
 ---
 
@@ -219,7 +219,7 @@ What type of project?
 └── Other? → generic
 ```
 
-See [PROJECT_KINDS_SCHEMA.md](docs/api/PROJECT_KINDS_SCHEMA.md) for full definitions.
+See [PROJECT_KINDS_SCHEMA.md](../api/PROJECT_KINDS_SCHEMA.md) for full definitions.
 
 ### Common Placeholder Mappings
 
@@ -233,7 +233,7 @@ See [PROJECT_KINDS_SCHEMA.md](docs/api/PROJECT_KINDS_SCHEMA.md) for full definit
 | `{{TEST_COMMAND}}` | "npm test" | Test execution |
 | `{{LINT_COMMAND}}` | "eslint ." | Code linting |
 
-See [PLACEHOLDER_REFERENCE.md](docs/api/PLACEHOLDER_REFERENCE.md) for complete list.
+See [PLACEHOLDER_REFERENCE.md](../api/PLACEHOLDER_REFERENCE.md) for complete list.
 
 ### Directory Structure Quick Reference
 
@@ -254,7 +254,7 @@ your-project/
 └── .gitmodules                  # Submodule configuration
 ```
 
-See [AI_WORKFLOW_DIRECTORY.md](docs/AI_WORKFLOW_DIRECTORY.md) for details.
+See [AI_WORKFLOW_DIRECTORY.md](../AI_WORKFLOW_DIRECTORY.md) for details.
 
 ---
 
@@ -266,20 +266,20 @@ See [AI_WORKFLOW_DIRECTORY.md](docs/AI_WORKFLOW_DIRECTORY.md) for details.
 
 | Task | Document |
 |------|----------|
-| Set up ai_workflow_core for the first time | [QUICK_START.md](docs/guides/QUICK_START.md) |
-| Understand configuration fields | [CONFIG_REFERENCE.md](docs/api/CONFIG_REFERENCE.md) |
-| Fix a problem | [TROUBLESHOOTING.md](docs/guides/TROUBLESHOOTING.md) |
-| Upgrade to a new version | [MIGRATION_GUIDE.md](docs/guides/MIGRATION_GUIDE.md) |
-| Choose the right project kind | [PROJECT_KINDS_SCHEMA.md](docs/api/PROJECT_KINDS_SCHEMA.md) |
-| See an example integration | [examples/shell/](examples/shell/) or [examples/nodejs/](examples/nodejs/) |
-| Contribute to the project | [CONTRIBUTING.md](docs/CONTRIBUTING.md) |
-| Create custom templates | [TEMPLATE_AUTHORING.md](docs/developers/TEMPLATE_AUTHORING.md) |
-| Integrate with CI/CD | [CI_CD_INTEGRATION.md](docs/advanced/CI_CD_INTEGRATION.md) |
-| Understand the architecture | [ARCHITECTURE.md](docs/ARCHITECTURE.md) |
+| Set up ai_workflow_core for the first time | [QUICK_START.md](../guides/QUICK_START.md) |
+| Understand configuration fields | [CONFIG_REFERENCE.md](../api/CONFIG_REFERENCE.md) |
+| Fix a problem | [TROUBLESHOOTING.md](../guides/TROUBLESHOOTING.md) |
+| Upgrade to a new version | [MIGRATION_GUIDE.md](../guides/MIGRATION_GUIDE.md) |
+| Choose the right project kind | [PROJECT_KINDS_SCHEMA.md](../api/PROJECT_KINDS_SCHEMA.md) |
+| See an example integration | [examples/shell/](../../examples/shell/) or [examples/nodejs/](../../examples/nodejs/) |
+| Contribute to the project | [CONTRIBUTING.md](../CONTRIBUTING.md) |
+| Create custom templates | [TEMPLATE_AUTHORING.md](../developers/TEMPLATE_AUTHORING.md) |
+| Integrate with CI/CD | [CI_CD_INTEGRATION.md](../advanced/CI_CD_INTEGRATION.md) |
+| Understand the architecture | [ARCHITECTURE.md](../ARCHITECTURE.md) |
 
 ### By Audience
 
-**Beginner** → Start with [README.md](README.md) and [QUICK_START.md](docs/guides/QUICK_START.md)
+**Beginner** → Start with [README.md](../../README.md) and [QUICK_START.md](../guides/QUICK_START.md)
 **Intermediate** → Explore [User Guides](#user-guides) and [Examples](#examples--templates)
 **Advanced** → Review [Advanced Topics](#advanced-topics) and [API References](#api-references)
 **Contributors** → Read [Developer Documentation](#developer-documentation)
@@ -363,8 +363,8 @@ See [AI_WORKFLOW_DIRECTORY.md](docs/AI_WORKFLOW_DIRECTORY.md) for details.
 **Can't find what you're looking for?**
 
 1. Search this repository: Use GitHub search or `grep -r "search term" docs/`
-2. Check [FAQ.md](docs/guides/FAQ.md) for common questions
-3. Review [TROUBLESHOOTING.md](docs/guides/TROUBLESHOOTING.md) for solutions
+2. Check [FAQ.md](../guides/FAQ.md) for common questions
+3. Review [TROUBLESHOOTING.md](../guides/TROUBLESHOOTING.md) for solutions
 4. Ask in [GitHub Issues](https://github.com/mpbarbosa/ai_workflow_core/issues)
 
 ---

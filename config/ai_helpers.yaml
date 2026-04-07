@@ -1963,10 +1963,7 @@ step2_consistency_prompt:
     - TypeScript source files: {ts_source_count} (not included in this partition — JSDoc source coverage is checked in the TypeScript Review step)
     - Scope: {change_scope}
     - Files in this analysis batch: {modified_count}
-    - Documentation scope: root-level `.md` files (e.g., `README.md`, `CHANGELOG.md`),
-      `docs/` subdirectory, and `.github/` metadata — hidden tool directories
-      (`.workflow_core/`, `node_modules/`) and build outputs (`dist/`, `coverage/`) are
-      excluded unless explicitly listed in the files below
+    - Documentation scope: root-level `.md` files (e.g., `README.md`, `CHANGELOG.md`), `docs/` subdirectory, and `.github/` metadata — hidden tool directories (`.workflow_core/`, `node_modules/`) and build outputs (`dist/`, `coverage/`) are excluded unless explicitly listed in the files below
     
     **Tasks:**
     

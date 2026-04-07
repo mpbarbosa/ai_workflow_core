@@ -2202,6 +2202,10 @@ step3_script_refs_prompt:
     Please analyze the shell script references and provide a detailed validation report with specific recommendations for documentation improvements.
 
 # Step 4: Directory Structure Validation Prompt Template
+# Placeholder note: {language_specific_directory_standards} carries project-kind-level
+# directory conventions (not strictly language-level, despite the name). It is populated
+# from project_kinds.yaml ai_guidance.directory_standards for the resolved project kind.
+# For the 'generic' kind or when kind is unknown, the placeholder is left empty.
 step4_directory_prompt:
   # Split role into prefix + guidelines for token efficiency
   role_ref: step4_directory  # resolved from config/prompt_roles.yaml

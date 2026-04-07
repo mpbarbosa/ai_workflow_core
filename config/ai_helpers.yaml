@@ -84,6 +84,15 @@
 #     counts; directs AI to diff sample for actual file paths; treats as patch bump
 #   - step11_git_commit_prompt: clarified {diff_summary} label to request individual file
 #     names alongside aggregate statistics for better traceability
+# v6.8.5 - Improve configuration_specialist_prompt Task section clarity (2026-04-07)
+#   - task_template: replaced vague opening with explicit scope reference
+#     ({config_count} + {config_files_list}); named three validation dimensions
+#     (schema correctness, security hygiene, best practices) in the intro
+#   - task_template: renamed sub-header "Configuration Files Changed" →
+#     "Configuration Files in Scope" for consistency with intro phrasing
+#   - Special Handling: added config-loader alignment check (src/loader.ts,
+#     prompt_roles.yaml role_ref resolution) when ai_helpers.yaml is in scope
+#   - Step 04 comment: bumped version 1.0.2 → 1.0.3; updated purpose string
 # v6.8.4 - Strengthen version_manager_prompt approach specificity (2026-04-03)
 #   - approach step 3: replaced generic "changed file list" with per-directory categorisation
 #     table (config/, src/, test/, docs/, scripts/, .ai_workflow/) mapping each area to its
@@ -1944,7 +1953,8 @@ step2_consistency_prompt:
     Perform a comprehensive documentation consistency analysis for this project,
     covering **markdown documentation files** (`.md`) only. "Consistency" means:
     uniform naming conventions, up-to-date examples and version numbers, intact
-    cross-references, and style uniformity across all documentation types.
+    cross-references, and style uniformity across all documentation types
+    (e.g., consistent heading levels, bullet list styles, and fenced code-block language tags).
 
     **Context:**
     - Project: {project_name} ({project_description})
@@ -1952,7 +1962,11 @@ step2_consistency_prompt:
     - Documentation files: {doc_count} markdown files (this partition's scope)
     - TypeScript source files: {ts_source_count} (not included in this partition — JSDoc source coverage is checked in the TypeScript Review step)
     - Scope: {change_scope}
-    - Files in this analysis batch: {modified_count} (files are batched in groups of ≤50 to stay within AI context limits)
+    - Files in this analysis batch: {modified_count}
+    - Documentation scope: root-level `.md` files (e.g., `README.md`, `CHANGELOG.md`),
+      `docs/` subdirectory, and `.github/` metadata — hidden tool directories
+      (`.workflow_core/`, `node_modules/`) and build outputs (`dist/`, `coverage/`) are
+      excluded unless explicitly listed in the files below
     
     **Tasks:**
     
@@ -2079,7 +2093,14 @@ step2_consistency_prompt:
     - Consistency in terminology and formatting
     - Completeness of cross-references
     - Version number accuracy across all files
-    
+    - Project-specific conventions: when `CONTRIBUTING.md` or `.github/copilot-instructions.md`
+      is present in the provided context, align recommendations with those conventions and
+      let them take precedence over generic defaults
+
+    **Tooling Note:** Do not cite specific tool rule identifiers (e.g., markdownlint MD013,
+    yamllint rule names) unless the tool configuration file is visible in the provided context.
+    Cite the documented practice or standard instead.
+
     **Language-Specific Standards:** {language_specific_documentation}
     
     Please analyze the documentation files and provide a detailed consistency report.
@@ -2835,8 +2856,8 @@ markdown_lint_prompt:
 
 
 # Step 04: Configuration Specialist Prompt Template
-# Purpose: Validate and analyze configuration files for syntax, security, and best practices
-# Version: 1.0.2 (v3.2.0 - Configuration Files as 4th Category feature)
+# Purpose: Validate and analyze configuration files for schema correctness, security, and best practices
+# Version: 1.0.3 (v6.8.5 - Improve Task section clarity and add config-loader reference)
 configuration_specialist_prompt:
   # Split role into prefix + guidelines for token efficiency
   role_ref: configuration_specialist  # resolved from config/prompt_roles.yaml
@@ -2844,9 +2865,13 @@ configuration_specialist_prompt:
   behavioral_guidelines: *behavioral_actionable
   
   task_template: |
-    Validate and analyze configuration files for correctness, security, and best practices.
+    Validate and analyze the {config_count} configuration file(s) listed in
+    **Configuration Files in Scope** below. For each file check: schema correctness
+    (required fields, value types, YAML/JSON/TOML syntax), security hygiene (no exposed
+    secrets, safe defaults), and project best practices (dependency pinning, env
+    separation, CI/CD alignment).
     
-    **Configuration Files Changed:**
+    **Configuration Files in Scope:**
     {config_files_list}
     
     **Project Context:**
@@ -2891,6 +2916,10 @@ configuration_specialist_prompt:
        - Verify persona prompt completeness
        - Flag token inefficiency patterns (redundant text, missing anchors)
        - Ensure behavioral_guidelines usage for consistency
+       - When `config/ai_helpers.yaml` or `config/prompt_roles.yaml` are in scope, also
+         verify alignment with the config-loader module (`src/loader.ts`): confirm that
+         any new persona keys include a `role_ref` resolvable from `prompt_roles.yaml`,
+         and that the top-level YAML remains a plain mapping (not a list or scalar).
   
   approach: |
     Analyze ONLY the configuration files explicitly listed above. Do not reference, invent, or assume files not in that list.

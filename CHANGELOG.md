@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **`config/ai_helpers.yaml`** — Improved `configuration_specialist_prompt` Task section (v6.8.5):
+  - Replaced vague opening sentence with explicit scope reference (`{config_count}` + `{config_files_list}`) and named the three validation dimensions (schema correctness, security hygiene, best practices).
+  - Renamed sub-header "Configuration Files Changed" → "Configuration Files in Scope" for consistency with the new intro phrasing.
+  - Added config-loader alignment check to "Special Handling for AI Workflow Configs": when `ai_helpers.yaml` or `prompt_roles.yaml` are in scope, verify `role_ref` resolvability via `src/loader.ts` and that the top-level YAML is a plain mapping.
+  - Bumped Step 04 comment version 1.0.2 → 1.0.3; updated purpose string to "schema correctness".
+
 - **`config/ai_helpers.yaml`** — Improved `OUTPUT FORMAT` block in `typescript_developer_prompt`:
   - Clarified that each change justification should be one sentence max.
   - Added guidance to include file path and line number (or surrounding snippet) per change.

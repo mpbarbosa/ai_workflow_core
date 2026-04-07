@@ -668,5 +668,5 @@ Items sorted by value/effort ratio (highest priority first):
 
 ---
 
-*Document version: 1.2.3 — Phase 1 (v6.7.x) complete as of 2026-03-06*
+*Document version: 1.2.4 — Phase 1 (v6.7.x) complete as of 2026-03-06*
 *Next review: After Phase 2 (v7.x.x) first persona (python_developer_prompt) is complete*

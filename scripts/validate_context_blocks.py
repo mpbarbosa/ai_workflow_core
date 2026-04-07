@@ -34,10 +34,10 @@ def validate_context_blocks(yaml_file):
     step_prompts = {
         'step2_consistency_prompt': 'Step 2',
         'step3_script_refs_prompt': 'Step 3',
-        'step4_directory_prompt': 'Step 4',
-        'step5_test_review_prompt': 'Step 5',
-        'step8_dependencies_prompt': 'Step 8',
-        'step9_code_quality_prompt': 'Step 9',
+        'step5_directory_prompt': 'Step 4',
+        'step6_test_review_prompt': 'Step 5',
+        'step9_dependencies_prompt': 'Step 8',
+        'step10_code_quality_prompt': 'Step 9',
     }
     
     # Standard parameters that should be present

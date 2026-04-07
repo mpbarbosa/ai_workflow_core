@@ -11,6 +11,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **`config/ai_helpers.yaml`** — Renamed 7 step-specific prompt keys to align with JS workflow step numbering:
+  - `step4_directory_prompt` → `step5_directory_prompt`
+  - `step5_test_review_prompt` → `step6_test_review_prompt`
+  - `step7_test_exec_prompt` → `step8_test_exec_prompt`
+  - `step8_dependencies_prompt` → `step9_dependencies_prompt`
+  - `step9_code_quality_prompt` → `step10_code_quality_prompt`
+  - `step11_git_commit_prompt` → `step12_git_commit_prompt`
+  - `step13_prompt_engineer_prompt` → `step14_prompt_engineer_prompt`
+- **`config/prompt_roles.yaml`** — Updated inline comment reference from `step9_code_quality_prompt` → `step10_code_quality_prompt`.
+
 - **`config/ai_helpers.yaml`** — Improved `configuration_specialist_prompt` Task section (v6.8.5):
   - Replaced vague opening sentence with explicit scope reference (`{config_count}` + `{config_files_list}`) and named the three validation dimensions (schema correctness, security hygiene, best practices).
   - Renamed sub-header "Configuration Files Changed" → "Configuration Files in Scope" for consistency with the new intro phrasing.

@@ -663,7 +663,7 @@ Defines strategic test planning activities:
 **Separation from Implementation** (v3.3.0):
 ```yaml
 # test_strategy_prompt: WHAT to test (strategic)
-# step5_test_review_prompt: HOW to test (tactical implementation)
+# step6_test_review_prompt: HOW to test (tactical implementation)
 ```
 
 This separation saves ~100-150 tokens by eliminating duplicate instructions.
@@ -1260,9 +1260,9 @@ python:
 1. **Output format simplification**: Removed rigid templates from 5 prompts (~550 tokens)
    - `consistency_prompt`: 26 lines → 5 lines (~295 tokens)
    - `ai_log_analysis_prompt`: 13 lines → 4 lines (~50 tokens)
-   - `step9_code_quality_prompt`: 9 lines → 3 lines (~45 tokens)
+   - `step10_code_quality_prompt`: 9 lines → 3 lines (~45 tokens)
    - `markdown_lint_prompt`: Removed word count requirement (~10 tokens)
-   - `step13_prompt_engineer_prompt`: Condensed framework (~150 tokens)
+   - `step14_prompt_engineer_prompt`: Condensed framework (~150 tokens)
 
 2. **Language-specific injection cleanup**: Removed verbose comments (~340 tokens)
    - Affected: `doc_analysis`, `step2_consistency`, `step3_script_refs`, `step5_test_review`, `step9_code_quality`
@@ -1280,7 +1280,7 @@ python:
 ### Version 3.6.0
 
 **Changes**:
-- Removed redundant "output only raw text" warnings from `step11_git_commit_prompt`
+- Removed redundant "output only raw text" warnings from `step12_git_commit_prompt`
 - Consolidated 3 repetitions into single authoritative instruction
 - Cleaned up output_format field
 
@@ -1302,14 +1302,14 @@ python:
   - `doc_analysis_prompt`: Language-specific documentation standards
   - `step2_consistency_prompt`: Language-aware validation
   - `step3_script_refs_prompt`: Language-specific documentation formats
-  - `step9_code_quality_prompt`: Language-specific quality rules
+  - `step10_code_quality_prompt`: Language-specific quality rules
 
 **Impact**: Improved relevance and consistency across all tech stacks
 
 ### Version 3.3.0
 
 **Changes**:
-- Separated strategic (`test_strategy_prompt`) from tactical (`step5_test_review_prompt`)
+- Separated strategic (`test_strategy_prompt`) from tactical (`step6_test_review_prompt`)
 - Removed overlapping "Coverage Gap Identification" from step5
 - Clarified boundaries: WHAT to test vs HOW to test
 

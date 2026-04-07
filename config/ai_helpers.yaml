@@ -448,6 +448,9 @@ _behavioral_generative: &behavioral_generative |
 
 # ==============================================================================
 # AI PERSONA DEFINITIONS
+# Shared role/persona library — used as persona identifiers in step files
+# or as full prompt templates loaded via buildYamlStepPrompt().
+# Keys that map directly to a JS step number are in the section below.
 # ==============================================================================
 
 # Documentation Analysis Prompt Template
@@ -1942,6 +1945,12 @@ issue_extraction_prompt:
     - Add context where needed
     - If no issues found, state 'No issues identified'
 
+# ==============================================================================
+# STEP-SPECIFIC PROMPT TEMPLATES
+# Each key below is keyed by JS step number and consumed via
+# buildYamlStepPrompt(parsedYaml, '<key>', context) in src/steps/*.js.
+# ==============================================================================
+
 # Step 2: Documentation Consistency Analysis Prompt Template
 step2_consistency_prompt:
   # Split role into prefix + guidelines for token efficiency
@@ -2207,12 +2216,12 @@ step3_script_refs_prompt:
     
     Please analyze the shell script references and provide a detailed validation report with specific recommendations for documentation improvements.
 
-# Step 4: Directory Structure Validation Prompt Template
+# Step 5: Directory Structure Validation Prompt Template
 # Placeholder note: {language_specific_directory_standards} carries project-kind-level
 # directory conventions (not strictly language-level, despite the name). It is populated
 # from project_kinds.yaml ai_guidance.directory_standards for the resolved project kind.
 # For the 'generic' kind or when kind is unknown, the placeholder is left empty.
-step4_directory_prompt:
+step5_directory_prompt:
   # Split role into prefix + guidelines for token efficiency
   role_ref: step4_directory  # resolved from config/prompt_roles.yaml
   
@@ -2293,12 +2302,12 @@ step4_directory_prompt:
     
     Please analyze the directory structure and provide a detailed architectural validation report.
 
-# Step 5: Test Implementation Review Prompt Template
+# Step 6: Test Implementation Review Prompt Template
 # Test Implementation Prompt - Tactical Test Code Review and Quality Assessment
 # Use for: Workflow Step 5, reviewing test code quality, test structure, implementation details
 # Focus: HOW tests are written, code quality, best practices, refactoring opportunities
 # NOT for: Strategic planning, coverage gap analysis, test prioritization (use test_strategy_prompt)
-step5_test_review_prompt:
+step6_test_review_prompt:
   # Split role into prefix + guidelines for token efficiency
   role_ref: step5_test_review  # resolved from config/prompt_roles.yaml
   
@@ -2394,8 +2403,8 @@ step5_test_review_prompt:
     
     Please analyze the existing tests and provide a detailed test strategy report with specific, actionable recommendations for improving test coverage and quality.
 
-# Step 7: Test Execution Analysis Prompt Template
-step7_test_exec_prompt:
+# Step 8: Test Execution Analysis Prompt Template
+step8_test_exec_prompt:
   # Split role into prefix + guidelines for token efficiency
   role_ref: step7_test_exec  # resolved from config/prompt_roles.yaml
   
@@ -2478,8 +2487,8 @@ step7_test_exec_prompt:
     
     Please provide a comprehensive test results analysis with specific, actionable recommendations.
 
-# Step 8: Dependency Management Analysis Prompt Template
-step8_dependencies_prompt:
+# Step 9: Dependency Management Analysis Prompt Template
+step9_dependencies_prompt:
   # Split role into prefix + guidelines for token efficiency
   role_ref: step8_dependencies  # resolved from config/prompt_roles.yaml
   
@@ -2571,14 +2580,14 @@ step8_dependencies_prompt:
     - Environment configuration best practices
     - Automated dependency management setup
 
-# Step 9: Code Quality Assessment Prompt Template
-# Step 9 Code Quality Prompt - Comprehensive Quality and Architecture Analysis
+# Step 10: Code Quality Assessment Prompt Template
+# Step 10 Code Quality Prompt - Comprehensive Quality and Architecture Analysis
 # Use for: Workflow Step 9, architectural reviews, technical debt assessment, system-wide analysis
 # Focus: Comprehensive quality, maintainability, design patterns, architectural concerns
 # NOT for: Quick file reviews, simple syntax checks
-# Boundary: Use step9_code_quality_prompt for system-wide/architectural/comprehensive audits.
+# Boundary: Use step10_code_quality_prompt for system-wide/architectural/comprehensive audits.
 #            Use quality_prompt for quick/targeted/file-level reviews.
-step9_code_quality_prompt:
+step10_code_quality_prompt:
   # Split role into prefix + guidelines for token efficiency
   role_ref: step9_code_quality  # resolved from config/prompt_roles.yaml
   
@@ -2730,8 +2739,8 @@ error_resilience_prompt:
     If no issues are found in a category, skip that category entirely.
     End with a one-line summary: total findings by severity.
 
-# Step 11: Git Commit Message Generation Prompt Template
-step11_git_commit_prompt:
+# Step 12: Git Commit Message Generation Prompt Template
+step12_git_commit_prompt:
   output_format: |
     **OUTPUT REQUIREMENT**:
     Return ONLY the raw commit message text, ready to paste directly into git.
@@ -3057,8 +3066,8 @@ configuration_specialist_prompt:
     - Validate Performance API usage configuration and timing instrumentation
 
 
-# Step 13: Prompt Engineer Analysis Prompt Template
-step13_prompt_engineer_prompt:
+# Step 14: Prompt Engineer Analysis Prompt Template
+step14_prompt_engineer_prompt:
   # Split role into prefix + guidelines for token efficiency
   role_ref: step13_prompt_engineer  # resolved from config/prompt_roles.yaml
   

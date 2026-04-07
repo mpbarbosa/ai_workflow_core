@@ -89,10 +89,10 @@ python3 scripts/validate_context_blocks.py /path/to/ai_helpers.yaml
 |------------|------|-------------|
 | `step2_consistency_prompt` | Step 2 | Documentation consistency |
 | `step3_script_refs_prompt` | Step 3 | Script references |
-| `step4_directory_prompt` | Step 4 | Directory structure |
-| `step5_test_review_prompt` | Step 5 | Test review |
-| `step8_dependencies_prompt` | Step 8 | Dependencies |
-| `step9_code_quality_prompt` | Step 9 | Code quality |
+| `step5_directory_prompt` | Step 4 | Directory structure |
+| `step6_test_review_prompt` | Step 5 | Test review |
+| `step9_dependencies_prompt` | Step 8 | Dependencies |
+| `step10_code_quality_prompt` | Step 9 | Code quality |
 
 #### Output Examples
 

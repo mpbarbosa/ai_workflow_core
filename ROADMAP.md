@@ -42,12 +42,12 @@
 | `issue_extraction_prompt` | DevOps | Full (anchor) + legacy `role` field | ⚠️ Thin, has legacy field |
 | `step2_consistency_prompt` | Documentation | Full (anchor) + legacy `role` field | ⚠️ Has legacy field |
 | `step3_script_refs_prompt` | DevOps | Full (anchor) + legacy `role` field | ⚠️ Has legacy field |
-| `step4_directory_prompt` | Architecture | Full (anchor) + legacy `role` field | ⚠️ Has legacy field |
-| `step5_test_review_prompt` | Testing | Full (anchor) + legacy `role` field | ⚠️ Has legacy field |
-| `step7_test_exec_prompt` | Testing | Full (anchor) + legacy `role` field | ⚠️ Has legacy field |
-| `step8_dependencies_prompt` | DevOps | Full (anchor) + legacy `role` field | ⚠️ Has legacy field |
-| `step9_code_quality_prompt` | Quality | Full (anchor) + legacy `role` field | ⚠️ Has legacy field |
-| `step11_git_commit_prompt` | DevOps | Full (anchor) + legacy `role` field | ⚠️ Has legacy field |
+| `step5_directory_prompt` | Architecture | Full (anchor) + legacy `role` field | ⚠️ Has legacy field |
+| `step6_test_review_prompt` | Testing | Full (anchor) + legacy `role` field | ⚠️ Has legacy field |
+| `step8_test_exec_prompt` | Testing | Full (anchor) + legacy `role` field | ⚠️ Has legacy field |
+| `step9_dependencies_prompt` | DevOps | Full (anchor) + legacy `role` field | ⚠️ Has legacy field |
+| `step10_code_quality_prompt` | Quality | Full (anchor) + legacy `role` field | ⚠️ Has legacy field |
+| `step12_git_commit_prompt` | DevOps | Full (anchor) + legacy `role` field | ⚠️ Has legacy field |
 
 **Supplemental Specialists (not in 19-count)**:
 
@@ -55,7 +55,7 @@
 |-----|-------|---------|--------|
 | `markdown_lint_prompt` | Documentation | Full (anchor) + legacy `role` field | ⚠️ Has legacy field |
 | `configuration_specialist_prompt` | DevOps | Full (anchor) | ✅ Mature |
-| `step13_prompt_engineer_prompt` | Meta | Full (anchor) | ✅ Mature |
+| `step14_prompt_engineer_prompt` | Meta | Full (anchor) | ✅ Mature |
 | `version_manager_prompt` | DevOps | Thin — no `task_template` field | ⚠️ Thin |
 | `observer_pattern_debugger_prompt` | Debugging | Non-standard (`specific_expertise`) | ⚠️ Non-standard |
 | `async_flow_debugger_prompt` | Debugging | Non-standard (`specific_expertise`) | ⚠️ Non-standard |
@@ -141,7 +141,7 @@
 
 | Persona | Quality Issue | Recommendation |
 |---------|--------------|----------------|
-| `quality_prompt` vs `step9_code_quality_prompt` | Significant overlap in purpose and content | Clarify boundary: `quality_prompt` = targeted file review; `step9` = system-wide architectural assessment; document distinction |
+| `quality_prompt` vs `step10_code_quality_prompt` | Significant overlap in purpose and content | Clarify boundary: `quality_prompt` = targeted file review; `step9` = system-wide architectural assessment; document distinction |
 | `consistency_prompt` vs `step2_consistency_prompt` | Very similar purpose; step2 has additional broken-reference analysis | Consider consolidating or promoting step2 as the canonical version |
 | `test_strategy_prompt` | Has non-standard `debugging_test_strategy` field | Move debug-specific content to `observer_pattern_debugger_prompt` or remove |
 | `quality_prompt` | Has non-standard `debugging_expertise` field | Move content to `quality_prompt` approach or debugging specialists |
@@ -168,7 +168,7 @@
 
 Remove the redundant `role` field from the 11 personas that carry both `role_prefix` and `role`. The `role_prefix` is the authoritative field in v4.0.0+. The legacy `role` field is only needed for consumers that haven't migrated.
 
-**Affected personas**: `test_strategy_prompt`, `quality_prompt`, `issue_extraction_prompt`, `step2_consistency_prompt`, `step3_script_refs_prompt`, `step4_directory_prompt`, `step5_test_review_prompt`, `step7_test_exec_prompt`, `step8_dependencies_prompt`, `step9_code_quality_prompt`, `step11_git_commit_prompt`, `markdown_lint_prompt`.
+**Affected personas**: `test_strategy_prompt`, `quality_prompt`, `issue_extraction_prompt`, `step2_consistency_prompt`, `step3_script_refs_prompt`, `step5_directory_prompt`, `step6_test_review_prompt`, `step8_test_exec_prompt`, `step9_dependencies_prompt`, `step10_code_quality_prompt`, `step12_git_commit_prompt`, `markdown_lint_prompt`.
 
 **Prerequisite**: Confirm parent `ai_workflow.js` execution engine reads `role_prefix` exclusively (not `role`).
 **Token savings**: ~110–165 tokens/workflow (12 personas × ~10–14 tokens each).
@@ -229,7 +229,7 @@ _behavioral_generative: &behavioral_generative |
   - Never add explanatory preamble outside the requested output format
 ```
 
-**Apply to**: `single_file_test_prompt`, `step11_git_commit_prompt`, `version_manager_prompt`, and any future pure-generation personas.
+**Apply to**: `single_file_test_prompt`, `step12_git_commit_prompt`, `version_manager_prompt`, and any future pure-generation personas.
 
 ### 3.5 Move Non-Standard Fields to `approach` (v6.7.4)
 
@@ -257,17 +257,17 @@ Add C# and Kotlin to all three language-specific tables (documentation, quality,
 - Quality: null safety operators (`?.`, `?:`), data classes, sealed classes, coroutines
 - Testing: JUnit 5 + Kotlin, MockK, kotest
 
-### 3.7 Clarify `quality_prompt` vs `step9_code_quality_prompt` Boundary (v6.7.6)
+### 3.7 Clarify `quality_prompt` vs `step10_code_quality_prompt` Boundary (v6.7.6)
 
 Add explicit disambiguation comments and update `role_prefix` to sharpen differentiation:
 
 | Persona | Scope | When to Use |
 |---------|-------|-------------|
 | `quality_prompt` | Single file or small set of files; immediate issues; quick review | Targeted PR review, pre-commit check, on specific files |
-| `step9_code_quality_prompt` | Entire codebase; architectural debt; cross-file patterns | Workflow step 9/10; system-wide audit; technical debt sprint |
+| `step10_code_quality_prompt` | Entire codebase; architectural debt; cross-file patterns | Workflow step 9/10; system-wide audit; technical debt sprint |
 
 Update `role_prefix` of `quality_prompt` to emphasize: *"quick, targeted, file-level"*
-Update `role_prefix` of `step9_code_quality_prompt` to emphasize: *"system-wide, architectural, comprehensive"*
+Update `role_prefix` of `step10_code_quality_prompt` to emphasize: *"system-wide, architectural, comprehensive"*
 
 ---
 
@@ -294,7 +294,7 @@ Update `role_prefix` of `step9_code_quality_prompt` to emphasize: *"system-wide,
 **Differentiates from**:
 
 - `configuration_specialist_prompt`: validates config syntax; does not author or optimize
-- `step8_dependencies_prompt`: analyzes vulnerability/version drift; does not author manifests
+- `step9_dependencies_prompt`: analyzes vulnerability/version drift; does not author manifests
 
 **Version target**: v7.0.0
 
@@ -343,7 +343,7 @@ Update `role_prefix` of `step9_code_quality_prompt` to emphasize: *"system-wide,
 **Necessity gate**: Yes — structured 5-point gate (parallel to `technical_writer_prompt`'s 7-point gate)
 **Differentiates from**:
 
-- `step9_code_quality_prompt`: quality and maintainability focus; not security-focused
+- `step10_code_quality_prompt`: quality and maintainability focus; not security-focused
 - `aws_cloud_architect_prompt`: infrastructure security; not application-layer security
 - `configuration_specialist_prompt`: config file secrets; not code-level security patterns
 
@@ -369,7 +369,7 @@ Update `role_prefix` of `step9_code_quality_prompt` to emphasize: *"system-wide,
 **Differentiates from**:
 
 - `aws_cloud_architect_prompt`: infrastructure-level (RDS selection, Multi-AZ); not schema design
-- `step9_code_quality_prompt`: code patterns; not data model design
+- `step10_code_quality_prompt`: code patterns; not data model design
 
 **Version target**: v7.3.0
 
@@ -529,7 +529,7 @@ Requirements             requirements_engineer_prompt
 API Design               [GAP]                      → api_designer_prompt (v7.1.0)
 
 Architecture             aws_cloud_architect_prompt
-                         step4_directory_prompt
+                         step5_directory_prompt
                          database_architect_prompt [GAP] → v7.3.0
                          [GCP GAP]                 → gcp_cloud_architect_prompt (v7.5.0)
 
@@ -554,18 +554,18 @@ Language Dev             javascript_developer_prompt
 
 Testing                  test_strategy_prompt
                          single_file_test_prompt
-                         step5_test_review_prompt
-                         step7_test_exec_prompt
+                         step6_test_review_prompt
+                         step8_test_exec_prompt
                          e2e_test_engineer_prompt
 
 Code Quality             quality_prompt
-                         step9_code_quality_prompt
+                         step10_code_quality_prompt
 
-Dependencies             step8_dependencies_prompt
+Dependencies             step9_dependencies_prompt
 
 Versioning               version_manager_prompt
 
-Git / VCS                step11_git_commit_prompt
+Git / VCS                step12_git_commit_prompt
 
 CI/CD Design             step3_script_refs_prompt (validation only)
                          [Pipeline Design GAP]      → cicd_pipeline_engineer_prompt
@@ -574,7 +574,7 @@ Debugging                observer_pattern_debugger_prompt
                          async_flow_debugger_prompt
                          data_structure_debugger_prompt
 
-Prompt Engineering       step13_prompt_engineer_prompt
+Prompt Engineering       step14_prompt_engineer_prompt
                          issue_extraction_prompt
 ```
 

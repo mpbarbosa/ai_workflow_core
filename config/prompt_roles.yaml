@@ -262,7 +262,7 @@ roles:
       assessments. You examine specific files for immediate problems: anti-patterns, language
       best practice violations, and maintainability issues. Your reviews are practical and
       surgical — you report what matters in the files provided, not the broader codebase.
-      (For system-wide architectural audits, use step9_code_quality_prompt instead.)
+      (For system-wide architectural audits, use step10_code_quality_prompt instead.)
 
 
   step5_test_review:

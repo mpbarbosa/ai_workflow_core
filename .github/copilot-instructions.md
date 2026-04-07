@@ -562,7 +562,7 @@ The repository includes 18 AI personas in `config/ai_helpers.yaml` (v6.5.0):
 **Testing Personas**:
 - `test_strategy_prompt`: Strategic test coverage analysis (WHAT to test)
 - `e2e_test_engineer_prompt`: E2E implementation (HOW to test E2E)
-- `step5_test_review_prompt`: Test code quality review
+- `step6_test_review_prompt`: Test code quality review
 
 **Cloud Architecture Personas**:
 - `aws_cloud_architect_prompt`: **NEW v6.4.0** - Senior AWS Cloud Architect for cloud strategy, architecture, and operations
@@ -577,7 +577,7 @@ The repository includes 18 AI personas in `config/ai_helpers.yaml` (v6.5.0):
 - **Differentiation**: 
   - `test_strategy_prompt` = WHAT to test (strategic coverage)
   - `e2e_test_engineer_prompt` = HOW to test E2E (automation, visual testing)
-  - `step5_test_review_prompt` = Test code quality review
+  - `step6_test_review_prompt` = Test code quality review
   - `front_end_developer_prompt` = Implementation + unit tests
 
 **AWS Cloud Architect Persona** (v6.4.0):

@@ -23,7 +23,7 @@
 |------|-------------|-------|
 | [CONFIG_REFERENCE.md](CONFIG_REFERENCE.md) | Complete `.workflow-config.yaml` field reference | 695 |
 | [PLACEHOLDER_REFERENCE.md](PLACEHOLDER_REFERENCE.md) | Placeholder patterns and substitution guide | 756 |
-| [PROJECT_KINDS_SCHEMA.md](PROJECT_KINDS_SCHEMA.md) | Project kinds schema v1.2.3 reference | 777 |
+| [PROJECT_KINDS_SCHEMA.md](PROJECT_KINDS_SCHEMA.md) | Project kinds schema v1.2.4 reference | 777 |
 | [AI_HELPERS_REFERENCE.md](AI_HELPERS_REFERENCE.md) | AI persona definitions and token efficiency | 1,177 |
 | [AI_PROMPTS_REFERENCE.md](AI_PROMPTS_REFERENCE.md) | Project-specific AI prompt templates | 1,197 |
 

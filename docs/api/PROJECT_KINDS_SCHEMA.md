@@ -1,6 +1,6 @@
 # Project Kinds Schema Reference
 
-**Version**: 1.2.3
+**Version**: 1.2.4
 **Last Updated**: 2026-01-30
 **Schema File**: `config/project_kinds.yaml`
 
@@ -40,7 +40,7 @@ The `project_kinds.yaml` file defines 8 standardized project types with specific
 - Ensure consistency across similar projects
 
 **File Location**: `config/project_kinds.yaml`
-**Current Version**: 1.2.3
+**Current Version**: 1.2.4
 **Last Updated**: 2026-01-30
 
 ---
@@ -774,4 +774,4 @@ File patterns support pipe-separated alternatives:
 
 **Last Updated**: 2026-01-30
 **Document Version**: 1.0.2
-**Schema Version**: 1.2.3
+**Schema Version**: 1.2.4

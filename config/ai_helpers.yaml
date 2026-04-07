@@ -2213,7 +2213,7 @@ step4_directory_prompt:
     Validation covers both **presence** (required directories/files exist) and **content/structure** (contents match the documented purpose).
 
     **Validation Criteria:**
-    - Required configuration files: `.workflow-config.yaml` (or `.workflow-config.yaml.template` for template repositories)
+    - Required configuration files: `.workflow-config.yaml` (if present, use as the primary source of truth for structure; otherwise fall back to project-kind guidance and language defaults)
     - Project kind-specific required directories and files as defined in `project_kinds.yaml`
     - Architecture documented in `README.md` and `docs/ARCHITECTURE.md`
 

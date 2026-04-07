@@ -2210,7 +2210,13 @@ step4_directory_prompt:
   
   task_template: |
     Perform comprehensive validation of directory structure and architectural organization for this project.
-    
+    Validation covers both **presence** (required directories/files exist) and **content/structure** (contents match the documented purpose).
+
+    **Validation Criteria:**
+    - Required configuration files: `.workflow-config.yaml` (or `.workflow-config.yaml.template` for template repositories)
+    - Project kind-specific required directories and files as defined in `project_kinds.yaml`
+    - Architecture documented in `README.md` and `docs/ARCHITECTURE.md`
+
     **Context:**
     - Project: {project_name} ({project_description})
     - Primary Language: {primary_language}
@@ -2231,8 +2237,8 @@ step4_directory_prompt:
     **Tasks:**
     
     1. **Structure-to-Documentation Mapping:**
-       - Verify directory structure matches documented architecture
-       - Check that primary documentation describes actual structure
+       - Verify directory structure matches documented architecture (presence check)
+       - Check that primary documentation describes actual structure (content check)
        - Validate directory purposes are clearly documented
        - Ensure new directories have documentation explaining their role
     

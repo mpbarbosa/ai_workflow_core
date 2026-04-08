@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 6.8.8 (improve step6_test_review_prompt Task section — 2026-04-08)
+# Version: 6.8.9 (improve configuration_specialist_prompt Task section opening — 2026-04-08)
 #
 # CUMULATIVE TOKEN EFFICIENCY SUMMARY:
 # =====================================
@@ -84,6 +84,17 @@
 #     counts; directs AI to diff sample for actual file paths; treats as patch bump
 #   - step11_git_commit_prompt: clarified {diff_summary} label to request individual file
 #     names alongside aggregate statistics for better traceability
+# v6.8.9 - Improve configuration_specialist_prompt Task section opening (2026-04-08)
+#   - task_template: rewrote opening paragraph to name concrete config file types
+#     (package manifests, env files, CI workflows, Docker/compose, editor/tooling
+#     configs, AI-workflow YAML) so scope is explicit when Task section is read in
+#     isolation with analyze-prompt-part (addresses analyze-prompt-part score 7/10)
+#   - task_template: replaced generic "project best practices" intro with stack-safe
+#     phrasing ("stack-specific best practices when tech-stack context is available")
+#     to avoid brittle {tech_stack} placeholder interpolation in the opening sentence
+#   - task_template: added "Skip only file-type-specific checks that require formats
+#     not present in File Contents" directive — narrows the skip scope to sub-checks
+#     rather than whole validation categories, complementing the v6.8.7 truncation note
 # v6.8.8 - Improve step6_test_review_prompt Task section (2026-04-08)
 #   - task_template: updated opening line to explicitly reference {test_framework} and
 #     {test_env} and point to the **Existing Test Files in Scope** section, so scope
@@ -3041,10 +3052,14 @@ configuration_specialist_prompt:
   
   task_template: |
     Validate and analyze the {config_count} configuration file(s) listed in
-    **Configuration Files in Scope** below. For each file check: schema correctness
-    (required fields, value types, YAML/JSON/TOML syntax), security hygiene (no exposed
-    secrets, safe defaults), and project best practices (dependency pinning, env
-    separation, CI/CD alignment).
+    **Configuration Files in Scope** below, such as package manifests
+    (`package.json`, `requirements.txt`), env files (`.env`, `.env.production`),
+    CI workflows, Docker/compose files, editor/tooling configs, and AI-workflow
+    YAML when present. For each file shown in **File Contents**, check
+    syntax/schema correctness, security hygiene, consistency with related configs,
+    and stack-specific best practices when tech-stack context is available. Skip
+    only file-type-specific checks that require formats not present in **File
+    Contents** below.
     
     ### Configuration Files in Scope
     {config_files_list}

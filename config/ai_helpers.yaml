@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 6.8.10 (reference project conventions in step12_git_commit_prompt Task — 2026-04-08)
+# Version: 6.8.11 (improve markdown_lint_prompt Task section — 2026-04-08)
 #
 # CUMULATIVE TOKEN EFFICIENCY SUMMARY:
 # =====================================
@@ -84,6 +84,15 @@
 #     counts; directs AI to diff sample for actual file paths; treats as patch bump
 #   - step11_git_commit_prompt: clarified {diff_summary} label to request individual file
 #     names alongside aggregate statistics for better traceability
+# v6.8.11 - Improve markdown_lint_prompt Task section (2026-04-08)
+#   - task_template: added sentence directing the AI to consult `.github/CONTRIBUTING.md`
+#     for project-specific documentation standards, so recommendations are contextually
+#     appropriate (addresses analyze-prompt-part finding: missing project convention ref)
+#   - task_template: added note in Focus Areas explaining that disabled rules (MD029,
+#     MD013) typically account for the majority of issue counts; prevents AI confusion
+#     when it sees large violation totals for rules it is told to ignore
+#   - task_template: added prioritization directive to Analysis Request — instructs the
+#     AI to order recommendations by impact on quality rather than raw frequency count
 # v6.8.10 - Reference project commit conventions in step12_git_commit_prompt (2026-04-08)
 #   - task_template: added sentence directing the AI to follow project-specific commit
 #     conventions documented in `.github/CONTRIBUTING.md` when available, so the Task
@@ -2968,7 +2977,11 @@ markdown_lint_prompt:
   
   task_template: |
     Review the markdown linting results and provide actionable
-    recommendations for improving documentation quality.
+    recommendations for improving documentation quality. Where
+    project-specific documentation conventions are defined in
+    `.github/CONTRIBUTING.md` or `.github/copilot-instructions.md`,
+    treat those as the authoritative style reference and let them take
+    precedence over generic markdown defaults.
     
     # Markdown Linting Results
     {lint_report}
@@ -2990,6 +3003,11 @@ markdown_lint_prompt:
     - MD031 (blank lines around code blocks) - compact formatting
     - MD032 (blank lines around lists) - compact formatting
     
+    > **Note:** Disabled rules typically account for the majority of the
+    > total issue count (e.g., MD029 and MD013 are commonly the top
+    > violations by frequency). These high counts are expected and
+    > intentional — do not flag them as problems.
+    
     Focus ONLY on these **ENABLED** rules that indicate real quality
     issues:
     
@@ -3008,6 +3026,9 @@ markdown_lint_prompt:
     1. **Severity Assessment**: 
        - Rate overall quality (Excellent/Good/Needs Improvement/Poor)
        - Base assessment ONLY on enabled rules (ignore disabled rules)
+       - Prioritize recommendations by **impact on documentation quality**
+         (rendering correctness, accessibility, readability) rather than
+         by raw violation frequency
     
     2. **Critical Issues**:
        - List specific files and line numbers with enabled rule violations

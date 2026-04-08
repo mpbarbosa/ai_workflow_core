@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 6.8.11 (improve markdown_lint_prompt Task section — 2026-04-08)
+# Version: 6.8.12 (add UI Files in Scope to ui_ux_designer_prompt Task section — 2026-04-08)
 #
 # CUMULATIVE TOKEN EFFICIENCY SUMMARY:
 # =====================================
@@ -84,6 +84,11 @@
 #     counts; directs AI to diff sample for actual file paths; treats as patch bump
 #   - step11_git_commit_prompt: clarified {diff_summary} label to request individual file
 #     names alongside aggregate statistics for better traceability
+# v6.8.12 - Add UI Files in Scope to ui_ux_designer_prompt Task section (2026-04-08)
+#   - task_template: added "UI Files in Scope: {file_count}" to Project Context so the
+#     Task section is self-sufficient when read in isolation with analyze-prompt-part;
+#     previously the section gave no evidence that UI files were in scope, causing a
+#     3/10 alignment score (addresses analyze-prompt-part finding for workflow_20260408_110145)
 # v6.8.11 - Improve markdown_lint_prompt Task section (2026-04-08)
 #   - task_template: added sentence directing the AI to consult `.github/CONTRIBUTING.md`
 #     for project-specific documentation standards, so recommendations are contextually
@@ -1272,6 +1277,7 @@ ui_ux_designer_prompt:
     - Target Users: {target_audience}
     - Design System: {design_system_status}
     - Modified Files: {modified_count}
+    - UI Files in Scope: {file_count}
     
     **ANALYSIS PHASE**: Evaluate existing UI/UX for:
     1. **Usability**: Ease of use, learnability, efficiency, error prevention

@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 6.8.3 (change statistics zero-category guidance — 2026-04-03)
+# Version: 6.8.6 (fix configuration_specialist_prompt sub-header format — 2026-04-08)
 #
 # CUMULATIVE TOKEN EFFICIENCY SUMMARY:
 # =====================================
@@ -84,6 +84,13 @@
 #     counts; directs AI to diff sample for actual file paths; treats as patch bump
 #   - step11_git_commit_prompt: clarified {diff_summary} label to request individual file
 #     names alongside aggregate statistics for better traceability
+# v6.8.6 - Fix configuration_specialist_prompt sub-header format (2026-04-08)
+#   - task_template: changed **Configuration Files in Scope:**, **Project Context:**,
+#     **File Contents:**, and **Validation Tasks:** from bold-colon format to
+#     ### markdown headings — these matched the SECTION_RE pattern in prompt_parser.ts
+#     (parsePromptParts), causing them to be split off as separate top-level sections
+#     instead of staying within the Task section body; the file list was invisible when
+#     analyzing the Task section in isolation with analyze-prompt-part
 # v6.8.5 - Improve configuration_specialist_prompt Task section clarity (2026-04-07)
 #   - task_template: replaced vague opening with explicit scope reference
 #     ({config_count} + {config_files_list}); named three validation dimensions
@@ -2973,18 +2980,18 @@ configuration_specialist_prompt:
     secrets, safe defaults), and project best practices (dependency pinning, env
     separation, CI/CD alignment).
     
-    **Configuration Files in Scope:**
+    ### Configuration Files in Scope
     {config_files_list}
     
-    **Project Context:**
+    ### Project Context
     - Project Type: {project_kind}
     - Tech Stack: {tech_stack}
     - Total Config Files: {config_count}
     
-    **File Contents:**
+    ### File Contents
     {config_files_content}
     
-    **Validation Tasks:**
+    ### Validation Tasks
     
     1. **Syntax Validation**:
        - Parse JSON/YAML/TOML/INI files for syntax errors

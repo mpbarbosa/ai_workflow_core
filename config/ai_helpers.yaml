@@ -2501,14 +2501,15 @@ step8_test_exec_prompt:
     - Project Kind: {project_kind}
     - Test Framework: {test_framework} via `{test_command}`
     - Exit Code: {test_exit_code}
-    - Results: {tests_passed}/{tests_total} passed, {tests_failed} failed
+    - Results: {tests_passed}/{tests_total} passed, {tests_failed} failed, {tests_skipped} skipped
     - Coverage Threshold: {coverage_threshold}%
     - Coverage Gaps: {coverage_gaps}
+    - CI/CD Config: {ci_config_paths}
     
     **Test Execution Results:**
     {execution_summary}
     
-    **Output:**
+    **Output:** (raw test runner console output, truncated to 2000 chars)
     {test_output}
     
     **Failed Tests:**

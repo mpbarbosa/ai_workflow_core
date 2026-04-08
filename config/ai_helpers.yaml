@@ -530,22 +530,22 @@ doc_analysis_prompt:
   behavioral_guidelines: *behavioral_actionable
   
   task_template: |
-    **YOUR TASK**: Analyze the changed files and make specific edits to update the documentation.
+    **YOUR TASK**: Review the changed files below and make targeted edits to the listed documentation files. Focus on: API references, usage instructions, architecture descriptions, and version numbers that are directly affected by the changes.
     
     **Changed files**: {changed_files}
     **Documentation to review**: {doc_files}
     
     **REQUIRED ACTIONS**:
     1. **Read the changes**: Examine what was modified in each changed file
-    2. **Identify documentation impact**: Determine which docs need updates:
-       - README.md (features, setup instructions, usage examples)
-       - Technical docs (architecture changes, new features)
-       - Module READMEs (if code in that module changed)
-       - Inline comments (for complex new logic)
-    3. **Determine changes**: Identify exact sections requiring updates
-    4. **Verify accuracy**: Ensure examples and references are still correct
+    2. **Identify documentation impact**: Determine which sections in the listed docs need updates:
+       - README.md: features, setup instructions, usage examples, version references
+       - Technical docs (e.g., `docs/ARCHITECTURE.md`): architecture changes, new features, API signatures
+       - Module READMEs: if code in that module changed
+       - Inline comments: for complex new logic
+    3. **Determine specific edits**: Identify the exact lines or sections requiring updates — a "specific edit" means a concrete before/after text change tied to a file path, NOT a vague suggestion like "consider updating X"
+    4. **Verify accuracy**: Ensure examples, code snippets, and cross-references are still correct
     
-    **OUTPUT FORMAT**: Use edit blocks showing before/after, or provide specific line-by-line changes.
+    **OUTPUT FORMAT**: Use edit blocks showing before/after, or provide specific line-by-line changes. If no edits are needed, state "No updates required" with a one-line reason.
   
   approach: |
     Analyze ONLY the documentation files explicitly listed above. Do not reference, invent, or assume documentation not in that list.

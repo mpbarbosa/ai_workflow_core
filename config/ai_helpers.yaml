@@ -414,8 +414,10 @@ _behavioral_actionable: &behavioral_actionable |
   **Actionable Output Needed When**:
   Surface output in: CI job logs, workflow execution reports (.ai_workflow/logs/),
   PR review comments, or inline markdown patch files — whichever is closest to the
-  affected artifact. Prioritize by severity: security vulnerabilities > functional
-  bugs > documentation gaps > style/best-practice issues.
+  affected artifact. Adapt these locations if the project uses custom reporting tools
+  or non-standard workflows. Prioritize by severity: security vulnerabilities >
+  functional bugs > documentation gaps > style/best-practice issues. When multiple
+  issues are found, surface the most severe first but report all of them.
   - Content is outdated, incorrect, or conflicts with current codebase state
     [owner: doc maintainer]
   - Security vulnerabilities, bugs, or functional issues are present
@@ -432,6 +434,9 @@ _behavioral_actionable: &behavioral_actionable |
     [owner: test maintainer]
   - Accessibility barriers prevent standard user interactions (WCAG violations)
     [owner: front-end / accessibility specialist]
+  Example: If a deprecated API and a missing doc section are both found, report
+  the deprecated API first (functional bug), then the doc gap; both as separate
+  items in the workflow report or PR comment.
   
   **Clarifying Questions Allowed When**:
   Note: Before raising a clarifying question, consult README.md for high-level context,

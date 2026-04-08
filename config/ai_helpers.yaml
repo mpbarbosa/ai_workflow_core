@@ -314,7 +314,7 @@
 # - Added language-specific context injection to 4 additional prompts
 # - doc_analysis_prompt: Now includes language-specific documentation standards
 # - step2_consistency_prompt: Enhanced with language-aware validation
-# - step3_script_refs_prompt: Added language-specific documentation formats
+# - step3_script_refs_prompt: Added language-specific documentation formats; added {doc_coverage_map} and {doc_context} placeholders so AI receives actual documentation content
 # - step9_code_quality_prompt: Now includes language-specific quality rules
 # - Ensures AI provides language-appropriate guidance (JSDoc, PEP 257, godoc, etc.)
 # - Improves relevance and consistency across all tech stacks
@@ -2162,10 +2162,17 @@ step3_script_refs_prompt:
     
     **Phase 1 Automated Findings:**
     {script_issues_content}
-    
+
+    **Script Documentation Coverage:**
+    (shows which documentation files reference each script)
+    {doc_coverage_map}
+
     **Available Scripts:**
     {all_scripts}
-    
+
+    **Documentation Excerpts (partial — first ~80 lines per file, may be truncated):**
+    {doc_context}
+
     **Tasks:**
     
     1. **Script-to-Documentation Mapping:**

@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 6.8.12 (add UI Files in Scope to ui_ux_designer_prompt Task section — 2026-04-08)
+# Version: 6.8.13 (configuration_specialist_prompt: clarify list is sub-section directly below — 2026-04-09)
 #
 # CUMULATIVE TOKEN EFFICIENCY SUMMARY:
 # =====================================
@@ -84,6 +84,12 @@
 #     counts; directs AI to diff sample for actual file paths; treats as patch bump
 #   - step11_git_commit_prompt: clarified {diff_summary} label to request individual file
 #     names alongside aggregate statistics for better traceability
+# v6.8.13 - Clarify configuration_specialist_prompt file-list reference (2026-04-09)
+#   - task_template: changed "listed in **Configuration Files in Scope** below" to
+#     "listed in the **Configuration Files in Scope** sub-section directly below"
+#     so the reference is unambiguous when the Task section is read in isolation by
+#     analyze-prompt-part (addresses analysis finding for workflow_20260408_201258:
+#     score 9/10, list appeared "not shown in provided context")
 # v6.8.12 - Add UI Files in Scope to ui_ux_designer_prompt Task section (2026-04-08)
 #   - task_template: added "UI Files in Scope: {file_count}" to Project Context so the
 #     Task section is self-sufficient when read in isolation with analyze-prompt-part;
@@ -534,6 +540,7 @@ doc_analysis_prompt:
     
     **Changed files**: {changed_files}
     **Documentation to review**: {doc_files}
+    **Also in scope**: Any files referenced in the Quick links table of `CONTRIBUTING.md` (e.g., `docs/GETTING_STARTED.md`, `docs/ARCHITECTURE.md`, `docs/API.md`) that exist in the repository are also in scope for updates.
     
     **REQUIRED ACTIONS**:
     1. **Read the changes**: Examine what was modified in each changed file
@@ -544,6 +551,7 @@ doc_analysis_prompt:
        - Inline comments: for complex new logic
     3. **Determine specific edits**: Identify the exact lines or sections requiring updates — a "specific edit" means a concrete before/after text change tied to a file path, NOT a vague suggestion like "consider updating X"
     4. **Verify accuracy**: Ensure examples, code snippets, and cross-references are still correct
+    5. **Handle missing or incomplete files**: If a referenced documentation file is missing or clearly incomplete, note it as a documentation gap in your output rather than skipping it or fabricating content — describe briefly what should be there
     
     **OUTPUT FORMAT**: Use edit blocks showing before/after, or provide specific line-by-line changes. If no edits are needed, state "No updates required" with a one-line reason.
   
@@ -573,7 +581,7 @@ doc_analysis_prompt:
        - Ensure cross-references remain valid
        - Update version numbers if applicable
     
-    **Project Conventions** (from CONTRIBUTING.md):
+    **Project Conventions** (from `.github/CONTRIBUTING.md` — authoritative; root `CONTRIBUTING.md` is a redirect entry point only):
     {project_conventions}
     
     **Output Format**:
@@ -3101,7 +3109,7 @@ configuration_specialist_prompt:
   
   task_template: |
     Validate and analyze the {config_count} configuration file(s) listed in
-    **Configuration Files in Scope** below, such as package manifests
+    the **Configuration Files in Scope** sub-section directly below, such as package manifests
     (`package.json`, `requirements.txt`), env files (`.env`, `.env.production`),
     CI workflows, Docker/compose files, editor/tooling configs, and AI-workflow
     YAML when present. For each file shown in **File Contents**, check

@@ -2272,6 +2272,24 @@ step5_directory_prompt:
     - Project kind-specific required directories and files as defined in `project_kinds.yaml`
     - Architecture documented in `README.md` and `docs/ARCHITECTURE.md`
 
+    **"Required" Directory Definition:**
+    When `.workflow-config.yaml` is present, these keys define required directories:
+    - `structure.source_dirs` → source code directories (e.g. `src/`) — must exist and contain source files
+    - `structure.test_dirs` → test directories (e.g. `__tests__/`, `tests/`) — must exist and contain test files
+    - `structure.docs_dirs` → documentation directories (e.g. `docs/`) — must exist and contain `.md` files
+    - `structure.ui_dirs` → UI component directories — must contain component source files
+    - `structure.css_dirs` → stylesheet directories — must contain `.css` files
+    - `structure.static_assets` → specific asset files that must be present at their listed paths
+    When `.workflow-config.yaml` is absent, apply language/framework defaults (e.g. `src/`, `test/`, `docs/` for TypeScript/Node.js projects).
+
+    **"Contents match the documented purpose"** means:
+    - `source_dirs` entries contain source code files (`.ts`, `.js`, `.vue`) — not build artifacts or data
+    - `test_dirs` entries contain test files (`*.test.*` or `*.spec.*`)
+    - `docs_dirs` entries contain documentation files (`.md`, `.rst`, `.txt`)
+    - Any directory described in `README.md` or `docs/ARCHITECTURE.md` matches its stated purpose
+    - Example: a directory described as "UI component library" should contain component files, not config files
+    - Undocumented directories (absent from all documentation sources) are flagged for clarification, not treated as errors
+
     **Context:**
     - Project: {project_name} ({project_description})
     - Primary Language: {primary_language}

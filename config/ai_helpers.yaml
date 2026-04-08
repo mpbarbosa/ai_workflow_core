@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 6.8.6 (fix configuration_specialist_prompt sub-header format — 2026-04-08)
+# Version: 6.8.7 (improve configuration_specialist_prompt Task section — 2026-04-08)
 #
 # CUMULATIVE TOKEN EFFICIENCY SUMMARY:
 # =====================================
@@ -84,6 +84,15 @@
 #     counts; directs AI to diff sample for actual file paths; treats as patch bump
 #   - step11_git_commit_prompt: clarified {diff_summary} label to request individual file
 #     names alongside aggregate statistics for better traceability
+# v6.8.7 - Improve configuration_specialist_prompt Task section (2026-04-08)
+#   - task_template: added context-truncation note after {config_files_list}:
+#     "This list may not match files visible in the surrounding context snapshot"
+#     to prevent the AI from flagging absent-from-snapshot files as errors
+#   - task_template: Validation Tasks 1–3: added inline parenthetical examples to
+#     each bullet so checks are unambiguous (e.g., trailing commas in JSON,
+#     `strict: "yes"` vs `true` in tsconfig, `.env.production` for prod separation)
+#   - task_template: Best Practices task now references {tech_stack} and includes
+#     concrete examples per bullet (package.json exact pinning, CI cache key, etc.)
 # v6.8.6 - Fix configuration_specialist_prompt sub-header format (2026-04-08)
 #   - task_template: changed **Configuration Files in Scope:**, **Project Context:**,
 #     **File Contents:**, and **Validation Tasks:** from bold-colon format to
@@ -2992,6 +3001,10 @@ configuration_specialist_prompt:
     
     ### Configuration Files in Scope
     {config_files_list}
+
+    > **Note:** This list may not match files visible in the surrounding context snapshot
+    > (which can be truncated). If a listed file is absent from the snapshot, that is not
+    > an error — analyze only what is provided in **File Contents** below.
     
     ### Project Context
     - Project Type: {project_kind}
@@ -3004,30 +3017,30 @@ configuration_specialist_prompt:
     ### Validation Tasks
     
     1. **Syntax Validation**:
-       - Parse JSON/YAML/TOML/INI files for syntax errors
+       - Parse JSON/YAML/TOML/INI files for syntax errors (e.g., trailing commas in JSON, unquoted special chars in YAML)
        - Check for malformed structures, invalid escaping, encoding issues
-       - Verify schema compliance where applicable (package.json, tsconfig.json, etc.)
-       - Flag missing required fields or invalid value types
+       - Verify schema compliance where applicable (e.g., `package.json` must have `name` and `version`; `tsconfig.json` requires `compilerOptions`)
+       - Flag missing required fields or invalid value types (e.g., `"strict": "yes"` instead of `true` in tsconfig)
     
     2. **Security Analysis**:
        - ⚠️ CRITICAL: Check for exposed secrets (API keys, passwords, tokens)
-       - Verify no hardcoded credentials in configuration files
+       - Verify no hardcoded credentials in configuration files (e.g., `password: mysecret` in YAML)
        - Check file permissions recommendations (e.g., .env files should be 0600)
-       - Flag insecure defaults (weak crypto, permissive CORS, debug mode in prod)
+       - Flag insecure defaults (weak crypto, permissive CORS, debug mode in prod; e.g., `DEBUG=true` in `.env.production`)
        - Validate environment variable usage (use ${VAR} instead of hardcoding)
     
     3. **Consistency Checks**:
-       - Cross-reference related configs (package.json ↔ .nvmrc, requirements.txt ↔ .python-version)
-       - Verify dependency versions match across lockfiles and manifests
+       - Cross-reference related configs (e.g., `engines.node` in package.json ↔ `.nvmrc`; `python_requires` ↔ `.python-version`)
+       - Verify dependency versions match across lockfiles and manifests (e.g., `package.json` vs `package-lock.json`)
        - Check for conflicting settings (e.g., different ports in docker-compose.yml vs .env)
-       - Ensure CI/CD configs match documented build commands
+       - Ensure CI/CD configs match documented build commands (e.g., `npm run test:unit` in workflow matches a real script in package.json)
     
-    4. **Best Practices**:
-       - Dependency version pinning (exact vs ranges, security implications)
-       - Environment-specific configs (dev/staging/prod separation)
-       - Docker multi-stage builds, layer optimization
-       - CI/CD caching strategies, artifact management
-       - Configuration documentation (comments explaining non-obvious settings)
+    4. **Best Practices** (apply checks appropriate for the detected tech stack: {tech_stack}):
+       - Dependency version pinning (e.g., for package.json: prefer exact versions in `dependencies`, ranges only in `devDependencies`)
+       - Environment-specific configs (dev/staging/prod separation; e.g., `.env` vs `.env.production`)
+       - Docker multi-stage builds, layer optimization (e.g., copy only necessary files before `npm install`)
+       - CI/CD caching strategies, artifact management (e.g., cache `node_modules` keyed on `package-lock.json` hash)
+       - Configuration documentation (comments explaining non-obvious settings, e.g., why a timeout is set to a specific value)
     
     5. **Special Handling for AI Workflow Configs** (if applicable):
        - Validate ai_helpers.yaml structure (role_prefix + behavioral_guidelines pattern)

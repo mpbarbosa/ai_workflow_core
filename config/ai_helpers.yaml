@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 6.8.7 (improve configuration_specialist_prompt Task section — 2026-04-08)
+# Version: 6.8.8 (improve step6_test_review_prompt Task section — 2026-04-08)
 #
 # CUMULATIVE TOKEN EFFICIENCY SUMMARY:
 # =====================================
@@ -84,6 +84,24 @@
 #     counts; directs AI to diff sample for actual file paths; treats as patch bump
 #   - step11_git_commit_prompt: clarified {diff_summary} label to request individual file
 #     names alongside aggregate statistics for better traceability
+# v6.8.8 - Improve step6_test_review_prompt Task section (2026-04-08)
+#   - task_template: updated opening line to explicitly reference {test_framework} and
+#     {test_env} and point to the **Existing Test Files in Scope** section, so scope
+#     is clear when the Task section is analyzed in isolation with analyze-prompt-part
+#   - task_template: added > **Tactical recommendations** note block with concrete
+#     code-level examples (rename vague names, extract beforeEach, toHaveLength, etc.)
+#   - task_template: renamed **Existing Test Files:** → **Existing Test Files in Scope:**
+#     and renamed "Test Config:" → "Test Framework:" for clarity
+#   - task_template: collapsed "Tests in __tests__/:" and "Co-located Tests:" into one
+#     combined line; added inline Quality Criteria (AAA, DRY, etc.) to replace external
+#     reference suggestion from analysis
+#   - task_template: added > **Note:** block after {test_files} explaining token-limit
+#     truncation (test files are typically long; listed files may not appear in snapshot)
+#   - task_template: added parenthetical examples to Task headings 1–4 to illustrate
+#     "tactical recommendations" when section is read in isolation
+#   - step_06_test_review.js: added change_scope and modified_count to buildYamlStepPrompt
+#     context — these were referenced in the template but never injected, causing silent
+#     substitution drops. Now resolved from options.scope and options.modifiedFiles.
 # v6.8.7 - Improve configuration_specialist_prompt Task section (2026-04-08)
 #   - task_template: added context-truncation note after {config_files_list}:
 #     "This list may not match files visible in the surrounding context snapshot"
@@ -2368,59 +2386,69 @@ step6_test_review_prompt:
   behavioral_guidelines: *behavioral_actionable
   
   task_template: |
-    Review existing test implementations and provide tactical recommendations for improving test code quality.
-    
+    Review the test file(s) listed in **Existing Test Files in Scope** below using
+    {test_framework} in {test_env}. Provide tactical, code-level recommendations
+    for improving test quality.
+
+    > **Tactical recommendations** are concrete, file-level suggestions — e.g., rename
+    > a vague test name to describe expected behavior, extract repeated setup into
+    > `beforeEach`, replace `expect(arr.length).toBe(3)` with
+    > `expect(arr).toHaveLength(3)`, add an edge case for null input, or remove
+    > redundant assertions. Focus on HOW tests are written, not WHAT to test.
+
     **Context:**
     - Project: {project_name} ({project_description})
     - Primary Language: {primary_language}
-    - Project Kind: {project_kind}
-    - Scope: {change_scope}
+    - Change Scope: {change_scope}
     - Modified Files: {modified_count}
-    - Test Config: {test_framework} in {test_env}
+    - Test Framework: {test_framework} in {test_env}
     - Commands: test=`{test_command}`, coverage=`{coverage_command}`
-    - Total Test Files: {test_count}
-    - Tests in __tests__/: {tests_in_tests_dir}
-    - Co-located Tests: {tests_colocated}
-    
-    **Existing Test Files:**
+    - Total Test Files: {test_count} ({tests_in_tests_dir} in `__tests__/`/`test/`, {tests_colocated} co-located)
+    - Quality Criteria: AAA pattern, descriptive names, DRY fixtures, isolated tests, deterministic execution
+
+    **Existing Test Files in Scope:**
     {test_files}
-    
+
+    > **Note:** Test file contents are truncated to fit token limits; listed files may
+    > not appear in the snapshot below. If a file is absent from **Test File Contents**,
+    > analyze only what is provided — do not invent or assume missing content.
+
     **Test File Contents:**
     {test_file_contents}
-    
+
     **Tasks:**
-    
-    1. **Test Code Quality Assessment:**
+
+    1. **Test Code Quality Assessment** (e.g., naming clarity, structure, DRY violations):
        - Review test file structure and organization
        - Assess test naming conventions (describe behavior, not implementation)
        - Evaluate test readability and maintainability
        - Check for code duplication in tests (DRY violations)
        - Validate proper use of test framework features
        - Assess assertion quality (specific, meaningful messages)
-    
-    2. **Test Implementation Best Practices:**
+
+    2. **Test Implementation Best Practices** (e.g., AAA pattern, mock hygiene, error paths):
        - Verify AAA pattern (Arrange-Act-Assert) usage
        - Check test isolation and independence
        - Review setup/teardown patterns and fixture usage
        - Validate mock usage (appropriate, not excessive)
        - Assess async/await handling correctness
        - Check for proper error testing patterns
-    
-    3. **Test Refactoring Opportunities:**
+
+    3. **Test Refactoring Opportunities** (e.g., parameterized tests, shared fixtures):
        - Identify verbose or complex test code
        - Suggest test helper function extractions
        - Recommend shared fixture improvements
        - Propose test data organization strategies
        - Identify opportunities for parameterized tests
        - Suggest removing redundant test cases
-    
-    4. **Framework-Specific Improvements:**
+
+    4. **Framework-Specific Improvements** (e.g., better {test_framework} matchers, unused features):
        - Recommend better matchers/assertions for clarity
        - Suggest framework features not being utilized
        - Identify anti-patterns specific to test framework
        - Propose modern testing patterns adoption
        - Check compatibility with framework version
-    
+
     5. **CI/CD and Performance Considerations:**
        - Identify slow-running tests
        - Check for non-deterministic behavior

@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 6.8.39
+# Version: 6.8.40
 #
 # Version history -> see CHANGELOG.md
 #
@@ -1930,8 +1930,18 @@ step3_script_refs_prompt:
     (shows which documentation files reference each script)
     {doc_coverage_map}
 
-    **Available Scripts:**
+    **Scripts in Scope (authoritative — analyze only these paths; do not infer or include any additional scripts):**
     {all_scripts}
+
+    > Note: If no scripts appear above (Total Scripts: 0), confirm their absence in your report
+    > and flag any documentation references that point to non-existent or missing scripts.
+
+    **Documentation Quality Criteria:**
+    - Clear and concise command syntax documentation
+    - Comprehensive usage examples for each script
+    - Accurate parameter and option descriptions
+    - Proper shell script conventions: shebang line, exit codes, environment variable requirements
+    - Integration and workflow clarity across components
 
     **Documentation Excerpts (partial — first ~80 lines per file, may be truncated):**
     {doc_context}

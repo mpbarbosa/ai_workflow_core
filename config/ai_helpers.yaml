@@ -1,426 +1,78 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 6.8.29 (accessibility_review_prompt task_template: reframe from "web accessibility review" to "API documentation accessibility review"; add File Type context line; replace inapplicable actions 6-7 (aria-live dynamic content, touch target size) with landmark structure check and link text clarity check — 2026-04-09)
+# Version: 6.8.29
 #
-# CUMULATIVE TOKEN EFFICIENCY SUMMARY:
-# =====================================
-# Total Savings per Workflow: ~1,560-1,755 tokens (vs. v3.0.0 baseline)
+# Version history -> see CHANGELOG.md
 #
-# Breakdown by Optimization Type:
-# - Output format simplification (v4.0.0): ~550 tokens
-# - Language-specific injection cleanup (v4.0.0): ~340 tokens
-# - Redundant test context (v4.0.0): ~55 tokens
-# - Anchor pattern implementation (v3.2.0): ~260-390 tokens
-# - Verbose section headers (v3.5.0): ~105-210 tokens
-# - Redundant output warnings (v3.6.0): ~40-50 tokens
-# - Test strategy separation (v3.3.0): ~100-150 tokens
-# - Remove legacy role fields (v6.7.0): ~110-165 tokens
-# - behavioral_generative anchor (v6.7.3): ~20-40 tokens
+# =============================================================================
+# SECTION INDEX
+# =============================================================================
+# 1. REUSABLE BEHAVIORAL GUIDELINES (YAML Anchors)
+#    _behavioral_actionable  -- output must be concrete and actionable
+#    _behavioral_structured  -- structured analysis with explicit reasoning
+#    _behavioral_generative  -- pure-generation tasks (commits, test files, bumps)
 #
-# Cost Impact (GPT-4 @ $0.03/1K input tokens):
-# - Per workflow: ~$0.047-0.053 saved
-# - 500 workflows/month: ~$23-26.50/month = ~$282-318/year
+# 2. DOCUMENTATION PERSONAS
+#    doc_analysis_prompt          -- incremental documentation updates
+#    consistency_prompt           -- documentation quality assurance
+#    technical_writer_prompt      -- comprehensive from-scratch documentation
 #
-# Authority Enhancements (value-add, minimal cost):
-# - Quality prompt role strengthened (+20 tokens)
-# - DevOps validation expanded (+50 tokens)
-# Net efficiency gain: Still ~1,490-1,685 tokens saved per workflow
+# 3. FRONT-END & UX PERSONAS
+#    front_end_developer_prompt   -- code implementation, performance, testing
+#    e2e_test_engineer_prompt     -- browser automation and visual testing
+#    ui_ux_designer_prompt        -- user research, visual design, interaction
+#    tui_ux_designer_prompt       -- terminal UI/UX design
+#
+# 4. ENGINEERING PERSONAS
+#    requirements_engineer_prompt -- requirements elicitation and specification
+#    test_strategy_prompt         -- strategic test coverage (WHAT to test)
+#    single_file_test_prompt      -- generate tests for a single file
+#    quality_prompt               -- quick/targeted file-level code quality
+#    issue_extraction_prompt      -- extract actionable issues from AI output
+#
+# 5. WORKFLOW STEP PROMPTS  (step2 ... step14)
+#    step2_consistency_prompt     step3_script_refs_prompt
+#    step5_directory_prompt       step6_test_review_prompt
+#    step8_test_exec_prompt       step9_dependencies_prompt
+#    step10_code_quality_prompt   step12_git_commit_prompt
+#    step14_prompt_engineer_prompt
+#
+# 6. DIAGNOSTIC & PERFORMANCE PERSONAS
+#    error_resilience_prompt      -- error handling patterns
+#    markdown_lint_prompt         -- markdown quality review
+#    configuration_specialist_prompt -- config file validation
+#    observer_pattern_debugger_prompt / async_flow_debugger_prompt
+#    data_structure_debugger_prompt / async_perf_engineer_prompt
+#
+# 7. LANGUAGE LOOKUP TABLES
+#    language_specific_documentation / language_specific_quality
+#    language_specific_testing
+#
+# 8. SPECIALIST PERSONAS
+#    version_manager_prompt       aws_cloud_architect_prompt
+#    javascript_developer_prompt  typescript_developer_prompt
+#    technical_project_manager_prompt  software_architect_prompt
+#    (+ 30+ additional specialist and stub personas)
+#
+# 9. LIBRARY / FRAMEWORK PERSONAS  (library_architect ... spec_architect)
+#
+# 10. REVIEW & WORKFLOW AUTOMATION PERSONAS
+#     security_analyst_prompt  api_contract_reviewer_prompt
+#     cli_tui_engineer_prompt  llm_integration_engineer_prompt
+#     devx_engineer_prompt     core_pipeline_engineer_prompt
+#     accessibility_review_prompt  performance_review_prompt
+# =============================================================================
 #
 # YAML Anchors for Token Efficiency:
 # - Common behavioral guidelines defined once using anchors (&name)
 # - Referenced by ALL personas to reduce duplication
-# - Provides single source of truth for shared guidelines
-# - Prompt builder (ai_helpers.sh) composes final role text from parts
+# - Token savings vs. v3.0.0 baseline: ~1,560-1,755 tokens per workflow
 #
+# WARNING: GENERATED FILE -- do not edit directly.
+#          Edit the sub-files in config/ai_helpers/ and run:
+#            python3 scripts/build_ai_helpers.py
 # =============================================================================
-# VERSION HISTORY - TOKEN EFFICIENCY OPTIMIZATIONS
-# =============================================================================
-#
-# Phase 1 Refinement (v6.7.x - 2026-03-06):
-# v6.7.0 - Remove legacy role fields from 12 personas
-#   - Removed redundant role: field from: test_strategy_prompt, quality_prompt,
-#     issue_extraction_prompt, step2_consistency_prompt, step3_script_refs_prompt,
-#     step4_directory_prompt, step5_test_review_prompt, step7_test_exec_prompt,
-#     step8_dependencies_prompt, step9_code_quality_prompt, step11_git_commit_prompt,
-#     markdown_lint_prompt
-#   - role_prefix is the authoritative field since v4.0.0
-#   - Token savings: ~110-165 tokens/workflow
-# v6.7.1 - Modernize single_file_test_prompt
-#   - Migrated from legacy role: pattern to standard 4-field composition
-#   - Added role_prefix, behavioral_guidelines (*behavioral_generative)
-#   - Retained existing task_template and approach content
-# v6.7.2 - Expand version_manager_prompt
-#   - Added task_template with full context variable injection
-#   - Changed behavioral_guidelines from *behavioral_actionable to *behavioral_generative
-# v6.7.3 - Add behavioral_generative anchor (3rd behavioral anchor)
-#   - New anchor for pure-generation tasks (commit messages, test files, version bumps)
-#   - Applied to: single_file_test_prompt, step11_git_commit_prompt, version_manager_prompt
-#   - Token savings: ~20-40 tokens across affected workflows
-# v6.7.4 - Move non-standard fields to approach blocks
-#   - test_strategy_prompt: debugging_test_strategy → integrated into approach
-#   - quality_prompt: debugging_expertise → integrated into approach
-#   - configuration_specialist_prompt: debugging_configuration → integrated into approach
-#   - Schema now consistently uses standard 4-5 field model
-# v6.7.5 - Add C# and Kotlin to language tables
-#   - Added csharp and kotlin entries to language_specific_documentation
-#   - Added csharp and kotlin entries to language_specific_quality
-#   - Added csharp and kotlin entries to language_specific_testing
-#   - Language coverage: 9 → 11 languages
-# v6.7.6 - Clarify quality_prompt vs step9_code_quality_prompt boundary
-#   - quality_prompt role_prefix: emphasizes quick/targeted/file-level
-#   - step9_code_quality_prompt role_prefix: emphasizes system-wide/architectural/comprehensive
-#   - Added disambiguation comments to both persona headers
-# v6.8.1 - Improve version_manager_prompt Task section clarity
-#   - task_template: added explicit reference to CHANGELOG.md [Unreleased] section and
-#     git commit history as primary inputs; clarified output is a recommendation for manual confirmation
-#   - specific_expertise: replaced "Conventional commit messages if available" with
-#     CHANGELOG.md [Unreleased] as authoritative source; reordered considerations by priority
-#   - approach: added step to read CHANGELOG.md first; added note that output requires manual confirmation
-#   - output_format: updated Reasoning description to cite CHANGELOG.md or commit history
-# v6.8.3 - Fix Change statistics zero-category ambiguity (2026-04-03)
-#   - version_manager_prompt task_template: added fallback note for empty {changed_files}
-#     (only workflow artifacts staged → file names absent from categorised list)
-#   - version_manager_prompt approach: added step 0 to detect and handle all-zero category
-#     counts; directs AI to diff sample for actual file paths; treats as patch bump
-#   - step11_git_commit_prompt: clarified {diff_summary} label to request individual file
-#     names alongside aggregate statistics for better traceability
-# v6.8.14 - Clarify style-guide precedence in markdown_lint_prompt Task section (2026-04-09)
-#   - task_template: rewrote opening paragraph to add a numbered priority hierarchy
-#     (.github/copilot-instructions.md > .github/CONTRIBUTING.md > generic defaults)
-#   - task_template: added fallback note — use .github/CONTRIBUTING.md when
-#     .github/copilot-instructions.md is absent
-#   - task_template: added conflict-resolution rule — copilot-instructions.md wins when
-#     the two files give conflicting guidance
-#   - task_template: added Note block clarifying that root CONTRIBUTING.md is a pointer
-#     only and does not contain authoritative rules
-#     (addresses analyze-prompt-part findings for workflow_20260408_201258: score 9/10,
-#     suggestions 1–3 all addressed)
-# v6.8.13 - Clarify configuration_specialist_prompt file-list reference (2026-04-09)
-#   - task_template: changed "listed in **Configuration Files in Scope** below" to
-#     "listed in the **Configuration Files in Scope** sub-section directly below"
-#     so the reference is unambiguous when the Task section is read in isolation by
-#     analyze-prompt-part (addresses analysis finding for workflow_20260408_201258:
-#     score 9/10, list appeared "not shown in provided context")
-# v6.8.12 - Add UI Files in Scope to ui_ux_designer_prompt Task section (2026-04-08)
-#   - task_template: added "UI Files in Scope: {file_count}" to Project Context so the
-#     Task section is self-sufficient when read in isolation with analyze-prompt-part;
-#     previously the section gave no evidence that UI files were in scope, causing a
-#     3/10 alignment score (addresses analyze-prompt-part finding for workflow_20260408_110145)
-# v6.8.11 - Improve markdown_lint_prompt Task section (2026-04-08)
-#   - task_template: added sentence directing the AI to consult `.github/CONTRIBUTING.md`
-#     for project-specific documentation standards, so recommendations are contextually
-#     appropriate (addresses analyze-prompt-part finding: missing project convention ref)
-#   - task_template: added note in Focus Areas explaining that disabled rules (MD029,
-#     MD013) typically account for the majority of issue counts; prevents AI confusion
-#     when it sees large violation totals for rules it is told to ignore
-#   - task_template: added prioritization directive to Analysis Request — instructs the
-#     AI to order recommendations by impact on quality rather than raw frequency count
-# v6.8.13 - Add Conventional Commits fallback to step12_git_commit_prompt (2026-04-09)
-#   - task_template: added explicit fallback to the Conventional Commits specification
-#     when `.github/CONTRIBUTING.md` is absent or does not address commit format, and
-#     clarified that the AI should always proceed with best practices rather than stall
-#     (addresses analyze-prompt-part finding: score 9/10, missing fallback guidance)
-# v6.8.10 - Reference project commit conventions in step12_git_commit_prompt (2026-04-08)
-#   - task_template: added sentence directing the AI to follow project-specific commit
-#     conventions documented in `.github/CONTRIBUTING.md` when available, so the Task
-#     section is self-sufficient when read in isolation with analyze-prompt-part
-#     (addresses analyze-prompt-part finding: score 9/10, missing project convention ref)
-# v6.8.9 - Improve configuration_specialist_prompt Task section opening (2026-04-08)
-#   - task_template: rewrote opening paragraph to name concrete config file types
-#     (package manifests, env files, CI workflows, Docker/compose, editor/tooling
-#     configs, AI-workflow YAML) so scope is explicit when Task section is read in
-#     isolation with analyze-prompt-part (addresses analyze-prompt-part score 7/10)
-#   - task_template: replaced generic "project best practices" intro with stack-safe
-#     phrasing ("stack-specific best practices when tech-stack context is available")
-#     to avoid brittle {tech_stack} placeholder interpolation in the opening sentence
-#   - task_template: added "Skip only file-type-specific checks that require formats
-#     not present in File Contents" directive — narrows the skip scope to sub-checks
-#     rather than whole validation categories, complementing the v6.8.7 truncation note
-# v6.8.8 - Improve step6_test_review_prompt Task section (2026-04-08)
-#   - task_template: updated opening line to explicitly reference {test_framework} and
-#     {test_env} and point to the **Existing Test Files in Scope** section, so scope
-#     is clear when the Task section is analyzed in isolation with analyze-prompt-part
-#   - task_template: added > **Tactical recommendations** note block with concrete
-#     code-level examples (rename vague names, extract beforeEach, toHaveLength, etc.)
-#   - task_template: renamed **Existing Test Files:** → **Existing Test Files in Scope:**
-#     and renamed "Test Config:" → "Test Framework:" for clarity
-#   - task_template: collapsed "Tests in __tests__/:" and "Co-located Tests:" into one
-#     combined line; added inline Quality Criteria (AAA, DRY, etc.) to replace external
-#     reference suggestion from analysis
-#   - task_template: added > **Note:** block after {test_files} explaining token-limit
-#     truncation (test files are typically long; listed files may not appear in snapshot)
-#   - task_template: added parenthetical examples to Task headings 1–4 to illustrate
-#     "tactical recommendations" when section is read in isolation
-#   - step_06_test_review.js: added change_scope and modified_count to buildYamlStepPrompt
-#     context — these were referenced in the template but never injected, causing silent
-#     substitution drops. Now resolved from options.scope and options.modifiedFiles.
-# v6.8.7 - Improve configuration_specialist_prompt Task section (2026-04-08)
-#   - task_template: added context-truncation note after {config_files_list}:
-#     "This list may not match files visible in the surrounding context snapshot"
-#     to prevent the AI from flagging absent-from-snapshot files as errors
-#   - task_template: Validation Tasks 1–3: added inline parenthetical examples to
-#     each bullet so checks are unambiguous (e.g., trailing commas in JSON,
-#     `strict: "yes"` vs `true` in tsconfig, `.env.production` for prod separation)
-#   - task_template: Best Practices task now references {tech_stack} and includes
-#     concrete examples per bullet (package.json exact pinning, CI cache key, etc.)
-# v6.8.6 - Fix configuration_specialist_prompt sub-header format (2026-04-08)
-#   - task_template: changed **Configuration Files in Scope:**, **Project Context:**,
-#     **File Contents:**, and **Validation Tasks:** from bold-colon format to
-#     ### markdown headings — these matched the SECTION_RE pattern in prompt_parser.ts
-#     (parsePromptParts), causing them to be split off as separate top-level sections
-#     instead of staying within the Task section body; the file list was invisible when
-#     analyzing the Task section in isolation with analyze-prompt-part
-# v6.8.5 - Improve configuration_specialist_prompt Task section clarity (2026-04-07)
-#   - task_template: replaced vague opening with explicit scope reference
-#     ({config_count} + {config_files_list}); named three validation dimensions
-#     (schema correctness, security hygiene, best practices) in the intro
-#   - task_template: renamed sub-header "Configuration Files Changed" →
-#     "Configuration Files in Scope" for consistency with intro phrasing
-#   - Special Handling: added config-loader alignment check (src/loader.ts,
-#     prompt_roles.yaml role_ref resolution) when ai_helpers.yaml is in scope
-#   - Step 04 comment: bumped version 1.0.2 → 1.0.3; updated purpose string
-# v6.8.4 - Strengthen version_manager_prompt approach specificity (2026-04-03)
-#   - approach step 3: replaced generic "changed file list" with per-directory categorisation
-#     table (config/, src/, test/, docs/, scripts/, .ai_workflow/) mapping each area to its
-#     typical version bump severity — addresses analysis finding that approach was too generic
-#   - approach step 4 (new): added explicit step to consult CONTRIBUTING.md for project-specific
-#     versioning conventions that may override standard semver heuristics
-#   - Steps renumbered 4→5, 5→6, 6→7 to accommodate new step 4
-# v6.8.2 - Add heuristic_recommendation context to version_manager_prompt
-#   - task_template: restored {heuristic_recommendation} placeholder with inline derivation
-#     explanation (commit-type distribution → patch/minor/major mapping) and guidance to
-#     treat it as a starting point, overridable by primary sources (CHANGELOG.md, commits)
-#   - Fixes vague "patch" label that appeared without context in assembled prompts
-#
-# New Persona Addition (v6.6.0 - 2026-03-03):
-# - Added typescript_developer_prompt "Strider": Senior TypeScript Developer for type-safe application development
-# - Use case: Designing, reviewing, and implementing TypeScript codebases across any project type
-# - Expertise areas:
-#   * Core TypeScript type system (generics, interfaces, unions, intersections, mapped types)
-#   * Advanced type features (type guards, narrowing, utility types, conditional types, unknown/never)
-#   * tsconfig configuration, strict mode, and ESLint/TypeScript-specific linting rules
-#   * JavaScript ES6+ proficiency (closures, destructuring, async/await, modules)
-#   * Frontend frameworks (React, Angular, Vue.js) with TypeScript integration
-#   * Backend & API development (Node.js, Express, type-safe GraphQL/REST APIs)
-#   * Build tooling (Webpack, Vite, tsc), testing (Jest + ts-jest), and CI/CD pipelines
-#   * Scalable architecture, state management, performance optimization, and technical debt reduction
-# - Follows v6.x.x token efficiency patterns (YAML anchors, concise format)
-# - Target audience: Developers building type-safe applications in TypeScript
-# - Complements existing personas:
-#   * javascript_developer_prompt: package.json management and JS ecosystem tooling
-#   * front_end_developer_prompt: UI/UX implementation and front-end architecture
-#   * nodejs_api projects (project_kinds.yaml): TypeScript is the recommended language
-# - Total personas: 19 (was 18)
-#
-# New Persona Addition (v6.5.0 - 2026-02-26):
-# - Added javascript_developer_prompt: JavaScript Developer for package.json management and project setup
-# - Use case: Creating, maintaining, and updating package.json for Node.js/JavaScript projects
-# - Expertise areas:
-#   * Dependency management (runtime vs. dev dependencies, version strategies, npm/yarn/pnpm)
-#   * Script authoring (start, test, build, lint, format command-line aliases)
-#   * Project metadata management (name, version, description, license, main entry point)
-#   * Security hygiene (npm audit, dependency pinning, lockfile integrity)
-#   * Version management (semver, ranges, peer dependencies, resolutions/overrides)
-#   * Monorepo and workspaces configuration
-# - Follows v6.x.x token efficiency patterns (YAML anchors, concise format)
-# - Target audience: Developers & Project Teams maintaining software projects
-# - Complements existing personas:
-#   * front_end_developer_prompt: UI/code implementation (uses the packages configured here)
-#   * configuration_specialist_prompt: Config management (broader than package.json)
-#   * javascript_developer_prompt: package.json authoring, dependency & script management
-# - Total personas: 18 (was 17)
-#
-# New Persona Addition (v6.4.0 - 2026-02-20):
-# - Added aws_cloud_architect_prompt: Senior AWS Cloud Architect for cloud strategy, architecture, and operations
-# - Use case: Designing, reviewing, and optimizing AWS cloud solutions across any project type
-# - Expertise areas:
-#   * Cloud architecture design (serverless, containers, microservices, HA/DR)
-#   * AWS core services (EC2, S3, RDS/Aurora, Lambda, ECS/EKS, VPC, IAM, CloudFront, Route 53, SQS/SNS)
-#   * Infrastructure-as-Code (Terraform, AWS CloudFormation, AWS CDK)
-#   * Security & compliance (IAM/SCPs, GuardDuty, WAF, Security Hub, KMS, CIS/SOC2/HIPAA/PCI-DSS)
-#   * Cost optimization (Cost Explorer, Trusted Advisor, Compute Optimizer, Reserved Instances)
-#   * Observability (CloudWatch, X-Ray, AWS Config, CloudTrail)
-#   * Cloud migration strategy (6 R's, Landing Zone, Control Tower)
-#   * DevOps & CI/CD (CodePipeline, CodeBuild, CodeDeploy, GitHub Actions, GitOps)
-#   * AWS Location-Based Services (Amazon Location Service, Route 53 geo routing, CloudFront geo-restriction, Local Zones, Wavelength)
-#   * Technical leadership (Well-Architected Reviews, ADRs, PoC design, reusable IaC modules)
-# - Follows v6.x.x token efficiency patterns (YAML anchors, concise format)
-# - Methodology: AWS Well-Architected Framework (6 pillars), 6 R migration strategy, security-first design
-# - Complements existing personas:
-#   * requirements_engineer_prompt: Defines WHAT the system SHOULD do
-#   * technical_writer_prompt: Documents WHAT the system does
-#   * aws_cloud_architect_prompt: Designs HOW the system is deployed on AWS
-# - Total personas: 17 (was 16)
-#
-# New Persona Addition (v6.3.1 - 2026-02-13):
-# - Added e2e_test_engineer_prompt: Senior E2E test engineer for browser automation and visual testing
-# - Use case: End-to-end testing for front-end projects (client_spa, react_spa, static_website)
-# - Expertise areas:
-#   * Visual testing and screenshot comparison (Percy, Chromatic, BackstopJS, jest-image-snapshot)
-#   * Browser automation (Playwright, Selenium, Cypress, Puppeteer, TestCafe)
-#   * User journey/workflow testing (authentication flows, multi-step processes, state management)
-#   * Cross-browser testing (Chrome, Firefox, Safari, Edge, mobile browsers)
-#   * Accessibility testing automation (axe-core, Pa11y, Lighthouse CI, WAVE)
-#   * Performance testing (Core Web Vitals, page load metrics, interaction delays)
-#   * Test infrastructure and CI/CD integration
-#   * Flaky test prevention and debugging strategies
-# - Follows v6.x.x token efficiency patterns (YAML anchors, concise format)
-# - Aligned with Claude Code best practices (https://code.claude.com/docs/en/best-practices)
-# - Complements existing personas:
-#   * test_strategy_prompt: WHAT to test (strategic coverage analysis)
-#   * e2e_test_engineer_prompt: HOW to test E2E (browser automation, visual testing)
-#   * step5_test_review_prompt: Test code quality review
-#   * front_end_developer_prompt: Implementation + unit testing
-# - Differentiation: Specialized E2E focus vs general testing personas
-# - Total personas: 16 (was 15)
-#
-# Directory Structure Awareness Enhancement (v6.2.2 - 2026-02-12):
-# - Enhanced technical_writer_prompt with STEP 1.5: DIRECTORY STRUCTURE ANALYSIS
-# - Prevents duplicate documentation file creation by checking subdirectories first
-# - Addresses real-world issue: AI created docs/USER_GUIDE.md when docs/user/USER_GUIDE.md existed
-# - Enhancement includes:
-#   * Scan documentation organization (subdirectories, patterns, conventions)
-#   * Check for similar files in ALL subdirectories before creating
-#   * File location decision rules (UPDATE existing > FOLLOW pattern > ROOT only if flat)
-#   * Examples of correct/incorrect behavior with ✅/❌ markers
-#   * Directory pattern recognition (by audience, type, feature)
-#   * When to ask vs. decide guidance
-# - ~54 lines of guidance (~700 tokens) inserted between STEP 1 and STEP 2
-# - Token efficiency maintained: Concise examples, clear decision rules
-# - Backward compatible: Existing workflows benefit immediately
-# - Prevention example: "Before creating docs/USER_GUIDE.md, check docs/user/USER_GUIDE.md"
-#
-# New Persona Addition (v6.1.0 - 2026-02-11):
-# - Added requirements_engineer_prompt: Senior requirements engineer for comprehensive requirements engineering
-# - Use case: Requirements elicitation, analysis, specification, traceability, and validation
-# - Expertise areas:
-#   * Requirements elicitation (interviews, workshops, user observation, prototyping)
-#   * Requirements analysis (ambiguity resolution, feasibility analysis, prioritization)
-#   * Requirements specification (user stories, use cases, acceptance criteria, functional/non-functional requirements)
-#   * Requirements traceability (change tracking, dependency analysis, requirements-to-test mapping)
-#   * Requirements validation (reviews, walkthroughs, SMART criteria verification, testability assessment)
-#   * Standards and frameworks (IEEE 29148, BABOK, Agile user stories, Gherkin/BDD, Cockburn use cases)
-# - Follows v4.0.0 token efficiency patterns (anchors, concise output format)
-# - Includes necessity evaluation framework (similar to technical_writer_prompt)
-# - Language-agnostic with dynamic language-specific requirements injection placeholder
-# - Complements existing personas:
-#   * requirements_engineer_prompt: Defines WHAT the system SHOULD do
-#   * technical_writer_prompt: Documents WHAT the system does (after implementation)
-#   * ui_ux_designer_prompt: Defines HOW users will interact (informed by requirements)
-#   * test_strategy_prompt: Validates requirements are met (traceability)
-#
-# Persona Separation and Refinement (v6.0.0 - 2026-02-09):
-# - Added ui_ux_designer_prompt: Senior UI/UX designer for user experience and visual design
-# - Refined front_end_developer_prompt: Removed UI/UX overlap, strengthened technical focus
-# - Clear separation of concerns matching real-world team structures:
-#   * ui_ux_designer_prompt: User research, visual design, interaction patterns, usability
-#   * front_end_developer_prompt: Code implementation, architecture, performance, testing
-# - UI/UX Designer expertise areas:
-#   * User research, personas, journey mapping
-#   * Wireframing, prototyping, visual design
-#   * Interaction design and usability testing
-#   * Design systems and accessibility from user perspective
-#   * Information architecture and responsive design strategy
-# - Front End Developer refinements:
-#   * Removed UI/UX design aspects (now in dedicated persona)
-#   * Strengthened technical implementation focus
-#   * Enhanced performance optimization guidance
-#   * Expanded testing and build configuration sections
-#   * Added cross-browser compatibility focus
-# - Both personas follow v4.0.0 token efficiency patterns (anchors, concise output format)
-# - Workflow flexibility: Use appropriate expert at the right time
-# - No token overhead: Only one persona loads per workflow step
-#
-# New Persona Addition (v4.2.0 - 2026-02-09):
-# - Added front_end_developer_prompt: Senior front-end developer for UI/UX implementation
-# - Use case: Front-end code review, component development, accessibility, and performance
-# - Expertise areas:
-#   * Modern JavaScript frameworks (React, Vue, Angular, Svelte)
-#   * Accessibility (WCAG 2.1+, ARIA, semantic HTML)
-#   * Performance optimization (Core Web Vitals, code splitting, lazy loading)
-#   * Responsive design and mobile-first development
-#   * CSS architecture and component-driven development
-#   * State management and front-end testing
-# - Follows v4.0.0 token efficiency patterns (anchors, concise output format)
-# - Includes comprehensive quality checklist and best practices
-# - Complements existing personas with specialized front-end focus
-#
-# New Persona Addition (v4.1.0 - 2026-01-30):
-# - Added technical_writer_prompt: Senior technical writer for comprehensive documentation
-# - Use case: Bootstrap documentation for undocumented/new projects from scratch
-# - Complements existing personas:
-#   * technical_writer_prompt: Comprehensive from-scratch documentation creation
-#   * doc_analysis_prompt: Incremental change-driven documentation updates
-#   * consistency_prompt: Documentation quality assurance and auditing
-# - Follows v4.0.0 token efficiency patterns (anchors, concise output format)
-# - Language-agnostic with dynamic language-specific standards injection
-# - Covers: API docs, architecture, user guides, developer guides, code documentation
-#
-# Token Efficiency Changes (v4.0.0 - 2025-12-24):
-# - Output format simplification: Removed rigid templates from 5 prompts
-#   * consistency_prompt: 26 lines → 5 lines (~295 tokens)
-#   * ai_log_analysis_prompt: 13 lines → 4 lines (~50 tokens)
-#   * step9_code_quality_prompt: 9 lines → 3 lines (~45 tokens)
-#   * markdown_lint_prompt: Removed word count requirement (~10 tokens)
-#   * step13_prompt_engineer_prompt: Condensed framework (~150 tokens)
-# - Language-specific injection cleanup: Removed verbose comments from 5 prompts
-#   * Affected: doc_analysis, step2_consistency, step3_script_refs, step5_test_review, step9_code_quality
-#   * Before: 6-8 lines with implementation details and examples
-#   * After: Single line reference (~80-100 tokens saved per prompt)
-# - Redundant test context: Consolidated duplicate framework info in 2 prompts
-#   * step5_test_review_prompt: Combined Test Configuration section
-#   * step7_test_exec_prompt: Consolidated test results format
-# - Git commit format fix: Removed code blocks from example (critical contradiction)
-# - Meta-optimization: Prompt engineer prompt now practices what it preaches
-# - Authority enhancement: quality_prompt role strengthened with credentials
-# - Token savings: ~950 tokens (optimizations) - 70 tokens (enhancements) = ~880 net
-#
-# Token Efficiency Changes (v3.6.0):
-# - Removed redundant "output only raw text" warnings from step11_git_commit_prompt
-# - Consolidated 3 repetitions into single authoritative instruction
-# - Cleaned up output_format field to be more concise
-# - Removed duplicate CRITICAL warning from approach section
-# - Token savings: ~40-50 tokens per workflow run
-#
-# Token Efficiency Changes (v3.5.0):
-# - Standardized verbose section headers for consistency and efficiency
-# - "Analysis Tasks", "Validation Tasks", etc. → "Tasks" (10 occurrences)
-# - "Expected Output", "Test Output", etc. → "Output" (11 occurrences)
-# - Token savings: ~105-210 tokens per workflow run
-# - Improved readability and consistency across all prompts
-#
-# Token Efficiency Changes (v3.4.0):
-# - Added language-specific context injection to 4 additional prompts
-# - doc_analysis_prompt: Now includes language-specific documentation standards
-# - step2_consistency_prompt: Enhanced with language-aware validation
-# - step3_script_refs_prompt: Added language-specific documentation formats; added {doc_coverage_map} and {doc_context} placeholders so AI receives actual documentation content
-# - step9_code_quality_prompt: Now includes language-specific quality rules
-# - Ensures AI provides language-appropriate guidance (JSDoc, PEP 257, godoc, etc.)
-# - Improves relevance and consistency across all tech stacks
-#
-# Token Efficiency Changes (v3.3.0):
-# - Separated strategic (test_strategy_prompt) from tactical (step5_test_review_prompt)
-# - Removed overlapping "Coverage Gap Identification" and "Test Case Generation" from step5
-# - Clarified boundaries: WHAT to test (strategy) vs HOW to test (implementation)
-# - Token savings: ~100-150 tokens by eliminating duplicate instructions
-# - Improved clarity: Each persona has single, focused purpose
-#
-# Token Efficiency Changes (v3.2.0):
-# - Applied role_prefix + behavioral_guidelines pattern to ALL 15 personas
-# - Token savings: ~20-30 tokens per persona × 13 personas = 260-390 tokens per workflow
-# - Consistent structure across all personas for maintainability
-# - Legacy 'role' field kept for backward compatibility
-#
-# Token Efficiency Changes (v3.1.1):
-# - Replaced emoji checkmarks (❌ ✓) with text markers (Bad: | Good:)
-# - Saves ~5-10 tokens per usage
-# - Improves compatibility across all LLM contexts
 
-# ==============================================================================
-# REUSABLE BEHAVIORAL GUIDELINES (YAML Anchors)
-# ==============================================================================
-
-# Actionable guidelines for concrete output
 _behavioral_actionable: &behavioral_actionable |
   **Critical Behavioral Guidelines**:
   - Provide concrete, actionable output if needed (see criteria below);

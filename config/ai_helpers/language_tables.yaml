@@ -1,0 +1,636 @@
+# Language-Specific Lookup Tables
+# Source sub-file — merged into config/ai_helpers.yaml by scripts/build_ai_helpers.py
+#
+language_specific_documentation:
+  javascript:
+    key_points: |
+      • Use JSDoc format with @param, @returns, @throws tags
+      • Document async/await patterns and promise chains
+      • Include TypeScript types when applicable
+      • Reference npm packages with correct versions
+      • Follow MDN Web Docs style for web APIs
+    doc_format: "JSDoc 3"
+    example_snippet: |
+      /**
+       * Fetches user data from the API
+       * @param {string} userId - User identifier
+       * @returns {Promise<User>} User object
+       * @throws {Error} If user not found
+       */
+      async function getUser(userId) { ... }
+  
+  typescript:
+    key_points: |
+      • Use TSDoc format (@param, @returns, @typeParam, @remarks, @throws)
+      • Document generic type parameters with @typeParam T
+      • Document interfaces, type aliases, and enums explicitly
+      • Maintain declaration files (.d.ts) in sync with implementation
+      • Use TypeDoc to generate API documentation from source
+    doc_format: "TSDoc (TypeDoc)"
+    example_snippet: |
+      /**
+       * Fetches a typed resource from the API.
+       * @typeParam T - The expected response shape
+       * @param url - Endpoint URL
+       * @returns Promise resolving to the typed resource
+       * @throws {NetworkError} If the request fails
+       */
+      async function fetchResource<T>(url: string): Promise<T> { ... }
+  
+  python:
+    key_points: |
+      • Follow PEP 257 docstring conventions
+      • Use type hints (PEP 484) consistently
+      • Document exceptions with raises sections
+      • Use Google/NumPy format for complex functions
+      • Include examples in public API docstrings
+    doc_format: "PEP 257 (Google/NumPy style)"
+    example_snippet: |
+      def calculate_average(numbers: list[float]) -> float:
+          """Calculate arithmetic mean of numbers.
+          Args:
+              numbers: List of numeric values
+          Returns:
+              Arithmetic mean
+          Raises:
+              ValueError: If list is empty
+          """
+  
+  go:
+    key_points: |
+      • Use godoc format, start with function/type name
+      • Document all exported functions and types
+      • Include examples in doc comments
+      • Document error return values explicitly
+      • Follow Go proverbs for design patterns
+    doc_format: "godoc"
+    example_snippet: |
+      // ProcessData reads input and returns processed results.
+      // Returns an error if the input format is invalid.
+      //
+      // Example:
+      //   results, err := ProcessData(reader)
+      func ProcessData(r io.Reader) ([]Result, error)
+  
+  java:
+    key_points: |
+      • Use Javadoc with @param, @return, @throws tags
+      • Document all public APIs thoroughly
+      • Reference Maven dependencies correctly
+      • Follow Oracle Javadoc guidelines
+      • Include @since tags for versioning
+    doc_format: "Javadoc"
+    example_snippet: |
+      /**
+       * Calculates the factorial of a number.
+       * @param n the number to calculate
+       * @return the factorial of n
+       * @throws IllegalArgumentException if n < 0
+       */
+      public long factorial(int n)
+  
+  ruby:
+    key_points: |
+      • Use RDoc or YARD format
+      • Follow Ruby naming conventions
+      • Document public methods with @param, @return
+      • Reference gems correctly
+      • Use Ruby idioms in examples
+    doc_format: "YARD"
+    example_snippet: |
+      # Calculates the total price including tax
+      # @param base_price [Float] price before tax
+      # @param tax_rate [Float] tax rate as decimal
+      # @return [Float] total price with tax
+      def calculate_total(base_price, tax_rate)
+  
+  rust:
+    key_points: |
+      • Use Rust doc comments (///)
+      • Include compilable examples in docs
+      • Document panics and safety concerns
+      • Reference crates correctly (crate::module)
+      • Use markdown in doc comments
+    doc_format: "rustdoc"
+    example_snippet: |
+      /// Calculates the sum of two numbers.
+      ///
+      /// # Examples
+      /// ```
+      /// assert_eq!(add(2, 3), 5);
+      /// ```
+      pub fn add(a: i32, b: i32) -> i32
+  
+  cpp:
+    key_points: |
+      • Use Doxygen format (@brief, @param, @return)
+      • Document header files thoroughly
+      • Include memory management details
+      • Reference libraries with proper namespaces
+      • Document template parameters
+    doc_format: "Doxygen"
+    example_snippet: |
+      /**
+       * @brief Calculates dot product of vectors
+       * @param v1 First vector
+       * @param v2 Second vector
+       * @return The dot product
+       */
+      double dot_product(const Vector& v1, const Vector& v2)
+  
+  bash:
+    key_points: |
+      • Use clear header comments with purpose
+      • Document function parameters and exit codes
+      • Explain complex regex/sed/awk usage
+      • Include usage examples
+      • Note POSIX compatibility when relevant
+    doc_format: "ShellDoc"
+    example_snippet: |
+      #!/usr/bin/env bash
+      # Backup database to specified location
+      # Arguments: $1 - DB name, $2 - Backup dir
+      # Returns: 0 on success, 1 on failure
+      # Example: backup_database "mydb" "/backup"
+      backup_database() { ... }
+  
+  csharp:
+    key_points: |
+      • Use XML doc comments (/// <summary>) for all public members
+      • Document parameters with /// <param name="x">
+      • Document return values with /// <returns>
+      • Document exceptions with /// <exception cref="T">
+      • Use Sandcastle/DocFX to generate HTML documentation
+    doc_format: "XML Doc Comments (DocFX)"
+    example_snippet: |
+      /// <summary>
+      /// Calculates the total price including tax.
+      /// </summary>
+      /// <param name="basePrice">The pre-tax price.</param>
+      /// <param name="taxRate">Tax rate as a decimal (e.g., 0.08 for 8%).</param>
+      /// <returns>The total price with tax applied.</returns>
+      /// <exception cref="ArgumentOutOfRangeException">
+      /// Thrown when basePrice or taxRate is negative.
+      /// </exception>
+      public decimal CalculateTotal(decimal basePrice, decimal taxRate)
+  
+  kotlin:
+    key_points: |
+      • Use KDoc format (/** */) for all public declarations
+      • Document parameters with @param, return values with @return
+      • Document exceptions with @throws
+      • Use Dokka to generate API documentation
+      • Follow Kotlin coding conventions for documentation style
+    doc_format: "KDoc (Dokka)"
+    example_snippet: |
+      /**
+       * Calculates the total price including tax.
+       *
+       * @param basePrice The pre-tax price; must be non-negative.
+       * @param taxRate Tax rate as a decimal (e.g., 0.08 for 8%).
+       * @return The total price with tax applied.
+       * @throws IllegalArgumentException if basePrice or taxRate is negative.
+       */
+      fun calculateTotal(basePrice: Double, taxRate: Double): Double
+
+# Language-Specific Code Quality Standards
+# NOTE: These templates are injected into step prompts based on detected PRIMARY_LANGUAGE
+# Template variable format: {language_specific_quality}
+# Usage: The ai_prompt_builder.sh dynamically populates these based on .workflow-config.yaml settings
+language_specific_quality:
+  javascript:
+    focus_areas:
+      - "Async/await error handling"
+      - "Promise chain management"
+      - "Memory leaks in closures"
+      - "Event listener cleanup"
+      - "Bundle size optimization"
+    
+    antipatterns:
+      - "Callback hell"
+      - "Unhandled promise rejections"
+      - "Mutation of props in React"
+      - "Missing error boundaries"
+      - "Synchronous loops with async calls"
+    
+    best_practices:
+      - "Use const/let instead of var"
+      - "Prefer async/await over raw promises"
+      - "Use ESLint and Prettier"
+      - "Implement proper error handling"
+      - "Write testable, pure functions"
+  
+  typescript:
+    focus_areas:
+      - "Strict mode compliance (strict: true in tsconfig.json)"
+      - "Avoiding 'any' type — use 'unknown' for unsafe values"
+      - "Non-null assertion overuse (!)"
+      - "Generic constraint correctness"
+      - "Type narrowing and discriminated unions"
+    
+    antipatterns:
+      - "Using 'any' to bypass type checking"
+      - "Excessive 'as' type assertions"
+      - "Non-null assertions without prior guards (!)"
+      - "Unconstrained generic parameters"
+      - "Mixing ESM and CJS module patterns"
+    
+    best_practices:
+      - "Enable strict mode in tsconfig.json"
+      - "Prefer 'unknown' over 'any' for unsafe input"
+      - "Use discriminated unions for state modelling"
+      - "Leverage utility types (Partial, Required, Pick, Omit, Readonly)"
+      - "Write types alongside implementation, not after"
+  
+  python:
+    focus_areas:
+      - "Type hint coverage"
+      - "Exception handling patterns"
+      - "Generator and iterator usage"
+      - "Context manager usage"
+      - "PEP 8 compliance"
+    
+    antipatterns:
+      - "Bare except clauses"
+      - "Mutable default arguments"
+      - "Using global variables"
+      - "Not using context managers for resources"
+      - "String concatenation in loops"
+    
+    best_practices:
+      - "Use type hints (PEP 484)"
+      - "Follow PEP 8 style guide"
+      - "Use list comprehensions appropriately"
+      - "Prefer with statements for resources"
+      - "Use logging instead of print"
+  
+  go:
+    focus_areas:
+      - "Error handling patterns"
+      - "Goroutine leak detection"
+      - "Interface usage"
+      - "Panic/recover usage"
+      - "Testing with table-driven tests"
+    
+    antipatterns:
+      - "Ignoring errors (err == nil)"
+      - "Not closing resources"
+      - "Goroutines without context"
+      - "Over-using interfaces"
+      - "Not using defer for cleanup"
+    
+    best_practices:
+      - "Always check errors explicitly"
+      - "Use defer for cleanup"
+      - "Pass context for cancellation"
+      - "Keep interfaces small"
+      - "Use go vet and golangci-lint"
+  
+  java:
+    focus_areas:
+      - "Exception handling hierarchy"
+      - "Resource management (try-with-resources)"
+      - "Null safety patterns"
+      - "Immutability and thread safety"
+      - "Stream API usage"
+    
+    antipatterns:
+      - "Catching generic Exception"
+      - "Not closing resources"
+      - "Null pointer dereferences"
+      - "Excessive synchronization"
+      - "Using raw types"
+    
+    best_practices:
+      - "Use try-with-resources"
+      - "Prefer Optional over null"
+      - "Use streams for collections"
+      - "Follow SOLID principles"
+      - "Use static analysis tools"
+  
+  ruby:
+    focus_areas:
+      - "Block usage patterns"
+      - "Method naming conventions"
+      - "Duck typing practices"
+      - "Gem dependency management"
+      - "Testing with RSpec"
+    
+    antipatterns:
+      - "Long method chains"
+      - "Global variables ($var)"
+      - "Not using symbols for keys"
+      - "Rescue without specific exception"
+      - "Not following Ruby idioms"
+    
+    best_practices:
+      - "Use blocks and yield effectively"
+      - "Follow Ruby naming conventions"
+      - "Use symbols for hash keys"
+      - "Write idiomatic Ruby code"
+      - "Use RuboCop for linting"
+  
+  rust:
+    focus_areas:
+      - "Ownership and borrowing"
+      - "Error handling with Result"
+      - "Lifetime annotations"
+      - "Trait implementation"
+      - "Unsafe code justification"
+    
+    antipatterns:
+      - "Using unwrap() in production"
+      - "Unnecessary cloning"
+      - "Fighting the borrow checker"
+      - "Overusing unsafe"
+      - "Not handling errors properly"
+    
+    best_practices:
+      - "Use ? operator for error propagation"
+      - "Leverage the type system"
+      - "Use cargo clippy"
+      - "Write comprehensive tests"
+      - "Document unsafe code thoroughly"
+  
+  cpp:
+    focus_areas:
+      - "Memory management (RAII)"
+      - "Move semantics usage"
+      - "Smart pointer usage"
+      - "Template metaprogramming"
+      - "Undefined behavior detection"
+    
+    antipatterns:
+      - "Manual memory management"
+      - "Using new/delete directly"
+      - "Ignoring rule of five"
+      - "Not using const correctness"
+      - "Undefined behavior"
+    
+    best_practices:
+      - "Use RAII pattern"
+      - "Prefer smart pointers"
+      - "Follow rule of zero/five"
+      - "Use const correctness"
+      - "Run static analyzers"
+  
+  bash:
+    focus_areas:
+      - "Error handling (set -e)"
+      - "Variable quoting"
+      - "Command substitution"
+      - "Exit code checking"
+      - "ShellCheck compliance"
+    
+    antipatterns:
+      - "Unquoted variables"
+      - "Using $? without checking"
+      - "Not using local in functions"
+      - "Parsing ls output"
+      - "Using echo for complex output"
+    
+    best_practices:
+      - "Use set -euo pipefail"
+      - "Quote all variables"
+      - "Use [[ ]] over [ ]"
+      - "Check exit codes explicitly"
+      - "Run shellcheck regularly"
+  
+  csharp:
+    focus_areas:
+      - "Nullable reference types (enable in .csproj)"
+      - "async/await correctness in .NET (avoid async void)"
+      - "LINQ query efficiency and deferred execution"
+      - "IDisposable / using statement patterns"
+      - "Exception handling best practices (.NET)"
+    
+    antipatterns:
+      - "Ignoring nullable warnings (#nullable disable)"
+      - "async void outside event handlers"
+      - "N+1 queries via lazy LINQ evaluation on EF collections"
+      - "Catching Exception base type without rethrowing"
+      - "Not disposing IDisposable resources"
+    
+    best_practices:
+      - "Enable <Nullable>enable</Nullable> in .csproj"
+      - "Use ConfigureAwait(false) in library code"
+      - "Prefer records for immutable data models"
+      - "Use pattern matching and switch expressions"
+      - "Run Roslyn analyzers (StyleCop, SonarAnalyzer)"
+  
+  kotlin:
+    focus_areas:
+      - "Null safety operator usage (?., ?:, !!)"
+      - "Coroutine scope and dispatcher correctness"
+      - "Data class and sealed class design"
+      - "Kotlin DSL and extension function clarity"
+      - "Kotlin/JVM interoperability (@JvmStatic, @JvmOverloads)"
+    
+    antipatterns:
+      - "Using !! (non-null assertion) without prior null check"
+      - "Blocking coroutine threads with Thread.sleep()"
+      - "Mutable shared state in coroutines without synchronization"
+      - "Java-style null checks instead of Kotlin idiomatic let/run"
+      - "Ignoring sealed class exhaustiveness in when expressions"
+    
+    best_practices:
+      - "Prefer val over var; use immutable data classes"
+      - "Use Kotlin coroutines with structured concurrency"
+      - "Leverage sealed classes for exhaustive state modeling"
+      - "Use scope functions (let, run, apply, also, with) idiomatically"
+      - "Run ktlint and detekt for code style and static analysis"
+
+# Language-Specific Test Patterns
+# NOTE: These templates are injected into step prompts based on detected PRIMARY_LANGUAGE
+# Template variable format: {language_specific_testing_standards}
+# Usage: The ai_prompt_builder.sh dynamically populates these based on .workflow-config.yaml settings
+language_specific_testing:
+  javascript:
+    framework: "Jest"
+    patterns:
+      - "Use describe/it blocks"
+      - "Mock external dependencies"
+      - "Test async code with async/await"
+      - "Use snapshot testing for UI"
+      - "Test error boundaries"
+    
+    example: |
+      describe('UserService', () => {
+        it('fetches user by ID', async () => {
+          expect((await UserService.getUser('123')).id).toBe('123');
+        });
+      });
+  
+  typescript:
+    framework: "Jest + ts-jest"
+    patterns:
+      - "Configure ts-jest in jest.config.js for TypeScript compilation"
+      - "Use @types/jest for typed assertions"
+      - "Type mock return values with jest.mocked()"
+      - "Test discriminated union branches explicitly"
+      - "Avoid 'as any' in mocks — use Partial<T> or jest.mocked()"
+    
+    example: |
+      describe('GeoPosition', () => {
+        it('calculates distance correctly', () => {
+          const pos: GeoPosition = new GeoPosition({ lat: 0, lon: 0 });
+          expect(pos.distanceTo({ lat: 1, lon: 1 })).toBeCloseTo(157.4, 0);
+        });
+      });
+  
+  python:
+    framework: "pytest"
+    patterns:
+      - "Use fixtures for setup"
+      - "Parametrize tests with @pytest.mark.parametrize"
+      - "Use mocking with unittest.mock"
+      - "Test exceptions with pytest.raises"
+      - "Use coverage reporting"
+    
+    example: |
+      @pytest.mark.parametrize("input,expected", [(2, 4), (3, 9)])
+      def test_square(input, expected):
+          assert square(input) == expected
+  
+  go:
+    framework: "testing"
+    patterns:
+      - "Use table-driven tests"
+      - "Test error cases explicitly"
+      - "Use subtests for organization"
+      - "Mock interfaces with testify"
+      - "Use test helpers"
+    
+    example: |
+      func TestAdd(t *testing.T) {
+          tests := []struct{name string; a, b, want int}{
+              {"positive", 2, 3, 5}, {"negative", -1, -1, -2}}
+          for _, tt := range tests {
+              t.Run(tt.name, func(t *testing.T) {
+                  if got := Add(tt.a, tt.b); got != tt.want {
+                      t.Errorf("got %d, want %d", got, tt.want) }})}}
+  
+  java:
+    framework: "JUnit 5"
+    patterns:
+      - "Use @Test annotation"
+      - "Organize with @Nested classes"
+      - "Use @ParameterizedTest"
+      - "Mock with Mockito"
+      - "Use AssertJ for fluent assertions"
+    
+    example: |
+      @Test
+      void testCalculateTotal() {
+          assertThat(calculator.add(new BigDecimal("10.5"),
+              new BigDecimal("5.5"))).isEqualByComparingTo("16.0");
+      }
+  
+  ruby:
+    framework: "RSpec"
+    patterns:
+      - "Use describe/context/it blocks"
+      - "Use let for lazy evaluation"
+      - "Use factories (FactoryBot)"
+      - "Test with doubles and mocks"
+      - "Use shared examples"
+    
+    example: |
+      RSpec.describe Calculator do
+        it 'adds two numbers' do
+          expect(Calculator.add(2, 3)).to eq(5)
+        end
+      end
+  
+  rust:
+    framework: "built-in"
+    patterns:
+      - "Use #[test] attribute"
+      - "Test panics with #[should_panic]"
+      - "Use Result<(), E> for fallible tests"
+      - "Integration tests in tests/"
+      - "Use assert! and assert_eq! macros"
+    
+    example: |
+      #[test]
+      fn test_add() { assert_eq!(add(2, 3), 5); }
+      #[test]
+      #[should_panic(expected = "divide by zero")]
+      fn test_divide_by_zero() { divide(10, 0); }
+  
+  cpp:
+    framework: "Google Test"
+    patterns:
+      - "Use TEST and TEST_F macros"
+      - "Fixtures for setup/teardown"
+      - "Use EXPECT_* for non-fatal assertions"
+      - "Use ASSERT_* for fatal assertions"
+      - "Mock with Google Mock"
+    
+    example: |
+      TEST(MathTest, Addition) {
+          EXPECT_EQ(add(2, 3), 5);
+          EXPECT_EQ(add(-1, 1), 0);
+      }
+  
+  bash:
+    framework: "bats"
+    patterns:
+      - "Use @test for test cases"
+      - "Use setup/teardown hooks"
+      - "Test exit codes explicitly"
+      - "Capture and test output"
+      - "Use run for command execution"
+    
+    example: |
+      @test "addition works" {
+        [ "$(add 2 3)" -eq 5 ]
+      }
+      @test "script fails on invalid input" {
+        run myscript --invalid; [ "$status" -ne 0 ]
+      }
+  
+  csharp:
+    framework: "xUnit / NUnit / MSTest"
+    patterns:
+      - "Use xUnit [Fact] and [Theory] with [InlineData] for parameterized tests"
+      - "Use NUnit [Test] and [TestCase] as alternative"
+      - "Mock dependencies with Moq (mock.Setup, mock.Verify)"
+      - "Use FluentAssertions for expressive assertions"
+      - "Organize with nested classes (for xUnit) or TestFixture (NUnit)"
+    
+    example: |
+      public class CalculatorTests
+      {
+          [Theory]
+          [InlineData(2, 3, 5)]
+          [InlineData(-1, 1, 0)]
+          public void Add_ReturnsCorrectSum(int a, int b, int expected)
+          {
+              var calc = new Calculator();
+              calc.Add(a, b).Should().Be(expected);
+          }
+      }
+  
+  kotlin:
+    framework: "JUnit 5 + MockK + Kotest"
+    patterns:
+      - "Use @Test annotation from JUnit 5 (org.junit.jupiter.api)"
+      - "Mock with MockK (mockk<T>(), every { }, verify { })"
+      - "Use Kotest for expressive BDD-style specs (StringSpec, BehaviorSpec)"
+      - "Test coroutines with runTest from kotlinx-coroutines-test"
+      - "Use assertSoftly for grouped non-fatal assertions"
+    
+    example: |
+      class CalculatorTest : StringSpec({
+          "add returns correct sum" {
+              val calc = Calculator()
+              calc.add(2, 3) shouldBe 5
+          }
+          "divide throws on zero" {
+              shouldThrow<ArithmeticException> { Calculator().divide(1, 0) }
+          }
+      })
+
+# Version Manager AI Persona (Step 15)
+# Purpose: Determine semantic version bump type based on change analysis

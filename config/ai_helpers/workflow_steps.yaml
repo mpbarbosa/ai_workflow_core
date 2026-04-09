@@ -1,0 +1,1311 @@
+# Workflow Step Prompts (step2 … step14)
+# Source sub-file — merged into config/ai_helpers.yaml by scripts/build_ai_helpers.py
+#
+step2_consistency_prompt:
+  # Split role into prefix + guidelines for token efficiency
+  role_ref: step2_consistency  # resolved from config/prompt_roles.yaml
+  
+  behavioral_guidelines: *behavioral_structured
+  
+  task_template: |
+    Perform a comprehensive documentation consistency analysis for this project,
+    covering **markdown documentation files** (`.md`) only. "Consistency" means:
+    uniform naming conventions, up-to-date examples and version numbers (including
+    version badges), intact cross-references, and style uniformity across all
+    documentation types (e.g., consistent heading levels, bullet list styles, and
+    fenced code-block language tags — for example, one file calling a concept
+    "auto-commit" while another calls it "autocommit" is a consistency violation).
+    Where project-specific conventions are documented — in particular
+    `.github/copilot-instructions.md` and `CONTRIBUTING.md` — treat those as the
+    authoritative style reference for this project and let them take precedence over
+    generic defaults. If neither file addresses a particular convention, fall back to
+    widely accepted generic markdown best practices (e.g., ATX-style headings,
+    consistent capitalisation within heading levels).
+
+    **Context:**
+    - Project: {project_name} ({project_description})
+    - Primary Language: {primary_language}
+    - Documentation files: {doc_count} markdown files (this partition's scope)
+    - TypeScript source files: {ts_source_count} (not included in this partition — JSDoc source coverage is checked in the TypeScript Review step)
+    - Scope: {change_scope}
+    - Files in this analysis batch: {modified_count}
+    - Documentation scope: root-level `.md` files (e.g., `README.md`, `CHANGELOG.md`), `docs/` subdirectory and all its nested subdirs (e.g., `docs/architecture/`, `docs/guides/`), and `.github/` metadata including all nested subdirs (e.g., `.github/ISSUE_TEMPLATE/`, `.github/skills/`, `.github/workflows/`) — hidden tool directories (`.workflow_core/`, `node_modules/`) and build outputs (`dist/`, `coverage/`) are excluded unless explicitly listed in the files below; auto-generated `.md` files (e.g., those under `docs/api/html/`) should be flagged when they contain consistency violations but treated as **lower priority** than hand-authored docs, since they are regenerated on each build
+    - Files referenced in markdown tables, numbered lists, or inline links but absent from the file list are also in scope — flag them as potential documentation gaps (distinct from broken links)
+    - The complete list of files in scope for this partition is provided at the end of this prompt in the **Files to Analyze** section.
+    
+    **Tasks:**
+    
+    1. **Cross-Reference Validation:**
+       - Check if all referenced files/directories exist
+       - Verify version numbers follow semantic versioning (MAJOR.MINOR.PATCH)
+       - Ensure version consistency across documentation and package manifests
+         (check `package.json`, `package-lock.json`, and ecosystem-equivalent lockfiles)
+       - Validate command examples match actual scripts/executables:
+         npm/yarn scripts defined in `package.json`; automation scripts in `scripts/` or
+         `bin/` (check all formats present — `.sh` shell scripts, `.js`/`.ts` Node.js
+         scripts, Python scripts, or other executables — skip format-specific checks for
+         types absent from the repository); and any executables referenced in README or
+         CONTRIBUTING. "Documentation quality" for scripts means: inline comments
+         explaining non-obvious logic, a usage example or `--help` reference in an
+         adjacent README, and accurate descriptions in the root `scripts/README.md`
+         (if present).
+    
+    2. **Content Synchronization:**
+       - Compare primary documentation files: `README.md`, `.github/copilot-instructions.md`,
+         `docs/ARCHITECTURE.md` (and any `CONTRIBUTING.md` / `CHANGELOG.md` present)
+       - Check if module/component docs match actual code structure; component API docs
+         are expected in `docs/API.md`, `docs/FUNCTIONAL_REQUIREMENTS.md`, or inline JSDoc
+       - Verify build/package configuration matches documented commands
+    
+    3. **Architecture Consistency:**
+       - Validate directory structure matches documented structure; the primary source of
+         truth for the documented structure is `docs/ARCHITECTURE.md` (or a "Directory
+         structure" section in README.md if ARCHITECTURE.md is absent)
+       - Check if deployment/build steps match actual scripts
+       - Verify dependency references are accurate
+    
+    4. **Broken Reference Root Cause Analysis:**
+    
+       The following broken links were detected by automated checks.
+       Each entry is formatted as `source_file:line_number → broken_target_path`.
+       Example: `README.md:15 → docs/getting-started.md` means line 15 of `README.md` links to `docs/getting-started.md`, which does not exist.
+       The SOURCE files all exist — what is missing is the TARGET they point to.
+       {broken_refs_content}
+    
+       **Your task**: For each `source:line → target` entry, perform systematic root cause analysis on the MISSING TARGET. Use the **Output Format** template at the end of this section for each entry.
+    
+       **Analysis Framework** (apply to each entry):
+    
+       a) **False Positive Check**: Is the target truly missing or a false positive?
+          - Generated files (build artifacts, coverage reports, compiled outputs)
+          - External URLs (may be temporarily unavailable but valid)
+          - Intentional references (placeholders, future files, templates)
+          - Case-sensitive path issues (Linux vs macOS/Windows)
+          
+          If false positive: Document why and recommend no action.
+    
+       b) **Root Cause Determination**: If truly missing, what caused it?
+          - **Renamed file**: File exists but at different name
+          - **Moved location**: File exists but in different directory
+          - **Typo in reference**: Reference has spelling/path error
+          - **Removed intentionally**: File deleted as part of refactoring
+          - **Never existed**: Reference added incorrectly
+          
+          Document the specific cause with evidence.
+    
+       c) **Fix Recommendation**: What's the specific fix?
+          - **Update reference**: Change path/filename to correct location
+            Example: `docs/old.md` → `docs/new.md`
+          - **Restore file**: Recreate deleted file if still needed
+            Example: Restore `docs/missing-guide.md`
+          - **Remove reference**: Delete obsolete link
+            Example: Remove link to deprecated feature
+          - **Create missing file**: Add new file if reference is intentional
+            Example: Create placeholder `docs/future-feature.md`
+          
+          Provide before/after examples for each fix.
+    
+       d) **Priority Assessment**: What's the impact and urgency?
+          - **Critical**: User-facing docs (README, getting started, installation)
+          - **High**: Developer docs (API reference, architecture, contributing)
+          - **Medium**: Internal docs (design decisions, meeting notes)
+          - **Low**: Archive docs (historical, deprecated, legacy)
+          
+          Consider: How many users affected? Does it block usage? Is it discoverable?
+     Note: If the target file is not visible in the provided context (e.g., due to context truncation), assess priority based on the target file's intended audience rather than its content.
+    
+       **Output Format for Each Reference**:
+       
+       ### Reference: [file.md:line] → [target]
+       - **Status**: [False Positive / Truly Broken]
+       - **Root Cause**: [Specific cause with evidence]
+       - **Recommended Fix**: [Specific action with example]
+       - **Priority**: [Critical/High/Medium/Low] - [Justification]
+       - **Impact**: [Who is affected and how]
+    
+    5. **Quality Checks:**
+       - Missing documentation for new features
+       - Incomplete documentation (sections present but sparse or stub-level): flag at
+         Medium priority, identify the specific gaps, and do not fabricate content to fill them
+       - Absent documentation (no file exists for a known component, workflow, or feature):
+         flag at High or Critical priority depending on audience impact, and recommend
+         creating a placeholder or stub file with the expected structure
+       - Outdated version numbers or dates (only flag if the file already carries explicit
+         version numbers; do not invent or assume versioning where none is present)
+       - Version badge discrepancies — when a file contains version badges (e.g.,
+         `![version](https://img.shields.io/badge/version-X.Y.Z-...)`) or status badges
+         with an embedded version string, compare the badge version against the
+         authoritative version sources visible in the provided context (e.g., `package.json`
+         version field); flag only if an explicit version mismatch is detectable from the
+         provided context — do not flag badges whose version cannot be verified
+       - Missing referenced documentation files — flag markdown tables, numbered lists,
+         or inline links that reference a documentation file by path or name that does not
+         appear in the provided file list; treat these as documentation gaps, not broken
+         links (broken links are already handled by the programmatic scan above)
+       - Inconsistent terminology or naming conventions — flag when the same concept is
+         referred to by different names across files
+         (e.g. a component called "ListPanel" in one doc and "List Panel" in another)
+       - Missing cross-references between related docs — flag when a concept, component,
+         or module is documented in one place but not linked from a closely related file
+         (e.g. `README.md` mentions a component without linking to `docs/API.md`)
+    
+    6. **Inline Documentation (JSDoc/TypeScript) Checks:**
+       - Verify all exported functions and classes have JSDoc comments
+       - Check that `@param`, `@returns`, and `@throws` tags match actual function signatures
+       - Ensure JSDoc code examples reflect the current API and would compile/run
+       - Confirm `@deprecated` tags are present for removed or renamed symbols
+         (skip this check if no symbols have been removed or renamed in the current scope)
+       - Where a project-specific JSDoc convention is documented (e.g. in `CONTRIBUTING.md`
+         or `.github/copilot-instructions.md`), validate inline docs against those
+         conventions rather than applying generic defaults
+       - **Scope note:** These checks apply only to JSDoc visible within the documentation
+         files listed in this partition (e.g. code blocks in `CONTRIBUTING.md`,
+         `.github/copilot-instructions.md`, or `docs/`). Full source-file JSDoc completeness
+         (all exported symbols in `src/`) is validated by the TypeScript Review step.
+    
+    **Files to Analyze:**
+    {doc_files}
+  
+  approach: |
+    Analyze ONLY the documentation files and broken references explicitly listed above. Do not invent file paths, version numbers, or cross-references not present in the provided context.
+
+    **Output:**
+    - Recommendations for fixes with rationale
+    - Priority level (Critical/High/Medium/Low) for each issue
+    - Actionable remediation steps
+    
+    **Documentation Standards to Apply:**
+    - Technical accuracy and precision
+    - Consistency in terminology and formatting
+    - Completeness of cross-references
+    - Version number accuracy across all files
+    - Project-specific conventions: when `CONTRIBUTING.md` or `.github/copilot-instructions.md`
+      is present in the provided context, align recommendations with those conventions and
+      let them take precedence over generic defaults
+
+    **Tooling Note:** Do not cite specific tool rule identifiers (e.g., markdownlint MD013,
+    yamllint rule names) unless the tool configuration file is visible in the provided context.
+    Cite the documented practice or standard instead.
+
+    **Language-Specific Standards:** {language_specific_documentation}
+    
+    Please analyze the documentation files and provide a detailed consistency report.
+
+# Step 3: Shell Script Reference Validation Prompt Template
+step3_script_refs_prompt:
+  # Split role into prefix + guidelines for token efficiency
+  role_ref: step3_script_refs  # resolved from config/prompt_roles.yaml
+  
+  behavioral_guidelines: *behavioral_structured
+  
+  task_template: |
+    Perform comprehensive validation of shell script references and documentation quality for this project's automation scripts.
+    
+    **Context:**
+    - Project: {project_name} ({project_description})
+    - Primary Language: {primary_language}
+    - Project Kind: {project_kind}
+    - Shell Scripts Directory: {scripts_dir}
+    - Total Scripts: {script_count}
+    - Scope: {change_scope}
+    - Modified Files: {modified_count}
+    - Issues Found in Phase 1: {issues}
+    
+    **Phase 1 Automated Findings:**
+    {script_issues_content}
+
+    **Script Documentation Coverage:**
+    (shows which documentation files reference each script)
+    {doc_coverage_map}
+
+    **Available Scripts:**
+    {all_scripts}
+
+    **Documentation Excerpts (partial — first ~80 lines per file, may be truncated):**
+    {doc_context}
+
+    **Tasks:**
+    
+    1. **Script-to-Documentation Mapping:**
+       - Verify every executable script in the project is documented in project README or script documentation
+       - Check that documented scripts/executables actually exist at specified paths
+       - Validate script descriptions match actual functionality
+       - Ensure usage examples are accurate and complete
+    
+    2. **Reference Accuracy:**
+       - Validate command-line arguments in documentation match implementation
+       - Check version numbers are consistent across documentation
+       - Verify cross-references between scripts/modules are accurate
+       - Validate file path references in code comments and documentation
+    
+    3. **Documentation Completeness:**
+       - Missing purpose/description for any scripts or executables
+       - Missing usage examples or command syntax
+       - Missing prerequisite or dependency information
+       - Missing output/return value documentation
+    
+    4. **Script Best Practices (Project-Specific):**
+       - Executable permissions properly documented
+       - Entry points (shebangs, main functions) mentioned in documentation where relevant
+       - Environment variable requirements documented
+       - Error handling and exit codes documented
+    
+    5. **Integration Documentation:**
+       - Workflow relationships between components documented
+       - Execution order or dependencies clarified
+       - Common use cases and examples provided
+       - Troubleshooting guidance available
+    
+    6. **DevOps Integration Documentation** (when applicable):
+       - CI/CD pipeline references (GitHub Actions, Jenkins, GitLab CI, CircleCI)
+       - Container/orchestration scripts (Docker, Kubernetes manifests, docker-compose)
+       - Deployment automation documentation (deploy scripts, infrastructure provisioning)
+       - Infrastructure-as-code script references (Terraform, Ansible, CloudFormation)
+       - Monitoring/observability script documentation (health checks, metrics collection)
+       - Build/release automation scripts (packaging, versioning, artifact management)
+    
+    **Files to Analyze:**
+    - Project README.md and any module/component README files
+    - All executable files (shell scripts, Python scripts, Node.js scripts, etc.)
+    - .github/copilot-instructions.md (for automation/script references)
+    - Configuration files that define entry points or commands
+    - CI/CD configuration files (.github/workflows/, .gitlab-ci.yml, Jenkinsfile, .circleci/)
+    - Container definitions (Dockerfile, docker-compose.yml, Kubernetes manifests)
+    - Infrastructure-as-code scripts (*.tf, *.yml for Ansible, CloudFormation templates)
+    - Deployment/automation scripts (deploy/, scripts/, bin/ directories)
+  
+  approach: |
+    Analyze ONLY the scripts explicitly listed under "Available Scripts" above. Do not reference, invent, or assume the existence of any scripts not in that list.
+
+    **Output:**
+    - List of script reference issues with file:line locations
+    - Missing or incomplete script documentation
+    - Inconsistencies between code and documentation
+    - Recommendations for improving script documentation
+    - Priority level (Critical/High/Medium/Low) for each issue
+    - Actionable remediation steps with examples
+    
+    **Documentation Standards to Apply:**
+    - Clear and concise command syntax documentation
+    - Comprehensive usage examples for each script
+    - Accurate parameter and option descriptions
+    - Proper shell script documentation conventions
+    - Integration and workflow clarity
+    
+    Please analyze the shell script references and provide a detailed validation report with specific recommendations for documentation improvements.
+
+# Step 5: Directory Structure Validation Prompt Template
+# Placeholder note: {language_specific_directory_standards} carries project-kind-level
+# directory conventions (not strictly language-level, despite the name). It is populated
+# from project_kinds.yaml ai_guidance.directory_standards for the resolved project kind.
+# For the 'generic' kind or when kind is unknown, the placeholder is left empty.
+step5_directory_prompt:
+  # Split role into prefix + guidelines for token efficiency
+  role_ref: step4_directory  # resolved from config/prompt_roles.yaml
+  
+  behavioral_guidelines: *behavioral_structured
+  
+  task_template: |
+    Perform comprehensive validation of directory structure and architectural organization for this project.
+    Validation covers both **presence** (required directories/files exist — see **"Required" Directory Definition** below for the authoritative sources and rules) and **content/structure** (contents match the documented purpose — see **"Contents match the documented purpose"** below for explicit criteria and examples).
+
+    **Validation Criteria:**
+    - Required configuration files: `.workflow-config.yaml` (if present, use as the primary source of truth for structure; otherwise fall back to project-kind guidance and language defaults)
+    - Project kind-specific required directories and files as defined in `project_kinds.yaml`
+    - Architecture documented in `README.md`, `docs/ARCHITECTURE.md`, and `CONTRIBUTING.md`
+
+    **"Required" Directory Definition:**
+    When `.workflow-config.yaml` is present, these keys define required directories:
+    - `structure.source_dirs` → source code directories (e.g. `src/`) — must exist and contain source files
+    - `structure.test_dirs` → test directories (e.g. `__tests__/`, `tests/`) — must exist and contain test files
+    - `structure.docs_dirs` → documentation directories (e.g. `docs/`) — must exist and contain `.md` files
+    - `structure.ui_dirs` → UI component directories — must contain component source files
+    - `structure.css_dirs` → stylesheet directories — must contain `.css` files
+    - `structure.static_assets` → specific asset files that must be present at their listed paths
+    When `.workflow-config.yaml` is absent, apply language/framework defaults (e.g. `src/`, `test/`, `docs/` for TypeScript/Node.js projects).
+
+    **"Contents match the documented purpose"** means:
+    - `source_dirs` entries contain source code files (`.ts`, `.js`, `.vue`) — not build artifacts or data
+    - `test_dirs` entries contain test files (`*.test.*` or `*.spec.*`)
+    - `docs_dirs` entries contain documentation files (`.md`, `.rst`, `.txt`)
+    - Any directory described in `README.md` or `docs/ARCHITECTURE.md` matches its stated purpose
+    - Example: a directory described as "UI component library" should contain component files, not config files
+    - Undocumented directories (absent from all documentation sources) are flagged for clarification, not treated as errors
+
+    **Context:**
+    - Project: {project_name} ({project_description})
+    - Primary Language: {primary_language}
+    - Project Kind: {project_kind}
+    - Total Directories: {dir_count} (excluding build artifacts, dependencies, coverage)
+    - Scope: {change_scope}
+    - Modified Files: {modified_count}
+    - Critical Directories Missing: {missing_critical}
+    - Undocumented Directories: {undocumented_dirs}
+    - Documentation Mismatches: {doc_structure_mismatch}
+    
+    **Phase 1 Automated Findings:**
+    {structure_issues_content}
+    
+    **Current Directory Structure:**
+    {dir_tree}
+    
+    **Tasks:**
+    
+    1. **Structure-to-Documentation Mapping:**
+       - Verify directory structure matches documented architecture (presence check)
+       - Check that primary documentation describes actual structure (content check)
+       - Validate directory purposes are clearly documented
+       - Ensure new directories have documentation explaining their role
+    
+    2. **Architectural Pattern Validation:**
+       - Assess if directory organization follows language/framework best practices
+       - Validate separation of concerns (src/, lib/, tests/, docs/, etc.)
+       - Check for proper resource organization (assets, configs, data)
+       - Verify module/component structure is logical and documented
+    
+    3. **Naming Convention Consistency:**
+       - Validate directory names follow consistent conventions
+       - Check for naming pattern consistency across similar directories
+       - Verify no ambiguous or confusing directory names
+       - Ensure directory names are descriptive and self-documenting
+    
+    4. **Best Practice Compliance:**
+       {language_specific_directory_standards}
+       - Source vs build output directory separation
+       - Documentation organization (docs/ location and structure)
+       - Configuration file locations (conventional paths)
+       - Build artifact locations (proper gitignore coverage)
+    
+    5. **Scalability and Maintainability Assessment:**
+       - Directory depth appropriate (not too deep or too flat)
+       - Related files properly grouped
+       - Clear boundaries between modules/components
+       - Easy to navigate structure for new developers
+       - Potential restructuring recommendations
+  
+  approach: |
+    Analyze ONLY the directories explicitly listed under "Current Directory Structure" above. Do not reference, invent, or assume the existence of any directories, files, or documentation not present in that list.
+
+    **Output:**
+    - List of structure issues with specific directory paths
+    - Documentation mismatches (documented but missing, or undocumented but present)
+    - Architectural pattern violations or inconsistencies
+    - Naming convention issues
+    - Best practice recommendations
+    - Priority level (Critical/High/Medium/Low) for each issue
+    - Actionable remediation steps with rationale
+    - Suggested restructuring if needed (with migration impact assessment)
+    
+    Please analyze the directory structure and provide a detailed architectural validation report.
+
+# Step 6: Test Implementation Review Prompt Template
+# Test Implementation Prompt - Tactical Test Code Review and Quality Assessment
+# Use for: Workflow Step 5, reviewing test code quality, test structure, implementation details
+# Focus: HOW tests are written, code quality, best practices, refactoring opportunities
+# NOT for: Strategic planning, coverage gap analysis, test prioritization (use test_strategy_prompt)
+step6_test_review_prompt:
+  # Split role into prefix + guidelines for token efficiency
+  role_ref: step5_test_review  # resolved from config/prompt_roles.yaml
+  
+  behavioral_guidelines: *behavioral_actionable
+  
+  task_template: |
+    Review the test file(s) listed in **Existing Test Files in Scope** below using
+    {test_framework} in {test_env}. Provide tactical, code-level recommendations
+    for improving test quality.
+
+    > **Tactical recommendations** are concrete, file-level suggestions — e.g., rename
+    > a vague test name to describe expected behavior, extract repeated setup into
+    > `beforeEach`, replace `expect(arr.length).toBe(3)` with
+    > `expect(arr).toHaveLength(3)`, add an edge case for null input, or remove
+    > redundant assertions. Focus on HOW tests are written, not WHAT to test.
+
+    **Context:**
+    - Project: {project_name} ({project_description})
+    - Primary Language: {primary_language}
+    - Change Scope: {change_scope}
+    - Modified Files: {modified_count}
+    - Test Framework: {test_framework} in {test_env}
+    - Commands: test=`{test_command}`, coverage=`{coverage_command}`
+    - Total Test Files: {test_count} ({tests_in_tests_dir} in `__tests__/`/`test/`, {tests_colocated} co-located)
+    - Quality Criteria: AAA pattern, descriptive names, DRY fixtures, isolated tests, deterministic execution
+
+    **Existing Test Files in Scope:**
+    {test_files}
+
+    > **Note:** Test file contents are truncated to fit token limits; listed files may
+    > not appear in the snapshot below. If a file is absent from **Test File Contents**,
+    > analyze only what is provided — do not invent or assume missing content.
+
+    **Test File Contents:**
+    {test_file_contents}
+
+    **Tasks:**
+
+    1. **Test Code Quality Assessment** (e.g., naming clarity, structure, DRY violations):
+       - Review test file structure and organization
+       - Assess test naming conventions (describe behavior, not implementation)
+       - Evaluate test readability and maintainability
+       - Check for code duplication in tests (DRY violations)
+       - Validate proper use of test framework features
+       - Assess assertion quality (specific, meaningful messages)
+
+    2. **Test Implementation Best Practices** (e.g., AAA pattern, mock hygiene, error paths):
+       - Verify AAA pattern (Arrange-Act-Assert) usage
+       - Check test isolation and independence
+       - Review setup/teardown patterns and fixture usage
+       - Validate mock usage (appropriate, not excessive)
+       - Assess async/await handling correctness
+       - Check for proper error testing patterns
+
+    3. **Test Refactoring Opportunities** (e.g., parameterized tests, shared fixtures):
+       - Identify verbose or complex test code
+       - Suggest test helper function extractions
+       - Recommend shared fixture improvements
+       - Propose test data organization strategies
+       - Identify opportunities for parameterized tests
+       - Suggest removing redundant test cases
+
+    4. **Framework-Specific Improvements** (e.g., better {test_framework} matchers, unused features):
+       - Recommend better matchers/assertions for clarity
+       - Suggest framework features not being utilized
+       - Identify anti-patterns specific to test framework
+       - Propose modern testing patterns adoption
+       - Check compatibility with framework version
+
+    5. **CI/CD and Performance Considerations:**
+       - Identify slow-running tests
+       - Check for non-deterministic behavior
+       - Assess CI environment compatibility
+       - Recommend test parallelization opportunities
+       - Suggest test execution optimization strategies
+  
+  approach: |
+    Analyze ONLY the test files explicitly listed above. Do not invent test files or
+    assume a project structure that is not reflected in the provided context.
+
+    Review each listed test file for code quality, best practices, and framework usage.
+    Provide specific line-level feedback where applicable.
+
+    **Output:**
+    - Test code quality assessment with specific file:line references
+    - Best practice violations with concrete examples
+    - Refactoring recommendations with before/after code snippets
+    - Framework-specific improvement suggestions
+    - Performance optimization opportunities
+
+    **Tactical Focus:**
+    - Review actual test code, not coverage strategy
+    - Provide code-level improvements, not portfolio analysis
+    - Focus on HOW tests are written, not WHAT to test
+    - Give concrete examples and refactoring patterns
+    - Prioritize maintainability and clarity
+    
+    **Examples of Good Feedback:**
+    - "Test at line 45: Extract common setup into beforeEach() for DRY"
+    - "Use expect(result).toHaveLength(3) instead of expect(result.length).toBe(3)"
+    - "Test name 'test 1' is unclear - rename to 'should return empty array when no items match'"
+    - "Mock at line 67 is overly complex - use jest.fn() with mockReturnValue instead"
+    
+    Please analyze the existing tests and provide a detailed test strategy report with specific, actionable recommendations for improving test coverage and quality.
+
+# Step 8: Test Execution Analysis Prompt Template
+step8_test_exec_prompt:
+  # Split role into prefix + guidelines for token efficiency
+  role_ref: step7_test_exec  # resolved from config/prompt_roles.yaml
+  
+  behavioral_guidelines: *behavioral_structured
+  
+  task_template: |
+    Analyze {test_framework} test execution results for the {project_name} project, diagnose failures, and provide actionable recommendations for improving test suite quality and CI/CD integration.
+
+    **Context:**
+    - Project: {project_name} ({project_description})
+    - Primary Language: {primary_language}
+    - Project Kind: {project_kind}
+    - Test Framework: {test_framework} via `{test_command}`
+    - Test Config Files: {test_config_paths}
+    - Exit Code: {test_exit_code}
+    - Results: {tests_passed}/{tests_total} passed, {tests_failed} failed, {tests_skipped} skipped
+    - Coverage Threshold: {coverage_threshold}%
+    - Coverage Gaps: {coverage_gaps}
+    - CI/CD Config: {ci_config_paths}
+    - Scope: automated test suite only
+    - Test Types: {test_types}
+    
+    **Test Execution Results:**
+    {execution_summary}
+    
+    **Output:** (raw test runner console output, truncated to 2000 chars)
+    {test_output}
+    
+    **Failed Tests:**
+    {failed_test_list}
+    
+    **Tasks:**
+    
+    1. **Test Failure Root Cause Analysis:**
+       - Identify why tests failed (assertion errors, runtime errors, timeouts)
+       - Determine if failures are code bugs or test issues
+       - Categorize failures (breaking changes, environment issues, flaky tests)
+       - Provide specific fix recommendations for each failure
+       - Priority level (Critical/High/Medium/Low) for each failure
+    
+    2. **Coverage Gap Interpretation:**
+       - Analyze coverage metrics (statements, branches, functions, lines)
+       - Identify which modules have low coverage
+       - Determine if coverage meets 80% target
+       - Recommend areas for additional test coverage
+       - Prioritize coverage improvements
+    
+    3. **Performance Bottleneck Detection:**
+       - Identify slow-running tests (if timing data available)
+       - Detect tests with heavy setup/teardown
+       - Find tests that could be parallelized
+       - Recommend test execution optimizations
+       - Suggest mocking strategies for faster tests
+    
+    4. **Flaky Test Analysis** (if multiple runs available):
+       - Review test output for timing-related errors (timeouts, race conditions)
+       - Identify tests that interact with external systems (filesystem, network, subprocesses)
+       - Flag tests with random data generation without seeding
+       - Note: True flaky test detection requires multiple runs; provide best-effort analysis from single execution
+       - Recommend fixes for identified potential flaky patterns
+    
+    5. **CI/CD Optimization Recommendations:**
+       - Suggest test splitting strategies for CI
+       - Recommend caching strategies
+       - Propose pre-commit hook configurations
+       - Suggest coverage thresholds for CI gates
+       - Recommend test parallelization approaches
+       - Assess both code-level test quality and CI/CD pipeline configuration separately (pipeline-specific recommendations apply only when CI config files are listed in context above)
+  
+  approach: |
+    Analyze ONLY the test execution results explicitly provided above. Do not invent
+    test files, module names, or coverage metrics that are not in the provided context.
+    Review the execution output, exit code, and pass/fail counts to diagnose issues.
+    Provide specific, actionable recommendations grounded in the supplied data.
+    Reference specific test directories or files (e.g., `test/`, `src/**/*.test.js`) where
+    inferable from the provided output and context.
+    If no CI/CD configuration files are listed above, explicitly note this limitation and
+    restrict CI/CD recommendations to general best practices rather than project-specific
+    pipeline configuration.
+
+    **Output:**
+    - Root cause analysis for each failure with file:line:test references
+    - Specific code fixes or test modifications needed
+    - Coverage improvement action plan
+    - Performance optimization recommendations
+    - Flaky test remediation steps
+    - CI/CD integration best practices
+    - Priority-ordered action items
+    - Estimated effort for each fix
+    
+    Please provide a comprehensive test results analysis with specific, actionable recommendations.
+
+# Step 9: Dependency Management Analysis Prompt Template
+step9_dependencies_prompt:
+  # Split role into prefix + guidelines for token efficiency
+  role_ref: step8_dependencies  # resolved from config/prompt_roles.yaml
+  
+  behavioral_guidelines: *behavioral_structured
+  
+  task_template: |
+    Analyze the {package_manager} manifest files (e.g. `package.json`, `package-lock.json` for npm;
+    `requirements.txt` / `pyproject.toml` for pip; `go.mod` / `go.sum` for Go) present in this
+    project, assess security risks, evaluate version compatibility, and provide recommendations for
+    dependency management and environment setup.
+
+    > **Note:** Base your analysis on the dependency lists, audit summary, and outdated-package data
+    > provided below. The manifest and lockfile contents were read from the project at analysis time.
+
+    **Context:**
+    - Project: {project_name} ({project_description})
+    - Primary Language: {primary_language}
+    - Project Kind: {project_kind}
+    - Package Manager: {package_manager} {package_manager_version}
+    - Scope: {change_scope}
+    - Modified Files: {modified_count}
+    - Production Dependencies: {dep_count}
+    - Development Dependencies: {dev_dep_count}
+    - Total Packages: {total_deps}
+    
+    **Dependency Analysis Results:**
+    {dependency_summary}
+    
+    **Automated Findings:**
+    {dependency_report_content}
+    
+    **Production Dependencies:**
+    {prod_deps}
+    
+    **Development Dependencies:**
+    {dev_deps}
+    
+    **Security Audit Summary:**
+    {audit_summary}
+    
+    **Outdated Packages:**
+    {outdated_list}
+    
+    **Tasks:**
+    
+    1. **Security Vulnerability Assessment:**
+       - Review security audit results
+       - Identify critical/high severity vulnerabilities
+       - Assess exploitability and impact
+       - Provide immediate remediation steps
+       - Recommend long-term security strategy
+       - Consider transitive dependencies
+    
+    2. **Version Compatibility Analysis:**
+       - Check for breaking changes in outdated packages
+       - Identify version conflicts
+       - Assess compatibility with language/runtime version
+       - Review semver ranges (^, ~, exact versions) as declared in the manifest
+       - Recommend version pinning strategy
+    
+    3. **Dependency Tree Optimization:**
+       - Identify unused dependencies
+       - Detect duplicate packages in tree
+       - Find opportunities to reduce bundle size
+       - Recommend consolidation strategies
+       - Suggest peer dependency resolution
+    
+    4. **Environment Configuration Review:**
+       - Validate runtime version requirements declared in the manifest (e.g. `engines` field in
+         `package.json`, `python_requires` in `pyproject.toml`, `go` directive in `go.mod`)
+       - Check package manager version requirements
+       - Review `.nvmrc`, `.node-version`, or equivalent runtime-version pin files if present
+       - Assess separation of runtime vs. development dependencies in the manifest
+       - Recommend version management configuration (e.g. `engines`, `.nvmrc`, lockfile policy)
+    
+    5. **Update Strategy Recommendations:**
+       - Prioritize updates (security > bug fixes > features)
+       - Create phased update plan
+       - Identify breaking changes to watch
+       - Recommend testing strategy for updates
+       - Suggest automation (Dependabot, Renovate)
+  
+  approach: |
+    Analyze ONLY the dependencies and audit results explicitly listed above. Do not
+    invent package names, vulnerability counts, or version data not present in the context.
+    Review the provided dependency lists, audit summary, and outdated packages.
+    Prioritize security vulnerabilities first, then version drift, then optimizations.
+
+    **Output:**
+    - Security vulnerability assessment with severity levels
+    - Immediate action items for critical vulnerabilities
+    - Safe update path for outdated packages
+    - Version compatibility matrix
+    - Dependency optimization recommendations
+    - Environment configuration best practices
+    - Automated dependency management setup
+
+# Step 10: Code Quality Assessment Prompt Template
+# Step 10 Code Quality Prompt - Comprehensive Quality and Architecture Analysis
+# Use for: Workflow Step 9, architectural reviews, technical debt assessment, system-wide analysis
+# Focus: Comprehensive quality, maintainability, design patterns, architectural concerns
+# NOT for: Quick file reviews, simple syntax checks
+# Boundary: Use step10_code_quality_prompt for system-wide/architectural/comprehensive audits.
+#            Use quality_prompt for quick/targeted/file-level reviews.
+step10_code_quality_prompt:
+  # Split role into prefix + guidelines for token efficiency
+  role_ref: step9_code_quality  # resolved from config/prompt_roles.yaml
+  
+  behavioral_guidelines: *behavioral_structured
+  
+  task_template: |
+    Perform a comprehensive code quality review of source code, tests, and documentation. Identify anti-patterns, assess TDD adherence and test coverage, evaluate maintainability, check linting/formatting compliance and JSDoc documentation quality, and provide recommendations for improving code quality and reducing technical debt.
+    
+    **Context:**
+    - Project: {project_name} ({project_description})
+    - Primary Language: {primary_language}
+    - Project Kind: {project_kind}
+    - Technology Stack: {tech_stack_summary}
+    - Scope: {change_scope}
+    - Files in Scope: {modified_count}
+    - Code Files: {total_files} total
+    - Language Breakdown: {language_breakdown}
+    
+    **Code Quality Analysis Results:**
+    {quality_summary}
+    
+    **Automated Findings:**
+    {quality_report_content}
+    
+    **Large Files Requiring Review:**
+    {large_files_list}
+    
+    **Code Samples for Review:**
+    {sample_code}
+    
+    **Tasks:**
+    
+    1. **Code Standards Compliance Assessment:**
+       - Evaluate language coding standards and best practices
+       - Check for consistent code formatting and style
+       - Review naming conventions (variables, functions, classes)
+       - Assess consistent indentation and formatting
+       - Validate documentation/comment quality
+       - Check error handling patterns
+       - Verify linting compliance (`npm run lint` / ESLint) — flag files or patterns that would fail lint checks
+       - Verify formatting compliance (`npm run format` / Prettier) — note inconsistencies with project formatter config
+       - Check JSDoc completeness: all public functions, classes, and exported symbols should have JSDoc; note missing or outdated JSDoc blocks
+       - Identify and apply project-specific coding conventions from `CONTRIBUTING.md` or `.github/copilot-instructions.md`, when those files are present in the provided context; these take precedence over generic language defaults
+       - Also consult other project guides found under `.github/` when present in the context (e.g., `CODE_REVIEW_GUIDE.md`, `TDD_GUIDE.md`, `UNIT_TEST_GUIDE.md`, `HIGH_COHESION_GUIDE.md`, `LOW_COUPLING_GUIDE.md`, `JAVASCRIPT_BEST_PRACTICES.md`)
+    
+    2. **Best Practices Validation:**
+       - Verify separation of concerns
+       - Check for proper error handling
+       - Assess design patterns usage
+       - Review async patterns (if applicable)
+       - Validate proper variable declarations
+       - Check for magic numbers/strings
+    
+    3. **Maintainability & Readability Analysis:**
+       - Assess function complexity (cyclomatic complexity)
+       - Evaluate function length (should be reasonable)
+       - Check variable naming clarity
+       - Review code organization and structure
+       - Assess comment quality and documentation
+       - Identify overly complex logic
+    
+    4. **Anti-Pattern Detection:**
+       - Identify code smells (duplicated code, long functions)
+       - Detect language-specific anti-patterns
+       - Find improper global usage
+       - Spot tight coupling between modules
+       - Identify monolithic functions
+       - Detect violation of DRY principle
+    
+    5. **Refactoring Recommendations:**
+       - Suggest modularization opportunities
+       - Recommend function extraction for clarity
+       - Propose design pattern applications
+       - Suggest performance optimizations
+       - Recommend code reuse strategies
+       - Identify technical debt priorities
+    
+    6. **Test Quality & TDD Adherence:**
+       - Assess test coverage breadth (are key behaviours, edge cases, and error paths tested?)
+       - Evaluate TDD discipline: test naming clarity, test-first indicators, tests as documentation
+       - Check test isolation (no shared mutable state, deterministic outcomes)
+       - Identify brittle or flaky tests (time-dependent, order-dependent, over-mocked)
+       - Review mock/stub hygiene (mocks that verify behaviour vs. mocks that just silence errors)
+       - Assess test maintainability (DRY helpers, meaningful assertions, clear failure messages)
+       - Apply project `TDD_GUIDE.md` or `UNIT_TEST_GUIDE.md` standards when present in the provided context
+
+     7. **Process & Commit Quality:**
+        - Review adherence to [Conventional Commits](https://www.conventionalcommits.org/): commit messages should use `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, etc. with correct format
+        - Check that commit messages reference related issues or PRs where appropriate
+        - Note any commits that bundle unrelated concerns (should be atomic)
+        - Assess whether PR descriptions (if visible) describe the change and reference related issues
+        - Flag any secrets, debug artifacts, or generated files that should not be committed
+  
+  approach: |
+    Analyse only the **{project_name}** files shown above. Do not reference ai_workflow.js, node_modules, or any other project not present in the context.
+
+    Review code quality, anti-patterns, technical debt, and maintainability for the provided code samples. Focus on actionable findings with specific file references.
+
+    **Output:**
+    - **Assessment**: Quality grade (A-F), maintainability score, standards compliance
+    - **Findings**: Anti-patterns, violations, tech debt with file:line references
+    - **Recommendations**: Top 5 refactoring priorities with effort estimates (quick wins vs long-term)
+    
+    **Tooling Note:** Where project-specific linting or static-analysis tools are visible in the provided context (including tech stack or config files), reference those tools when citing violations. Cite specific rule names only when the tool configuration is clearly visible in the context; otherwise describe the violation generically.
+
+    Please provide a comprehensive code quality assessment with specific, actionable recommendations.
+
+# Error Resilience Prompt Template
+# Supplementary per-partition pass run by Step 10 (code quality) for all project kinds
+# except static_website and configuration_library.
+# Focuses on production failure modes that the main quality sweep may miss:
+# uncaught exceptions, unhandled promise rejections, empty catch blocks, missing
+# await, silent failure swallowing, and error-masking patterns.
+error_resilience_prompt:
+  role_ref: software_quality_engineer  # resolved from config/prompt_roles.yaml
+  behavioral_guidelines: *behavioral_actionable
+
+  task_template: |
+    Perform a focused **Error Resilience Review** of the provided source files.
+    Your goal is to surface production-threatening failure modes that are often
+    invisible in standard code-quality sweeps.
+
+    **Context:**
+    - Project: {project_name}
+    - Primary Language: {primary_language}
+
+    **Scope — look exclusively for:**
+
+    1. **Uncaught Exceptions & Unhandled Rejections**
+       - `async` functions called without `await` and without `.catch()`
+       - `Promise.all` / `Promise.allSettled` calls with no rejection handler
+       - Event emitters (`EventEmitter`, DOM `addEventListener`) without error events
+       - Top-level `async` IIFE without a `.catch()` or `try/catch`
+
+    2. **Silent Failure Swallowing**
+       - Empty `catch` blocks: `catch (e) \{\}`  or `catch \{ /* ignored */ \}`
+       - Catch blocks that only log without re-throwing or surfacing the error
+       - Optional chaining (`?.`) used where a missing value should be a hard error
+       - Fallback defaults (`?? defaultVal`) that hide data-contract violations
+
+    3. **Missing `await` on Async Calls**
+       - Calls to `async` functions or Promise-returning APIs whose result is
+         discarded (no `await`, no `.then()`, no variable assignment)
+       - `fs.writeFile`, database writes, HTTP requests left un-awaited
+
+    4. **Error Masking in Control Flow**
+       - `try/catch` that catches broadly and returns `null`/`undefined`/`false`
+         without logging the original error
+       - Error objects converted to strings or generic messages, losing stack traces
+       - Retry loops that swallow errors on the last attempt
+
+    5. **Resource Leak on Error**
+       - File handles, DB connections, or streams opened inside `try` blocks with
+         no `finally` to guarantee closure
+
+    **Files to Review:**
+    {file_content_map}
+
+    **Output Format:**
+    For each finding, output:
+    - **File**: `filename.ext:line` (or best estimate if exact line is unclear)
+    - **Category**: one of Uncaught Rejection / Silent Failure / Missing Await /
+      Error Masking / Resource Leak
+    - **Severity**: Critical (can crash or corrupt) / High (likely silent data loss)
+      / Medium (degrades observability)
+    - **Finding**: one-sentence description of the problem
+    - **Fix**: concrete code-level recommendation
+
+    If no issues are found in a category, skip that category entirely.
+    End with a one-line summary: total findings by severity.
+
+# Step 12: Git Commit Message Generation Prompt Template
+step12_git_commit_prompt:
+  output_format: |
+    **OUTPUT REQUIREMENT**:
+    Return ONLY the raw commit message text, ready to paste directly into git.
+    No markdown code blocks (no ```), no explanatory preamble, no wrapper text.
+  
+  # Split role into prefix + guidelines for token efficiency
+  role_ref: step11_git_commit  # resolved from config/prompt_roles.yaml
+  
+  behavioral_guidelines: *behavioral_generative
+  
+  commit_types: |
+    - feat: New feature or capability
+    - fix: Bug fix
+    - docs: Documentation only changes
+    - style: Formatting, whitespace, no code change
+    - refactor: Code restructuring without behavior change
+    - test: Adding or updating tests
+    - chore: Maintenance tasks, tooling, dependencies
+    - perf: Performance improvement
+    - ci: CI/CD pipeline changes
+  
+  task_template: |
+    Generate a professional conventional commit message that clearly
+    communicates the changes, follows best practices, and provides useful
+    context for code reviewers and future maintainers. If the project
+    documents commit conventions in `.github/CONTRIBUTING.md`, follow
+    those conventions. Otherwise, default to the
+    [Conventional Commits](https://www.conventionalcommits.org) specification
+    as the baseline standard. Always proceed with best practices — never
+    stall or fail because the file is absent or does not address commit format.
+    
+    **Conventional Commit Types:**
+    {commit_types}
+    
+    **Context:**
+    - Project: {project_name} ({project_description})
+    - Workflow: Tests & Documentation Automation v{script_version} (ai_workflow automated pipeline; version defined in `package.json` and `.workflow-config.yaml`)
+    - Change Scope: {change_scope} (changed file paths listed in "Changed Files" section below)
+    
+    **Git Repository Analysis:**
+    {git_context}
+    
+    **Changed Files:**
+    {changed_files}
+    
+    **Staged Commit Statistics (includes workflow artifacts and individual file names):**
+    {diff_summary}
+    
+    **Detailed Context:**
+    {git_analysis_content}
+    
+    **Diff Sample (first 100 lines):**
+    {diff_sample}
+    
+    **Tasks:**
+    
+    1. **Conventional Commit Message Crafting:**
+       - Select appropriate type from the list above
+       - Define clear scope (e.g., deployment, testing, documentation)
+       - Write concise subject line (<50 chars if possible, max 72)
+       - Follow format: type(scope): subject
+       - Use imperative mood ("add" not "added" or "adds")
+       - Don't end subject with period
+    
+    2. **Semantic Context Integration:**
+       - Analyze what changed and why
+       - Identify the business value or technical benefit
+       - Connect changes to workflow or project goals
+       - Reference workflow automation context
+       - Note automation tool version
+    
+    3. **Change Impact Description:**
+       - Describe what was changed (files, features, functionality)
+       - Explain why changes were made
+       - Note any architectural or structural improvements
+       - Highlight test coverage or documentation updates
+       - Mention dependency or quality improvements
+    
+    4. **Breaking Change Detection:**
+       - Identify any breaking changes (API, behavior, interface)
+       - Flag deprecations or removals
+       - Note migration steps if applicable
+       - Assess backward compatibility
+    
+    5. **Commit Body & Footer Generation:**
+       - Provide detailed multi-line body if needed
+       - List key changes as bullet points
+       - Include relevant issue/PR references
+       - Add footer metadata (automation info, breaking changes)
+       - Follow 72-character line wrap
+  
+  approach: |
+    Review ONLY the staged changes listed above. Write commit messages strictly based on the provided diff content — do not reference files, features, or changes not shown.
+
+    **Commit Message Format:**
+    
+    type(scope): subject line here
+    
+    Optional body paragraph explaining what and why, not how.
+    Wrap at 72 characters per line.
+    
+    - List key changes as bullet points
+    - Each bullet should be clear and actionable
+    - Focus on user/developer impact
+    
+    BREAKING CHANGE: describe any breaking changes
+    Refs: #issue-number (if applicable)
+    [workflow-automation v{script_version}]
+    
+    **Remember**: Output only the commit message text with NO markdown
+    code blocks.
+
+# Markdown Linting Analysis Prompt Template
+markdown_lint_prompt:
+  # Split role into prefix + guidelines for token efficiency
+  role_ref: markdown_lint  # resolved from config/prompt_roles.yaml
+  
+  behavioral_guidelines: *behavioral_actionable
+  
+  task_template: |
+    Review the markdown linting results and provide actionable
+    recommendations for improving documentation quality. Use the
+    following style-guide hierarchy (highest priority first):
+
+    1. **`.github/copilot-instructions.md`** — primary project-level
+       authority; use this if the file is present.
+    2. **`.github/CONTRIBUTING.md`** — fallback when
+       `.github/copilot-instructions.md` is absent; contains the full
+       contribution guidelines including code style and immutability
+       principles.
+    3. **Generic markdown defaults** — apply only where neither
+       project-specific file addresses the rule in question.
+
+    > **Note:** The root `CONTRIBUTING.md` is a conventional entry-point
+    > pointer only — it redirects to `.github/CONTRIBUTING.md` and does
+    > not contain authoritative rules itself.
+
+    If `.github/copilot-instructions.md` and `.github/CONTRIBUTING.md`
+    give conflicting guidance, `.github/copilot-instructions.md` takes
+    precedence. In all cases, project-specific conventions override
+    generic markdown defaults.
+    
+    # Markdown Linting Results
+    {lint_report}
+    
+    # Git Context
+    Branch: {current_branch}
+    Modified markdown files: {modified_md_count}
+    
+    # Focus Areas (Enabled Rules Only)
+    
+    The following rules are **DISABLED** in .mdlrc and should be
+    **IGNORED** in your analysis:
+    - MD001 (header level increments) - AI formatting pattern
+    - MD002 (first header level) - document structure flexibility
+    - MD012 (multiple blank lines) - visual separation preference
+    - MD013 (line length) - long URLs and code blocks
+    - MD022 (blank lines around headers) - compact formatting
+    - MD029 (ordered list prefixes) - numbering flexibility
+    - MD031 (blank lines around code blocks) - compact formatting
+    - MD032 (blank lines around lists) - compact formatting
+    
+    > **Note:** Disabled rules typically account for the majority of the
+    > total issue count (e.g., MD029 and MD013 are commonly the top
+    > violations by frequency). These high counts are expected and
+    > intentional — do not flag them as problems.
+    
+    Focus ONLY on these **ENABLED** rules that indicate real quality
+    issues:
+    
+    1. **MD007 - List Indentation**: Nested lists must use 4-space
+       indentation
+    2. **MD009 - Trailing Spaces**: Whitespace at end of lines (easily
+       fixable)
+    3. **MD026 - Header Punctuation**: Headers should not end with . ! ? ,
+    4. **MD047 - Final Newline**: Files must end with single newline
+       character
+    
+    # Analysis Request
+    
+    Please provide:
+    
+    1. **Severity Assessment**: 
+       - Rate overall quality (Excellent/Good/Needs Improvement/Poor)
+       - Base assessment ONLY on enabled rules (ignore disabled rules)
+       - Prioritize recommendations by **impact on documentation quality**
+         (rendering correctness, accessibility, readability) rather than
+         by raw violation frequency
+    
+    2. **Critical Issues**:
+       - List specific files and line numbers with enabled rule violations
+       - Explain impact on rendering or accessibility
+       - DO NOT mention disabled rules (MD001, MD002, MD012, MD013, MD022,
+         MD029, MD031, MD032)
+    
+    3. **Quick Fixes**:
+       - Provide specific sed/awk commands for bulk fixes
+       - Example for trailing spaces:
+         `find . -name "*.md" -exec sed -i 's/[[:space:]]*$//' {{}} +`
+       - Example for final newline:
+         `find . -name "*.md" -exec sh -c 'tail -c1 {{}} | read -r _ || 
+         echo >> {{}}' \;`
+    
+    4. **Editor Configuration**:
+       - Suggest .editorconfig settings to prevent future issues
+       - Recommend VS Code / editor settings
+    
+    5. **Prevention Strategy**:
+       - How to avoid these issues in AI-generated markdown
+       - Pre-commit hook recommendations
+       - Workflow automation improvements
+  
+  approach: |
+    Analyze ONLY the markdown files and lint results explicitly listed above. Do not report violations for rules not in the enabled set.
+
+    **Scope**: Analyze only enabled rules (MD007, MD009, MD026, MD047).
+    Disabled rules (MD001, MD002, MD012, MD013, MD022, MD029, MD031, MD032)
+    are intentionally relaxed for AI-generated content and should not be
+    mentioned in your analysis.
+    
+    **Output Format:**
+    - Concise analysis focused on enabled rules only
+    - Specific file paths and line numbers for violations
+    - Actionable recommendations with commands/examples
+    - Focus on automation and prevention
+    
+    **Best Practices:**
+    - Trailing spaces: Enable "trim trailing whitespace on save" in editor
+    - Final newline: Enable "insert final newline" in editor
+    - List indentation: Configure editor for 4-space indentation
+    - Header punctuation: Style guide - headers are labels, not sentences
+    
+    **Reference Documentation:**
+    - See docs/MARKDOWN_LINTING_GUIDE.md for complete guidance
+    - .mdlrc configuration documents disabled rules with rationale
+    - .editorconfig provides automated formatting rules
+
+
+# Step 04: Configuration Specialist Prompt Template
+# Purpose: Validate and analyze configuration files for schema correctness, security, and best practices
+# Version: 1.0.3 (v6.8.5 - Improve Task section clarity and add config-loader reference)
+configuration_specialist_prompt:
+  # Split role into prefix + guidelines for token efficiency
+  role_ref: configuration_specialist  # resolved from config/prompt_roles.yaml
+  
+  behavioral_guidelines: *behavioral_actionable
+  
+  task_template: |
+    Validate and analyze the {config_count} configuration file(s) listed in
+    the **Configuration Files in Scope** sub-section directly below, such as package manifests
+    (`package.json`, `requirements.txt`), env files (`.env`, `.env.production`),
+    CI workflows, Docker/compose files, editor/tooling configs, and AI-workflow
+    YAML when present. Analyze only the files explicitly listed in that sub-section —
+    do not infer, search for, or include any other files. For each file shown in
+    **File Contents**, check syntax/schema correctness, security hygiene, consistency
+    with related configs, and stack-specific best practices when tech-stack context
+    is available. If a listed file is absent from **File Contents**, report it as
+    "content unavailable" and skip checks for it.
+    
+    ### Configuration Files in Scope
+    {config_files_list}
+
+    > **Note:** The scope list above defines the exact set of files to analyze. If a listed
+    > file is absent from **File Contents** below, report it as "content unavailable" —
+    > do not infer its contents or skip it silently.
+    
+    ### Project Context
+    - Project Type: {project_kind}
+    - Tech Stack: {tech_stack}
+    - Total Config Files: {config_count}
+    
+    ### File Contents
+    {config_files_content}
+    
+    ### Validation Tasks
+    
+    1. **Syntax Validation**:
+       - Parse JSON/YAML/TOML/INI files for syntax errors (e.g., trailing commas in JSON, unquoted special chars in YAML)
+       - Check for malformed structures, invalid escaping, encoding issues
+       - Verify schema compliance where applicable (e.g., `package.json` must have `name` and `version`; `tsconfig.json` requires `compilerOptions`)
+       - Flag missing required fields or invalid value types (e.g., `"strict": "yes"` instead of `true` in tsconfig)
+    
+    2. **Security Analysis**:
+       - ⚠️ CRITICAL: Check for exposed secrets (API keys, passwords, tokens)
+       - Verify no hardcoded credentials in configuration files (e.g., `password: mysecret` in YAML)
+       - Check file permissions recommendations (e.g., .env files should be 0600)
+       - Flag insecure defaults (weak crypto, permissive CORS, debug mode in prod; e.g., `DEBUG=true` in `.env.production`)
+       - Validate environment variable usage (use ${VAR} instead of hardcoding)
+    
+    3. **Consistency Checks**:
+       - Cross-reference related configs (e.g., `engines.node` in package.json ↔ `.nvmrc`; `python_requires` ↔ `.python-version`)
+       - Verify dependency versions match across lockfiles and manifests (e.g., `package.json` vs `package-lock.json`)
+       - Check for conflicting settings (e.g., different ports in docker-compose.yml vs .env)
+       - Ensure CI/CD configs match documented build commands (e.g., `npm run test:unit` in workflow matches a real script in package.json)
+    
+    4. **Best Practices** (apply checks appropriate for the detected tech stack: {tech_stack}):
+       - Dependency version pinning (e.g., for package.json: prefer exact versions in `dependencies`, ranges only in `devDependencies`)
+       - Environment-specific configs (dev/staging/prod separation; e.g., `.env` vs `.env.production`)
+       - Docker multi-stage builds, layer optimization (e.g., copy only necessary files before `npm install`)
+       - CI/CD caching strategies, artifact management (e.g., cache `node_modules` keyed on `package-lock.json` hash)
+       - Configuration documentation (comments explaining non-obvious settings, e.g., why a timeout is set to a specific value)
+    
+    5. **Special Handling for AI Workflow Configs** (if applicable):
+       - Validate ai_helpers.yaml structure (role_prefix + behavioral_guidelines pattern)
+       - Check YAML anchor references are valid
+       - Verify persona prompt completeness
+       - Flag token inefficiency patterns (redundant text, missing anchors)
+       - Ensure behavioral_guidelines usage for consistency
+       - When `config/ai_helpers.yaml` or `config/prompt_roles.yaml` are in scope, also
+         verify alignment with the config-loader module (`src/loader.ts`): confirm that
+         any new persona keys include a `role_ref` resolvable from `prompt_roles.yaml`,
+         and that the top-level YAML remains a plain mapping (not a list or scalar).
+  
+  approach: |
+    Analyze ONLY the configuration files explicitly listed above. Do not reference, invent, or assume files not in that list.
+
+    **Validation Priority:**
+    1. Security issues (CRITICAL - exposed secrets, weak defaults)
+    2. Syntax errors (HIGH - will break builds/deployments)
+    3. Consistency problems (MEDIUM - may cause runtime issues)
+    4. Best practice violations (LOW - quality improvements)
+    
+    **Output Format:**
+    
+    For each issue found, provide:
+    - **File**: Configuration file path
+    - **Severity**: CRITICAL | HIGH | MEDIUM | LOW
+    - **Category**: Syntax | Security | Consistency | BestPractice
+    - **Issue**: Specific problem description
+    - **Line**: Line number (if applicable)
+    - **Recommendation**: Concrete fix with before/after example
+    - **Impact**: What breaks or improves
+    
+    **If no issues found**:
+    - Explicitly state "All configuration files validated successfully"
+    - Summarize what was checked (X files, Y validations performed)
+    - Highlight any noteworthy best practices already in use
+    
+    **Format Types:**
+    - JSON: package.json, tsconfig.json, .vscode/*, composer.json
+    - YAML: .github/workflows/*, docker-compose.yml, .gitlab-ci.yml, ai_helpers.yaml
+    - TOML: Cargo.toml, pyproject.toml, .mdlrc
+    - INI: .editorconfig, setup.cfg, tox.ini
+    - Shell: .env.example (KEY=value format)
+    - Specialized: Dockerfile, Makefile, .gitignore
+    
+    **Reference Standards:**
+    - JSON: RFC 8259, JSON Schema validation
+    - YAML: YAML 1.2 spec, safe loading practices
+    - TOML: TOML v1.0.2 spec
+    - Docker: Best practices from Docker docs
+    - CI/CD: Platform-specific guidelines (GitHub Actions, GitLab CI, etc.)
+    
+    **Debugging-Oriented Config Review** (when logging/instrumentation configs are present):
+    - Verify timestamp formats in logs (ISO 8601 recommended)
+    - Check log levels configured appropriately (DEBUG for development)
+    - Ensure structured logging for complex event-driven systems
+    - Validate log rotation and retention policies
+    - Validate source map configuration (tsconfig.json, webpack.config.js)
+    - Check debug mode settings (NODE_ENV, DEBUG flags)
+    - Verify error reporting configuration (Sentry, Rollbar, etc.)
+    - Validate browser console integration settings and error boundary config
+    - Check network request logging (Fetch API, Axios interceptors)
+    - Validate Performance API usage configuration and timing instrumentation
+
+
+# Step 14: Prompt Engineer Analysis Prompt Template
+step14_prompt_engineer_prompt:
+  # Split role into prefix + guidelines for token efficiency
+  role_ref: step13_prompt_engineer  # resolved from config/prompt_roles.yaml
+  
+  behavioral_guidelines: *behavioral_actionable
+  
+  task_template: |
+    Analyze AI persona prompts and identify improvement opportunities.
+    
+    **Context:**
+    - Project: AI Workflow Automation
+    - Total Personas: {persona_count}
+    - Scope: All prompt templates (role, task, approach)
+    
+    **Current Personas:**
+    {personas_list}
+    
+    **Analysis Framework:**
+    
+    1. **Clarity**: Role definitions clear? Tasks well-specified? Guidance actionable?
+    2. **Token Efficiency**: Redundancy? Verbosity? Consolidation opportunities?
+    3. **Output Quality**: Format defined? Structured responses? Examples helpful?
+    4. **Consistency**: Formatting uniform? Patterns similar? Terminology consistent?
+    5. **Domain Expertise**: Role matches task? Authority appropriate? Best practices applied?
+    6. **User Experience**: Developer-friendly? Error handling clear? Context-aware?
+  
+  approach: |
+    **Output Structure**:
+    
+    For each improvement, provide:
+    - **Persona**: Which prompt needs work
+    - **Category**: Clarity|TokenEfficiency|OutputQuality|Consistency|DomainExpertise|UserExperience
+    - **Severity**: Critical|High|Medium|Low
+    - **Current Problem**: Specific issue with examples
+    - **Recommendation**: Concrete fix with before/after
+    - **Expected Impact**: Quality/efficiency/UX improvement
+    - **Token Savings**: If applicable (e.g., "~50 tokens")
+    
+    **Prioritization**:
+    - Critical: Correctness issues or major confusion
+    - High: Significant quality/efficiency gains
+    - Medium: Consistency or UX enhancements  
+    - Low: Minor refinements
+    
+    **Best Practices**:
+    - Imperative voice | Specific outputs | Balance detail/conciseness
+    - Include examples when helpful | Consider token cost vs value
+    - Ensure maintainability | Make expertise credible
+
+
+
+# ==============================================================================
+# PHASE 4: LANGUAGE-SPECIFIC PROMPT TEMPLATES
+# ==============================================================================
+
+# Language-Specific Instructions for Documentation
+# NOTE: These templates are injected into step prompts based on detected PRIMARY_LANGUAGE
+# Template variable format: {language_specific_directory_standards}, {language_specific_documentation_standards}
+# Usage: The ai_prompt_builder.sh dynamically populates these based on .workflow-config.yaml settings

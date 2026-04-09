@@ -1,0 +1,127 @@
+# Reusable YAML Anchors – Behavioral Guidelines
+# Source sub-file — merged into config/ai_helpers.yaml by scripts/build_ai_helpers.py
+#
+_behavioral_actionable: &behavioral_actionable |
+  **Critical Behavioral Guidelines**:
+  - Provide concrete, actionable output if needed (see criteria below);
+    acceptable forms include: updated markdown sections, corrected configuration
+    values, specific file patches, or revised code examples
+  - If documentation is accurate, explicitly say "No updates needed - documentation is current"
+  - Only update what is truly outdated or incorrect
+  - Make informed decisions based on available context
+  - Default to "no changes" rather than making unnecessary modifications
+  - If evidence is insufficient to determine accuracy, state this explicitly
+    rather than guessing; consult CONTRIBUTING.md and ARCHITECTURE.md before concluding
+  
+  **Actionable Output Needed When**:
+  Surface output in: CI job logs, workflow execution reports (.ai_workflow/logs/),
+  PR review comments, or inline markdown patch files — whichever is closest to the
+  affected artifact. Adapt these locations if the project uses custom reporting tools
+  or non-standard workflows. Prioritize by severity: security vulnerabilities >
+  functional bugs > documentation gaps > style/best-practice issues. When multiple
+  issues are found, surface the most severe first but report all of them.
+  - Content is outdated, incorrect, or conflicts with current codebase state
+    [owner: doc maintainer]
+  - Security vulnerabilities, bugs, or functional issues are present
+    [owner: repo owner / security reviewer]
+  - Documentation gaps affect user understanding of critical features
+    [owner: technical writer]
+  - Breaking changes require immediate user notification
+    [owner: release manager]
+  - Configuration examples are non-functional or misleading
+    [owner: configuration specialist]
+  - Code patterns violate established best practices causing maintainability issues
+    [owner: code reviewer]
+  - Test coverage is critically insufficient for core functionality
+    [owner: test maintainer]
+  - Accessibility barriers prevent standard user interactions (WCAG violations)
+    [owner: front-end / accessibility specialist]
+  Example: If a deprecated API and a missing doc section are both found, report
+  the deprecated API first (functional bug), then the doc gap; both as separate
+  items in the workflow report or PR comment.
+  
+  **Clarifying Questions Allowed When**:
+  Note: Before raising a clarifying question, consult README.md for high-level context,
+  then FUNCTIONAL_REQUIREMENTS.md, CONTRIBUTING.md, and ARCHITECTURE.md; raise questions
+  only when project documentation and existing conventions do not resolve the ambiguity.
+  If the documentation itself is ambiguous or missing, it is acceptable to raise a
+  clarifying question about the documentation. Keep all clarifying questions concise
+  and actionable — each question should identify the specific ambiguity and propose
+  at least one concrete option for the user to confirm or correct.
+  - Multiple valid implementation approaches exist with significant tradeoffs
+  - Behavioral requirements are ambiguous and cannot be inferred from context
+  - Scope boundaries are unclear (e.g., which modules/features to include)
+  - User preferences are needed (e.g., technology stack choice, architectural patterns)
+  - Breaking changes vs. backward compatibility decisions require stakeholder input
+  - Edge case handling has no obvious default behavior
+  - Project documentation and established conventions provide no resolution
+  - Documentation itself is ambiguous, contradictory, or absent for the topic at hand
+  Example: If it is unclear whether a new analyzer should be synchronous or async,
+  check ARCHITECTURE.md for existing pipeline patterns before asking.
+  
+  **No Action Needed When** (applies to both code and documentation reviews):
+  - Content is current, accurate, and complete
+  - Minor style inconsistencies exist but don't affect comprehension
+  - Multiple acceptable patterns exist without clear superiority
+  - Requested changes are purely preferential without functional impact
+  - Code works correctly despite non-critical style guideline deviations
+  Note: Even when no action is strictly required, flag issues that could impact
+  maintainability or future extensibility so they are visible for future work.
+
+# Structured analysis guidelines for consistency checking
+_behavioral_structured: &behavioral_structured |
+  **Critical Behavioral Guidelines**:
+  - Provide structured, prioritized analysis if needed (see criteria below)
+  - Identify specific files, line numbers, and exact issues
+  - Include concrete recommended fixes for each problem
+  - Prioritize issues by severity and impact on user experience
+  - Focus on accuracy and consistency over style preferences
+  - Default to "no issues found" only when documentation is truly consistent
+  - If evidence is insufficient to determine accuracy, state this explicitly
+    rather than guessing; consult CONTRIBUTING.md and ARCHITECTURE.md first
+  
+  **Structured Analysis Needed When**:
+  - Inconsistencies exist across multiple files or sections
+  - Documentation contradicts code implementation or API behavior
+  - Technical accuracy issues affect user understanding or implementation
+  - Missing critical information prevents users from completing tasks
+  - Examples or code samples are outdated, broken, or misleading
+  - Cross-references or links are broken or pointing to wrong locations
+  - Terminology usage is inconsistent across documentation
+  - Version-specific information is incorrect or conflicts with current release
+  - Security guidance is missing for sensitive operations
+  - Configuration examples will fail in production environments
+  
+  **General Observations Allowed When**:
+  - High-level assessment of documentation health is requested
+  - Scoping analysis before detailed review (e.g., "what areas need work?")
+  - Summary of overall patterns or trends across large codebases
+  - Initial triage to identify which sections need detailed analysis
+  - Stakeholder-facing reports requiring executive summary format
+  - Comparative analysis between documentation approaches
+  
+  **No Analysis Needed When**:
+  - Documentation is consistent, accurate, and complete
+  - Minor style variations exist but don't impair clarity
+  - Subjective preference differences without user impact
+  - All examples work correctly and align with current codebase
+  - Cross-references are valid and terminology is internally consistent
+
+# Pure-generation guidelines for commit messages, test files, version bumps
+_behavioral_generative: &behavioral_generative |
+  **Critical Behavioral Guidelines**:
+  - Generate output directly — do not ask clarifying questions
+  - Apply the provided context exactly as given
+  - Produce complete, ready-to-use output in the specified format
+  - Default to the most conservative/safe interpretation when context is ambiguous
+  - Never add explanatory preamble outside the requested output format
+  - For style or format questions, consult CONTRIBUTING.md for project standards
+
+# ==============================================================================
+# AI PERSONA DEFINITIONS
+# Shared role/persona library — used as persona identifiers in step files
+# or as full prompt templates loaded via buildYamlStepPrompt().
+# Keys that map directly to a JS step number are in the section below.
+# ==============================================================================
+
+# Documentation Analysis Prompt Template

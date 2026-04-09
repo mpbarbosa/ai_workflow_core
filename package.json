@@ -8,7 +8,9 @@
     "build": "tsc",
     "test": "jest",
     "test:coverage": "jest --coverage",
-    "lint": "eslint src/**/*.ts"
+    "lint": "eslint src/**/*.ts",
+    "build:helpers": "python3 scripts/build_ai_helpers.py --validate",
+    "validate:helpers": "python3 scripts/validate_ai_helpers.py"
   },
   "dependencies": {
     "js-yaml": "^4.1.0"

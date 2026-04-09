@@ -1,0 +1,440 @@
+# Review & Automation Personas
+# Source sub-file — merged into config/ai_helpers.yaml by scripts/build_ai_helpers.py
+#
+api_contract_reviewer_prompt:
+  # Covers: OpenAPI/JSON Schema/GraphQL drift, breaking changes, type-safe boundary audit
+  role_ref: api_contract_reviewer  # resolved from config/prompt_roles.yaml
+  behavioral_guidelines: *behavioral_structured
+
+  task_template: |
+    **YOUR TASK**: Validate the API contract alignment for {project_name}.
+
+    **Project Context:**
+    - Project: {project_name} ({project_description})
+    - Language: {primary_language}
+    - Source Files Analyzed: {source_file_count}
+    - Modified Files: {modified_count}
+    - File Paths:
+    {file_paths}
+
+    **File Contents:**
+    {file_content_block}
+
+    **REQUIRED ACTIONS**:
+    1. Detect OpenAPI, JSON Schema, and GraphQL schema files in the injected content
+    2. Compare declared API surface (schema) against implemented route handlers for drift
+    3. Identify missing endpoints, undocumented fields, wrong response shapes, or type mismatches
+    4. Classify all changes as additive (non-breaking) or breaking, with semver implications
+    5. Verify TypeScript type definitions align with the runtime schema for type-safe boundaries
+    6. Check that error envelopes, status codes, and pagination follow consistent patterns
+
+  approach: |
+    Work only from the injected file contents above. Do not infer route implementations or
+    schema definitions that are not present in {file_content_block}.
+    If a schema file is present but the corresponding handler is absent (or vice versa),
+    flag it as "Incomplete context — partial analysis only".
+    For GraphQL: compare SDL type definitions against resolver implementations.
+    For REST: compare OpenAPI/Swagger paths against Express/Fastify route registrations.
+    For JSON Schema: compare schema $defs against runtime validation call sites.
+
+  output_format: |
+    **API Contract Review: {project_name}**
+
+    **Schema Files Detected**:
+    [List schema files found with format: OpenAPI | JSON Schema | GraphQL SDL | None detected]
+
+    **Drift Analysis**:
+    | Endpoint / Type | Schema Says | Implementation Says | Drift Type | Breaking? |
+    |-----------------|-------------|---------------------|------------|-----------|
+    [One row per mismatch; ✅ if aligned]
+
+    **Breaking Change Assessment**:
+    [List breaking changes with semver impact: patch / minor / major]
+    [State "No breaking changes detected" if none found]
+
+    **Type Safety Gaps**:
+    [TypeScript types that diverge from runtime schema validation; or ✅ None detected]
+
+    **Recommendations**:
+    [Ordered list of concrete fixes, highest impact first]
+
+# =============================================================================
+# ai_workflow_log_analyzer Team Alignment Prompts
+# (Added v6.8.0 — 2026-04-02)
+#
+# Derived from the ai_workflow_log_analyzer team assessment. Covers four roles
+# that had no corresponding prompt entry in ai_helpers.yaml:
+#
+#   1. cli_tui_engineer_prompt     — Terminal UI Engineer
+#      (role defined in prompt_roles.yaml; prompt was missing)
+#   2. llm_integration_engineer_prompt — LLM Integration Engineer
+#      (role defined in prompt_roles.yaml; prompt was missing)
+#   3. devx_engineer_prompt        — QA & Test Infrastructure Engineer
+#      (role defined in prompt_roles.yaml; prompt was missing)
+#   4. core_pipeline_engineer_prompt — Core Pipeline Engineer
+#      (new role added to prompt_roles.yaml v1.3.0; no prior equivalent)
+#
+# Role 5 (DevOps & Release Engineer) already maps to the existing
+# devops_engineer_prompt and library_release_engineer_prompt entries.
+# =============================================================================
+
+# CLI/TUI Engineer
+cli_tui_engineer_prompt:
+  # Covers: Ink/React TUI components, keyboard routing, scroll state, panel layout
+  role_ref: cli_tui_engineer  # resolved from config/prompt_roles.yaml
+  behavioral_guidelines: *behavioral_actionable
+
+  task_template: |
+    **YOUR TASK**: Review and improve the terminal user interface components for {project_name}.
+
+    **Project Context:**
+    - Project: {project_name} ({project_description})
+    - Project Kind: {project_kind}
+    - Language: {primary_language}
+    - Source Files Analyzed: {source_file_count}
+    - Modified Files: {modified_count}
+    - Analyzed File Paths:
+    {file_paths}
+
+    **File Contents:**
+    {file_content_block}
+
+    **REQUIRED ACTIONS**:
+    1. Review the root App component: keyboard routing, focus/mode state machine,
+       and cross-component communication patterns (globalThis scroll handlers vs Context API)
+    2. Audit each Ink component for layout correctness — box sizing, overflow handling,
+       terminal width responsiveness, and non-TTY fallback behaviour
+    3. Verify keyboard input handling: panel focus cycling (Tab/Shift+Tab), mode switching,
+       multi-key sequences, and correct scoping of useInput calls per focused component
+    4. Evaluate scroll state management: identify any scroll handlers exposed on globalThis
+       and recommend migrating to React Context or hook-based encapsulation
+    5. Check streaming panel patterns: frame-rate limiting, batch state updates,
+       and incremental render safety for long-running async output
+    6. Flag any Ink v4/v5 API mismatches, deprecated hooks, or non-functional component patterns
+
+  approach: |
+    Work only from the injected file contents above. Do not assume component behaviour
+    that is not visible in {file_content_block}.
+    Start with the root App component to map the complete mode/focus state machine before
+    reviewing individual panel components.
+    For each component, verify it follows the functional-component + hooks pattern; flag
+    any class components or direct DOM/process.stdout manipulation.
+    Identify globalThis usage specifically — document each handler, assess the risk of
+    handler leakage across renders, and provide a concrete React Context migration path.
+    Provide before/after TypeScript examples for every recommended change.
+
+  output_format: |
+    **TUI Review: {project_name}**
+
+    **State Machine Assessment**:
+    [App mode/focus transitions — correct ✅ or issues found with description]
+
+    **Component Findings**:
+    | Component | Issue | Severity | Recommended Fix |
+    |-----------|-------|----------|-----------------|
+    [One row per finding; ✅ if no issues]
+
+    **globalThis Handler Audit**:
+    | Handler Key | Purpose | Risk | Migration Path |
+    |-------------|---------|------|----------------|
+    [One row per globalThis key found; ✅ None found if absent]
+
+    **Recommendations** (ordered by impact):
+    [Numbered list of concrete changes with before/after TypeScript examples]
+
+# LLM Integration Engineer
+llm_integration_engineer_prompt:
+  # Covers: SDK session lifecycle, streaming generators, error recovery, token/cost tracking
+  role_ref: llm_integration_engineer  # resolved from config/prompt_roles.yaml
+  behavioral_guidelines: *behavioral_actionable
+
+  task_template: |
+    **YOUR TASK**: Review and improve the LLM SDK integration for {project_name}.
+
+    **Project Context:**
+    - Project: {project_name} ({project_description})
+    - Project Kind: {project_kind}
+    - Language: {primary_language}
+    - Source Files Analyzed: {source_file_count}
+    - Modified Files: {modified_count}
+    - Analyzed File Paths:
+    {file_paths}
+
+    **File Contents:**
+    {file_content_block}
+
+    **REQUIRED ACTIONS**:
+    1. Audit the SDK client session lifecycle: verify each call creates and destroys its own
+       session (no session reuse across calls), and that idle-event awaiting is correctly
+       implemented to collect the full response before teardown
+    2. Review streaming response handling: verify async generator patterns, incremental
+       token buffering, backpressure management, and AbortSignal/cancel propagation
+    3. Assess error recovery: retry logic, timeout handling, partial response recovery,
+       and graceful degradation when the SDK is unavailable (offline/CI mode)
+    4. Check auth integration: token resolution order (env var → SDK-native → CLI auth),
+       auth failure messages, and absence of hardcoded credentials
+    5. Review rate-limit handling for batch operations: sequential-with-progress patterns,
+       per-call error isolation so one failure does not abort the batch
+    6. Evaluate prompt construction: system message injection, context block formatting,
+       role/template prefixing, and token budget enforcement before submission
+
+  approach: |
+    Work only from the injected file contents above. Do not infer SDK behaviour that is
+    not shown in {file_content_block}.
+    Begin by tracing a single LLM call from entry point to session teardown, validating
+    each lifecycle stage against the per-call session creation/destruction contract.
+    For streaming paths, trace the async generator from first token to completion token,
+    verifying the consumer correctly handles both streaming and one-shot response modes.
+    For batch paths, verify that Promise.allSettled (or equivalent) is used so individual
+    call failures are isolated and the aggregate result is still returned.
+    Flag any session reuse, missing await on idle, or uncaught rejection in streaming paths.
+
+  output_format: |
+    **LLM Integration Review: {project_name}**
+
+    **Session Lifecycle Audit**:
+    [Per-call create/destroy pattern — correct ✅ or deviations with description]
+
+    **Streaming Path Findings**:
+    | Location | Issue | Severity | Recommended Fix |
+    |----------|-------|----------|-----------------|
+    [One row per finding; ✅ if no issues]
+
+    **Error Recovery Assessment**:
+    [Retry, timeout, degradation paths — correct ✅ or issues with description]
+
+    **Auth & Credential Audit**:
+    [Token resolution order and absence of hardcoded secrets — ✅ Clean or findings listed]
+
+    **Recommendations** (ordered by risk):
+    [Numbered list with concrete before/after TypeScript examples]
+
+# DevX Engineer (QA & Test Infrastructure)
+devx_engineer_prompt:
+  # Covers: Jest/Vitest ESM test infrastructure, CI/CD pipelines, TypeScript build tooling
+  role_ref: devx_engineer  # resolved from config/prompt_roles.yaml
+  behavioral_guidelines: *behavioral_actionable
+
+  task_template: |
+    **YOUR TASK**: Audit and improve the test infrastructure and CI/CD pipeline for {project_name}.
+
+    **Project Context:**
+    - Project: {project_name} ({project_description})
+    - Project Kind: {project_kind}
+    - Language: {primary_language}
+    - Test Framework: {test_framework}
+    - Test Command: {test_command}
+    - Lint Command: {lint_command}
+    - Source Files Analyzed: {source_file_count}
+    - Modified Files: {modified_count}
+    - Analyzed File Paths:
+    {file_paths}
+
+    **File Contents:**
+    {file_content_block}
+
+    **REQUIRED ACTIONS**:
+    1. Identify failing or broken tests: diagnose import resolution errors, missing Jest/Vitest
+       globals, and ESM interop issues (jest.unstable_mockModule vs jest.mock, dynamic imports)
+    2. Audit ESM test setup: verify --experimental-vm-modules flag, ts-jest ESM preset
+       configuration, and that all mocks use jest.unstable_mockModule + await import() pattern
+    3. Review fixture management: validate that test fixtures use import.meta.url +
+       fileURLToPath for path resolution, and that fixture data covers both happy-path
+       and edge-case scenarios
+    4. Assess test coverage gaps: identify modules with no test file, analyzers missing
+       zero-issue baseline tests, and integration tests absent for CLI entry points
+    5. Evaluate CI/CD pipeline: check for missing GitHub Actions workflows (test, lint,
+       type-check, build, publish); propose a minimal matrix covering Node 20+
+    6. Review TypeScript build configuration: tsconfig.json strict mode, declaration maps,
+       source maps, and tsc --noEmit type-check correctness
+
+  approach: |
+    Work only from the injected file contents above. Do not assume test runner behaviour
+    or CI configuration that is not shown in {file_content_block}.
+    Begin with the Jest/Vitest config file to verify the ESM preset and module resolver.
+    For each failing test, trace the specific import or mock call that is broken and provide
+    the minimal change to restore it using the jest.unstable_mockModule + dynamic import pattern.
+    Map source modules to test files to identify coverage gaps — flag any src/ module
+    with no corresponding test/ file.
+    For CI, if no workflow files exist, provide a minimal GitHub Actions YAML that runs
+    npm run type:check && npm test && npm run lint on every push and pull_request.
+
+  output_format: |
+    **DevX Audit: {project_name}**
+
+    **Failing Tests**:
+    | Test File | Error | Root Cause | Fix |
+    |-----------|-------|------------|-----|
+    [One row per failing test; ✅ All passing if none]
+
+    **ESM Setup Assessment**:
+    [jest.unstable_mockModule usage, --experimental-vm-modules, dynamic imports — ✅ Correct or issues]
+
+    **Coverage Gaps**:
+    | Source Module | Has Test File? | Missing Scenarios |
+    |---------------|----------------|-------------------|
+    [One row per gap found; omit if fully covered]
+
+    **CI/CD Status**:
+    [Existing workflow files listed, or gap noted with minimal recommended YAML]
+
+    **Recommendations** (ordered by impact):
+    [Numbered list with concrete configuration snippets or code fixes]
+
+# Core Pipeline Engineer
+core_pipeline_engineer_prompt:
+  # Covers: parsers, analyzers, pipeline orchestration, type system, reporters
+  role_ref: core_pipeline_engineer  # resolved from config/prompt_roles.yaml
+  behavioral_guidelines: *behavioral_actionable
+
+  task_template: |
+    **YOUR TASK**: Review and extend the analysis pipeline for {project_name}.
+
+    **Project Context:**
+    - Project: {project_name} ({project_description})
+    - Project Kind: {project_kind}
+    - Language: {primary_language}
+    - Build System: {build_system}
+    - Test Framework: {test_framework}
+    - Test Command: {test_command}
+    - Lint Command: {lint_command}
+    - Source Files Analyzed: {source_file_count}
+    - Modified Files: {modified_count}
+    - Analyzed File Paths:
+    {file_paths}
+
+    **File Contents:**
+    {file_content_block}
+
+    **Scope:**
+    - ✅ In scope: Parser modules (log_parser, prompt_parser, metrics_parser)
+    - ✅ In scope: Analyzer modules (failure, performance, bug, doc, prompt_quality)
+    - ✅ In scope: Pipeline orchestration (runAnalysisPipeline, Promise.all parallelism)
+    - ✅ In scope: Shared type system (types/index.ts — interfaces, ThresholdConfig, AnalysisReport)
+    - ✅ In scope: Reporter modules (json_reporter, markdown_reporter)
+    - ❌ Out of scope: TUI components — flag only if a component reveals a pipeline contract issue
+
+    **REQUIRED ACTIONS**:
+    1. Audit parser correctness: verify regex coverage for all expected log event types,
+       section-boundary detection for prompt files, graceful skip-on-malformed-line behaviour,
+       and backward-compatible handling of missing run_metadata.json
+    2. Review analyzer purity: confirm each analyzer function is side-effect-free and
+       operates purely over its input array (LogEvent[] → Issue[]); flag any I/O or shared state
+    3. Validate pipeline orchestration: check that parsers run in parallel (Promise.all),
+       analyzers run sequentially, and failures in one analyzer do not abort the pipeline
+    4. Assess the type system: verify discriminated unions are exhaustive, ThresholdConfig
+       defaults are co-located with the type, and AnyLogEvent lives in log_parser.ts (not types/)
+    5. Check reporter output: verify JSON reporter round-trips AnalysisReport cleanly,
+       Markdown reporter groups issues by category with correct severity icons and score bars
+    6. Identify missing analyzer rules or parser event types relative to the log format contract
+
+  approach: |
+    Work only from the injected file contents above. Do not assume parser or analyzer
+    behaviour that is not visible in {file_content_block}.
+    Start with types/index.ts to map the complete shared data model before reading any
+    parser or analyzer — this prevents misinterpreting type names mid-review.
+    For each parser, trace a representative input line through the regex to verify the
+    resulting typed event shape matches the interface in types/index.ts.
+    For each analyzer, verify: (a) no imports from fs/promises or external services,
+    (b) the return type is Issue[], (c) threshold comparisons use the injected ThresholdConfig.
+    In pipeline.ts, verify Promise.all wraps exactly the three parsers and that each
+    analyzer receives the correct slice of parsed events.
+    For reporters, paste a minimal AnalysisReport fixture and trace the output string
+    to verify category grouping, icon mapping, and score bar rendering.
+
+  output_format: |
+    **Pipeline Review: {project_name}**
+
+    **Parser Audit**:
+    | Parser | Event Types Covered | Missing Coverage | Graceful Degradation |
+    |--------|---------------------|-----------------|----------------------|
+    [One row per parser; ✅ if fully covered]
+
+    **Analyzer Purity Check**:
+    | Analyzer | Pure? | Side Effects Found | Threshold Usage |
+    |----------|-------|--------------------|-----------------|
+    [One row per analyzer; ✅ Pure if no issues]
+
+    **Pipeline Orchestration**:
+    [Parallel parsing confirmed ✅ / issues; Sequential analysis confirmed ✅ / issues;
+     Error isolation confirmed ✅ / issues]
+
+    **Type System Assessment**:
+    [Discriminated unions exhaustive ✅ / gaps; AnyLogEvent location ✅ / misplaced;
+     ThresholdConfig defaults co-located ✅ / separated]
+
+    **Reporter Output**:
+    [JSON round-trip ✅ / issues; Markdown category grouping ✅ / issues]
+
+    **Recommendations** (ordered by impact):
+    [Numbered list with concrete TypeScript examples for each change]
+
+accessibility_review_prompt:
+  # Covers: WCAG 2.1 AA/AAA, ARIA patterns, keyboard navigation, colour contrast, semantic HTML
+  role_ref: accessibility_expert  # resolved from config/prompt_roles.yaml
+  behavioral_guidelines: *behavioral_structured
+
+  task_template: |
+    **YOUR TASK**: Perform an API documentation accessibility review of {project_name}.
+
+    **Project Context:**
+    - Project: {project_name} ({project_description})
+    - Framework: {framework}
+    - File Type: TypeDoc-generated API documentation (HTML)
+    - Source Files Analyzed: {source_file_count}
+    - File Paths:
+    {file_paths}
+
+    **File Contents:**
+    {file_content_block}
+
+    **REQUIRED ACTIONS**:
+    1. Identify missing or incorrect ARIA attributes: aria-label, aria-labelledby, aria-describedby, role
+    2. Check image alt text: missing, empty, or decorative images without alt=""
+    3. Review keyboard accessibility: missing tabindex, illogical tab order, missing focus indicators
+    4. Audit colour contrast: inline styles or CSS custom properties with insufficient contrast ratios
+    5. Check semantic HTML structure: heading hierarchy, landmark elements, form label associations
+    6. Verify navigation landmark structure: presence and correct use of <nav>, <main>, <header>, <footer> elements
+    7. Check link text clarity: flag bare anchor text such as "here", "click here", or "read more" that lacks descriptive context
+    8. Check for reduced-motion compliance: CSS animations without prefers-reduced-motion guards
+
+  approach: |
+    Work only from the injected file contents above.
+    For each finding, specify: file path, line reference (if determinable), WCAG success criterion violated (e.g. 1.1.1, 1.4.3), severity (Critical/Major/Minor), and a concrete remediation example.
+    Group findings by WCAG principle (Perceivable, Operable, Understandable, Robust).
+    If no accessibility issues are found in a file, state "No issues detected" rather than omitting it.
+
+performance_review_prompt:
+  # Covers: algorithmic complexity, CPU hotspots, memory leaks, bundle size, build performance, benchmarking
+  role_ref: performance_engineer  # resolved from config/prompt_roles.yaml
+  behavioral_guidelines: *behavioral_structured
+
+  task_template: |
+    **YOUR TASK**: Perform a performance engineering review of {project_name}.
+
+    **Project Context:**
+    - Project: {project_name} ({project_description})
+    - Language: {primary_language}
+    - Build System: {build_system}
+    - Source Files Analyzed: {source_file_count}
+    - File Paths:
+    {file_paths}
+
+    **File Contents:**
+    {file_content_block}
+
+    **REQUIRED ACTIONS**:
+    1. Identify algorithmic complexity issues: O(n²) or worse loops, nested iterations over large datasets
+    2. Find synchronous blocking operations in hot paths: synchronous file I/O, large JSON.parse(), blocking regex
+    3. Detect memory allocation hotspots: objects created inside tight loops, missing object pooling, closure leaks
+    4. Review data structure choices: Object vs Map, Array vs Set for membership tests, typed arrays for numeric data
+    5. Identify missing memoization: repeated expensive computations without caching
+    6. Analyse bundle/build impact: large imports that could be tree-shaken, missing dynamic imports for lazy loading
+    7. Review benchmarking coverage: identify computational hot paths with no benchmark (npm bench / vitest bench)
+    8. Flag regex performance risks: catastrophic backtracking patterns, unanchored patterns on large strings
+
+  approach: |
+    Work only from the injected file contents above.
+    For each finding: specify file path, line reference, severity (High/Medium/Low), estimated impact, and a concrete optimisation example with before/after code.
+    Include a summary table: | File | Issue Type | Severity | Impact |
+    Focus on actionable findings — do not flag theoretical issues without evidence in the provided code.

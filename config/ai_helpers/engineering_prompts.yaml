@@ -1,0 +1,420 @@
+# Engineering Quality & Analysis Personas
+# Source sub-file — merged into config/ai_helpers.yaml by scripts/build_ai_helpers.py
+#
+requirements_engineer_prompt:
+  # Split role into prefix + guidelines for token efficiency
+  role_ref: requirements_engineer  # resolved from config/prompt_roles.yaml
+  
+  behavioral_guidelines: *behavioral_actionable
+  
+  task_template: |
+    **YOUR TASK**: Analyze existing requirements and determine if new requirements documentation is truly needed. Generate ONLY when necessary.
+    
+    **CRITICAL DECISION-MAKING FRAMEWORK**: You MUST evaluate necessity BEFORE generating requirements.
+    
+    **Project Context:**
+    - Project: {project_name} ({project_description})
+    - Primary Language: {primary_language}
+    - Current Requirements: {requirements_docs_count} documents
+    - Source Code: {source_files} files
+    - Stakeholders: {stakeholder_count}
+    
+    **STEP 1: NECESSITY EVALUATION** (Answer these questions FIRST):
+    
+    Is new requirements documentation TRULY needed? Use this criteria suite:
+    
+    ✅ **GENERATE Requirements if ANY of these are TRUE**:
+    1. **No Requirements Foundation**: No requirements documents exist (user stories, use cases, BRD, SRS)
+    2. **Ambiguous Scope**: Project goals are unclear or contradictory (leads to wasted development effort)
+    3. **Missing Acceptance Criteria**: Features lack testable acceptance criteria (cannot verify completion)
+    4. **Undocumented Features**: New features or changes lack requirements documentation
+    5. **Stakeholder Conflicts**: Conflicting expectations exist without documented resolution
+    6. **Traceability Gap**: Cannot trace features to requirements or requirements to tests
+    7. **Compliance Requirements**: Regulatory/legal requirements lack formal documentation
+    8. **Major Changes**: Significant feature changes or pivots without updated requirements
+    9. **Explicit Request**: The task explicitly asks for specific requirements analysis or documentation
+    
+    ❌ **DO NOT GENERATE if ALL of these are TRUE**:
+    1. **Complete Coverage**: All features have documented requirements with acceptance criteria
+    2. **Clear Scope**: Project scope is well-defined with priorities
+    3. **Recent Updates**: Requirements modified within last sprint/iteration
+    4. **Stakeholder Alignment**: All stakeholders agree on documented requirements
+    5. **Full Traceability**: Requirements trace to design, code, and tests
+    6. **Testable Criteria**: All requirements have verifiable acceptance criteria
+    
+    **STEP 2: REQUIREMENTS ANALYSIS** (Only if STEP 1 indicates requirements are needed):
+    1. **Current State Assessment**:
+       - List all existing requirements documents (user stories, use cases, BRD, SRS, backlog)
+       - Identify documented vs undocumented features
+       - Check requirements quality (SMART criteria: Specific, Measurable, Achievable, Relevant, Testable)
+       - Assess traceability (requirements ↔ design ↔ code ↔ tests)
+    
+    2. **Gap Identification**:
+       - Missing functional requirements (features, behaviors, capabilities)
+       - Missing non-functional requirements (performance, security, usability, scalability)
+       - Incomplete acceptance criteria or testability issues
+       - Ambiguous or conflicting requirements
+       - Stakeholder needs not captured
+       - Missing constraints (technical, business, regulatory)
+    
+    3. **Stakeholder Analysis**:
+       - Identify all stakeholders and their needs
+       - Document conflicting expectations
+       - Prioritize requirements by stakeholder value
+       - Assess feasibility (technical, operational, economic)
+    
+    **REQUIREMENTS ENGINEERING ACTIVITIES TO PERFORM IF GAPS EXIST**:
+    
+    1. **Requirements Elicitation** (gathering requirements):
+       - Interview stakeholders to understand needs and pain points
+       - Conduct workshops or focus groups for collaborative requirements gathering
+       - Observe users to identify implicit requirements
+       - Create prototypes or mockups to validate understanding
+       - Analyze existing systems and documentation
+       - Review business goals and success criteria
+    
+    2. **Requirements Analysis & Refinement**:
+       - Resolve ambiguities and contradictions
+       - Decompose high-level requirements into detailed requirements
+       - Identify dependencies and conflicts
+       - Perform feasibility analysis (technical, operational, economic)
+       - Prioritize requirements (MoSCoW: Must have, Should have, Could have, Won't have)
+       - Assess risks and constraints
+    
+    3. **Requirements Specification** (documenting requirements):
+       - **User Stories** (Agile): "As a [role], I want [feature] so that [benefit]" with acceptance criteria
+       - **Use Cases**: Actor, preconditions, main flow, alternative flows, postconditions
+       - **Functional Requirements**: System behaviors, features, and capabilities
+       - **Non-Functional Requirements**: Performance, security, usability, reliability, scalability
+       - **Business Requirements**: Business goals, success metrics, stakeholder needs
+       - **Acceptance Criteria**: Testable conditions that define "done"
+       - **Gherkin/BDD Scenarios**: Given-When-Then format for behavior-driven development
+    
+    4. **Requirements Traceability**:
+       - Create traceability matrix (requirements ↔ design ↔ code ↔ tests)
+       - Map user stories to epics and themes
+       - Link requirements to architecture components
+       - Track requirements to test cases for coverage
+       - Document change history and rationale
+       - Identify impact of requirement changes
+    
+    5. **Requirements Validation & Verification**:
+       - Conduct requirements reviews with stakeholders
+       - Validate against business goals and user needs
+       - Verify requirements are SMART (Specific, Measurable, Achievable, Relevant, Testable)
+       - Check for completeness, consistency, and clarity
+       - Validate prototypes with users
+       - Assess testability of acceptance criteria
+       - Review for compliance with standards (IEEE 29148, BABOK)
+    
+    **STEP 3: PRIORITIZED ACTIONS** (Execute based on STEP 1 evaluation):
+    
+    **IF Requirements ARE Needed** (STEP 1 criteria met):
+    1. **Analyze Current State**: List all existing requirements and assess completeness
+    2. **Identify Specific Gaps**: Pinpoint EXACTLY what's missing (with evidence from criteria)
+    3. **Elicit Missing Requirements**: Gather requirements from available context (code, docs, stakeholders)
+    4. **Document Requirements**: Create formal requirements documentation in appropriate format
+    5. **Establish Traceability**: Link requirements to design, code, and test cases
+    6. **Validate Requirements**: Review for SMART criteria and stakeholder alignment
+    
+    **IF Requirements are NOT Needed** (STEP 1 criteria NOT met):
+    1. **Confirm Coverage**: State "Requirements evaluation complete - no new requirements needed"
+    2. **Provide Evidence**: List which criteria were evaluated (e.g., "✅ Complete user story coverage, ✅ Recent backlog grooming")
+    3. **Optional Minor Improvements**: Suggest 1-2 small enhancements ONLY (clarifications, updated acceptance criteria)
+    4. **Exit Cleanly**: Do NOT generate new requirements documents or major content
+    
+    **OUTPUT FORMAT**:
+    - **Always start with**: "Requirements Necessity Evaluation" section with ACTION NEEDED / NO ACTION NEEDED decision
+    - **If ACTION NEEDED**: Show criteria met → "Requirements Gap Analysis" → generate missing requirements
+    - **If NO ACTION NEEDED**: Show criteria evaluation → "No new requirements required" → exit with optional minor suggestions
+    - **Never generate** "just in case" requirements - only when criteria clearly indicate need
+    - NEVER end with questions or requests for input - always provide definitive decision
+  
+  approach: |
+    Analyze ONLY the project files explicitly listed above. Do not reference, invent, or assume requirements not present in that list.
+
+    **Requirements Engineering Necessity-First Strategy**:
+    
+    **Phase 0: Necessity Check** (REQUIRED FIRST STEP):
+    - Apply the 9-point necessity criteria suite
+    - If ANY criterion is TRUE → Proceed to Phase 1
+    - If ALL criteria are FALSE → Output "No requirements work needed" and exit
+    - **Default to NOT generating** unless clear need is demonstrated
+    
+    **Phase 1: Discovery & Analysis** (Only if Phase 0 indicates need):
+       - List all existing requirements artifacts (user stories, use cases, BRD, SRS, backlog, specifications)
+       - Identify which features/components have requirements documentation
+       - Check for outdated or incomplete requirements (> 1 sprint old with code changes)
+       - Identify undocumented features, APIs, or system behaviors
+       - Assess requirements quality using SMART criteria
+       - Map existing traceability (requirements ↔ design ↔ code ↔ tests)
+    
+    **Phase 2: Gap Identification & Prioritization** (Only for REAL gaps):
+       - **Critical Gaps** (immediate action): No requirements foundation, missing acceptance criteria, compliance requirements
+       - **High Priority Gaps** (generate if time permits): Undocumented features, ambiguous scope, stakeholder conflicts
+       - **Medium Priority Gaps** (defer): Incomplete traceability, missing non-functional requirements
+       - **Low Priority Gaps** (do not generate): Nice-to-have features, edge cases, future enhancements
+       - **Rule**: If no Critical or High Priority gaps exist, output "No new requirements needed"
+    
+    **Phase 3: Requirements Elicitation** (For identified Critical/High gaps):
+       - Analyze available context: code, documentation, comments, tests, commit messages
+       - Infer user needs from existing implementations
+       - Identify stakeholder groups and their needs
+       - Extract implicit requirements from system behavior
+       - Document assumptions and constraints
+       - **Stop eliciting** once sufficient context is gathered for gap-filling
+    
+    **Phase 4: Requirements Specification** (Generate missing requirements):
+       - **User Stories**: "As a [role], I want [feature] so that [benefit]" + acceptance criteria
+       - **Acceptance Criteria**: Testable conditions using Given-When-Then or bullet format
+       - **Use Cases**: For complex interactions (actor, flow, alternatives, exceptions)
+       - **Functional Requirements**: Clear, testable statements of system behavior
+       - **Non-Functional Requirements**: Performance, security, usability targets (measurable)
+       - **Traceability**: Link requirements to existing code/tests where applicable
+       - **Format**: Use appropriate format for project type (Agile: user stories, Waterfall: SRS)
+    
+    **Phase 5: Validation & Quality Assurance** (For generated requirements):
+       - **SMART Check**: Specific, Measurable, Achievable, Relevant, Testable
+       - **Completeness**: All necessary information included (actors, conditions, results)
+       - **Consistency**: No conflicts with existing requirements or system behavior
+       - **Clarity**: Unambiguous language, no jargon without definition
+       - **Traceability**: Links to design, code, tests clearly identified
+       - **Testability**: Acceptance criteria can be verified by tests
+    
+    **Output Format**:
+    - Create complete, ready-to-use requirements documentation
+    - Use appropriate format: User Stories, Use Cases, BRD, SRS, or Requirements List
+    - Include acceptance criteria for all functional requirements
+    - Add traceability links where applicable (to code, tests, design docs)
+    - Use tables, lists, and clear formatting for readability
+    - Include priority and rationale for requirements
+    - Add examples and scenarios to clarify intent
+    
+    **Requirements Engineering Best Practices**:
+    - **SMART Requirements**: Specific, Measurable, Achievable, Relevant, Testable
+    - **Clear Actors**: Identify who benefits from each requirement
+    - **Testable Criteria**: Every requirement has verifiable acceptance criteria
+    - **Priority-Driven**: Use MoSCoW or similar prioritization framework
+    - **Traceable**: Link requirements to design, code, and tests
+    - **Version-Controlled**: Track changes and maintain history
+    - **Stakeholder-Validated**: Confirm requirements with stakeholders
+    - **Minimal Viable**: Focus on essential requirements first
+    - **Avoid Gold-Plating**: Don't add requirements "just in case"
+
+# Test Strategy Analysis Prompt Template
+# Test Strategy Prompt - Strategic Coverage Analysis and Test Planning
+# Use for: Portfolio-level test strategy, coverage gap analysis, test prioritization
+# Focus: WHAT to test, WHERE are gaps, WHY certain tests matter, WHEN to test
+# NOT for: Writing specific test code, reviewing test implementations, tactical test fixes
+test_strategy_prompt:
+  # Split role into prefix + guidelines for token efficiency
+  role_ref: test_strategy  # resolved from config/prompt_roles.yaml
+  
+  behavioral_guidelines: *behavioral_structured
+  
+  task_template: |
+    Analyze test coverage and provide strategic recommendations for test portfolio improvement.
+    
+    **Context:**
+    - Project: {project_name}
+    - Test Coverage: {coverage_stats}
+    - Test Files: {test_files}
+    - Modified Files: {modified_count}
+    
+    **Tasks:**
+    
+    1. **Coverage Gap Identification:**
+       - Identify untested or undertested code paths
+       - Highlight modules with low coverage (<80%)
+       - Determine critical paths lacking tests
+       - Assess edge cases and error handling coverage
+       - Evaluate component/integration test gaps
+    
+    2. **Test Prioritization:**
+       - Prioritize tests by business criticality
+       - Assess risk of untested code
+       - Recommend testing order (critical → important → nice-to-have)
+       - Identify quick wins for coverage improvement
+       - Suggest long-term test maintenance strategy
+    
+    3. **Test Portfolio Balance:**
+       - Evaluate unit vs integration vs e2e test distribution
+       - Assess test pyramid compliance
+       - Recommend testing approach per module type
+       - Identify over-tested areas (diminishing returns)
+       - Suggest rebalancing strategy
+    
+    4. **New Test Recommendations:**
+       - Recommend new test cases (high-level descriptions)
+       - Suggest test types needed (unit/integration/e2e)
+       - Identify scenarios requiring coverage
+       - Prioritize test generation efforts
+       - Estimate testing effort (small/medium/large)
+  
+  approach: |
+    Analyse only the **{project_name}** codebase described above. Do not reference ai_workflow.js or any other project not in the context.
+
+    Review the coverage stats and test files listed to identify gaps, prioritize recommendations, and produce a clear strategic roadmap.
+
+    **Output:**
+    - Coverage gap analysis with severity levels (Critical/High/Medium/Low)
+    - Prioritized list of testing recommendations
+    - Test portfolio assessment and rebalancing suggestions
+    - Strategic roadmap for improving test coverage
+    - Effort estimates for recommended tests
+    
+    **Strategic Focus:**
+    - Think portfolio-level, not file-level
+    - Consider business impact and risk
+    - Recommend WHAT to test, not HOW to implement
+    - Provide clear prioritization rationale
+    - Focus on coverage metrics and quality gates
+    
+    **Test Reality Validation** (when reviewing existing tests):
+    - Compare test mock structures to real API responses
+    - Identify tests passing with incorrect data structures
+    - Flag browser API mocks that don't match real behavior
+    - Recommend updating mocks to match production usage
+    - Suggest adding integration tests for critical paths
+    
+    **Observer Pattern Testing** (when event-driven code is present):
+    - Verify tests validate event type filtering
+    - Check tests for parameter structure matching
+    - Ensure tests cover observer registration/unregistration
+    - Validate multi-phase notification chain testing
+    - Test both accepted and rejected event scenarios
+    
+    **Browser API Testing Patterns** (when browser APIs are tested):
+    - Recommend real browser testing for APIs with getters
+    - Suggest enumerable property checks for spread operator usage
+    - Validate CORS retry logic with network failure tests
+    - Test async chain execution with timing scenarios
+    - Include race condition test coverage
+
+# Per-File Test Generation Prompt Template
+# Used by step_07 to generate a runnable test file for a single source file.
+# Variables: {source_file}, {language}, {test_framework}, {source_ext}, {source_content}
+single_file_test_prompt:
+  role_ref: single_file_test  # resolved from config/prompt_roles.yaml
+  behavioral_guidelines: *behavioral_generative
+
+  task_template: |
+    Generate a complete, runnable test file for the source file below.
+
+    **Source file**: `{source_file}`
+    **Language / framework**: {test_framework}
+
+    **Requirements**:
+    - Output ONLY the test file content inside a single fenced code block (```{source_ext} ... ```)
+    - Cover: happy paths, edge cases, and error scenarios
+    - Use {test_framework} idioms and conventions
+    - Use descriptive test names
+    - Do NOT include explanations outside the code block
+
+    ```{source_ext}
+    {source_content}
+    ```
+
+    Now generate the test file:
+
+  approach: |
+    Analyse only the **{source_file}** source code shown above. Do not reference any files or modules not visible in the context.
+
+    Generate a self-contained test file that:
+    - Imports from the source file using the correct relative path
+    - Uses {test_framework} idioms and conventions
+    - Covers happy paths, edge cases, and error handling
+    - Uses descriptive `describe`/`it` (or equivalent) blocks with clear test names
+    - Does NOT include any explanations outside the code block
+
+
+# Quality Prompt - Quick File-Level Code Review
+# Use for: Targeted code reviews, specific file analysis, quick quality checks
+# Focus: File-level issues, immediate problems, practical improvements
+# NOT for: Architectural analysis, comprehensive system review
+# Boundary: Use quality_prompt for quick/targeted/file-level reviews.
+#            Use step9_code_quality_prompt for system-wide/architectural/comprehensive audits.
+quality_prompt:
+  # Split role into prefix + guidelines for token efficiency
+  role_ref: quality  # resolved from config/prompt_roles.yaml
+  
+  behavioral_guidelines: *behavioral_actionable
+  
+  task_template: |
+    Review the following files for code quality: {files_to_review}
+    
+    Analyze:
+    1. **Code Organization** - Logical structure and separation of concerns
+    2. **Naming Conventions** - Clear, consistent, and descriptive names
+    3. **Error Handling** - Proper error handling and edge cases
+    4. **Documentation** - Inline comments and function documentation
+    5. **Best Practices** - Following language-specific best practices
+    6. **Potential Issues** - Security concerns, performance issues, bugs
+  
+  approach: |
+    - Review each file systematically
+    - Identify specific issues with file names and line numbers
+    - Suggest concrete improvements
+    - Prioritize findings by severity
+    - Provide code examples for recommended fixes
+    
+    **Observer Pattern & Event-Driven Code** (when applicable):
+    - Check for event type validation in observer.update() methods
+    - Verify parameter structures match between notifier and observer
+    - Identify missing null/undefined checks in notification chains
+    - Validate observer registration and unsubscription patterns
+    - Look for event name inconsistencies (typos, case sensitivity)
+    
+    **Data Structure Validation** (when applicable):
+    - Compare API contracts between producer and consumer
+    - Identify spread operator usage on objects with non-enumerable properties
+    - Check for type mismatches in function parameters
+    - Verify test mocks match real API response structures
+    - Flag destructuring that assumes specific object shapes
+    
+    **Visual Flow Analysis** (for complex flows):
+    - When reviewing complex flows, create ASCII diagrams showing:
+      * Notification chains with all observers
+      * Data flow between components
+      * Error propagation paths
+    - Mark potential failure points with visual indicators
+    - Use flow diagrams to explain architectural issues
+
+# Issue Extraction Prompt Template
+issue_extraction_prompt:
+  # Split role into prefix + guidelines for token efficiency
+  role_ref: issue_extraction  # resolved from config/prompt_roles.yaml
+  
+  behavioral_guidelines: *behavioral_structured
+  
+  task_template: |
+    Analyze the following GitHub Copilot session log from a documentation update workflow and extract all issues, recommendations, and action items.
+    
+    **Session Log File**: {log_file}
+    
+    **Log Content**:
+    ```
+    {log_content}
+    ```
+    
+    **Output Requirements**:
+    - Group findings by severity (Critical > High > Medium > Low)
+    - For each issue: include description, priority, and affected files
+    - End with actionable recommendations
+    - Use markdown headings for structure
+  
+  approach: |
+    - Extract all issues, warnings, and recommendations from the log
+    - Categorize by severity and impact
+    - Include affected files/sections mentioned in the log
+    - Prioritize actionable items
+    - Add context where needed
+    - If no issues found, state 'No issues identified'
+
+# ==============================================================================
+# STEP-SPECIFIC PROMPT TEMPLATES
+# Each key below is keyed by JS step number and consumed via
+# buildYamlStepPrompt(parsedYaml, '<key>', context) in src/steps/*.js.
+# ==============================================================================
+
+# Step 2: Documentation Consistency Analysis Prompt Template

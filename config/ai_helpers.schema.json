@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/mpbarbosa/ai_workflow_core/config/ai_helpers.schema.json",
+  "title": "AI Helpers Configuration",
+  "description": "Schema for config/ai_helpers.yaml and the sub-files in config/ai_helpers/. Each top-level key is either a YAML anchor string (_behavioral_*), a PersonaConfig object (identified by the presence of 'role_ref'), or a language lookup table (language_specific_*).",
+  "type": "object",
+  "additionalProperties": {
+    "description": "Each entry is a string anchor, a PersonaConfig, or a language lookup table.",
+    "anyOf": [
+      { "type": "string", "description": "YAML anchor value (_behavioral_* keys)" },
+      { "$ref": "#/definitions/PersonaConfig" },
+      { "$ref": "#/definitions/LanguageTable" }
+    ]
+  },
+  "definitions": {
+    "PersonaConfig": {
+      "title": "PersonaConfig",
+      "description": "A single AI persona entry. Mirrors the PersonaConfig TypeScript interface in olinda_prompter/.workflow_core/src/types.ts.",
+      "type": "object",
+      "required": ["role_ref"],
+      "properties": {
+        "role_ref": {
+          "type": "string",
+          "description": "Key referencing an entry in prompt_roles.yaml roles map."
+        },
+        "behavioral_guidelines": {
+          "type": "string",
+          "description": "YAML anchor alias for shared behavioral guidelines (resolved from _behavioral_* anchors)."
+        },
+        "task_template": {
+          "type": "string",
+          "description": "Prompt template string with optional {variable} placeholders."
+        },
+        "approach": {
+          "type": "string",
+          "description": "Step-by-step methodology text injected into the prompt."
+        },
+        "output_format": {
+          "type": "string",
+          "description": "Expected output format description."
+        },
+        "specific_expertise": {
+          "type": "string",
+          "description": "Domain-specific expertise context for the persona."
+        },
+        "commit_types": {
+          "description": "Commit type definitions (used by commit-oriented personas)."
+        }
+      },
+      "additionalProperties": true
+    },
+    "LanguageTable": {
+      "title": "LanguageTable",
+      "description": "A language-keyed lookup table (language_specific_documentation, language_specific_quality, language_specific_testing).",
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "minProperties": 1
+    }
+  }
+}

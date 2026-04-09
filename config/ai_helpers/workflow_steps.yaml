@@ -1021,17 +1021,26 @@ markdown_lint_prompt:
     following style-guide hierarchy (highest priority first):
 
     1. **`.github/copilot-instructions.md`** — primary project-level
-       authority; use this if the file is present.
-    2. **`.github/CONTRIBUTING.md`** — fallback when
-       `.github/copilot-instructions.md` is absent; contains the full
-       contribution guidelines including code style and immutability
+       authority; check whether this file exists before applying its
+       rules.
+    2. **`.github/CONTRIBUTING.md`** — secondary authority; check
+       whether this file exists before applying its rules. Contains the
+       full contribution guidelines including code style and immutability
        principles.
-    3. **Generic markdown defaults** — apply only where neither
-       project-specific file addresses the rule in question.
+    3. **Generic markdown defaults** — apply when neither
+       project-specific file exists, or for any rule not addressed by
+       those files.
 
     > **Note:** The root `CONTRIBUTING.md` is a conventional entry-point
     > pointer only — it redirects to `.github/CONTRIBUTING.md` and does
     > not contain authoritative rules itself.
+
+    **Before beginning your analysis**, confirm which of the above files
+    are present in the codebase. If project-specific files are found,
+    briefly identify the most relevant markdown rules they define. If
+    neither `.github/copilot-instructions.md` nor
+    `.github/CONTRIBUTING.md` exists, apply generic markdown best
+    practices for all rules.
 
     If `.github/copilot-instructions.md` and `.github/CONTRIBUTING.md`
     give conflicting guidance, `.github/copilot-instructions.md` takes

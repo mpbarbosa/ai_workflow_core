@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 6.8.18 (step2_consistency_prompt task_template: add fallback rule for uncovered conventions, auto-generated file priority note, inline consistency example — 2026-04-09)
+# Version: 6.8.19 (step2_consistency_prompt task_template: broaden "shell scripts" to all script types; add documentation-quality definition for scripts — 2026-04-09)
 #
 # CUMULATIVE TOKEN EFFICIENCY SUMMARY:
 # =====================================
@@ -2099,8 +2099,14 @@ step2_consistency_prompt:
        - Ensure version consistency across documentation and package manifests
          (check `package.json`, `package-lock.json`, and ecosystem-equivalent lockfiles)
        - Validate command examples match actual scripts/executables:
-         npm/yarn scripts defined in `package.json`, shell scripts in `scripts/` or `bin/`,
-         and any executables referenced in README or CONTRIBUTING
+         npm/yarn scripts defined in `package.json`; automation scripts in `scripts/` or
+         `bin/` (check all formats present — `.sh` shell scripts, `.js`/`.ts` Node.js
+         scripts, Python scripts, or other executables — skip format-specific checks for
+         types absent from the repository); and any executables referenced in README or
+         CONTRIBUTING. "Documentation quality" for scripts means: inline comments
+         explaining non-obvious logic, a usage example or `--help` reference in an
+         adjacent README, and accurate descriptions in the root `scripts/README.md`
+         (if present).
     
     2. **Content Synchronization:**
        - Compare primary documentation files: `README.md`, `.github/copilot-instructions.md`,

@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 6.8.17 (doc_analysis_prompt task_template: expand "Identify documentation impact" — add docs/api/ path, CHANGELOG.md/JSDoc version pointer, standards note referencing JSDoc + CONTRIBUTING.md — 2026-04-09)
+# Version: 6.8.18 (step2_consistency_prompt task_template: add fallback rule for uncovered conventions, auto-generated file priority note, inline consistency example — 2026-04-09)
 #
 # CUMULATIVE TOKEN EFFICIENCY SUMMARY:
 # =====================================
@@ -2069,13 +2069,16 @@ step2_consistency_prompt:
     Perform a comprehensive documentation consistency analysis for this project,
     covering **markdown documentation files** (`.md`) only. "Consistency" means:
     uniform naming conventions, up-to-date examples and version numbers (including
-    version badges), intact
-    cross-references, and style uniformity across all documentation types
-    (e.g., consistent heading levels, bullet list styles, and fenced code-block language tags).
+    version badges), intact cross-references, and style uniformity across all
+    documentation types (e.g., consistent heading levels, bullet list styles, and
+    fenced code-block language tags — for example, one file calling a concept
+    "auto-commit" while another calls it "autocommit" is a consistency violation).
     Where project-specific conventions are documented — in particular
     `.github/copilot-instructions.md` and `CONTRIBUTING.md` — treat those as the
     authoritative style reference for this project and let them take precedence over
-    generic defaults.
+    generic defaults. If neither file addresses a particular convention, fall back to
+    widely accepted generic markdown best practices (e.g., ATX-style headings,
+    consistent capitalisation within heading levels).
 
     **Context:**
     - Project: {project_name} ({project_description})
@@ -2084,7 +2087,7 @@ step2_consistency_prompt:
     - TypeScript source files: {ts_source_count} (not included in this partition — JSDoc source coverage is checked in the TypeScript Review step)
     - Scope: {change_scope}
     - Files in this analysis batch: {modified_count}
-    - Documentation scope: root-level `.md` files (e.g., `README.md`, `CHANGELOG.md`), `docs/` subdirectory and all its nested subdirs (e.g., `docs/architecture/`, `docs/guides/`), and `.github/` metadata including all nested subdirs (e.g., `.github/ISSUE_TEMPLATE/`, `.github/skills/`, `.github/workflows/`) — hidden tool directories (`.workflow_core/`, `node_modules/`) and build outputs (`dist/`, `coverage/`) are excluded unless explicitly listed in the files below
+    - Documentation scope: root-level `.md` files (e.g., `README.md`, `CHANGELOG.md`), `docs/` subdirectory and all its nested subdirs (e.g., `docs/architecture/`, `docs/guides/`), and `.github/` metadata including all nested subdirs (e.g., `.github/ISSUE_TEMPLATE/`, `.github/skills/`, `.github/workflows/`) — hidden tool directories (`.workflow_core/`, `node_modules/`) and build outputs (`dist/`, `coverage/`) are excluded unless explicitly listed in the files below; auto-generated `.md` files (e.g., those under `docs/api/html/`) should be flagged when they contain consistency violations but treated as **lower priority** than hand-authored docs, since they are regenerated on each build
     - Files referenced in markdown tables, numbered lists, or inline links but absent from the file list are also in scope — flag them as potential documentation gaps (distinct from broken links)
     - The complete list of files in scope for this partition is provided at the end of this prompt in the **Files to Analyze** section.
     

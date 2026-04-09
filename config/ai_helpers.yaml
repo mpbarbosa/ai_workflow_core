@@ -104,6 +104,11 @@
 #     when it sees large violation totals for rules it is told to ignore
 #   - task_template: added prioritization directive to Analysis Request — instructs the
 #     AI to order recommendations by impact on quality rather than raw frequency count
+# v6.8.13 - Add Conventional Commits fallback to step12_git_commit_prompt (2026-04-09)
+#   - task_template: added explicit fallback to the Conventional Commits specification
+#     when `.github/CONTRIBUTING.md` is absent or does not address commit format, and
+#     clarified that the AI should always proceed with best practices rather than stall
+#     (addresses analyze-prompt-part finding: score 9/10, missing fallback guidance)
 # v6.8.10 - Reference project commit conventions in step12_git_commit_prompt (2026-04-08)
 #   - task_template: added sentence directing the AI to follow project-specific commit
 #     conventions documented in `.github/CONTRIBUTING.md` when available, so the Task
@@ -2906,7 +2911,10 @@ step12_git_commit_prompt:
     communicates the changes, follows best practices, and provides useful
     context for code reviewers and future maintainers. If the project
     documents commit conventions in `.github/CONTRIBUTING.md`, follow
-    those conventions.
+    those conventions. Otherwise, default to the
+    [Conventional Commits](https://www.conventionalcommits.org) specification
+    as the baseline standard. Always proceed with best practices — never
+    stall or fail because the file is absent or does not address commit format.
     
     **Conventional Commit Types:**
     {commit_types}

@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 6.8.28 (async_perf_engineer_prompt task_template: replace vague opener with concrete scope description naming the 9 dimensions, inspection method, and expected output — 2026-04-09)
+# Version: 6.8.29 (accessibility_review_prompt task_template: reframe from "web accessibility review" to "API documentation accessibility review"; add File Type context line; replace inapplicable actions 6-7 (aria-live dynamic content, touch target size) with landmark structure check and link text clarity check — 2026-04-09)
 #
 # CUMULATIVE TOKEN EFFICIENCY SUMMARY:
 # =====================================
@@ -6360,11 +6360,12 @@ accessibility_review_prompt:
   behavioral_guidelines: *behavioral_structured
 
   task_template: |
-    **YOUR TASK**: Perform a web accessibility review of {project_name}.
+    **YOUR TASK**: Perform an API documentation accessibility review of {project_name}.
 
     **Project Context:**
     - Project: {project_name} ({project_description})
     - Framework: {framework}
+    - File Type: TypeDoc-generated API documentation (HTML)
     - Source Files Analyzed: {source_file_count}
     - File Paths:
     {file_paths}
@@ -6378,8 +6379,8 @@ accessibility_review_prompt:
     3. Review keyboard accessibility: missing tabindex, illogical tab order, missing focus indicators
     4. Audit colour contrast: inline styles or CSS custom properties with insufficient contrast ratios
     5. Check semantic HTML structure: heading hierarchy, landmark elements, form label associations
-    6. Review dynamic content: aria-live regions for status messages, focus management after updates
-    7. Identify touch target size issues: interactive elements smaller than 44×44px
+    6. Verify navigation landmark structure: presence and correct use of <nav>, <main>, <header>, <footer> elements
+    7. Check link text clarity: flag bare anchor text such as "here", "click here", or "read more" that lacks descriptive context
     8. Check for reduced-motion compliance: CSS animations without prefers-reduced-motion guards
 
   approach: |

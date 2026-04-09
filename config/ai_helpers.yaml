@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 6.8.24 (step10_code_quality_prompt task_template: expand opening line to mention linting/formatting/JSDoc; add ESLint, Prettier, and JSDoc bullets to Task 1 Code Standards; add Task 7 Process & Commit Quality covering Conventional Commits, PR practices, and commit hygiene — 2026-04-09)
+# Version: 6.8.25 (step12_git_commit_prompt task_template: clarify Workflow line with pipeline identity and config references; add pointer from Change Scope to Changed Files section — 2026-04-09)
 #
 # CUMULATIVE TOKEN EFFICIENCY SUMMARY:
 # =====================================
@@ -2977,8 +2977,8 @@ step12_git_commit_prompt:
     
     **Context:**
     - Project: {project_name} ({project_description})
-    - Workflow: Tests & Documentation Automation v{script_version}
-    - Change Scope: {change_scope}
+    - Workflow: Tests & Documentation Automation v{script_version} (ai_workflow automated pipeline; version defined in `package.json` and `.workflow-config.yaml`)
+    - Change Scope: {change_scope} (changed file paths listed in "Changed Files" section below)
     
     **Git Repository Analysis:**
     {git_context}

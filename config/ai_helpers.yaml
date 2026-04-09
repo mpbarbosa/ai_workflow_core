@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 6.8.34
+# Version: 6.8.35
 #
 # Version history -> see CHANGELOG.md
 #
@@ -3679,7 +3679,7 @@ version_manager_prompt:
   behavioral_guidelines: *behavioral_generative
   
   task_template: |
-    **YOUR TASK**: Determine the correct semantic version bump type for this project.
+    **YOUR TASK**: Determine the correct Semantic Versioning (SemVer, semver.org) bump type (MAJOR/MINOR/PATCH) for this project by reviewing CHANGELOG.md, recent git commits, and the project versioning policy.
     **Project**: {project_name} ({project_description})
     **Current Version**: {current_version}
     **Heuristic Pre-analysis**: {heuristic_recommendation} — derived from commit-type distribution

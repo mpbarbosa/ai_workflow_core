@@ -30,3 +30,5 @@ This document tracks functional requirements and minor issue resolutions for `ai
 | RI-019 | step_13 | Missing final newline (MD047) in 3 files | docs/CODE_OF_CONDUCT.md, docs/api/AI_HELPERS_REFERENCE.md, docs/misc/documentation_analysis_parallel.md | Low | done |
 | RI-020 | step_13 | Trailing whitespace (MD009) in docs/api/AI_HELPERS_REFERENCE.md line 124 | docs/api/AI_HELPERS_REFERENCE.md | Low | done |
 | RI-021 | step_13 | Trailing punctuation in markdown headers (MD026) across 11 files | docs/ (11 files) | Low | done |
+| RI-022 | step_02 | Broken relative links in docs/reference/QUICK_REFERENCE_CARD.md lines 170-171 | docs/reference/QUICK_REFERENCE_CARD.md | Medium | done |
+| RI-023 | step_02 | Broken relative link in docs/misc/documentation_analysis_parallel.md line 416 | docs/misc/documentation_analysis_parallel.md | Low | done |

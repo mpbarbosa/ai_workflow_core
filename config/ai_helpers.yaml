@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 6.8.16 (version_manager_prompt task_template: add Versioning Policy line — reference CONTRIBUTING.md, inline MAJOR/MINOR/PATCH criteria, preserve pre-release suffixes — 2026-04-09)
+# Version: 6.8.17 (doc_analysis_prompt task_template: expand "Identify documentation impact" — add docs/api/ path, CHANGELOG.md/JSDoc version pointer, standards note referencing JSDoc + CONTRIBUTING.md — 2026-04-09)
 #
 # CUMULATIVE TOKEN EFFICIENCY SUMMARY:
 # =====================================
@@ -561,10 +561,12 @@ doc_analysis_prompt:
     **REQUIRED ACTIONS**:
     1. **Read the changes**: Examine what was modified in each changed file
     2. **Identify documentation impact**: Determine which sections in the listed docs need updates:
-       - README.md: features, setup instructions, usage examples, version references
-       - Technical docs (e.g., `docs/ARCHITECTURE.md`): architecture changes, new features, API signatures
+       - `README.md`: features, setup instructions, usage examples, version references
+       - API reference docs (e.g., `docs/api/`): public function signatures, parameters, return types — follow JSDoc conventions
+       - Architecture/design docs (e.g., `docs/ARCHITECTURE.md`, `docs/architecture/`): architecture changes, new features, module structure
+       - Version numbers: update `CHANGELOG.md` (add entry under `[Unreleased]`) and any version strings in module headers or `src/index.js`
        - Module READMEs: if code in that module changed
-       - Inline comments: for complex new logic
+       - Inline comments: for complex new logic; follow project markdown conventions described in `CONTRIBUTING.md`
     3. **Determine specific edits**: Identify the exact lines or sections requiring updates — a "specific edit" means a concrete before/after text change tied to a file path, NOT a vague suggestion like "consider updating X"
     4. **Verify accuracy**: Ensure examples, code snippets, and cross-references are still correct
     5. **Handle missing or incomplete files**: If a referenced documentation file is missing or clearly incomplete, note it as a documentation gap in your output rather than skipping it or fabricating content — describe briefly what should be there

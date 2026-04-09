@@ -410,8 +410,8 @@ step6_test_review_prompt:
   behavioral_guidelines: *behavioral_actionable
   
   task_template: |
-    Review the test file(s) listed in **Existing Test Files in Scope** below using
-    {test_framework} in {test_env}. Provide tactical, code-level recommendations
+    Review the {test_framework} test file(s) listed in **Existing Test Files in Scope** below,
+    run via `{test_command}`. Provide tactical, code-level recommendations
     for improving test quality.
 
     > **Tactical recommendations** are concrete, file-level suggestions — e.g., rename
@@ -425,10 +425,16 @@ step6_test_review_prompt:
     - Primary Language: {primary_language}
     - Change Scope: {change_scope}
     - Modified Files: {modified_count}
-    - Test Framework: {test_framework} in {test_env}
+    - Test Framework: {test_framework} via `{test_command}`
     - Commands: test=`{test_command}`, coverage=`{coverage_command}`
     - Total Test Files: {test_count} ({tests_in_tests_dir} in `__tests__/`/`test/`, {tests_colocated} co-located)
     - Quality Criteria: AAA pattern, descriptive names, DRY fixtures, isolated tests, deterministic execution
+
+    > **Note:** If the **Test Framework** above is a declarative/configuration format
+    > (e.g., YAML, JSON, HCL) rather than a test runner, treat any such files as
+    > fixture or config artifacts — focus recommendations on the executable test code
+    > shown below. If no executable test definitions are provided in scope, explicitly
+    > state that in your review instead of applying test-code advice.
 
     **Existing Test Files in Scope:**
     {test_files}
@@ -466,12 +472,12 @@ step6_test_review_prompt:
        - Identify opportunities for parameterized tests
        - Suggest removing redundant test cases
 
-    4. **Framework-Specific Improvements** (e.g., better {test_framework} matchers, unused features):
-       - Recommend better matchers/assertions for clarity
-       - Suggest framework features not being utilized
-       - Identify anti-patterns specific to test framework
+    4. **Test-Tooling Improvements** (e.g., better matchers/assertions, unused runner/framework features):
+       - Recommend better matchers/assertions for clarity (where applicable)
+       - Suggest framework features not being utilized (where applicable)
+       - Identify anti-patterns specific to the test runner/framework
        - Propose modern testing patterns adoption
-       - Check compatibility with framework version
+       - Check compatibility with framework version (where applicable)
 
     5. **CI/CD and Performance Considerations:**
        - Identify slow-running tests

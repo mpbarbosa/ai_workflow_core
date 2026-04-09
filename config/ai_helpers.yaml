@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 6.8.21 (step5_directory_prompt task_template: enrich task opener to reference authoritative sources and forward-reference definition sections; add CONTRIBUTING.md to Validation Criteria — 2026-04-09)
+# Version: 6.8.23 (step8_test_exec_prompt task_template: add Test Types context field; add CI/CD scope clarification bullet; add test-directory reference and CI/CD-absent limitation notes to approach; step9_dependencies_prompt task_template: reference specific manifest files via {package_manager} in opening; add manifest/lockfile/env-file bullets to Environment Configuration Review; add Note block naming the files being analyzed — 2026-04-09)
 #
 # CUMULATIVE TOKEN EFFICIENCY SUMMARY:
 # =====================================
@@ -2589,6 +2589,7 @@ step8_test_exec_prompt:
     - Coverage Gaps: {coverage_gaps}
     - CI/CD Config: {ci_config_paths}
     - Scope: automated test suite only
+    - Test Types: {test_types}
     
     **Test Execution Results:**
     {execution_summary}
@@ -2635,12 +2636,18 @@ step8_test_exec_prompt:
        - Propose pre-commit hook configurations
        - Suggest coverage thresholds for CI gates
        - Recommend test parallelization approaches
+       - Assess both code-level test quality and CI/CD pipeline configuration separately (pipeline-specific recommendations apply only when CI config files are listed in context above)
   
   approach: |
     Analyze ONLY the test execution results explicitly provided above. Do not invent
     test files, module names, or coverage metrics that are not in the provided context.
     Review the execution output, exit code, and pass/fail counts to diagnose issues.
     Provide specific, actionable recommendations grounded in the supplied data.
+    Reference specific test directories or files (e.g., `test/`, `src/**/*.test.js`) where
+    inferable from the provided output and context.
+    If no CI/CD configuration files are listed above, explicitly note this limitation and
+    restrict CI/CD recommendations to general best practices rather than project-specific
+    pipeline configuration.
 
     **Output:**
     - Root cause analysis for each failure with file:line:test references
@@ -2662,14 +2669,19 @@ step9_dependencies_prompt:
   behavioral_guidelines: *behavioral_structured
   
   task_template: |
-    Analyze project dependencies, assess security risks, evaluate version compatibility, and provide recommendations for dependency management and environment setup.
-    
+    Analyze the {package_manager} manifest files (e.g. `package.json`, `package-lock.json` for npm;
+    `requirements.txt` / `pyproject.toml` for pip; `go.mod` / `go.sum` for Go) present in this
+    project, assess security risks, evaluate version compatibility, and provide recommendations for
+    dependency management and environment setup.
+
+    > **Note:** Base your analysis on the dependency lists, audit summary, and outdated-package data
+    > provided below. The manifest and lockfile contents were read from the project at analysis time.
+
     **Context:**
     - Project: {project_name} ({project_description})
     - Primary Language: {primary_language}
     - Project Kind: {project_kind}
-    - Package Manager: {package_manager}
-    - Package Manager Version: {package_manager_version}
+    - Package Manager: {package_manager} {package_manager_version}
     - Scope: {change_scope}
     - Modified Files: {modified_count}
     - Production Dependencies: {dep_count}
@@ -2708,7 +2720,7 @@ step9_dependencies_prompt:
        - Check for breaking changes in outdated packages
        - Identify version conflicts
        - Assess compatibility with language/runtime version
-       - Review semver ranges (^, ~, exact versions)
+       - Review semver ranges (^, ~, exact versions) as declared in the manifest
        - Recommend version pinning strategy
     
     3. **Dependency Tree Optimization:**
@@ -2719,11 +2731,12 @@ step9_dependencies_prompt:
        - Suggest peer dependency resolution
     
     4. **Environment Configuration Review:**
-       - Validate language/runtime version compatibility
+       - Validate runtime version requirements declared in the manifest (e.g. `engines` field in
+         `package.json`, `python_requires` in `pyproject.toml`, `go` directive in `go.mod`)
        - Check package manager version requirements
-       - Review version specifications in package manifest
-       - Assess development vs production dependencies
-       - Recommend version management configuration
+       - Review `.nvmrc`, `.node-version`, or equivalent runtime-version pin files if present
+       - Assess separation of runtime vs. development dependencies in the manifest
+       - Recommend version management configuration (e.g. `engines`, `.nvmrc`, lockfile policy)
     
     5. **Update Strategy Recommendations:**
        - Prioritize updates (security > bug fixes > features)

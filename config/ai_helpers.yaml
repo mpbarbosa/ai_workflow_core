@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 6.8.19 (step2_consistency_prompt task_template: broaden "shell scripts" to all script types; add documentation-quality definition for scripts — 2026-04-09)
+# Version: 6.8.20 (configuration_specialist_prompt task_template: restrict analysis to explicitly scoped files; report missing files instead of silently skipping — 2026-04-09)
 #
 # CUMULATIVE TOKEN EFFICIENCY SUMMARY:
 # =====================================
@@ -3170,18 +3170,19 @@ configuration_specialist_prompt:
     the **Configuration Files in Scope** sub-section directly below, such as package manifests
     (`package.json`, `requirements.txt`), env files (`.env`, `.env.production`),
     CI workflows, Docker/compose files, editor/tooling configs, and AI-workflow
-    YAML when present. For each file shown in **File Contents**, check
-    syntax/schema correctness, security hygiene, consistency with related configs,
-    and stack-specific best practices when tech-stack context is available. Skip
-    only file-type-specific checks that require formats not present in **File
-    Contents** below.
+    YAML when present. Analyze only the files explicitly listed in that sub-section —
+    do not infer, search for, or include any other files. For each file shown in
+    **File Contents**, check syntax/schema correctness, security hygiene, consistency
+    with related configs, and stack-specific best practices when tech-stack context
+    is available. If a listed file is absent from **File Contents**, report it as
+    "content unavailable" and skip checks for it.
     
     ### Configuration Files in Scope
     {config_files_list}
 
-    > **Note:** This list may not match files visible in the surrounding context snapshot
-    > (which can be truncated). If a listed file is absent from the snapshot, that is not
-    > an error — analyze only what is provided in **File Contents** below.
+    > **Note:** The scope list above defines the exact set of files to analyze. If a listed
+    > file is absent from **File Contents** below, report it as "content unavailable" —
+    > do not infer its contents or skip it silently.
     
     ### Project Context
     - Project Type: {project_kind}

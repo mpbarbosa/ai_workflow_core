@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 6.8.30
+# Version: 6.8.31
 #
 # Version history -> see CHANGELOG.md
 #
@@ -1911,8 +1911,11 @@ step3_script_refs_prompt:
   behavioral_guidelines: *behavioral_structured
   
   task_template: |
-    Perform comprehensive validation of shell script references and documentation quality for this project's automation scripts.
-    
+    Validate the {script_count} automation script(s) found in `{scripts_dir}/` for this project — checking each script listed under "Available Scripts" below. Specifically:
+    - **Scope**: Only the scripts explicitly listed in "Available Scripts" (path pattern: `{scripts_dir}/`)
+    - **Validation criteria**: syntax correctness, presence of header comments/usage docs, executable permissions, CI/CD pipeline usage, and documented exit codes
+    - **Documentation quality standards**: completeness (purpose, usage, prerequisites), accuracy (file paths, arguments, versions), and consistency with actual script functionality
+
     **Context:**
     - Project: {project_name} ({project_description})
     - Primary Language: {primary_language}

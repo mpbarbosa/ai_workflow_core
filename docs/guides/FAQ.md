@@ -546,10 +546,10 @@ git commit -m "chore: pin ai_workflow_core to v1.0.2"
 **To update later**:
 ```bash
 cd .workflow_core
-git checkout v1.2.6  # Update to v1.2.6
+git checkout v1.2.7  # Update to v1.2.7
 cd ..
 git add .workflow_core
-git commit -m "chore: update ai_workflow_core to v1.2.6"
+git commit -m "chore: update ai_workflow_core to v1.2.7"
 ```
 
 ---
@@ -563,7 +563,7 @@ git commit -m "chore: update ai_workflow_core to v1.2.6"
 - Migration guide required
 - Significant new features
 
-**Minor versions** (e.g., v1.0.2 → v1.2.6):
+**Minor versions** (e.g., v1.0.2 → v1.2.7):
 - New features
 - Backward compatible
 - Safe to update

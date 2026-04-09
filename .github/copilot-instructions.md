@@ -79,7 +79,7 @@ ai_workflow_core/
 ├── config/                      # Configuration templates
 │   ├── .workflow-config.yaml.template  # Main workflow config template
 │   ├── ai_helpers.yaml          # AI helper definitions (3,300+ lines, v6.5.0 - 18 personas)
-│   ├── ai_prompts_project_kinds.yaml   # Project-specific AI prompts (v1.2.5, aligned with project_kinds)
+│   ├── ai_prompts_project_kinds.yaml   # Project-specific AI prompts (v1.2.6, aligned with project_kinds)
 │   ├── project_kinds.yaml       # Project type definitions & validation rules (8 kinds: shell_script_automation, nodejs_api, static_website, client_spa, react_spa, python_app, configuration_library, generic)
 │   └── README.md
 ├── docs/                        # Comprehensive documentation
@@ -147,7 +147,7 @@ target_project/
 - `.workflow-config.yaml.template`: Main config with placeholders
 - `project_kinds.yaml`: Defines validation rules per project type (8 kinds: shell_script_automation, nodejs_api, react_spa, python_app, client_spa, static_website, configuration_library, generic)
 - `ai_helpers.yaml`: Large file (3,300+ lines, v6.5.0) with AI helper configurations for 18 personas
-- `ai_prompts_project_kinds.yaml`: Project-specific AI prompts (v1.2.5, aligned with project_kinds)
+- `ai_prompts_project_kinds.yaml`: Project-specific AI prompts (v1.2.6, aligned with project_kinds)
 - Project types define test frameworks, linters, build systems, and best practices
 
 **docs/**: Comprehensive documentation organized by purpose
@@ -254,7 +254,7 @@ tech_stack:
 
 Defined in `config/project_kinds.yaml` (8 types including configuration_library):
 
-**Supported Project Kinds** (defined in config/project_kinds.yaml v1.2.5):
+**Supported Project Kinds** (defined in config/project_kinds.yaml v1.2.6):
 
 1. **shell_script_automation**: Bash/shell script projects
    - Test framework: bash_unit/BATS
@@ -418,9 +418,9 @@ When assisting with this project, reference these critical documents:
 
 ### API Documentation References
 
-13. **docs/api/CONFIG_REFERENCE.md**: Complete `.workflow-config.yaml` field reference (835 lines, v1.2.5 - updated 2026-02-10)
+13. **docs/api/CONFIG_REFERENCE.md**: Complete `.workflow-config.yaml` field reference (835 lines, v1.2.6 - updated 2026-02-10)
 14. **docs/api/PLACEHOLDER_REFERENCE.md**: Placeholder patterns and substitution guide (756 lines)
-15. **docs/api/PROJECT_KINDS_SCHEMA.md**: Project kinds schema v1.2.5 reference (777 lines)
+15. **docs/api/PROJECT_KINDS_SCHEMA.md**: Project kinds schema v1.2.6 reference (777 lines)
 16. **docs/api/AI_HELPERS_REFERENCE.md**: AI persona definitions, YAML anchors, token efficiency system (1,590 lines, v6.2.1)
 17. **docs/api/AI_PROMPTS_REFERENCE.md**: Project-specific AI prompt templates (1,197 lines)
 18. **docs/api/MODEL_SELECTION_RULES_REFERENCE.md**: Model selection rules and decision trees (723 lines)
@@ -656,7 +656,7 @@ Always clarify which context applies to the current task.
 ### Version Compatibility
 
 - **ai_workflow_core version**: 1.0.2
-- **project_kinds.yaml schema version**: 1.2.5 (last updated: 2026-01-30)
+- **project_kinds.yaml schema version**: 1.2.6 (last updated: 2026-01-30)
 - Maintain backward compatibility within major version
 - Document breaking changes in CHANGELOG.md
 - Provide migration guides for major version changes
@@ -782,6 +782,6 @@ pre-commit run --all-files
 ---
 
 **Last Updated**: 2026-02-13  
-**Document Version**: 1.2.5  
+**Document Version**: 1.2.6  
 **For**: GitHub Copilot assistance within ai_workflow_core repository  
 **For**: GitHub Copilot assistance within ai_workflow_core repository

@@ -1,6 +1,6 @@
 {
   "name": "ai_workflow_core",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "Language-agnostic foundational template system for AI-powered workflow automation",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

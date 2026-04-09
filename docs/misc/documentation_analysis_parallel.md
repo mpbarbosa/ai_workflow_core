@@ -413,7 +413,7 @@ But copilot-instructions.md says:
 ```markdown
 Add breadcrumb at top:
 > **Location**: `docs/advanced/CI_CD_INTEGRATION.md`
-> **See also**: [Integration Guide](../INTEGRATION.md), [Custom Workflows](CUSTOM_WORKFLOW_CREATION.md)
+> **See also**: [Integration Guide](../INTEGRATION.md), [Custom Workflows](../advanced/CUSTOM_WORKFLOW_CREATION.md)
 
 Update Resources section:
 - ~~Custom Workflows: `docs/advanced/CUSTOM_WORKFLOW_CREATION.md`~~ → `CUSTOM_WORKFLOW_CREATION.md` (same dir)

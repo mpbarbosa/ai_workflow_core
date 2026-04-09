@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 6.8.25 (step12_git_commit_prompt task_template: clarify Workflow line with pipeline identity and config references; add pointer from Change Scope to Changed Files section — 2026-04-09)
+# Version: 6.8.26 (version_manager_prompt task_template: add Conventional Commits reference, package.json to Primary Sources, reformat MAJOR/MINOR/PATCH as bullet points — 2026-04-09)
 #
 # CUMULATIVE TOKEN EFFICIENCY SUMMARY:
 # =====================================
@@ -4009,19 +4009,22 @@ version_manager_prompt:
     **Project**: {project_name} ({project_description})
     **Current Version**: {current_version}
     **Heuristic Pre-analysis**: {heuristic_recommendation} — derived from commit-type distribution
-      (fix/docs/chore/style/refactor commits → patch; feat commits → minor; BREAKING CHANGE commits → major).
+      per the Conventional Commits specification (conventionalcommits.org):
+      fix/docs/chore/style/refactor → patch; feat → minor; BREAKING CHANGE footer or `!` suffix → major.
       Use as a starting point; verify and override if the primary sources indicate a different bump type.
     **Changed Files**: {changed_files}
     _(If empty, the only staged files are workflow artifacts under `.ai_workflow/`; see Git Context
     or the diff sample for actual file paths.)_
     **Git Context**: {git_context}
-    **Primary Sources**: Review CHANGELOG.md (especially the [Unreleased] section) and git commit
-    history to understand the nature and scope of changes before deciding on a bump type.
+    **Primary Sources**: Review `package.json` (current version field), CHANGELOG.md (especially the
+    [Unreleased] section), and git commit history to understand the nature and scope of changes.
     **Versioning Policy**: Check `.github/CONTRIBUTING.md` (and `docs/architecture/VERSION_TIMELINE.md`
     if referenced there) for project-specific versioning rules. If no policy is documented, apply
-    standard semver.org rules: MAJOR = breaking/incompatible changes, MINOR = new backward-compatible
-    features, PATCH = bug fixes / docs / refactoring / tests. Preserve any pre-release suffix
-    (e.g., `-alpha`, `-beta`) in the bumped version unchanged.
+    standard semver.org rules:
+    - MAJOR (X.0.0): breaking or incompatible public-API changes
+    - MINOR (X.Y.0): new backward-compatible features or capabilities
+    - PATCH (X.Y.Z): bug fixes, docs, refactoring, tests, or internal tooling
+    Preserve any pre-release suffix (e.g., `-alpha`, `-beta`) in the bumped version unchanged.
     Your output is a recommendation — final version application is confirmed manually.
   
   specific_expertise: |

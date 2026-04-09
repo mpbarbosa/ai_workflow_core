@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 6.8.32
+# Version: 6.8.33
 #
 # Version history -> see CHANGELOG.md
 #
@@ -2622,14 +2622,20 @@ step12_git_commit_prompt:
     - ci: CI/CD pipeline changes
   
   task_template: |
-    Generate a professional conventional commit message that clearly
+    Generate a professional, concise conventional commit message that clearly
     communicates the changes, follows best practices, and provides useful
-    context for code reviewers and future maintainers. If the project
-    documents commit conventions in `.github/CONTRIBUTING.md`, follow
-    those conventions. Otherwise, default to the
+    context for code reviewers and future maintainers. Avoid unnecessary
+    repetition — each line should add distinct value.
+
+    Check for project-specific commit conventions (case-insensitive) in:
+    1. `.github/CONTRIBUTING.md`
+    2. `CONTRIBUTING.md` (project root)
+
+    If either file exists and defines commit conventions, follow them.
+    If neither file is present or neither addresses commit format, use the
     [Conventional Commits](https://www.conventionalcommits.org) specification
-    as the baseline standard. Always proceed with best practices — never
-    stall or fail because the file is absent or does not address commit format.
+    as the baseline standard without hesitation — never stall or fail because
+    a conventions file is absent.
     
     **Conventional Commit Types:**
     {commit_types}

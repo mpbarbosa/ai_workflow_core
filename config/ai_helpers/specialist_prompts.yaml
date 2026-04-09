@@ -171,6 +171,20 @@ async_flow_debugger_prompt:
     Before analysing, scan the provided files to determine which of the following areas are
     actually present. Only report on areas where relevant code was found; skip the rest.
 
+    **File Context Guide**:
+    The **File Contents** section below provides source file excerpts. Interpret them as follows:
+    - If an excerpt ends with `...(truncated — remainder omitted)`, the file was too large to
+      include in full. Analyse only the available portion and note "content truncated" in your
+      findings; do not speculate about omitted code.
+    - Use the file path to understand each file's role before analysing:
+      - `eslint.config.js` / `.eslintrc.*` — linting rules and code-style enforcement
+      - `jest.config.*` / `vitest.config.*` — test runner configuration
+      - `src/index.ts` / `src/index.js` — public API entry point (re-exports only)
+      - `src/loader.*` — data-loading or config-resolution logic
+      - `src/types.*` — shared TypeScript interfaces, type guards, and custom errors
+      - `src/__tests__/**` / `test/**` — automated test suites
+      - `scripts/**` — build, validation, or maintenance utilities
+
     **Async Flow Debugging Areas** (analyse only those present in the codebase):
     - Promise chain execution tracing (then/catch sequences)
     - Async/await error propagation paths
@@ -185,7 +199,7 @@ async_flow_debugger_prompt:
     - Catch blocks propagating wrong events
     - Promise chains breaking at specific steps
     - Race conditions in parallel async operations
-  
+
   approach: |
     Analyze ONLY the source files and async patterns explicitly listed above. Do not assume or invent code paths, promise chains, or event handlers not shown in the provided context.
 
@@ -364,6 +378,11 @@ async_perf_engineer_prompt:
 
   task_template: |
     **YOUR TASK**: Perform a structured async performance review of the JavaScript/TypeScript codebase using static code analysis of the source files listed below. Evaluate all 9 ANALYSIS DIMENSIONS (defined below): overfetching, promise overhead, event loop congestion, memory leaks, API call batching, debouncing & throttling, error handling, promise anti-patterns, and resource cleanup. For each dimension, identify concrete issues with severity ratings and provide before/after fix snippets. Conclude with a prioritized recommendations list and a summary table. Inspection method: code-only static analysis — do not run profilers or benchmarks; rely solely on the listed source files.
+
+    **Scope notes:**
+    - **Test files** (`*.test.ts`, `*.spec.ts`, `*.test.js`, `*.spec.js`, files under `__tests__/` or `test/`): exclude from production performance findings. Only flag patterns in test files if they introduce async anti-patterns that are copy-pasted into production code.
+    - **Tooling/config files** (`eslint.config.*`, `jest.config.*`, `vite.config.*`, `*.config.js`, `*.config.ts`, `babel.config.*`): skip entirely — they are out-of-scope for runtime performance analysis.
+    - **Truncated or incomplete file list**: if the provided file list appears partial, analyze what is available and explicitly note "⚠️ Coverage may be partial — not all source files were provided" in the Summary section.
 
     **Project Context:**
     - Project: {project_name} ({project_description})

@@ -2537,18 +2537,20 @@ step8_test_exec_prompt:
   behavioral_guidelines: *behavioral_structured
   
   task_template: |
-    Analyze test execution results, diagnose failures, and provide actionable recommendations for improving test suite quality and CI/CD integration.
-    
+    Analyze {test_framework} test execution results for the {project_name} project, diagnose failures, and provide actionable recommendations for improving test suite quality and CI/CD integration.
+
     **Context:**
     - Project: {project_name} ({project_description})
     - Primary Language: {primary_language}
     - Project Kind: {project_kind}
     - Test Framework: {test_framework} via `{test_command}`
+    - Test Config Files: {test_config_paths}
     - Exit Code: {test_exit_code}
     - Results: {tests_passed}/{tests_total} passed, {tests_failed} failed, {tests_skipped} skipped
     - Coverage Threshold: {coverage_threshold}%
     - Coverage Gaps: {coverage_gaps}
     - CI/CD Config: {ci_config_paths}
+    - Scope: automated test suite only
     
     **Test Execution Results:**
     {execution_summary}

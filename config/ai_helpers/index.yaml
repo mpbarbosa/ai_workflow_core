@@ -57,6 +57,7 @@ async_perf_engineer_prompt: specialist_prompts.yaml
 aws_cloud_architect_prompt: specialist_prompts.yaml
 javascript_developer_prompt: specialist_prompts.yaml
 typescript_developer_prompt: specialist_prompts.yaml
+python_developer_prompt: specialist_prompts.yaml
 technical_project_manager_prompt: specialist_prompts.yaml
 software_architect_prompt: specialist_prompts.yaml
 documentation_specialist_prompt: specialist_prompts.yaml

@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] — 2026-04-09
+
+### Added
+
+- **`config/ai_helpers.yaml`** — New `python_developer_prompt` persona (v7.0.0): Senior Python developer (Vesper) specializing in `pyproject.toml` authoring, PEP 440 dependency management, pip-tools/Poetry lockfiles, tooling configuration (`pytest`/`mypy`/`ruff`/`black`/`coverage.py`), and `pip audit` security hygiene. Follows pyproject-first rule, supports requirements-only workflow, and includes explicit scope boundaries vs. `step9_dependencies_prompt` and `configuration_specialist_prompt`.
+- **`config/prompt_roles.yaml`** — New `python_developer` role definition for Vesper; bumped to v1.7.0.
+
 ## [1.3.0] — 2026-04-09
 
 ### Changed

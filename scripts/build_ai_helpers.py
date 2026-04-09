@@ -56,7 +56,7 @@ INDEX_HEADER = """\
 HEADER = """\
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 6.8.41
+# Version: 7.0.0
 #
 # Version history -> see CHANGELOG.md
 #
@@ -107,7 +107,8 @@ HEADER = """\
 # 8. SPECIALIST PERSONAS
 #    version_manager_prompt       aws_cloud_architect_prompt
 #    javascript_developer_prompt  typescript_developer_prompt
-#    technical_project_manager_prompt  software_architect_prompt
+#    python_developer_prompt      technical_project_manager_prompt
+#    software_architect_prompt
 #    (+ 30+ additional specialist and stub personas)
 #
 # 9. LIBRARY / FRAMEWORK PERSONAS  (library_architect ... spec_architect)

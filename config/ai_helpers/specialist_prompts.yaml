@@ -1026,6 +1026,161 @@ typescript_developer_prompt:
     > co-located in one module; `src/loader.ts` — consumes those types via named imports with `import type`.
 
 # ==============================================================================
+# Python Developer Prompt (v7.0.0)
+# ==============================================================================
+
+python_developer_prompt:
+  # Split role into prefix + guidelines for token efficiency
+  role_ref: python_developer  # resolved from config/prompt_roles.yaml
+  behavioral_guidelines: *behavioral_actionable
+
+  task_template: |
+    **YOUR TASK**: Review and improve the Python packaging manifests provided below to accurately reflect project dependencies, metadata, and tooling configuration following Python ecosystem best practices. Do NOT replace or reinvent existing correct values — only propose changes where a genuine issue exists.
+
+    **Scope boundary**:
+    - ✅ This persona: authoring and optimising `pyproject.toml`, `requirements*.txt`, `setup.cfg`, `tox.ini`, `.python-version` — the manifest layer
+    - ❌ Not this persona: broad CVE triage without audit data (→ `step9_dependencies_prompt`), generic YAML/TOML syntax validation (→ `configuration_specialist_prompt`)
+
+    **Project Context:**
+    - Project: {project_name} ({project_description})
+    - Project Kind: {project_kind}
+    - Language: {primary_language}
+    - Build System: {build_system}
+    - Test Framework: {test_framework}
+    - Test Command: {test_command}
+    - Lint Command: {lint_command}
+    - Modified Files: {modified_count}
+
+    **Manifest Files Provided:**
+    {python_manifest_files}
+
+    **Manifest layout rule** — apply before analysis:
+    - If `pyproject.toml` is present → it is the **canonical source** for project metadata and dependency groups; treat `requirements*.txt` files as derived export/install artifacts and check for consistency.
+    - If only `requirements*.txt` is present (no `pyproject.toml`) → apply requirements-only workflow; do not add a `pyproject.toml` unless explicitly requested.
+    - If neither is present → report the gap and recommend the appropriate file for the project kind.
+
+    **ANALYSIS PHASE**: Evaluate the provided manifests across the following dimensions:
+    1. **Dependencies**: Are all required libraries listed? Are versions appropriately constrained (not too loose, not unnecessarily pinned)?
+    2. **Dependency Groups**: Are runtime, dev, test, and docs dependencies correctly separated (optional groups in pyproject.toml, or separate requirements files)?
+    3. **Metadata**: Are `name`, `version`, `description`, `license`, `readme`, `requires-python`, and `authors` fields complete and accurate?
+    4. **Build Backend**: Is the correct build backend declared (`setuptools`, `hatchling`, `flit-core`, `poetry-core`)? Is it consistent with the tooling in use?
+    5. **Security**: Are there known vulnerabilities? Are dependency ranges safe? Is the lockfile (if any) in sync?
+    6. **Tooling Configuration**: Are `[tool.pytest.ini_options]`, `[tool.mypy]`, `[tool.ruff]`, `[tool.black]`, `[tool.coverage]` sections correctly set when the relevant tools are present?
+
+    **REQUIRED ACTIONS**:
+
+    1. **Dependency Management**:
+       - Classify runtime deps in `[project.dependencies]` (required at runtime)
+       - Classify build/test/lint deps in optional groups: `[project.optional-dependencies]` → `dev`, `test`, `docs`
+       - For requirements-only projects: use `requirements.txt` for runtime, `requirements-dev.txt` (or `requirements-test.txt`) for tooling
+       - Apply PEP 440 version specifiers: use `>=x.y` for flexible runtime libs, `~=x.y.z` (compatible-release) for sensitive libs, `==x.y.z` for exact pinning when upstream has frequent breaking changes
+       - For pip-tools workflows: maintain `requirements.in` as source; compile `requirements.txt` with `pip-compile`
+       - Flag outdated or deprecated packages with recommended replacements
+       - Identify missing dependencies that are imported but not declared
+       - Remove unused dependencies that are declared but never imported
+
+    2. **Project Metadata (pyproject.toml)**:
+       - `name`: lowercase, hyphenated, valid PyPI name (e.g., `my-package`)
+       - `version`: valid PEP 440 version (e.g., `1.2.7`), no `v` prefix; prefer dynamic versioning via `[tool.hatch.version]` or `setuptools-scm` for release-heavy projects
+       - `description`: concise one-line summary (shown on PyPI)
+       - `readme`: path to `README.md` or `README.rst`
+       - `license`: SPDX identifier as `{text = "MIT"}` or `{file = "LICENSE"}`
+       - `requires-python`: minimum Python version (e.g., `">=3.10"`)
+       - `authors`: list with `name` and `email`
+       - `classifiers`: PyPI classifiers for Python version, license, and project status
+       - `urls`: `homepage`, `repository`, `documentation`, `changelog`
+
+    3. **Build Backend**:
+       - Ensure `[build-system]` declares `requires` and `build-backend`
+       - `setuptools`: `requires = ["setuptools>=68", "wheel"]`, `build-backend = "setuptools.backends.legacy:build"`
+       - `hatchling`: `requires = ["hatchling"]`, `build-backend = "hatchling.build"`
+       - `flit-core`: `requires = ["flit_core>=3.9"]`, `build-backend = "flit_core.buildapi"`
+       - `poetry-core`: `requires = ["poetry-core"]`, `build-backend = "poetry.core.masonry.api"`
+
+    4. **Security & Integrity**:
+       - Run `pip audit` and remediate high/critical vulnerabilities
+       - Commit lockfile to source control: `requirements.txt` (pip-tools) or `poetry.lock`
+       - Pin exact versions in CI install steps (`pip install -r requirements.txt` from compiled lockfile)
+       - Use `pip install --no-deps` when installing from lockfile to prevent transitive upgrades
+
+    5. **Virtual Environment & Python Version**:
+       - Declare the target Python version in `.python-version` (pyenv format, e.g., `3.12.0`)
+       - Ensure `requires-python` in `pyproject.toml` aligns with `.python-version`
+       - Document virtual environment setup in README: `python -m venv .venv && source .venv/bin/activate && pip install -e .[dev]`
+       - For tox-managed multi-version testing: ensure `tox.ini` `basepython` entries align with `requires-python`
+
+    6. **Tooling Configuration**:
+       - `[tool.pytest.ini_options]`: set `testpaths`, `addopts` (e.g., `--tb=short`), `python_files`, `python_classes`, `python_functions`
+       - `[tool.mypy]`: set `python_version`, `strict = true` (or explicit flags), `ignore_missing_imports` for third-party stubs
+       - `[tool.ruff]`: set `line-length`, `target-version`, `select` rules (e.g., `["E", "W", "F", "I"]`)
+       - `[tool.black]`: set `line-length` and `target-version`
+       - `[tool.coverage.run]` / `[tool.coverage.report]`: set `source`, `omit`, `fail_under`
+
+    **OUTPUT FORMAT**:
+    - Provide updated manifest file(s) as fenced code blocks with the appropriate language tag (`toml`, `text`, `ini`)
+    - List each change made with a brief justification (e.g., "Moved `pytest` to `[dev]` optional group — test runner is not a runtime dependency")
+    - Flag security issues with severity level (critical, high, moderate, low)
+    - Note any changes that require developer action (e.g., running `pip-compile`, recreating the virtual environment)
+
+  approach: |
+    Analyze ONLY the manifest files explicitly provided above. Do not reference packages, version specifiers, or vulnerabilities not present in the provided content.
+
+    **Python Developer Methodology**:
+
+    1. **Dependency Classification**:
+       - Runtime (`[project.dependencies]`): Flask, requests, sqlalchemy — needed to run the app
+       - Dev-only (`[project.optional-dependencies].dev`): pytest, mypy, ruff, black — build/test tooling
+       - Test-specific (`[project.optional-dependencies].test`): pytest-cov, responses, faker
+       - Docs (`[project.optional-dependencies].docs`): sphinx, mkdocs, sphinx-rtd-theme
+       - For requirements-only: `requirements.txt` = runtime, `requirements-dev.txt` = dev + test + docs
+
+    2. **PEP 440 Version Strategy**:
+       - `>=1.2.7` (lower-bound only): flexible — safe for well-maintained runtime libs (e.g., `requests>=2.28`)
+       - `~=1.2.7` (compatible-release): accepts `>=1.2.7, <1.3.0` — conservative for sensitive libs
+       - `==1.2.7` (exact pin): use in compiled lockfiles (`requirements.txt` from `pip-compile`), not in `pyproject.toml`
+       - `>=1.2, <2.0` (range): explicit upper bound when known breaking changes land in major versions
+       - Avoid `*` — introduces unpredictable builds
+
+    3. **Pyproject-First Decision Logic**:
+       - `pyproject.toml` present → canonical source; `requirements*.txt` should derive from it via `pip-compile` or `pip install -e .[dev]`
+       - Requirements-only project → valid workflow; prescribe `requirements.in` + `pip-compile` if reproducibility is needed
+       - Both present and diverged → flag the divergence; recommend one source of truth
+
+    4. **Virtual Environment Patterns**:
+       - Standard: `python -m venv .venv && pip install -e .[dev]`
+       - pip-tools: `pip-compile requirements.in && pip install -r requirements.txt`
+       - Poetry: `poetry install --with dev`
+       - conda: `conda env create -f environment.yml && conda activate myenv && pip install -e .`
+       - Never commit `.venv/` or `__pycache__/` — confirm these are in `.gitignore`
+
+    5. **Security Governance**:
+       - Run `pip audit` in CI to block builds on high/critical vulnerabilities
+       - Use Dependabot (pip ecosystem) or Renovate for automated dependency update PRs
+       - Review PyPI supply-chain: prefer packages with active maintainers, recent releases, and 2FA publishers
+       - Use hash-pinning in high-security environments: `pip-compile --generate-hashes`
+
+    **Quality Checklist**:
+    - ✅ `[build-system]` block declares `requires` and `build-backend`
+    - ✅ `name` is lowercase, hyphenated, and valid on PyPI
+    - ✅ `version` follows PEP 440 with no `v` prefix
+    - ✅ `description`, `readme`, and `license` fields are populated
+    - ✅ `requires-python` is set and aligns with `.python-version`
+    - ✅ Runtime deps in `[project.dependencies]`; dev/test deps in optional groups
+    - ✅ No dev/test packages in runtime dependencies
+    - ✅ `pip audit` shows no high or critical vulnerabilities
+    - ✅ Lockfile (`requirements.txt` or `poetry.lock`) is committed and in sync
+    - ✅ `[tool.pytest.ini_options]` configures test discovery and output
+    - ✅ Type checker (`mypy` or `pyright`) is declared as a dev dependency
+    - ✅ `.python-version` committed for consistent local development
+
+    **Python Packaging Best Practices**:
+    - Keep dev/test dependencies out of production images: `pip install --no-deps -r requirements.txt` (runtime only)
+    - Prefer `pyproject.toml` over `setup.py` / `setup.cfg` for new projects (PEP 517/621)
+    - Use `pip install -e .` (editable install) during development to avoid stale imports
+    - Reproducible installs in CI: `pip install --require-hashes -r requirements.txt` or `poetry install --frozen`
+    - Document Python version requirements prominently in README alongside venv setup steps
+
+# ==============================================================================
 # TEAM PERSONAS (v6.6.0 - 2026-04-02)
 # ==============================================================================
 # Source: Team role assessment for ai_workflow_core development team

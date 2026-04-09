@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 6.8.15 (ui_ux_designer_prompt task_template: add Scope Check guard — skip full analysis when no UI/UX files are present in context — 2026-04-09)
+# Version: 6.8.16 (version_manager_prompt task_template: add Versioning Policy line — reference CONTRIBUTING.md, inline MAJOR/MINOR/PATCH criteria, preserve pre-release suffixes — 2026-04-09)
 #
 # CUMULATIVE TOKEN EFFICIENCY SUMMARY:
 # =====================================
@@ -3982,6 +3982,11 @@ version_manager_prompt:
     **Git Context**: {git_context}
     **Primary Sources**: Review CHANGELOG.md (especially the [Unreleased] section) and git commit
     history to understand the nature and scope of changes before deciding on a bump type.
+    **Versioning Policy**: Check `.github/CONTRIBUTING.md` (and `docs/architecture/VERSION_TIMELINE.md`
+    if referenced there) for project-specific versioning rules. If no policy is documented, apply
+    standard semver.org rules: MAJOR = breaking/incompatible changes, MINOR = new backward-compatible
+    features, PATCH = bug fixes / docs / refactoring / tests. Preserve any pre-release suffix
+    (e.g., `-alpha`, `-beta`) in the bumped version unchanged.
     Your output is a recommendation — final version application is confirmed manually.
   
   specific_expertise: |

@@ -10,8 +10,10 @@ _behavioral_actionable: &behavioral_actionable |
   - Only update what is truly outdated or incorrect
   - Make informed decisions based on available context
   - Default to "no changes" rather than making unnecessary modifications
+  - When proposing changes, reference specific file paths and line numbers for traceability
   - If evidence is insufficient to determine accuracy, state this explicitly
     rather than guessing; consult CONTRIBUTING.md and ARCHITECTURE.md before concluding
+    (to verify project-specific conventions or terminology)
   
   **Actionable Output Needed When**:
   Surface output in: CI job logs, workflow execution reports (.ai_workflow/logs/),

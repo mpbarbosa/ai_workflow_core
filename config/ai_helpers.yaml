@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 6.8.32
+# Version: 6.8.31
 #
 # Version history -> see CHANGELOG.md
 #
@@ -1725,12 +1725,10 @@ step2_consistency_prompt:
     documentation types (e.g., consistent heading levels, bullet list styles, and
     fenced code-block language tags — for example, one file calling a concept
     "auto-commit" while another calls it "autocommit" is a consistency violation).
-    Before applying any style judgment, check whether `.github/copilot-instructions.md`
-    and `CONTRIBUTING.md` are present in the repository. If both exist, treat
-    `.github/copilot-instructions.md` as the higher-authority style reference and
-    `CONTRIBUTING.md` as secondary; where they conflict, the copilot-instructions file
-    wins. If only one is present, use it as the sole authority. If neither file exists,
-    or if the existing file(s) do not address a particular convention, fall back to
+    Where project-specific conventions are documented — in particular
+    `.github/copilot-instructions.md` and `CONTRIBUTING.md` — treat those as the
+    authoritative style reference for this project and let them take precedence over
+    generic defaults. If neither file addresses a particular convention, fall back to
     widely accepted generic markdown best practices (e.g., ATX-style headings,
     consistent capitalisation within heading levels).
 
@@ -1911,11 +1909,8 @@ step3_script_refs_prompt:
   behavioral_guidelines: *behavioral_structured
   
   task_template: |
-    Validate the {script_count} automation script(s) found in `{scripts_dir}/` for this project — checking each script listed under "Available Scripts" below. Specifically:
-    - **Scope**: Only the scripts explicitly listed in "Available Scripts" (path pattern: `{scripts_dir}/`)
-    - **Validation criteria**: syntax correctness, presence of header comments/usage docs, executable permissions, CI/CD pipeline usage, and documented exit codes
-    - **Documentation quality standards**: completeness (purpose, usage, prerequisites), accuracy (file paths, arguments, versions), and consistency with actual script functionality
-
+    Perform comprehensive validation of shell script references and documentation quality for this project's automation scripts.
+    
     **Context:**
     - Project: {project_name} ({project_description})
     - Primary Language: {primary_language}
@@ -2030,29 +2025,21 @@ step5_directory_prompt:
     - Architecture documented in `README.md`, `docs/ARCHITECTURE.md`, and `CONTRIBUTING.md`
 
     **"Required" Directory Definition:**
-    Apply the following fallback chain in order — stop at the first source that provides explicit directory lists:
-    1. **`.workflow-config.yaml` `structure.*` keys** (primary — most specific):
-       - `structure.source_dirs` → source code directories (e.g. `src/`) — must exist and contain source files
-       - `structure.test_dirs` → test directories (e.g. `__tests__/`, `tests/`) — must exist and contain test files
-       - `structure.docs_dirs` → documentation directories (e.g. `docs/`) — must exist and contain `.md` files
-       - `structure.ui_dirs` → UI component directories — must contain component source files
-       - `structure.css_dirs` → stylesheet directories — must contain `.css` files
-       - `structure.static_assets` → specific asset files that must be present at their listed paths
-    2. **`project_kinds.yaml` for the resolved project kind** (secondary — use when `.workflow-config.yaml` omits `structure.*` keys):
-       - `validation.required_directories` → directories that must be present (presence check)
-       - `validation.required_files` → files that must be present at the listed paths
-       - `ai_guidance.directory_standards` → canonical purpose description for each directory (content/purpose check)
-    3. **Language/framework defaults** (tertiary — fallback when neither source above applies):
-       e.g. `src/`, `test/`, `docs/` for TypeScript/Node.js projects.
+    When `.workflow-config.yaml` is present, these keys define required directories:
+    - `structure.source_dirs` → source code directories (e.g. `src/`) — must exist and contain source files
+    - `structure.test_dirs` → test directories (e.g. `__tests__/`, `tests/`) — must exist and contain test files
+    - `structure.docs_dirs` → documentation directories (e.g. `docs/`) — must exist and contain `.md` files
+    - `structure.ui_dirs` → UI component directories — must contain component source files
+    - `structure.css_dirs` → stylesheet directories — must contain `.css` files
+    - `structure.static_assets` → specific asset files that must be present at their listed paths
+    When `.workflow-config.yaml` is absent, apply language/framework defaults (e.g. `src/`, `test/`, `docs/` for TypeScript/Node.js projects).
 
     **"Contents match the documented purpose"** means:
     - `source_dirs` entries contain source code files (`.ts`, `.js`, `.vue`) — not build artifacts or data
     - `test_dirs` entries contain test files (`*.test.*` or `*.spec.*`)
     - `docs_dirs` entries contain documentation files (`.md`, `.rst`, `.txt`)
     - Any directory described in `README.md` or `docs/ARCHITECTURE.md` matches its stated purpose
-    - `project_kinds.yaml` `ai_guidance.directory_standards` entries define the canonical content purpose per kind:
-      - Example (`configuration_library`): `config/` → `.yaml`/`.template` files; `docs/` → `.md` files; `examples/` → integration example files; `scripts/` → Python/bash utility scripts
-      - Example (`nodejs_api`): `src/` → `.ts`/`.js` source files; `test/` → `*.test.*`/`*.spec.*` files; `docs/` → `.md` files
+    - Example: a directory described as "UI component library" should contain component files, not config files
     - Undocumented directories (absent from all documentation sources) are flagged for clarification, not treated as errors
 
     **Context:**
@@ -2340,13 +2327,14 @@ step9_dependencies_prompt:
   behavioral_guidelines: *behavioral_structured
   
   task_template: |
-    Analyze the {package_manager} manifest files (e.g. `package.json`, `package-lock.json` for npm;
-    `requirements.txt` / `pyproject.toml` for pip; `go.mod` / `go.sum` for Go) present in this
-    project, assess security risks, evaluate version compatibility, and provide recommendations for
-    dependency management and environment setup.
+    Analyze any of the following manifest files present in this project (e.g. `package.json`,
+    `package-lock.json` for npm; `requirements.txt` / `pyproject.toml` for pip; `go.mod` /
+    `go.sum` for Go), assess security risks, evaluate version compatibility, and provide
+    recommendations for dependency management and environment setup.
 
-    > **Note:** Base your analysis on the dependency lists, audit summary, and outdated-package data
-    > provided below. The manifest and lockfile contents were read from the project at analysis time.
+    > **Note:** Base your analysis solely on the data provided in the **Dependency Analysis
+    > Results**, **Security Audit Summary**, and **Outdated Packages** sections below. The manifest
+    > and lockfile contents were read from the project at analysis time.
 
     **Context:**
     - Project: {project_name} ({project_description})

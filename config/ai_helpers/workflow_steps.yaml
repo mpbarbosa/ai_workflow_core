@@ -617,13 +617,14 @@ step9_dependencies_prompt:
   behavioral_guidelines: *behavioral_structured
   
   task_template: |
-    Analyze the {package_manager} manifest files (e.g. `package.json`, `package-lock.json` for npm;
-    `requirements.txt` / `pyproject.toml` for pip; `go.mod` / `go.sum` for Go) present in this
-    project, assess security risks, evaluate version compatibility, and provide recommendations for
-    dependency management and environment setup.
+    Analyze any of the following manifest files present in this project (e.g. `package.json`,
+    `package-lock.json` for npm; `requirements.txt` / `pyproject.toml` for pip; `go.mod` /
+    `go.sum` for Go), assess security risks, evaluate version compatibility, and provide
+    recommendations for dependency management and environment setup.
 
-    > **Note:** Base your analysis on the dependency lists, audit summary, and outdated-package data
-    > provided below. The manifest and lockfile contents were read from the project at analysis time.
+    > **Note:** Base your analysis solely on the data provided in the **Dependency Analysis
+    > Results**, **Security Audit Summary**, and **Outdated Packages** sections below. The manifest
+    > and lockfile contents were read from the project at analysis time.
 
     **Context:**
     - Project: {project_name} ({project_description})

@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 6.8.31
+# Version: 6.8.32
 #
 # Version history -> see CHANGELOG.md
 #
@@ -2030,21 +2030,29 @@ step5_directory_prompt:
     - Architecture documented in `README.md`, `docs/ARCHITECTURE.md`, and `CONTRIBUTING.md`
 
     **"Required" Directory Definition:**
-    When `.workflow-config.yaml` is present, these keys define required directories:
-    - `structure.source_dirs` → source code directories (e.g. `src/`) — must exist and contain source files
-    - `structure.test_dirs` → test directories (e.g. `__tests__/`, `tests/`) — must exist and contain test files
-    - `structure.docs_dirs` → documentation directories (e.g. `docs/`) — must exist and contain `.md` files
-    - `structure.ui_dirs` → UI component directories — must contain component source files
-    - `structure.css_dirs` → stylesheet directories — must contain `.css` files
-    - `structure.static_assets` → specific asset files that must be present at their listed paths
-    When `.workflow-config.yaml` is absent, apply language/framework defaults (e.g. `src/`, `test/`, `docs/` for TypeScript/Node.js projects).
+    Apply the following fallback chain in order — stop at the first source that provides explicit directory lists:
+    1. **`.workflow-config.yaml` `structure.*` keys** (primary — most specific):
+       - `structure.source_dirs` → source code directories (e.g. `src/`) — must exist and contain source files
+       - `structure.test_dirs` → test directories (e.g. `__tests__/`, `tests/`) — must exist and contain test files
+       - `structure.docs_dirs` → documentation directories (e.g. `docs/`) — must exist and contain `.md` files
+       - `structure.ui_dirs` → UI component directories — must contain component source files
+       - `structure.css_dirs` → stylesheet directories — must contain `.css` files
+       - `structure.static_assets` → specific asset files that must be present at their listed paths
+    2. **`project_kinds.yaml` for the resolved project kind** (secondary — use when `.workflow-config.yaml` omits `structure.*` keys):
+       - `validation.required_directories` → directories that must be present (presence check)
+       - `validation.required_files` → files that must be present at the listed paths
+       - `ai_guidance.directory_standards` → canonical purpose description for each directory (content/purpose check)
+    3. **Language/framework defaults** (tertiary — fallback when neither source above applies):
+       e.g. `src/`, `test/`, `docs/` for TypeScript/Node.js projects.
 
     **"Contents match the documented purpose"** means:
     - `source_dirs` entries contain source code files (`.ts`, `.js`, `.vue`) — not build artifacts or data
     - `test_dirs` entries contain test files (`*.test.*` or `*.spec.*`)
     - `docs_dirs` entries contain documentation files (`.md`, `.rst`, `.txt`)
     - Any directory described in `README.md` or `docs/ARCHITECTURE.md` matches its stated purpose
-    - Example: a directory described as "UI component library" should contain component files, not config files
+    - `project_kinds.yaml` `ai_guidance.directory_standards` entries define the canonical content purpose per kind:
+      - Example (`configuration_library`): `config/` → `.yaml`/`.template` files; `docs/` → `.md` files; `examples/` → integration example files; `scripts/` → Python/bash utility scripts
+      - Example (`nodejs_api`): `src/` → `.ts`/`.js` source files; `test/` → `*.test.*`/`*.spec.*` files; `docs/` → `.md` files
     - Undocumented directories (absent from all documentation sources) are flagged for clarification, not treated as errors
 
     **Context:**

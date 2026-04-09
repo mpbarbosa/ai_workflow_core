@@ -590,7 +590,7 @@ git diff  # Doesn't show what changed in submodule
 # Configure git to show submodule changes
 git config --global diff.submodule log
 
-# Or for this repo only:
+# Or for this repo only
 git config diff.submodule log
 
 # Now git diff shows submodule commit changes
@@ -630,7 +630,7 @@ git push  # Only pushes parent repo
 # Push with submodule check
 git push --recurse-submodules=check
 
-# Or set as default:
+# Or set as default
 git config push.recurseSubmodules check
 ```
 

@@ -648,7 +648,7 @@ sed -i 's/{{PROJECT_NAME}}/My Project/g' .workflow-config.yaml
 # Check specific errors
 yamllint .workflow-config.yaml
 
-# Fix common issues:
+# Fix common issues
 # - Use 2-space indentation
 # - Quote string values
 # - No tabs (use spaces)

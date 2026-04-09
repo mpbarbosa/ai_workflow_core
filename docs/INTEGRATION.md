@@ -611,7 +611,7 @@ cd .workflow_core && git checkout v1.2.6 && cd ..
 # Add to README.md:
 echo "Required ai_workflow_core version: v1.0.2" >> README.md
 
-# Everyone syncs:
+# Everyone syncs
 cd .workflow_core && git checkout v1.0.2 && cd ..
 git submodule update --init --recursive
 ```

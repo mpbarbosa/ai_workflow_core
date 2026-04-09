@@ -665,7 +665,7 @@ with open('.workflow-config.yaml') as f:
 project_kind = config['project']['kind']
 test_command = config['tech_stack']['test_command']
 
-# Use in your workflow...
+# Use in your workflow
 ```
 
 ---

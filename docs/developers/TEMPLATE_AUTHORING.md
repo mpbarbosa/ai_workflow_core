@@ -341,7 +341,7 @@ project:
 - Booleans as strings: "true" (if meant to be string)
 - Placeholders: "{{PLACEHOLDER}}"
 
-# Optional quotes (but recommended for consistency):
+# Optional quotes (but recommended for consistency)
 - Simple strings: "simple-value" or simple-value
 - Keys: "key": or key:
 ```

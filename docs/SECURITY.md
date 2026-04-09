@@ -604,7 +604,7 @@ echo ".env" >> .gitignore
 git add .gitignore
 git commit -m "Add .gitignore"
 
-# If already committed secrets:
+# If already committed secrets
 # 1. Revoke the exposed secret immediately
 # 2. Use git-filter-repo to remove from history
 git filter-repo --path .env --invert-paths
@@ -638,7 +638,7 @@ echo "Deploying with token: $DEPLOY_TOKEN"  # ❌ Secret in logs
 #!/bin/bash
 echo "Deploying..."  # ✅ Don't log secrets
 
-# If you must log for debugging:
+# If you must log for debugging
 echo "Token length: ${#DEPLOY_TOKEN}"  # ✅ Only log metadata
 ```
 

@@ -234,7 +234,7 @@ chmod +x validate_config.py
 # Run validation
 ./validate_config.py
 
-# Expected output on success:
+# Expected output on success
 # ✅ Configuration is valid
 ```
 

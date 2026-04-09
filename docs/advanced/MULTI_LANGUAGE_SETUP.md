@@ -61,7 +61,7 @@ ai_workflow_core provides:
 
 ## When to Use Multi-Language Setup
 
-### Use Multi-Language Configuration When:
+### Use Multi-Language Configuration When
 
 ✅ **Multiple languages play significant roles**
 - Backend in Python + Frontend in JavaScript
@@ -77,7 +77,7 @@ ai_workflow_core provides:
 - Different teams for different components
 - Language choice based on optimal use case
 
-### Don't Use Multi-Language When:
+### Don't Use Multi-Language When
 
 ❌ **One language dominates** (>90% of codebase)
 - Use single-language project kind

@@ -1022,7 +1022,7 @@ If you have questions not covered here:
 
 ---
 
-## Thank You!
+## Thank You
 
 Thank you for contributing to AI Workflow Automation! Your contributions help make this project better for everyone.
 

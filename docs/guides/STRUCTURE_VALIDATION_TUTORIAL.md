@@ -101,11 +101,12 @@ python3 .workflow_core/scripts/validate_structure.py
 **Possible outcomes**:
 
 **✅ Success** (clean structure):
-```
+```text
 ======================================================================
 ✅ Structure validation PASSED
 
 Repository structure is clean and documented.
+
 ======================================================================
 ```
 

@@ -1,0 +1,8 @@
+services:
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    # Override CMD to run specific suites if needed:
+    #   docker compose run --rm test npm test
+    #   docker compose run --rm test npm run validate:helpers

@@ -1,0 +1,42 @@
+# Dependencies — reinstalled inside container
+node_modules/
+
+# Build outputs
+dist/
+coverage/
+
+# Workflow runtime artifacts
+.ai_workflow/
+
+# Docs and examples not needed by tests
+docs/
+examples/
+workflow-templates/
+templates/
+
+# Git history
+.git/
+.gitignore
+
+# Editor / OS artifacts
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Python caches
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+env/
+
+# Logs and analysis artifacts
+*.log
+npm-debug.log*
+VALIDATION_SUMMARY.txt
+ai_documentation_analysis.txt
+*.tmp
+*.bak

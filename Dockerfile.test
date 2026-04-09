@@ -1,0 +1,31 @@
+# Dockerfile.test — Test runner image for ai_workflow_core
+#
+# Runs both test suites:
+#   - Jest (TypeScript): npm test
+#   - Python validators: npm run validate:helpers
+#
+# Build:  docker build -f Dockerfile.test -t ai_workflow_core_test .
+# Run:    docker run --rm ai_workflow_core_test
+# Or via compose: docker compose run --rm test
+
+FROM node:25-slim
+
+# Install Python 3 and packages via apt (avoids --break-system-packages)
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+      python3 \
+      python3-yaml \
+      python3-jsonschema \
+ && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Install Node dependencies (cache layer — only invalidated when package files change)
+COPY package*.json ./
+RUN npm ci
+
+# Copy the rest of the project
+COPY . .
+
+# Run the full test suite by default
+CMD ["npm", "run", "test:all"]

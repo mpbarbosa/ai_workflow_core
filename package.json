@@ -10,7 +10,12 @@
     "test:coverage": "jest --coverage",
     "lint": "eslint src/**/*.ts",
     "build:helpers": "python3 scripts/build_ai_helpers.py --validate",
-    "validate:helpers": "python3 scripts/validate_ai_helpers.py"
+    "validate:helpers": "python3 scripts/validate_ai_helpers.py",
+    "test:all": "npm run build && npm test && npm run build:helpers && npm run validate:helpers",
+    "test:docker": "docker compose run --build --rm test"
+  },
+  "engines": {
+    "node": "^22.13.0 || >=24"
   },
   "dependencies": {
     "js-yaml": "^4.1.0"

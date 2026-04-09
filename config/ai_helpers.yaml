@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 6.8.20 (configuration_specialist_prompt task_template: restrict analysis to explicitly scoped files; report missing files instead of silently skipping — 2026-04-09)
+# Version: 6.8.21 (step5_directory_prompt task_template: enrich task opener to reference authoritative sources and forward-reference definition sections; add CONTRIBUTING.md to Validation Criteria — 2026-04-09)
 #
 # CUMULATIVE TOKEN EFFICIENCY SUMMARY:
 # =====================================
@@ -2365,12 +2365,12 @@ step5_directory_prompt:
   
   task_template: |
     Perform comprehensive validation of directory structure and architectural organization for this project.
-    Validation covers both **presence** (required directories/files exist) and **content/structure** (contents match the documented purpose).
+    Validation covers both **presence** (required directories/files exist — see **"Required" Directory Definition** below for the authoritative sources and rules) and **content/structure** (contents match the documented purpose — see **"Contents match the documented purpose"** below for explicit criteria and examples).
 
     **Validation Criteria:**
     - Required configuration files: `.workflow-config.yaml` (if present, use as the primary source of truth for structure; otherwise fall back to project-kind guidance and language defaults)
     - Project kind-specific required directories and files as defined in `project_kinds.yaml`
-    - Architecture documented in `README.md` and `docs/ARCHITECTURE.md`
+    - Architecture documented in `README.md`, `docs/ARCHITECTURE.md`, and `CONTRIBUTING.md`
 
     **"Required" Directory Definition:**
     When `.workflow-config.yaml` is present, these keys define required directories:

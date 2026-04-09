@@ -167,8 +167,8 @@ project/
 
 - 🏗️ [ARCHITECTURE.md](../ARCHITECTURE.md) - System design
 - 🤝 [CONTRIBUTING.md](../CONTRIBUTING.md) - Contribute
-- 📋 [ONBOARDING.md](ONBOARDING.md) - Developer onboarding
-- 🔧 [ADDING_PROJECT_KINDS.md](ADDING_PROJECT_KINDS.md) - Extend
+- 📋 [ONBOARDING.md](../developers/ONBOARDING.md) - Developer onboarding
+- 🔧 [ADDING_PROJECT_KINDS.md](../developers/ADDING_PROJECT_KINDS.md) - Extend
 
 ### API References
 

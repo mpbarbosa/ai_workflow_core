@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 6.8.23 (step8_test_exec_prompt task_template: add Test Types context field; add CI/CD scope clarification bullet; add test-directory reference and CI/CD-absent limitation notes to approach; step9_dependencies_prompt task_template: reference specific manifest files via {package_manager} in opening; add manifest/lockfile/env-file bullets to Environment Configuration Review; add Note block naming the files being analyzed — 2026-04-09)
+# Version: 6.8.24 (step10_code_quality_prompt task_template: expand opening line to mention linting/formatting/JSDoc; add ESLint, Prettier, and JSDoc bullets to Task 1 Code Standards; add Task 7 Process & Commit Quality covering Conventional Commits, PR practices, and commit hygiene — 2026-04-09)
 #
 # CUMULATIVE TOKEN EFFICIENCY SUMMARY:
 # =====================================
@@ -2774,7 +2774,7 @@ step10_code_quality_prompt:
   behavioral_guidelines: *behavioral_structured
   
   task_template: |
-    Perform a comprehensive code quality review of source code, tests, and documentation. Identify anti-patterns, assess TDD adherence and test coverage, evaluate maintainability, and provide recommendations for improving code quality and reducing technical debt.
+    Perform a comprehensive code quality review of source code, tests, and documentation. Identify anti-patterns, assess TDD adherence and test coverage, evaluate maintainability, check linting/formatting compliance and JSDoc documentation quality, and provide recommendations for improving code quality and reducing technical debt.
     
     **Context:**
     - Project: {project_name} ({project_description})
@@ -2807,6 +2807,9 @@ step10_code_quality_prompt:
        - Assess consistent indentation and formatting
        - Validate documentation/comment quality
        - Check error handling patterns
+       - Verify linting compliance (`npm run lint` / ESLint) — flag files or patterns that would fail lint checks
+       - Verify formatting compliance (`npm run format` / Prettier) — note inconsistencies with project formatter config
+       - Check JSDoc completeness: all public functions, classes, and exported symbols should have JSDoc; note missing or outdated JSDoc blocks
        - Identify and apply project-specific coding conventions from `CONTRIBUTING.md` or `.github/copilot-instructions.md`, when those files are present in the provided context; these take precedence over generic language defaults
        - Also consult other project guides found under `.github/` when present in the context (e.g., `CODE_REVIEW_GUIDE.md`, `TDD_GUIDE.md`, `UNIT_TEST_GUIDE.md`, `HIGH_COHESION_GUIDE.md`, `LOW_COUPLING_GUIDE.md`, `JAVASCRIPT_BEST_PRACTICES.md`)
     
@@ -2850,6 +2853,13 @@ step10_code_quality_prompt:
        - Review mock/stub hygiene (mocks that verify behaviour vs. mocks that just silence errors)
        - Assess test maintainability (DRY helpers, meaningful assertions, clear failure messages)
        - Apply project `TDD_GUIDE.md` or `UNIT_TEST_GUIDE.md` standards when present in the provided context
+
+     7. **Process & Commit Quality:**
+        - Review adherence to [Conventional Commits](https://www.conventionalcommits.org/): commit messages should use `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, etc. with correct format
+        - Check that commit messages reference related issues or PRs where appropriate
+        - Note any commits that bundle unrelated concerns (should be atomic)
+        - Assess whether PR descriptions (if visible) describe the change and reference related issues
+        - Flag any secrets, debug artifacts, or generated files that should not be committed
   
   approach: |
     Analyse only the **{project_name}** files shown above. Do not reference ai_workflow.js, node_modules, or any other project not present in the context.

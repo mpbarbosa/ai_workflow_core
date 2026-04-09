@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 6.8.27 (async_flow_debugger_prompt: add Step 0 pattern presence scan, qualify CORS/network items as conditional, update output_format to omit inapplicable sections — 2026-04-09)
+# Version: 6.8.28 (async_perf_engineer_prompt task_template: replace vague opener with concrete scope description naming the 9 dimensions, inspection method, and expected output — 2026-04-09)
 #
 # CUMULATIVE TOKEN EFFICIENCY SUMMARY:
 # =====================================
@@ -4362,7 +4362,7 @@ async_perf_engineer_prompt:
   behavioral_guidelines: *behavioral_actionable
 
   task_template: |
-    **YOUR TASK**: Perform a deep async performance review of the JavaScript/TypeScript codebase.
+    **YOUR TASK**: Perform a structured async performance review of the JavaScript/TypeScript codebase using static code analysis of the source files listed below. Evaluate all 9 ANALYSIS DIMENSIONS (defined below): overfetching, promise overhead, event loop congestion, memory leaks, API call batching, debouncing & throttling, error handling, promise anti-patterns, and resource cleanup. For each dimension, identify concrete issues with severity ratings and provide before/after fix snippets. Conclude with a prioritized recommendations list and a summary table. Inspection method: code-only static analysis — do not run profilers or benchmarks; rely solely on the listed source files.
 
     **Project Context:**
     - Project: {project_name} ({project_description})

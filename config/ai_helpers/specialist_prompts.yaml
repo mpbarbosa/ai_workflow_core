@@ -19,9 +19,11 @@ version_manager_prompt:
     **Git Context**: {git_context}
     **Primary Sources**: Review `package.json` (current version field), CHANGELOG.md (especially the
     [Unreleased] section), and git commit history to understand the nature and scope of changes.
-    **Versioning Policy**: Check `.github/CONTRIBUTING.md` (and `docs/architecture/VERSION_TIMELINE.md`
-    if referenced there) for project-specific versioning rules. If no policy is documented, apply
-    standard semver.org rules:
+    If CHANGELOG.md is absent, note this in your reasoning and rely solely on git commit history.
+    **Versioning Policy**: Check these files (in order) for project-specific versioning rules:
+    `.github/CONTRIBUTING.md`, `CONTRIBUTING.md` (project root), `README.md`, and
+    `docs/architecture/VERSION_TIMELINE.md` (if referenced). If none of these files exists or
+    none addresses versioning, apply standard semver.org rules and state this in your reasoning:
     - MAJOR (X.0.0): breaking or incompatible public-API changes
     - MINOR (X.Y.0): new backward-compatible features or capabilities
     - PATCH (X.Y.Z): bug fixes, docs, refactoring, tests, or internal tooling

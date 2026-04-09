@@ -1725,10 +1725,12 @@ step2_consistency_prompt:
     documentation types (e.g., consistent heading levels, bullet list styles, and
     fenced code-block language tags — for example, one file calling a concept
     "auto-commit" while another calls it "autocommit" is a consistency violation).
-    Where project-specific conventions are documented — in particular
-    `.github/copilot-instructions.md` and `CONTRIBUTING.md` — treat those as the
-    authoritative style reference for this project and let them take precedence over
-    generic defaults. If neither file addresses a particular convention, fall back to
+    Before applying any style judgment, check whether `.github/copilot-instructions.md`
+    and `CONTRIBUTING.md` are present in the repository. If both exist, treat
+    `.github/copilot-instructions.md` as the higher-authority style reference and
+    `CONTRIBUTING.md` as secondary; where they conflict, the copilot-instructions file
+    wins. If only one is present, use it as the sole authority. If neither file exists,
+    or if the existing file(s) do not address a particular convention, fall back to
     widely accepted generic markdown best practices (e.g., ATX-style headings,
     consistent capitalisation within heading levels).
 

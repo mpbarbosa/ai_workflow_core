@@ -1155,7 +1155,7 @@ markdown_lint_prompt:
 
 # Step 04: Configuration Specialist Prompt Template
 # Purpose: Validate and analyze configuration files for schema correctness, security, and best practices
-# Version: 1.0.3 (v6.8.5 - Improve Task section clarity and add config-loader reference)
+# Version: 1.0.4 (v6.8.41 - Clarify tech stack reference, scope-list authority, file-absence handling, empty-scope case)
 configuration_specialist_prompt:
   # Split role into prefix + guidelines for token efficiency
   role_ref: configuration_specialist  # resolved from config/prompt_roles.yaml
@@ -1163,28 +1163,37 @@ configuration_specialist_prompt:
   behavioral_guidelines: *behavioral_actionable
   
   task_template: |
-    Validate and analyze the {config_count} configuration file(s) listed in
+    Validate and analyze the configuration file(s) listed in
     the **Configuration Files in Scope** sub-section directly below, such as package manifests
     (`package.json`, `requirements.txt`), env files (`.env`, `.env.production`),
     CI workflows, Docker/compose files, editor/tooling configs, and AI-workflow
     YAML when present. Analyze only the files explicitly listed in that sub-section —
-    do not infer, search for, or include any other files. For each file shown in
-    **File Contents**, check syntax/schema correctness, security hygiene, consistency
-    with related configs, and stack-specific best practices when tech-stack context
-    is available. If a listed file is absent from **File Contents**, report it as
-    "content unavailable" and skip checks for it.
-    
+    do not infer, search for, or include any other files. Treat that scope list as
+    authoritative if it conflicts with any summary count elsewhere in this prompt.
+    For each file shown in **File Contents**, check syntax/schema correctness, security
+    hygiene, consistency with related configs, and stack-specific best practices for
+    the tech stack listed in **Project Context**, when provided.
+
     ### Configuration Files in Scope
     {config_files_list}
 
-    > **Note:** The scope list above defines the exact set of files to analyze. If a listed
-    > file is absent from **File Contents** below, report it as "content unavailable" —
-    > do not infer its contents or skip it silently.
-    
+    > **Note:** The scope list above defines the exact set of files to analyze.
+    > - If a listed file is absent from **File Contents** below, report it as "content
+    >   unavailable" — do not infer its contents or skip it silently. A file's absence
+    >   may reflect prompt scoping, project-specific exclusions, or the file not being
+    >   present in the active workspace; do not treat that absence alone as a configuration
+    >   defect.
+    > - If the scope list is empty or resolves to "none found", that is a valid outcome.
+    >   State that no configuration files were in scope for this run and do not infer
+    >   any additional files.
+
     ### Project Context
     - Project Type: {project_kind}
     - Tech Stack: {tech_stack}
     - Total Config Files: {config_count}
+    - Note: If this count differs from the number of entries in **Configuration Files
+      in Scope** above, use the scope list as the source of truth and briefly note
+      the discrepancy.
     
     ### File Contents
     {config_files_content}

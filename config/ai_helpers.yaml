@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 6.8.13 (configuration_specialist_prompt: clarify list is sub-section directly below — 2026-04-09)
+# Version: 6.8.14 (markdown_lint_prompt task_template: clarify style-guide precedence, fallback, and root CONTRIBUTING.md pointer — 2026-04-09)
 #
 # CUMULATIVE TOKEN EFFICIENCY SUMMARY:
 # =====================================
@@ -84,6 +84,17 @@
 #     counts; directs AI to diff sample for actual file paths; treats as patch bump
 #   - step11_git_commit_prompt: clarified {diff_summary} label to request individual file
 #     names alongside aggregate statistics for better traceability
+# v6.8.14 - Clarify style-guide precedence in markdown_lint_prompt Task section (2026-04-09)
+#   - task_template: rewrote opening paragraph to add a numbered priority hierarchy
+#     (.github/copilot-instructions.md > .github/CONTRIBUTING.md > generic defaults)
+#   - task_template: added fallback note — use .github/CONTRIBUTING.md when
+#     .github/copilot-instructions.md is absent
+#   - task_template: added conflict-resolution rule — copilot-instructions.md wins when
+#     the two files give conflicting guidance
+#   - task_template: added Note block clarifying that root CONTRIBUTING.md is a pointer
+#     only and does not contain authoritative rules
+#     (addresses analyze-prompt-part findings for workflow_20260408_201258: score 9/10,
+#     suggestions 1–3 all addressed)
 # v6.8.13 - Clarify configuration_specialist_prompt file-list reference (2026-04-09)
 #   - task_template: changed "listed in **Configuration Files in Scope** below" to
 #     "listed in the **Configuration Files in Scope** sub-section directly below"
@@ -3006,11 +3017,26 @@ markdown_lint_prompt:
   
   task_template: |
     Review the markdown linting results and provide actionable
-    recommendations for improving documentation quality. Where
-    project-specific documentation conventions are defined in
-    `.github/CONTRIBUTING.md` or `.github/copilot-instructions.md`,
-    treat those as the authoritative style reference and let them take
-    precedence over generic markdown defaults.
+    recommendations for improving documentation quality. Use the
+    following style-guide hierarchy (highest priority first):
+
+    1. **`.github/copilot-instructions.md`** — primary project-level
+       authority; use this if the file is present.
+    2. **`.github/CONTRIBUTING.md`** — fallback when
+       `.github/copilot-instructions.md` is absent; contains the full
+       contribution guidelines including code style and immutability
+       principles.
+    3. **Generic markdown defaults** — apply only where neither
+       project-specific file addresses the rule in question.
+
+    > **Note:** The root `CONTRIBUTING.md` is a conventional entry-point
+    > pointer only — it redirects to `.github/CONTRIBUTING.md` and does
+    > not contain authoritative rules itself.
+
+    If `.github/copilot-instructions.md` and `.github/CONTRIBUTING.md`
+    give conflicting guidance, `.github/copilot-instructions.md` takes
+    precedence. In all cases, project-specific conventions override
+    generic markdown defaults.
     
     # Markdown Linting Results
     {lint_report}

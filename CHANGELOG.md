@@ -9,9 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] — 2026-04-09
+
 ### Changed
 
-- **`config/ai_helpers.yaml`** — Renamed 7 step-specific prompt keys to align with JS workflow step numbering:
+- **`config/ai_helpers.yaml`** — Renamed 7 step-specific prompt keys to align with JS workflow step numbering (**breaking** for consumers referencing these keys by name):
   - `step4_directory_prompt` → `step5_directory_prompt`
   - `step5_test_review_prompt` → `step6_test_review_prompt`
   - `step7_test_exec_prompt` → `step8_test_exec_prompt`

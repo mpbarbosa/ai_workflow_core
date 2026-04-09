@@ -1,8 +1,8 @@
 # Roadmap: `config/ai_helpers.yaml` — Persona & Prompt Set Progression
 
 **Source File**: `config/ai_helpers.yaml`
-**Current Version**: v6.7.6 (Phase 1 Refinement Complete — 7 items)
-**Document Date**: 2026-03-06
+**Current Version**: v6.8.30 (Phase 1 Refinement Complete — step key alignment + prompt improvements)
+**Document Date**: 2026-04-09
 **Repository**: `mpbarbosa/ai_workflow_core`
 
 ---
@@ -668,5 +668,5 @@ Items sorted by value/effort ratio (highest priority first):
 
 ---
 
-*Document version: 1.2.7 — Phase 1 (v6.7.x) complete as of 2026-03-06*
+*Document version: 1.3.0 — Phase 1 (v6.7.x) complete, step key alignment + prompt improvements shipped (2026-04-09)*
 *Next review: After Phase 2 (v7.x.x) first persona (python_developer_prompt) is complete*

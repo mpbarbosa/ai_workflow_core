@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 7.0.1
+# Version: 7.0.2
 #
 # Version history -> see CHANGELOG.md
 #
@@ -2449,7 +2449,7 @@ step10_code_quality_prompt:
   behavioral_guidelines: *behavioral_structured
   
   task_template: |
-    Perform a comprehensive code quality review of the source code, tests, and documentation listed in the **Context** section below. Restrict your analysis to the files in scope — exclude third-party dependencies, node_modules, and generated/build artefacts. Identify anti-patterns, assess TDD adherence and test coverage, evaluate maintainability, check linting/formatting compliance and JSDoc documentation quality, and provide actionable recommendations grouped by priority (quick wins vs. long-term).
+    Perform a comprehensive code quality review of the source code, tests, and documentation listed in the **Context** section below. Restrict your analysis to the files in scope — exclude third-party dependencies, node_modules, and generated/build artefacts. Identify anti-patterns, assess TDD adherence and test coverage, evaluate maintainability, check linting/formatting compliance and JSDoc documentation quality, and provide actionable recommendations grouped by priority (**quick wins** = low effort, high impact; **long-term** = architectural or structural changes requiring significant effort).
 
     **Context:**
     - Project: {project_name} ({project_description})
@@ -2460,6 +2460,8 @@ step10_code_quality_prompt:
     - Files in Scope: {modified_count}
     - Code Files: {total_files} total
     - Language Breakdown: {language_breakdown}
+
+    > If no specific files are listed in the context below, review all source, test, and documentation files in the project root and `src/` directory.
     
     **Code Quality Analysis Results:**
     {quality_summary}

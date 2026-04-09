@@ -1,6 +1,6 @@
 # Configuration Reference
 
-**Version**: 1.2.5
+**Version**: 1.2.6
 **Last Updated**: 2026-02-10
 **Status**: Complete Reference
 
@@ -135,7 +135,7 @@ project:
   type: "nodejs-api"
   description: "RESTful API for user authentication, authorization, and profile management"
   kind: "nodejs_api"
-  version: "1.2.5"
+  version: "1.2.6"
 ```
 
 ---
@@ -625,7 +625,7 @@ project:
   type: "nodejs-api"
   description: "RESTful API for user authentication and profile management"
   kind: "nodejs_api"
-  version: "1.2.5"
+  version: "1.2.6"
 
 tech_stack:
   primary_language: "javascript"

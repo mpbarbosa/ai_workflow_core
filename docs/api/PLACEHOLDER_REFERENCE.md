@@ -209,7 +209,7 @@ kind: "nodejs_api"      # Underscored
 - `"2.1.3"` - Stable version
 - `"1.0.2-alpha"` - Pre-release
 - `"2.0.0-beta.1"` - Beta version
-- `"1.2.5-rc.1+build.123"` - Release candidate with build metadata
+- `"1.2.6-rc.1+build.123"` - Release candidate with build metadata
 
 **Examples**:
 ```yaml

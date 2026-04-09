@@ -65,6 +65,26 @@
       "score": 100,
       "issueCount": 0,
       "lastAnalyzed": "2026-04-03T03:11:07.800Z"
+    },
+    "scripts/run_tests_docker.sh": {
+      "score": 100,
+      "issueCount": 0,
+      "lastAnalyzed": "2026-04-09T16:01:27.290Z"
+    },
+    "scripts/build_ai_helpers.py": {
+      "score": 100,
+      "issueCount": 0,
+      "lastAnalyzed": "2026-04-09T16:01:27.290Z"
+    },
+    "scripts/validate_ai_helpers.py": {
+      "score": 100,
+      "issueCount": 0,
+      "lastAnalyzed": "2026-04-09T16:01:27.290Z"
+    },
+    "config/ai_helpers.schema.json": {
+      "score": 100,
+      "issueCount": 0,
+      "lastAnalyzed": "2026-04-09T16:01:27.290Z"
     }
   }
 }

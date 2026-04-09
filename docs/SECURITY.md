@@ -320,16 +320,16 @@ git checkout abc123def456...
 # Review changes before updating
 cd .workflow_core
 git fetch --tags
-git log v1.0.2..v1.2.5  # Review commits between versions
+git log v1.0.2..v1.2.6  # Review commits between versions
 
 # Check for suspicious changes
-git diff v1.0.2..v1.2.5  # Review code changes
+git diff v1.0.2..v1.2.6  # Review code changes
 
 # If satisfied, update
-git checkout v1.2.5
+git checkout v1.2.6
 cd ..
 git add .workflow_core
-git commit -m "chore: update ai_workflow_core to v1.2.5"
+git commit -m "chore: update ai_workflow_core to v1.2.6"
 ```
 
 ### Detecting Submodule Tampering

@@ -843,7 +843,7 @@ acquire_lock "deploy"
 trap "release_lock deploy" EXIT
 
 # Save state
-save_state "last_deploy_version" "1.2.5"
+save_state "last_deploy_version" "1.2.6"
 save_state "last_deploy_time" "$(date -Iseconds)"
 
 # Load state

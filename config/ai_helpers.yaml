@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 7.0.0
+# Version: 7.0.1
 #
 # Version history -> see CHANGELOG.md
 #
@@ -2253,6 +2253,7 @@ step8_test_exec_prompt:
     - Primary Language: {primary_language}
     - Project Kind: {project_kind}
     - Test Framework: {test_framework} via `{test_command}`
+    - Test Scope: validation scripts and source files targeted by `{test_command}`
     - Test Config Files: {test_config_paths}
     - Exit Code: {test_exit_code}
     - Results: {tests_passed}/{tests_total} passed, {tests_failed} failed, {tests_skipped} skipped
@@ -2308,6 +2309,7 @@ step8_test_exec_prompt:
        - Suggest coverage thresholds for CI gates
        - Recommend test parallelization approaches
        - Assess both code-level test quality and CI/CD pipeline configuration separately (pipeline-specific recommendations apply only when CI config files are listed in context above)
+       - When CI config files are listed above, reference those specific file paths in recommendations
   
   approach: |
     Analyze ONLY the test execution results explicitly provided above. Do not invent
@@ -2329,6 +2331,7 @@ step8_test_exec_prompt:
     - CI/CD integration best practices
     - Priority-ordered action items
     - Estimated effort for each fix
+    - Distinguish recommendation levels: code-level (test scripts/assertions), config-level (test config files), process-level (CI/CD pipeline)
     
     Please provide a comprehensive test results analysis with specific, actionable recommendations.
 

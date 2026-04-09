@@ -410,7 +410,7 @@ performance_review_prompt:
   behavioral_guidelines: *behavioral_structured
 
   task_template: |
-    **YOUR TASK**: Perform a performance engineering review of {project_name}.
+    **YOUR TASK**: Perform a performance engineering review of {project_name}. Evaluate performance across all dimensions relevant to this project's tech stack and role, including: script/module load time and startup cost, config/YAML parsing overhead, algorithmic complexity in hot paths, and I/O patterns (sync vs async).
 
     **Project Context:**
     - Project: {project_name} ({project_description})
@@ -422,6 +422,13 @@ performance_review_prompt:
 
     **File Contents:**
     {file_content_block}
+
+    **Focus Areas** (prioritise based on what is present in the code):
+    - Script/module startup: unnecessary eager imports, slow initialisation, top-level await misuse
+    - Config & data parsing: repeated YAML/JSON parsing, missing caching of parsed results, large file loads
+    - Workflow overhead: redundant filesystem traversals, repeated glob/stat calls, unoptimised shell invocations
+    - Algorithmic hot paths: O(n²) or worse loops, nested iterations over large datasets
+    - I/O patterns: synchronous file I/O in hot paths, missing stream processing for large files
 
     **REQUIRED ACTIONS**:
     1. Identify algorithmic complexity issues: O(n²) or worse loops, nested iterations over large datasets

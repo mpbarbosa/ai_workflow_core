@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 7.0.2
+# Version: 7.0.3
 #
 # Version history -> see CHANGELOG.md
 #
@@ -2645,15 +2645,19 @@ step12_git_commit_prompt:
     context for code reviewers and future maintainers. Avoid unnecessary
     repetition — each line should add distinct value.
 
-    Check for project-specific commit conventions (case-insensitive) in:
+    Check for project-specific commit conventions (case-insensitive file
+    matching, any subdirectory depth) in:
     1. `.github/CONTRIBUTING.md`
     2. `CONTRIBUTING.md` (project root)
 
-    If either file exists and defines commit conventions, follow them.
+    If both files exist and define commit conventions, `.github/CONTRIBUTING.md`
+    takes precedence. If only one defines commit conventions, follow that one.
+    If a file exists but only partially defines conventions (e.g., covers PR
+    format but not commit messages), apply those rules and fill any gaps with
+    the [Conventional Commits](https://www.conventionalcommits.org) specification.
     If neither file is present or neither addresses commit format, use the
-    [Conventional Commits](https://www.conventionalcommits.org) specification
-    as the baseline standard without hesitation — never stall or fail because
-    a conventions file is absent.
+    Conventional Commits specification as the baseline standard without
+    hesitation — never stall or fail because a conventions file is absent.
     
     **Conventional Commit Types:**
     {commit_types}

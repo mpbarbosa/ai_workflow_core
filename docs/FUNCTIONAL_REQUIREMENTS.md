@@ -1,6 +1,45 @@
 # Functional Requirements
 
-This document tracks functional requirements and minor issue resolutions for `ai_workflow_core`.
+**Current version**: 1.6.0
+**Last Updated**: 2026-04-10
+
+This document tracks functional requirements and module structure for `ai_workflow_core`,
+as well as minor issue resolutions from the `fix-log-issues` workflow.
+
+---
+
+## Module Index
+
+| Module | Source | Public API | Reference doc |
+|---|---|---|---|
+| Config Loader | `src/loader.ts` | `loadPromptRoles`, `loadPersonas`, `validateConfig`, `listPersonas`, `resolvePersona`, `resolveAllPersonas` | [PROMPT_ROLES_REFERENCE.md](api/PROMPT_ROLES_REFERENCE.md) |
+| Types & Guards | `src/types.ts` | `PersonaConfig`, `PromptRolesConfig`, `AIHelpersConfig`, `ResolvedPersona`, `ConfigValidationResult`, `isPersonaConfig`, `isPromptRole`, `isPromptRolesConfig` | [PROMPT_ROLES_REFERENCE.md](api/PROMPT_ROLES_REFERENCE.md) |
+| Public Entry Point | `src/index.ts` | Re-exports all of the above | [PROMPT_ROLES_REFERENCE.md](api/PROMPT_ROLES_REFERENCE.md) |
+| AI Helpers Config | `config/ai_helpers.yaml` | 62 AI personas across 7 groups | [AI_HELPERS_REFERENCE.md](api/AI_HELPERS_REFERENCE.md) |
+| Prompt Roles Config | `config/prompt_roles.yaml` | Role prefix definitions referenced by personas | [PROMPT_ROLES_REFERENCE.md](api/PROMPT_ROLES_REFERENCE.md) |
+| Project Kinds | `config/project_kinds.yaml` | 8 project kind schemas with validation rules | [PROJECT_KINDS_SCHEMA.md](api/PROJECT_KINDS_SCHEMA.md) |
+| Workflow Config | `config/.workflow-config.yaml.template` | Template with `{{PLACEHOLDER}}` substitution | [CONFIG_REFERENCE.md](api/CONFIG_REFERENCE.md) |
+
+---
+
+## Acceptance Criteria
+
+### Config Loader (`src/`)
+
+- `loadPromptRoles(filePath)` returns a `PromptRolesConfig` for valid YAML; throws `InvalidConfigError` for missing file, bad YAML, or wrong shape.
+- `loadPersonas(filePath)` returns an `AIHelpersConfig` for valid YAML; throws `InvalidConfigError` for missing file or bad YAML.
+- `resolvePersona(persona, key, roles)` returns a `ResolvedPersona` with `role_prefix` populated; throws `RoleNotFoundError` when the `role_ref` is not an own-property of `roles.roles`.
+- `resolveAllPersonas(config, roles)` resolves all persona entries; skips non-persona entries; throws `RoleNotFoundError` on the first unresolvable reference.
+- `listPersonas(config)` returns a sorted `string[]` of all persona keys detected via `isPersonaConfig`.
+- `validateConfig(helpersConfig, rolesConfig)` returns `{ valid: true, errors: [] }` when all `role_ref` values are own-properties of `rolesConfig.roles`; returns `{ valid: false, errors: [...] }` with all failures when any are missing. Non-persona entries are ignored.
+
+### Configuration Templates
+
+- `config/.workflow-config.yaml.template` — all `{{PLACEHOLDER}}` patterns documented in [PLACEHOLDER_REFERENCE.md](api/PLACEHOLDER_REFERENCE.md).
+- `config/project_kinds.yaml` — 8 supported project kinds; validation rules documented in [PROJECT_KINDS_SCHEMA.md](api/PROJECT_KINDS_SCHEMA.md).
+- `config/ai_helpers.yaml` — 62 personas regenerable via `python3 scripts/build_ai_helpers.py`; all referenced `role_ref` values exist as own-properties in `config/prompt_roles.yaml`.
+
+---
 
 ## Roadmap — Minor Issues
 

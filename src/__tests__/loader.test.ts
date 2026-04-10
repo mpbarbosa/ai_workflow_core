@@ -7,6 +7,8 @@
  *   - resolvePersona: happy path, missing role_ref throws RoleNotFoundError
  *   - resolveAllPersonas: happy path, skips non-persona entries,
  *     throws on unresolvable ref
+ *   - validateConfig: valid config, missing role_ref, multiple errors,
+ *     empty config, proto-key role_ref, non-persona entries ignored
  */
 
 import path from 'path';
@@ -21,8 +23,9 @@ import {
   resolveAllPersonas,
   resolvePersona,
   RoleNotFoundError,
+  validateConfig,
 } from '../index';
-import type { AIHelpersConfig, PersonaConfig, PromptRolesConfig } from '../index';
+import type { AIHelpersConfig, ConfigValidationResult, PersonaConfig, PromptRolesConfig } from '../index';
 
 // ---------------------------------------------------------------------------
 // Fixture paths
@@ -340,3 +343,92 @@ describe('RoleNotFoundError', () => {
     expect(new RoleNotFoundError('r', 'p')).toBeInstanceOf(Error);
   });
 });
+
+// ---------------------------------------------------------------------------
+// validateConfig
+// ---------------------------------------------------------------------------
+
+describe('validateConfig', () => {
+  const validRoles: PromptRolesConfig = {
+    roles: {
+      test_role_a: { description: 'Role A', role_prefix: 'You are A.' },
+      test_role_b: { description: 'Role B', role_prefix: 'You are B.' },
+    },
+  };
+
+  it('returns { valid: true, errors: [] } when all role_refs resolve', () => {
+    const config: AIHelpersConfig = {
+      persona_alpha: { role_ref: 'test_role_a' },
+      persona_beta: { role_ref: 'test_role_b' },
+    };
+    const result: ConfigValidationResult = validateConfig(config, validRoles);
+    expect(result.valid).toBe(true);
+    expect(result.errors).toHaveLength(0);
+  });
+
+  it('returns { valid: false } with one error when a role_ref is missing', () => {
+    const config: AIHelpersConfig = {
+      persona_bad: { role_ref: 'nonexistent_role' },
+    };
+    const result = validateConfig(config, validRoles);
+    expect(result.valid).toBe(false);
+    expect(result.errors).toHaveLength(1);
+    expect(result.errors[0]).toContain('nonexistent_role');
+    expect(result.errors[0]).toContain('persona_bad');
+  });
+
+  it('collects multiple errors instead of throwing on first', () => {
+    const config: AIHelpersConfig = {
+      persona_x: { role_ref: 'missing_x' },
+      persona_y: { role_ref: 'missing_y' },
+    };
+    const result = validateConfig(config, validRoles);
+    expect(result.valid).toBe(false);
+    expect(result.errors).toHaveLength(2);
+  });
+
+  it('returns valid for an empty config', () => {
+    const result = validateConfig({}, validRoles);
+    expect(result.valid).toBe(true);
+    expect(result.errors).toHaveLength(0);
+  });
+
+  it('ignores non-persona entries (language tables, scalars)', () => {
+    const config: AIHelpersConfig = {
+      language_specific_docs: { javascript: { key_points: 'Use JSDoc' } },
+      _behavioral_anchor: 'some scalar value',
+      persona_ok: { role_ref: 'test_role_a' },
+    };
+    const result = validateConfig(config, validRoles);
+    expect(result.valid).toBe(true);
+  });
+
+  it('rejects role_ref matching a prototype key (e.g. "toString")', () => {
+    const config: AIHelpersConfig = {
+      proto_persona: { role_ref: 'toString' },
+    };
+    const result = validateConfig(config, validRoles);
+    expect(result.valid).toBe(false);
+    expect(result.errors[0]).toContain('toString');
+  });
+
+  it('is consistent with resolveAllPersonas: valid result means no throw', () => {
+    const config: AIHelpersConfig = {
+      persona_alpha: { role_ref: 'test_role_a' },
+    };
+    const result = validateConfig(config, validRoles);
+    expect(result.valid).toBe(true);
+    expect(() => resolveAllPersonas(config, validRoles)).not.toThrow();
+  });
+
+  it('returns errors sorted alphabetically', () => {
+    const config: AIHelpersConfig = {
+      z_persona: { role_ref: 'z_missing' },
+      a_persona: { role_ref: 'a_missing' },
+    };
+    const result = validateConfig(config, validRoles);
+    expect(result.errors[0]).toContain('a_missing');
+    expect(result.errors[1]).toContain('z_missing');
+  });
+});
+

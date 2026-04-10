@@ -101,6 +101,24 @@ export interface ResolvedPersona extends Omit<PersonaConfig, 'role_ref'> {
 }
 
 // ---------------------------------------------------------------------------
+// validateConfig return type
+// ---------------------------------------------------------------------------
+
+/**
+ * Return type of {@link validateConfig}.
+ * Contains all unresolvable `role_ref` errors found in a helpers config.
+ */
+export interface ConfigValidationResult {
+  /** `true` if all persona `role_ref` keys resolved; `false` otherwise. */
+  readonly valid: boolean;
+  /**
+   * Sorted list of human-readable error messages, one per unresolvable
+   * `role_ref`. Empty when `valid` is `true`.
+   */
+  readonly errors: string[];
+}
+
+// ---------------------------------------------------------------------------
 // Custom error types  (thrown by loader.ts)
 // ---------------------------------------------------------------------------
 

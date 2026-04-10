@@ -10,6 +10,7 @@
 // Types and interfaces
 export type {
   AIHelpersConfig,
+  ConfigValidationResult,
   PersonaConfig,
   PromptRole,
   PromptRolesConfig,
@@ -23,4 +24,4 @@ export { isPersonaConfig, isPromptRole, isPromptRolesConfig } from './types';
 export { InvalidConfigError, RoleNotFoundError } from './types';
 
 // Config loading and resolution functions
-export { listPersonas, loadPersonas, loadPromptRoles, resolveAllPersonas, resolvePersona } from './loader';
+export { listPersonas, loadPersonas, loadPromptRoles, resolveAllPersonas, resolvePersona, validateConfig } from './loader';

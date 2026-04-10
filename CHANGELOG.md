@@ -9,7 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.5.0] — 2026-04-10
+## [1.6.0] — 2026-04-10
+
+### Added
+
+- **`src/loader.ts`** — New `validateConfig(helpersConfig, rolesConfig): ConfigValidationResult` function. Pre-flight checks that every persona's `role_ref` exists as an own-property of `rolesConfig.roles`, collecting **all** errors before returning (unlike `resolveAllPersonas` which throws on the first failure). Uses `Object.prototype.hasOwnProperty.call` to avoid prototype-chain false positives.
+- **`src/types.ts`** — New `ConfigValidationResult` interface (`{ valid: boolean; errors: string[] }`).
+- **`src/index.ts`** — `validateConfig` and `ConfigValidationResult` added to public exports.
+- **`docs/api/PROMPT_ROLES_REFERENCE.md`** — New TypeScript Loader API Reference covering all 6 public functions, all types, type guards, custom errors, integration examples, and an error-handling guide.
+- **`docs/FUNCTIONAL_REQUIREMENTS.md`** — Added `Current version` header, Module Index table, and Acceptance Criteria section.
+
+### Fixed
+
+- **`src/loader.ts` `resolvePersona`** — Role lookup now uses `Object.prototype.hasOwnProperty.call` instead of truthiness check, preventing false positives for prototype-inherited property names (`toString`, `constructor`, etc.).
+
+
 
 ### Added
 

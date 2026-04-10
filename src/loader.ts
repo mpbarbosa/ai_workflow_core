@@ -18,6 +18,7 @@ import { promises as fsPromises } from 'fs';
 import { load as parseYaml } from 'js-yaml';
 import {
   AIHelpersConfig,
+  ConfigValidationResult,
   InvalidConfigError,
   isPersonaConfig,
   isPromptRolesConfig,
@@ -111,10 +112,10 @@ export function resolvePersona(
   personaKey: string,
   roles: PromptRolesConfig,
 ): ResolvedPersona {
-  const roleEntry = roles.roles[persona.role_ref];
-  if (!roleEntry) {
+  if (!Object.prototype.hasOwnProperty.call(roles.roles, persona.role_ref)) {
     throw new RoleNotFoundError(persona.role_ref, personaKey);
   }
+  const roleEntry = roles.roles[persona.role_ref];
   return {
     ...persona,
     role_prefix: roleEntry.role_prefix,
@@ -137,6 +138,39 @@ export function listPersonas(config: AIHelpersConfig): string[] {
     .filter(([, value]) => isPersonaConfig(value))
     .map(([key]) => key)
     .sort();
+}
+
+/**
+ * Validates that every persona in `helpersConfig` has a `role_ref` that
+ * resolves to an own-property of `rolesConfig.roles`.
+ *
+ * Unlike {@link resolveAllPersonas} (which throws on the first bad reference),
+ * this function collects **all** unresolvable references and returns them as
+ * a list, making it suitable for pre-flight validation and CI checks.
+ *
+ * Non-persona entries (language tables, YAML anchor scalars) are silently
+ * ignored — this function only validates cross-file `role_ref` integrity.
+ *
+ * @param helpersConfig - The raw {@link AIHelpersConfig} loaded from `ai_helpers.yaml`.
+ * @param rolesConfig   - The loaded {@link PromptRolesConfig} from `prompt_roles.yaml`.
+ * @returns             A {@link ConfigValidationResult} with `valid` and `errors`.
+ */
+export function validateConfig(
+  helpersConfig: AIHelpersConfig,
+  rolesConfig: PromptRolesConfig,
+): ConfigValidationResult {
+  const errors: string[] = [];
+  for (const [key, value] of Object.entries(helpersConfig)) {
+    if (!isPersonaConfig(value)) continue;
+    if (!Object.prototype.hasOwnProperty.call(rolesConfig.roles, value.role_ref)) {
+      errors.push(
+        `Role reference "${value.role_ref}" used by persona "${key}" was not found ` +
+          `in prompt_roles.yaml. Add an entry under roles.${value.role_ref} or correct the role_ref key.`,
+      );
+    }
+  }
+  errors.sort();
+  return { valid: errors.length === 0, errors };
 }
 
 /**

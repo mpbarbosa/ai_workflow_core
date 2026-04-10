@@ -27,7 +27,7 @@
 #   - copilot_sdk_engineer: GitHub Copilot SDK wrapper specialist for CLI session lifecycle,
 #     request serialization, SSE stream parsing, BYOK auth, hook adapters, and agentic
 #     execution patterns (olinda_copilot_sdk.ts team alignment)
-# - 1.4.0 (2026-04-02): Added 4 ai_workflow.js team roles
+# - 1.4.1 (2026-04-02): Added 4 ai_workflow.js team roles
 #   - workflow_orchestration_engineer: DAG-based workflow engine, step registry, dependency
 #     resolution, checkpoint/resume, and orchestrator event system specialist
 #   - workflow_step_engineer: Workflow step authoring, step contract compliance, AI prompt

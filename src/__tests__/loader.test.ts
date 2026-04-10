@@ -15,6 +15,7 @@ import {
   isPersonaConfig,
   isPromptRole,
   isPromptRolesConfig,
+  listPersonas,
   loadPersonas,
   loadPromptRoles,
   resolveAllPersonas,
@@ -155,6 +156,48 @@ describe('resolvePersona', () => {
     expect(thrown!.roleRef).toBe('nonexistent_role');
     expect(thrown!.personaKey).toBe('bad_persona');
     expect(thrown!.name).toBe('RoleNotFoundError');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// listPersonas
+// ---------------------------------------------------------------------------
+
+describe('listPersonas', () => {
+  let config: AIHelpersConfig;
+
+  beforeEach(async () => {
+    config = await loadPersonas(AI_HELPERS_YAML);
+  });
+
+  it('returns only persona keys (entries with role_ref)', () => {
+    const keys = listPersonas(config);
+    expect(keys).toContain('persona_alpha');
+    expect(keys).toContain('persona_beta');
+  });
+
+  it('excludes non-persona entries (entries without role_ref)', () => {
+    const keys = listPersonas(config);
+    expect(keys).not.toContain('language_specific_docs');
+  });
+
+  it('returns a sorted array', () => {
+    const keys = listPersonas(config);
+    const sorted = [...keys].sort();
+    expect(keys).toEqual(sorted);
+  });
+
+  it('returns an empty array for an empty config', () => {
+    expect(listPersonas({})).toEqual([]);
+  });
+
+  it('excludes YAML anchor scalar entries (values that are not PersonaConfig)', () => {
+    const configWithAnchor: AIHelpersConfig = {
+      ...config,
+      _behavioral_actionable: 'be concise and actionable',
+    };
+    const keys = listPersonas(configWithAnchor);
+    expect(keys).not.toContain('_behavioral_actionable');
   });
 });
 

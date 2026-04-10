@@ -122,6 +122,24 @@ export function resolvePersona(
 }
 
 /**
+ * Returns a sorted array of all persona keys in the given helpers config.
+ *
+ * Uses the same structural definition as {@link resolveAllPersonas}: an entry
+ * is a persona if and only if it satisfies {@link isPersonaConfig} (i.e., it
+ * has a `role_ref` string field). Non-persona entries such as language lookup
+ * tables and YAML anchor scalars are automatically excluded.
+ *
+ * @param config - The raw {@link AIHelpersConfig} loaded from `ai_helpers.yaml`.
+ * @returns      A sorted `string[]` of all persona keys present in `config`.
+ */
+export function listPersonas(config: AIHelpersConfig): string[] {
+  return Object.entries(config)
+    .filter(([, value]) => isPersonaConfig(value))
+    .map(([key]) => key)
+    .sort();
+}
+
+/**
  * Iterates over all entries in an {@link AIHelpersConfig}, resolves every entry
  * that is a {@link PersonaConfig} (has a `role_ref`), and returns a map of
  * {@link ResolvedPersona} objects keyed by persona name.

@@ -263,7 +263,7 @@ Part of [AI Workflow Automation](https://github.com/mpbarbosa/ai_workflow) proje
 
 ---
 
-**Version**: 1.0.2 | **Updated**: 2026-02-01
+**Version**: 1.5.0 | **Updated**: 2026-04-10
 
 ## Automated Validation
 

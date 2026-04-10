@@ -1,7 +1,7 @@
 # AI Workflow Core - Architecture
 
-**Version**: 1.0.2
-**Last Updated**: 2026-01-31
+**Version**: 1.5.0
+**Last Updated**: 2026-04-10
 **Status**: Stable
 
 > **Purpose**: This document provides a high-level architectural overview of ai_workflow_core as a configuration and template library. For AI-specific guidance, see [.github/copilot-instructions.md](../.github/copilot-instructions.md).
@@ -448,7 +448,7 @@ Checks:
 **Decision**:
 - `project_kinds.yaml` version: 1.2.7
 - `ai_prompts_project_kinds.yaml` version: 1.2.7
-- Core repository version: 1.0.2
+- Core repository version: 1.5.0
 
 **Rationale:**
 - Schemas evolve independently
@@ -626,4 +626,6 @@ git submodule add <your-fork-url> .workflow_core
 ---
 
 **Version History:**
+- v1.5.0 (2026-04-10): Added `listPersonas()` to TypeScript loader; expanded AI_HELPERS_REFERENCE.md to v7.0.5; synced version numbers
+- v1.4.0 (2026-04-09): TypeScript loader (`loadPersonas`, `resolveAllPersonas`, `resolvePersona`, `isPersonaConfig`)
 - v1.0.2 (2026-01-31): Initial architecture documentation

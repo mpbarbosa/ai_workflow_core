@@ -9,7 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.4.0] — 2026-04-09
+## [1.5.0] — 2026-04-10
+
+### Added
+
+- **`src/loader.ts`** — New `listPersonas(config: AIHelpersConfig): string[]` function returns a sorted array of all persona key names in a loaded config, detected via `isPersonaConfig` structural type guard (consistent with `resolveAllPersonas`).
+- **`src/index.ts`** — `listPersonas` added to public API exports.
+
+### Changed
+
+- **`docs/api/AI_HELPERS_REFERENCE.md`** — Fully expanded from 124 lines to comprehensive reference (v7.0.5): completed truncated `### Build` section, added File Structure, Token Efficiency System, YAML Anchor Pattern, full AI Persona Definitions (all 62 personas across 7 groups including specialist, library, and review groups), Language-Specific Standards, Version History, Integration Patterns, and Customization Guide sections. Updated persona count 61 → 62.
+- **`README.md`** — Bumped footer version 1.0.2 → 1.5.0.
+- **`docs/ARCHITECTURE.md`** — Bumped version header 1.0.2 → 1.5.0; updated ADR-004 core version; added v1.5.0 entry to version history table.
+
+
 
 ### Added
 

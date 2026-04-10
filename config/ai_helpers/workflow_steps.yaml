@@ -201,13 +201,14 @@ step3_script_refs_prompt:
   behavioral_guidelines: *behavioral_structured
   
   task_template: |
-    Perform comprehensive validation of shell script references and documentation quality for this project's automation scripts.
+    Perform comprehensive validation of shell script references and documentation quality for this project's automation shell scripts.
     
     **Context:**
     - Project: {project_name} ({project_description})
     - Primary Language: {primary_language}
     - Project Kind: {project_kind}
     - Shell Scripts Directory: {scripts_dir}
+    - Shell Script File Patterns: `*.sh`, executable shell entrypoints, and command examples that invoke the listed shell scripts
     - Total Scripts: {script_count}
     - Scope: {change_scope}
     - Modified Files: {modified_count}
@@ -224,14 +225,18 @@ step3_script_refs_prompt:
     {all_scripts}
 
     > Note: If no scripts appear above (Total Scripts: 0), confirm their absence in your report
-    > and flag any documentation references that point to non-existent or missing scripts.
+    > and limit the analysis to broken or obsolete documentation references to shell scripts.
+    > If a documentation file mentions a shell script that is not listed above or does not exist
+    > on disk, report it explicitly as a missing, obsolete, or broken reference.
+    > Do not broaden this step to Node.js, Python, or other non-shell executables.
 
     **Documentation Quality Criteria:**
-    - Clear and concise command syntax documentation
-    - Comprehensive usage examples for each script
-    - Accurate parameter and option descriptions
-    - Proper shell script conventions: shebang line, exit codes, environment variable requirements
-    - Integration and workflow clarity across components
+    - Clear purpose statement for each shell script
+    - Accurate command syntax and usage examples
+    - Documented arguments, flags, and expected inputs
+    - Documented prerequisites, dependencies, and required environment variables
+    - Documented outputs, side effects, and exit/error behavior where relevant
+    - Accurate references to related workflows, CI jobs, containers, or docs that invoke the script
 
     **Documentation Excerpts (partial — first ~80 lines per file, may be truncated):**
     {doc_context}
@@ -239,55 +244,50 @@ step3_script_refs_prompt:
     **Tasks:**
     
     1. **Script-to-Documentation Mapping:**
-       - Verify every executable script in the project is documented in project README or script documentation
-       - Check that documented scripts/executables actually exist at specified paths
+       - Verify every shell script in the authoritative list above is documented in a relevant README, script reference, or workflow documentation
+       - Check that documented shell scripts actually exist at the specified paths
        - Validate script descriptions match actual functionality
-       - Ensure usage examples are accurate and complete
+       - Ensure usage examples reference the correct script path and invocation form
     
-    2. **Reference Accuracy:**
-       - Validate command-line arguments in documentation match implementation
+     2. **Reference Accuracy:**
+       - Validate documented command-line arguments and flags match the shell script implementation
        - Check version numbers are consistent across documentation
-       - Verify cross-references between scripts/modules are accurate
-       - Validate file path references in code comments and documentation
+       - Verify cross-references between shell scripts, related workflows, and documentation are accurate
+       - Validate shell script path references in code comments and documentation
     
-    3. **Documentation Completeness:**
-       - Missing purpose/description for any scripts or executables
+     3. **Documentation Completeness:**
+       - Missing purpose/description for any shell script in scope
        - Missing usage examples or command syntax
-       - Missing prerequisite or dependency information
-       - Missing output/return value documentation
+       - Missing prerequisite, dependency, or environment-variable information
+       - Missing output, side-effect, or exit-code documentation when the script behavior makes it relevant
     
-    4. **Script Best Practices (Project-Specific):**
+     4. **Script Best Practices (Project-Specific):**
        - Executable permissions properly documented
-       - Entry points (shebangs, main functions) mentioned in documentation where relevant
+       - Entry points (shebangs and shell invocation expectations) mentioned in documentation where relevant
        - Environment variable requirements documented
        - Error handling and exit codes documented
     
-    5. **Integration Documentation:**
-       - Workflow relationships between components documented
-       - Execution order or dependencies clarified
-       - Common use cases and examples provided
-       - Troubleshooting guidance available
+     5. **Integration Documentation:**
+       - Workflow relationships involving the shell scripts in scope are documented
+       - Execution order or dependencies between those shell scripts and surrounding automation are clarified
+       - Common shell-script use cases and examples are provided
+       - Troubleshooting guidance is available when the script is user-facing or operationally important
     
-    6. **DevOps Integration Documentation** (when applicable):
-       - CI/CD pipeline references (GitHub Actions, Jenkins, GitLab CI, CircleCI)
-       - Container/orchestration scripts (Docker, Kubernetes manifests, docker-compose)
-       - Deployment automation documentation (deploy scripts, infrastructure provisioning)
-       - Infrastructure-as-code script references (Terraform, Ansible, CloudFormation)
-       - Monitoring/observability script documentation (health checks, metrics collection)
-       - Build/release automation scripts (packaging, versioning, artifact management)
+     6. **DevOps Integration Documentation** (when applicable):
+       - CI/CD pipeline references only when they directly invoke or depend on a shell script in scope
+       - Container/orchestration references only when they directly invoke or document a shell script in scope
+       - Deployment, monitoring, or release automation references only when they directly point to a shell script in scope
     
     **Files to Analyze:**
-    - Project README.md and any module/component README files
-    - All executable files (shell scripts, Python scripts, Node.js scripts, etc.)
-    - .github/copilot-instructions.md (for automation/script references)
-    - Configuration files that define entry points or commands
-    - CI/CD configuration files (.github/workflows/, .gitlab-ci.yml, Jenkinsfile, .circleci/)
-    - Container definitions (Dockerfile, docker-compose.yml, Kubernetes manifests)
-    - Infrastructure-as-code scripts (*.tf, *.yml for Ansible, CloudFormation templates)
-    - Deployment/automation scripts (deploy/, scripts/, bin/ directories)
+    - Project README.md and any module/component README files that reference the shell scripts in scope
+    - The shell scripts listed above (authoritative scope)
+    - `.github/copilot-instructions.md` when it references the shell scripts in scope
+    - Configuration or workflow files only when they define, invoke, or document one of the shell scripts in scope
+    - CI/CD files, Dockerfiles, or compose/manifests only when they directly invoke one of the shell scripts in scope
   
   approach: |
-    Analyze ONLY the scripts explicitly listed under "Available Scripts" above. Do not reference, invent, or assume the existence of any scripts not in that list.
+    Analyze ONLY the shell scripts explicitly listed under "Scripts in Scope" above. Do not reference, invent, or assume the existence of any scripts not in that list.
+    If no shell scripts are listed, restrict the report to confirming their absence and identifying any broken or obsolete shell-script references that appear in the provided documentation context.
 
     **Output:**
     - List of script reference issues with file:line locations

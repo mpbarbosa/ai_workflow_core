@@ -1175,7 +1175,7 @@ markdown_lint_prompt:
 
 # Step 04: Configuration Specialist Prompt Template
 # Purpose: Validate and analyze configuration files for schema correctness, security, and best practices
-# Version: 1.0.4 (v6.8.41 - Clarify tech stack reference, scope-list authority, file-absence handling, empty-scope case)
+# Version: 1.0.5 (v6.8.42 - Clarify File Contents ordering and ignore unrelated files outside scope)
 configuration_specialist_prompt:
   # Split role into prefix + guidelines for token efficiency
   role_ref: configuration_specialist  # resolved from config/prompt_roles.yaml
@@ -1190,9 +1190,11 @@ configuration_specialist_prompt:
     YAML when present. Analyze only the files explicitly listed in that sub-section —
     do not infer, search for, or include any other files. Treat that scope list as
     authoritative if it conflicts with any summary count elsewhere in this prompt.
-    For each file shown in **File Contents**, check syntax/schema correctness, security
-    hygiene, consistency with related configs, and stack-specific best practices for
-    the tech stack listed in **Project Context**, when provided.
+    The **File Contents** section below will follow that authoritative scope list and
+    may include only a subset of those files in this run. For each file shown in
+    **File Contents**, check syntax/schema correctness, security hygiene, consistency
+    with related configs, and stack-specific best practices for the tech stack listed
+    in **Project Context**, when provided.
 
     ### Configuration Files in Scope
     {config_files_list}
@@ -1203,6 +1205,8 @@ configuration_specialist_prompt:
     >   may reflect prompt scoping, project-specific exclusions, or the file not being
     >   present in the active workspace; do not treat that absence alone as a configuration
     >   defect.
+    > - Ignore unrelated files even if they appear in another section of this prompt.
+    >   Only the scope list above and the matching **File Contents** entries are in scope.
     > - If the scope list is empty or resolves to "none found", that is a valid outcome.
     >   State that no configuration files were in scope for this run and do not infer
     >   any additional files.

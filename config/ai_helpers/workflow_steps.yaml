@@ -29,7 +29,8 @@ step2_consistency_prompt:
     uses `## Quick start`, treat that heading-style mismatch as a consistency issue.
 
     **Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Primary Language: {primary_language}
     - Documentation files: {doc_count} markdown files (this partition's scope)
     - TypeScript source files: {ts_source_count} (not included in this partition — JSDoc source coverage is checked in the TypeScript Review step)
@@ -209,7 +210,8 @@ step3_script_refs_prompt:
     Perform comprehensive validation of automation script references and documentation quality for this project's scripts and executable entrypoints.
     
     **Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Primary Language: {primary_language}
     - Project Kind: {project_kind}
     - Script Directories: {scripts_dir}
@@ -361,7 +363,8 @@ step5_directory_prompt:
     - Undocumented directories (absent from all documentation sources) are flagged for clarification, not treated as hard errors unless another visible source explicitly requires them
 
     **Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Primary Language: {primary_language}
     - Project Kind: {project_kind}
     - Total Directories: {dir_count} (excluding build artifacts, dependencies, coverage)
@@ -450,7 +453,8 @@ step6_test_review_prompt:
     > redundant assertions. Focus on HOW tests are written, not WHAT to test.
 
     **Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Primary Language: {primary_language}
     - Change Scope: {change_scope}
     - Modified Files: {modified_count}
@@ -555,7 +559,8 @@ step8_test_exec_prompt:
     Analyze the results of `{test_command}` for the {project_name} project, diagnose the concrete issues surfaced by this run, and provide actionable recommendations limited to the relevant test or validation workflow and any directly related GitHub Actions workflows.
 
     **Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Primary Language: {primary_language}
     - Project Kind: {project_kind}
     - Test Framework: {test_framework} via `{test_command}`
@@ -666,7 +671,8 @@ step9_dependencies_prompt:
     > gap, explain how it limits the analysis, and restrict conclusions to the evidence available.
 
     **Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Primary Language: {primary_language}
     - Project Kind: {project_kind}
     - Package Manager: {package_manager} {package_manager_version}
@@ -768,7 +774,8 @@ step10_code_quality_prompt:
     Perform a comprehensive code quality review of the source code, tests, and documentation listed in the **Context** section below. Restrict your analysis to the files in scope — exclude third-party dependencies, node_modules, and generated/build artefacts. Identify anti-patterns, assess TDD adherence and test coverage, evaluate maintainability, check linting/formatting compliance and JSDoc documentation quality, and provide actionable recommendations grouped by priority (**quick wins** = low effort, high impact; **long-term** = architectural or structural changes requiring significant effort).
 
     **Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Primary Language: {primary_language}
     - Project Kind: {project_kind}
     - Technology Stack: {tech_stack_summary}
@@ -990,7 +997,8 @@ step12_git_commit_prompt:
     {commit_types}
     
     **Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Workflow: Tests & Documentation Automation v{script_version} (ai_workflow automated pipeline; version defined in `package.json` and `.workflow-config.yaml`)
     - Change Scope: {change_scope} (changed file paths listed in "Changed Files" section below)
     

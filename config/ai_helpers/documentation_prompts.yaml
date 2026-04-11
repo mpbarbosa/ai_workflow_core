@@ -170,7 +170,8 @@ technical_writer_prompt:
     **CRITICAL DECISION-MAKING FRAMEWORK**: You MUST evaluate necessity BEFORE generating documentation.
     
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Primary Language: {primary_language}
     - Current Documentation: {doc_count} files
     - Source Code: {source_files} files

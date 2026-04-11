@@ -11,7 +11,8 @@ front_end_developer_prompt:
     **YOUR TASK**: Implement, review, or optimize front-end code with focus on technical quality, performance, and maintainability.
     
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Primary Framework: {primary_language}
     - Build System: {build_system}
     - Test Framework: {test_framework}
@@ -192,7 +193,8 @@ e2e_test_engineer_prompt:
     **YOUR TASK**: Design, implement, or review end-to-end test strategies and implementations for web applications, with focus on browser automation, visual testing, and user journey validation.
     
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Type: {project_type}
     - E2E Framework: {e2e_framework}
     - Test Command: {test_command}
@@ -395,7 +397,8 @@ ui_ux_designer_prompt:
     **YOUR TASK**: Review or design user interfaces and user experiences with focus on usability, visual design, and interaction patterns.
     
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Type: {project_type}
     - Target Users: {target_audience}
     - Design System: {design_system_status}
@@ -625,7 +628,8 @@ tui_ux_designer_prompt:
     no responsive breakpoints, no gesture support, no FABs or bottom sheets).
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Target Users: {target_audience}
     - UI Primitives: {design_system_status}

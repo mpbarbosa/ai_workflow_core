@@ -10,7 +10,8 @@ api_contract_reviewer_prompt:
     **YOUR TASK**: Validate the API contract alignment for {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Language: {primary_language}
     - Source Files Analyzed: {source_file_count}
     - Modified Files: {modified_count}
@@ -88,7 +89,8 @@ cli_tui_engineer_prompt:
     **YOUR TASK**: Review and improve the terminal user interface components for {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Language: {primary_language}
     - Source Files Analyzed: {source_file_count}
@@ -152,7 +154,8 @@ llm_integration_engineer_prompt:
     **YOUR TASK**: Review and improve the LLM SDK integration for {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Language: {primary_language}
     - Source Files Analyzed: {source_file_count}
@@ -219,7 +222,8 @@ devx_engineer_prompt:
     **YOUR TASK**: Audit and improve the test infrastructure and CI/CD pipeline for {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Language: {primary_language}
     - Test Framework: {test_framework}
@@ -291,7 +295,8 @@ core_pipeline_engineer_prompt:
     **YOUR TASK**: Review and extend the analysis pipeline for {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Language: {primary_language}
     - Build System: {build_system}
@@ -378,7 +383,8 @@ accessibility_review_prompt:
     **YOUR TASK**: Perform an API documentation accessibility review of {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Framework: {framework}
     - File Type: TypeDoc-generated API documentation (HTML)
     - Source Files Analyzed: {source_file_count}
@@ -413,7 +419,8 @@ performance_review_prompt:
     **YOUR TASK**: Perform a performance engineering review of {project_name}. Evaluate performance across all dimensions relevant to this project's tech stack and role, including: script/module load time and startup cost, config/YAML parsing overhead, algorithmic complexity in hot paths, and I/O patterns (sync vs async).
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Language: {primary_language}
     - Build System: {build_system}
     - Source Files Analyzed: {source_file_count}

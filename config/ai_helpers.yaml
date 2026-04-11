@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 7.0.17
+# Version: 7.0.18
 #
 # Version history -> see CHANGELOG.md
 #
@@ -372,7 +372,8 @@ technical_writer_prompt:
     **CRITICAL DECISION-MAKING FRAMEWORK**: You MUST evaluate necessity BEFORE generating documentation.
     
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Primary Language: {primary_language}
     - Current Documentation: {doc_count} files
     - Source Code: {source_files} files
@@ -577,7 +578,8 @@ front_end_developer_prompt:
     **YOUR TASK**: Implement, review, or optimize front-end code with focus on technical quality, performance, and maintainability.
     
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Primary Framework: {primary_language}
     - Build System: {build_system}
     - Test Framework: {test_framework}
@@ -758,7 +760,8 @@ e2e_test_engineer_prompt:
     **YOUR TASK**: Design, implement, or review end-to-end test strategies and implementations for web applications, with focus on browser automation, visual testing, and user journey validation.
     
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Type: {project_type}
     - E2E Framework: {e2e_framework}
     - Test Command: {test_command}
@@ -961,7 +964,8 @@ ui_ux_designer_prompt:
     **YOUR TASK**: Review or design user interfaces and user experiences with focus on usability, visual design, and interaction patterns.
     
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Type: {project_type}
     - Target Users: {target_audience}
     - Design System: {design_system_status}
@@ -1191,7 +1195,8 @@ tui_ux_designer_prompt:
     no responsive breakpoints, no gesture support, no FABs or bottom sheets).
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Target Users: {target_audience}
     - UI Primitives: {design_system_status}
@@ -1312,7 +1317,8 @@ requirements_engineer_prompt:
     **CRITICAL DECISION-MAKING FRAMEWORK**: You MUST evaluate necessity BEFORE generating requirements.
     
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Primary Language: {primary_language}
     - Current Requirements: {requirements_docs_count} documents
     - Source Code: {source_files} files
@@ -1745,7 +1751,8 @@ step2_consistency_prompt:
     uses `## Quick start`, treat that heading-style mismatch as a consistency issue.
 
     **Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Primary Language: {primary_language}
     - Documentation files: {doc_count} markdown files (this partition's scope)
     - TypeScript source files: {ts_source_count} (not included in this partition — JSDoc source coverage is checked in the TypeScript Review step)
@@ -1925,7 +1932,8 @@ step3_script_refs_prompt:
     Perform comprehensive validation of automation script references and documentation quality for this project's scripts and executable entrypoints.
     
     **Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Primary Language: {primary_language}
     - Project Kind: {project_kind}
     - Script Directories: {scripts_dir}
@@ -2077,7 +2085,8 @@ step5_directory_prompt:
     - Undocumented directories (absent from all documentation sources) are flagged for clarification, not treated as hard errors unless another visible source explicitly requires them
 
     **Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Primary Language: {primary_language}
     - Project Kind: {project_kind}
     - Total Directories: {dir_count} (excluding build artifacts, dependencies, coverage)
@@ -2166,7 +2175,8 @@ step6_test_review_prompt:
     > redundant assertions. Focus on HOW tests are written, not WHAT to test.
 
     **Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Primary Language: {primary_language}
     - Change Scope: {change_scope}
     - Modified Files: {modified_count}
@@ -2271,7 +2281,8 @@ step8_test_exec_prompt:
     Analyze the results of `{test_command}` for the {project_name} project, diagnose the concrete issues surfaced by this run, and provide actionable recommendations limited to the relevant test or validation workflow and any directly related GitHub Actions workflows.
 
     **Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Primary Language: {primary_language}
     - Project Kind: {project_kind}
     - Test Framework: {test_framework} via `{test_command}`
@@ -2382,7 +2393,8 @@ step9_dependencies_prompt:
     > gap, explain how it limits the analysis, and restrict conclusions to the evidence available.
 
     **Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Primary Language: {primary_language}
     - Project Kind: {project_kind}
     - Package Manager: {package_manager} {package_manager_version}
@@ -2484,7 +2496,8 @@ step10_code_quality_prompt:
     Perform a comprehensive code quality review of the source code, tests, and documentation listed in the **Context** section below. Restrict your analysis to the files in scope — exclude third-party dependencies, node_modules, and generated/build artefacts. Identify anti-patterns, assess TDD adherence and test coverage, evaluate maintainability, check linting/formatting compliance and JSDoc documentation quality, and provide actionable recommendations grouped by priority (**quick wins** = low effort, high impact; **long-term** = architectural or structural changes requiring significant effort).
 
     **Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Primary Language: {primary_language}
     - Project Kind: {project_kind}
     - Technology Stack: {tech_stack_summary}
@@ -2706,7 +2719,8 @@ step12_git_commit_prompt:
     {commit_types}
     
     **Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Workflow: Tests & Documentation Automation v{script_version} (ai_workflow automated pipeline; version defined in `package.json` and `.workflow-config.yaml`)
     - Change Scope: {change_scope} (changed file paths listed in "Changed Files" section below)
     
@@ -3767,7 +3781,8 @@ version_manager_prompt:
   
   task_template: |
     **YOUR TASK**: Determine the correct Semantic Versioning (SemVer, semver.org) bump type (MAJOR/MINOR/PATCH) for this project by reviewing CHANGELOG.md, recent git commits, and the project versioning policy.
-    **Project**: {project_name} ({project_description})
+    **Project**: {project_name}
+    **Project Summary**: {project_summary}
     **Current Version**: {current_version}
     **Heuristic Pre-analysis**: {heuristic_recommendation} — derived from commit-type distribution
       per the Conventional Commits specification (conventionalcommits.org):
@@ -4158,7 +4173,8 @@ async_perf_engineer_prompt:
     - **Truncated or incomplete file list**: if the provided file list appears partial, analyze what is available and explicitly note "⚠️ Coverage may be partial — not all source files were provided" in the Summary section.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Primary Language: {primary_language}
     - Build System: {build_system}
@@ -4281,7 +4297,8 @@ aws_cloud_architect_prompt:
     **YOUR TASK**: Design, review, or optimize AWS cloud architecture solutions aligned with business requirements, security standards, and operational excellence.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - AWS Region(s): {aws_region}
     - Deployment Type: {deployment_type}
     - IaC Tool: {iac_tool}
@@ -4448,7 +4465,8 @@ javascript_developer_prompt:
     **YOUR TASK**: Review and improve the existing package.json to accurately reflect project dependencies, scripts, and metadata following JavaScript ecosystem best practices. Do NOT replace or reinvent existing correct values — only propose changes where a genuine issue exists.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Language: {primary_language}
     - Package Manager: {build_system}
@@ -4585,7 +4603,8 @@ typescript_developer_prompt:
     **YOUR TASK**: Review, implement, or refactor the TypeScript source modules listed below to be fully type-safe, idiomatic, and performant according to TypeScript best practices and this project's established conventions.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Language: {primary_language}
     - Build System: {build_system}
@@ -4815,7 +4834,8 @@ python_developer_prompt:
     - ❌ Not this persona: broad CVE triage without audit data (→ `step9_dependencies_prompt`), generic YAML/TOML syntax validation (→ `configuration_specialist_prompt`)
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Language: {primary_language}
     - Build System: {build_system}
@@ -4974,7 +4994,8 @@ technical_project_manager_prompt:
     **YOUR TASK**: Provide technical project management guidance for {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Current Version: {current_version}
     - Changed Files: {changed_files}
@@ -5002,7 +5023,8 @@ software_architect_prompt:
     **YOUR TASK**: Review and improve the architectural design of {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Language: {primary_language}
     - Build System: {build_system}
@@ -5034,7 +5056,8 @@ documentation_specialist_prompt:
     **YOUR TASK**: Create or update targeted documentation for {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Language: {primary_language}
     - Changed Files: {changed_files}
@@ -5061,7 +5084,8 @@ information_architect_prompt:
     **YOUR TASK**: Analyze and improve the documentation structure and information architecture of {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Documentation Files: {doc_files}
     - Modified Files: {modified_count}
 
@@ -5081,7 +5105,8 @@ documentation_architect_prompt:
     **YOUR TASK**: Design or review the documentation system for {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Language: {primary_language}
 
@@ -5101,7 +5126,8 @@ devops_documentation_expert_prompt:
     **YOUR TASK**: Create or update DevOps and infrastructure documentation for {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Changed Files: {changed_files}
     - Documentation to review: {doc_files}
 
@@ -5121,7 +5147,8 @@ qa_engineer_prompt:
     **YOUR TASK**: Assess and improve test coverage and quality processes for {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Test Framework: {test_framework}
     - Test Command: {test_command}
@@ -5144,7 +5171,8 @@ tdd_expert_prompt:
     **YOUR TASK**: Guide test-driven development practices for {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Test Framework: {test_framework}
     - Test Command: {test_command}
     - Language: {primary_language}
@@ -5171,7 +5199,8 @@ qa_automation_engineer_prompt:
     **YOUR TASK**: Design or improve the test automation suite for {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Test Framework: {test_framework}
     - Test Command: {test_command}
@@ -5195,7 +5224,8 @@ software_quality_engineer_prompt:
     **YOUR TASK**: Analyze non-functional quality attributes for {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Language: {primary_language}
     - Lint Command: {lint_command}
     - Changed Files: {changed_files}
@@ -5223,7 +5253,8 @@ devops_engineer_prompt:
     **YOUR TASK**: Review and improve CI/CD pipelines, automation scripts, and infrastructure configuration for {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Build System: {build_system}
     - Test Command: {test_command}
@@ -5251,7 +5282,8 @@ prompt_engineer_prompt:
     **YOUR TASK**: Review and improve AI prompt definitions in {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Changed Files: {changed_files}
     - Modified Count: {modified_count}
 
@@ -5278,7 +5310,8 @@ git_workflow_specialist_prompt:
     **YOUR TASK**: Review and improve the Git workflow and repository governance for {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Changed Files: {changed_files}
     - Git Context: {git_context}
 
@@ -5298,7 +5331,8 @@ ux_designer_prompt:
     **YOUR TASK**: Review and improve the user experience of {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Changed Files: {changed_files}
     - Modified Count: {modified_count}
@@ -5331,7 +5365,8 @@ library_architect_prompt:
     **YOUR TASK**: Review and improve the architecture and API design of the TypeScript pattern library {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Language: {primary_language}
     - Build System: {build_system}
@@ -5385,7 +5420,8 @@ pattern_engineer_prompt:
     **YOUR TASK**: Implement or review a GoF design pattern in the TypeScript library {project_name}, following the established one-file-per-pattern convention.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Language: {primary_language}
     - Test Framework: {test_framework}
@@ -5440,7 +5476,8 @@ library_release_engineer_prompt:
     **YOUR TASK**: Audit and improve the release pipeline for the TypeScript npm library {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Language: {primary_language}
     - Build System: {build_system}
@@ -5505,7 +5542,8 @@ core_fetch_engineer_prompt:
     **YOUR TASK**: Review, implement, or refactor the core HTTP fetch library modules listed below, ensuring the dual-layer design, cache/retry/interceptor pipeline, and observer integration are correct, performant, and maintainable.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Language: {primary_language}
     - Build System: {build_system}
@@ -5613,7 +5651,8 @@ api_type_system_engineer_prompt:
     **YOUR TASK**: Audit and improve the public API surface and TypeScript type system of the library {project_name}, ensuring factory method ergonomics, generic interface quality, .d.ts correctness, and full JSDoc coverage.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Language: {primary_language}
     - Build System: {build_system}
@@ -5713,7 +5752,8 @@ framework_integration_engineer_prompt:
     **YOUR TASK**: Design, implement, or review a framework adapter package that wraps {project_name} for use in {framework_target} applications, providing idiomatic reactive state management and lifecycle integration.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Target Framework: {framework_target}
     - Language: {primary_language}
@@ -5824,7 +5864,8 @@ spec_architect_prompt:
     **YOUR TASK**: Review and improve the functional specification documents for {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Documents Analysed: {modified_count} specification files
     - Changed Files:
     {file_paths}
@@ -5875,7 +5916,8 @@ security_analyst_prompt:
     **YOUR TASK**: Perform a security review of {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Language: {primary_language}
     - Source Files Analyzed: {source_file_count}
     - Modified Files: {modified_count}
@@ -5943,7 +5985,8 @@ api_contract_reviewer_prompt:
     **YOUR TASK**: Validate the API contract alignment for {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Language: {primary_language}
     - Source Files Analyzed: {source_file_count}
     - Modified Files: {modified_count}
@@ -6021,7 +6064,8 @@ cli_tui_engineer_prompt:
     **YOUR TASK**: Review and improve the terminal user interface components for {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Language: {primary_language}
     - Source Files Analyzed: {source_file_count}
@@ -6085,7 +6129,8 @@ llm_integration_engineer_prompt:
     **YOUR TASK**: Review and improve the LLM SDK integration for {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Language: {primary_language}
     - Source Files Analyzed: {source_file_count}
@@ -6152,7 +6197,8 @@ devx_engineer_prompt:
     **YOUR TASK**: Audit and improve the test infrastructure and CI/CD pipeline for {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Language: {primary_language}
     - Test Framework: {test_framework}
@@ -6224,7 +6270,8 @@ core_pipeline_engineer_prompt:
     **YOUR TASK**: Review and extend the analysis pipeline for {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Language: {primary_language}
     - Build System: {build_system}
@@ -6311,7 +6358,8 @@ accessibility_review_prompt:
     **YOUR TASK**: Perform an API documentation accessibility review of {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Framework: {framework}
     - File Type: TypeDoc-generated API documentation (HTML)
     - Source Files Analyzed: {source_file_count}
@@ -6346,7 +6394,8 @@ performance_review_prompt:
     **YOUR TASK**: Perform a performance engineering review of {project_name}. Evaluate performance across all dimensions relevant to this project's tech stack and role, including: script/module load time and startup cost, config/YAML parsing overhead, algorithmic complexity in hot paths, and I/O patterns (sync vs async).
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Language: {primary_language}
     - Build System: {build_system}
     - Source Files Analyzed: {source_file_count}

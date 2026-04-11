@@ -7,7 +7,8 @@ version_manager_prompt:
   
   task_template: |
     **YOUR TASK**: Determine the correct Semantic Versioning (SemVer, semver.org) bump type (MAJOR/MINOR/PATCH) for this project by reviewing CHANGELOG.md, recent git commits, and the project versioning policy.
-    **Project**: {project_name} ({project_description})
+    **Project**: {project_name}
+    **Project Summary**: {project_summary}
     **Current Version**: {current_version}
     **Heuristic Pre-analysis**: {heuristic_recommendation} — derived from commit-type distribution
       per the Conventional Commits specification (conventionalcommits.org):
@@ -398,7 +399,8 @@ async_perf_engineer_prompt:
     - **Truncated or incomplete file list**: if the provided file list appears partial, analyze what is available and explicitly note "⚠️ Coverage may be partial — not all source files were provided" in the Summary section.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Primary Language: {primary_language}
     - Build System: {build_system}
@@ -521,7 +523,8 @@ aws_cloud_architect_prompt:
     **YOUR TASK**: Design, review, or optimize AWS cloud architecture solutions aligned with business requirements, security standards, and operational excellence.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - AWS Region(s): {aws_region}
     - Deployment Type: {deployment_type}
     - IaC Tool: {iac_tool}
@@ -688,7 +691,8 @@ javascript_developer_prompt:
     **YOUR TASK**: Review and improve the existing package.json to accurately reflect project dependencies, scripts, and metadata following JavaScript ecosystem best practices. Do NOT replace or reinvent existing correct values — only propose changes where a genuine issue exists.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Language: {primary_language}
     - Package Manager: {build_system}
@@ -825,7 +829,8 @@ typescript_developer_prompt:
     **YOUR TASK**: Review, implement, or refactor the TypeScript source modules listed below to be fully type-safe, idiomatic, and performant according to TypeScript best practices and this project's established conventions.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Language: {primary_language}
     - Build System: {build_system}
@@ -1055,7 +1060,8 @@ python_developer_prompt:
     - ❌ Not this persona: broad CVE triage without audit data (→ `step9_dependencies_prompt`), generic YAML/TOML syntax validation (→ `configuration_specialist_prompt`)
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Language: {primary_language}
     - Build System: {build_system}
@@ -1214,7 +1220,8 @@ technical_project_manager_prompt:
     **YOUR TASK**: Provide technical project management guidance for {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Current Version: {current_version}
     - Changed Files: {changed_files}
@@ -1242,7 +1249,8 @@ software_architect_prompt:
     **YOUR TASK**: Review and improve the architectural design of {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Language: {primary_language}
     - Build System: {build_system}
@@ -1274,7 +1282,8 @@ documentation_specialist_prompt:
     **YOUR TASK**: Create or update targeted documentation for {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Language: {primary_language}
     - Changed Files: {changed_files}
@@ -1301,7 +1310,8 @@ information_architect_prompt:
     **YOUR TASK**: Analyze and improve the documentation structure and information architecture of {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Documentation Files: {doc_files}
     - Modified Files: {modified_count}
 
@@ -1321,7 +1331,8 @@ documentation_architect_prompt:
     **YOUR TASK**: Design or review the documentation system for {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Language: {primary_language}
 
@@ -1341,7 +1352,8 @@ devops_documentation_expert_prompt:
     **YOUR TASK**: Create or update DevOps and infrastructure documentation for {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Changed Files: {changed_files}
     - Documentation to review: {doc_files}
 
@@ -1361,7 +1373,8 @@ qa_engineer_prompt:
     **YOUR TASK**: Assess and improve test coverage and quality processes for {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Test Framework: {test_framework}
     - Test Command: {test_command}
@@ -1384,7 +1397,8 @@ tdd_expert_prompt:
     **YOUR TASK**: Guide test-driven development practices for {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Test Framework: {test_framework}
     - Test Command: {test_command}
     - Language: {primary_language}
@@ -1411,7 +1425,8 @@ qa_automation_engineer_prompt:
     **YOUR TASK**: Design or improve the test automation suite for {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Test Framework: {test_framework}
     - Test Command: {test_command}
@@ -1435,7 +1450,8 @@ software_quality_engineer_prompt:
     **YOUR TASK**: Analyze non-functional quality attributes for {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Language: {primary_language}
     - Lint Command: {lint_command}
     - Changed Files: {changed_files}
@@ -1463,7 +1479,8 @@ devops_engineer_prompt:
     **YOUR TASK**: Review and improve CI/CD pipelines, automation scripts, and infrastructure configuration for {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Build System: {build_system}
     - Test Command: {test_command}
@@ -1491,7 +1508,8 @@ prompt_engineer_prompt:
     **YOUR TASK**: Review and improve AI prompt definitions in {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Changed Files: {changed_files}
     - Modified Count: {modified_count}
 
@@ -1518,7 +1536,8 @@ git_workflow_specialist_prompt:
     **YOUR TASK**: Review and improve the Git workflow and repository governance for {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Changed Files: {changed_files}
     - Git Context: {git_context}
 
@@ -1538,7 +1557,8 @@ ux_designer_prompt:
     **YOUR TASK**: Review and improve the user experience of {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Changed Files: {changed_files}
     - Modified Count: {modified_count}

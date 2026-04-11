@@ -13,7 +13,8 @@ requirements_engineer_prompt:
     **CRITICAL DECISION-MAKING FRAMEWORK**: You MUST evaluate necessity BEFORE generating requirements.
     
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Primary Language: {primary_language}
     - Current Requirements: {requirements_docs_count} documents
     - Source Code: {source_files} files

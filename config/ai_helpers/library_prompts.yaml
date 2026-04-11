@@ -10,7 +10,8 @@ library_architect_prompt:
     **YOUR TASK**: Review and improve the architecture and API design of the TypeScript pattern library {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Language: {primary_language}
     - Build System: {build_system}
@@ -64,7 +65,8 @@ pattern_engineer_prompt:
     **YOUR TASK**: Implement or review a GoF design pattern in the TypeScript library {project_name}, following the established one-file-per-pattern convention.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Language: {primary_language}
     - Test Framework: {test_framework}
@@ -119,7 +121,8 @@ library_release_engineer_prompt:
     **YOUR TASK**: Audit and improve the release pipeline for the TypeScript npm library {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Language: {primary_language}
     - Build System: {build_system}
@@ -184,7 +187,8 @@ core_fetch_engineer_prompt:
     **YOUR TASK**: Review, implement, or refactor the core HTTP fetch library modules listed below, ensuring the dual-layer design, cache/retry/interceptor pipeline, and observer integration are correct, performant, and maintainable.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Language: {primary_language}
     - Build System: {build_system}
@@ -292,7 +296,8 @@ api_type_system_engineer_prompt:
     **YOUR TASK**: Audit and improve the public API surface and TypeScript type system of the library {project_name}, ensuring factory method ergonomics, generic interface quality, .d.ts correctness, and full JSDoc coverage.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Language: {primary_language}
     - Build System: {build_system}
@@ -392,7 +397,8 @@ framework_integration_engineer_prompt:
     **YOUR TASK**: Design, implement, or review a framework adapter package that wraps {project_name} for use in {framework_target} applications, providing idiomatic reactive state management and lifecycle integration.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Project Kind: {project_kind}
     - Target Framework: {framework_target}
     - Language: {primary_language}
@@ -503,7 +509,8 @@ spec_architect_prompt:
     **YOUR TASK**: Review and improve the functional specification documents for {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Documents Analysed: {modified_count} specification files
     - Changed Files:
     {file_paths}
@@ -554,7 +561,8 @@ security_analyst_prompt:
     **YOUR TASK**: Perform a security review of {project_name}.
 
     **Project Context:**
-    - Project: {project_name} ({project_description})
+    - Project: {project_name}
+    - Project Summary: {project_summary}
     - Language: {primary_language}
     - Source Files Analyzed: {source_file_count}
     - Modified Files: {modified_count}

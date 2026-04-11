@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 7.0.12
+# Version: 7.0.13
 #
 # Version history -> see CHANGELOG.md
 #
@@ -2047,13 +2047,13 @@ step5_directory_prompt:
     Perform comprehensive validation of directory structure and architectural organization for this project.
     This Task section is self-contained: the authoritative definition of **required** directories/files and the explicit meaning of **contents match the documented purpose** are both included below in this same prompt block.
     Validation covers both **presence** and **content/structure**:
-    - **Presence** = required directories/files exist. Treat a path as **required** only when that requirement is supported by `.workflow-config.yaml`, `project_kinds.yaml`, or project documentation explicitly visible in this prompt.
+    - **Presence** = required directories/files exist. Treat a path as **required** only when that requirement is supported by `.workflow-config.yaml`, `project_kinds.yaml`, or project documentation explicitly visible in this prompt. If `project_kinds.yaml` is unavailable, missing the resolved project kind, or does not define a specific requirement, do not invent one from best-practice heuristics alone.
     - **Content/structure** = a directory's contents match its declared or documented role (for example, source directories contain source files, test directories contain test files, and docs directories contain documentation files).
     - Best-practice conventions that are not explicitly required by the visible evidence should be framed as recommendations, not as missing-directory defects.
 
     **Authoritative Validation Sources:**
     - `.workflow-config.yaml` (if present, use as the primary source of truth for required structure)
-    - `project_kinds.yaml` project-kind guidance and defaults
+    - `project_kinds.yaml` project-kind guidance and defaults (typically sourced from `.workflow_core/config/project_kinds.yaml` for this workflow, or from equivalent project-kind guidance included in the visible prompt context)
     - Architecture and structural guidance documented in `README.md`, `docs/ARCHITECTURE.md`, and `CONTRIBUTING.md`
 
     **"Required" Directory Definition:**
@@ -2064,7 +2064,9 @@ step5_directory_prompt:
     - `structure.ui_dirs` → UI component directories — must contain component source files
     - `structure.css_dirs` → stylesheet directories — must contain `.css` files
     - `structure.static_assets` → specific asset files that must be present at their listed paths
-    When `.workflow-config.yaml` is absent, fall back to project-kind guidance and language/framework defaults (e.g. `src/`, `test/`, `docs/` for TypeScript/Node.js projects).
+    When `.workflow-config.yaml` is absent, fall back to `project_kinds.yaml` guidance for the resolved project kind when that guidance is available and specific enough to define a requirement.
+    If `project_kinds.yaml` is missing, incomplete, or does not define the relevant requirement, fall back to language/framework defaults and any structural expectations explicitly documented in the visible project docs (e.g. `src/`, `test/`, `docs/` for TypeScript/Node.js projects).
+    Example: treat `ai_guidance.directory_standards` and similar project-kind structure definitions as guidance only when they are actually present for the resolved kind; otherwise downgrade the point to a recommendation instead of a missing-directory defect.
 
     **"Contents match the documented purpose"** means:
     - `source_dirs` entries contain source code files (`.ts`, `.js`, `.vue`) — not build artifacts or data

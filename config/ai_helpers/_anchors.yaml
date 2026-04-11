@@ -41,6 +41,9 @@ _behavioral_actionable: &behavioral_actionable |
   Example: If a deprecated API and a missing doc section are both found, report
   the deprecated API first (functional bug), then the doc gap; both as separate
   items in the workflow report or PR comment.
+  Example: If a project uses a custom review dashboard or writes findings to
+  `.reports/review-summary.json`, surface the actionable output there instead of
+  a PR comment because it is the closest reporting artifact in that workflow.
   
   **Clarifying Questions Allowed When**:
   Note: Before raising a clarifying question, consult README.md for high-level context,

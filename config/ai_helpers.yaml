@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 7.0.15
+# Version: 7.0.16
 #
 # Version history -> see CHANGELOG.md
 #
@@ -2375,6 +2375,11 @@ step9_dependencies_prompt:
     > **Note:** Base your analysis solely on the data provided in the **Dependency Analysis
     > Results**, **Security Audit Summary**, and **Outdated Packages** sections below. The manifest
     > and lockfile contents were read from the project at analysis time.
+    >
+    > If the supplied results indicate that no supported manifest files were found, explicitly
+    > state `No supported manifest files found` and avoid speculative recommendations. If any of
+    > the referenced sections are missing, empty, or clearly insufficient, explicitly call out the
+    > gap, explain how it limits the analysis, and restrict conclusions to the evidence available.
 
     **Context:**
     - Project: {project_name} ({project_description})
@@ -2449,8 +2454,11 @@ step9_dependencies_prompt:
     invent package names, vulnerability counts, or version data not present in the context.
     Review the provided dependency lists, audit summary, and outdated packages.
     Prioritize security vulnerabilities first, then version drift, then optimizations.
+    Start by stating whether the provided evidence is sufficient for a full review, a limited
+    review, or no review because no supported manifest files were found.
 
     **Output:**
+    - Analysis status and any evidence gaps or missing sections
     - Security vulnerability assessment with severity levels
     - Immediate action items for critical vulnerabilities
     - Safe update path for outdated packages

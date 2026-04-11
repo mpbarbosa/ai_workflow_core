@@ -3741,14 +3741,21 @@ version_manager_prompt:
     **Primary Sources**: Review `package.json` (current version field), CHANGELOG.md (especially the
     [Unreleased] section), and git commit history to understand the nature and scope of changes.
     If CHANGELOG.md is absent, note this in your reasoning and rely solely on git commit history.
-    **Versioning Policy**: Check these files (in order) for project-specific versioning rules:
-    `.github/CONTRIBUTING.md`, `CONTRIBUTING.md` (project root), `README.md`, and
-    `docs/architecture/VERSION_TIMELINE.md` (if referenced). If none of these files exists or
-    none addresses versioning, apply standard semver.org rules and state this in your reasoning:
+    **Versioning Policy**: Check these files (in order) for project-specific versioning rules or
+    release guidance: `CHANGELOG.md` (project SemVer statement and `[Unreleased]` scope),
+    `CONTRIBUTING.md` (project root), `README.md`, `docs/guides/DEVELOPER_GUIDE.md`,
+    `docs/api/core/version.md`, and `docs/architecture/VERSION_TIMELINE.md` (if present or
+    referenced). If a listed file is absent, skip it. If none of the available files defines
+    versioning rules beyond generic SemVer guidance, apply standard semver.org rules and state
+    this in your reasoning:
     - MAJOR (X.0.0): breaking or incompatible public-API changes
     - MINOR (X.Y.0): new backward-compatible features or capabilities
     - PATCH (X.Y.Z): bug fixes, docs, refactoring, tests, or internal tooling
-    Preserve any pre-release suffix (e.g., `-alpha`, `-beta`) in the bumped version unchanged.
+    Pre-release suffixes (e.g., `-alpha`, `-beta`, `-rc.1`) do not by themselves change bump
+    severity; preserve them unchanged if you mention a resulting version.
+    Build metadata (e.g., `+build.123`) does not affect SemVer precedence or bump classification;
+    ignore it when choosing MAJOR/MINOR/PATCH, but preserve it unchanged if you mention a
+    resulting version string.
     Your output is a recommendation — final version application is confirmed manually.
   
   specific_expertise: |
@@ -3759,6 +3766,7 @@ version_manager_prompt:
     
     Consider:
     - CHANGELOG.md [Unreleased] section as the authoritative record of pending changes
+    - Project-specific release guidance from README / contributing / developer-guide / version docs
     - Conventional commit messages (feat:, fix:, BREAKING CHANGE:) when present
     - Scope of changes (files modified, lines changed)
     - Type of modifications (API changes vs internal refactoring)
@@ -3778,10 +3786,13 @@ version_manager_prompt:
        - `docs/` or `*.md` changes → documentation updates (patch)
        - `scripts/` changes → tooling/maintenance (patch/chore)
        - `.ai_workflow/` only → internal artifacts (patch; see step 0)
-    4. Consult CONTRIBUTING.md for any project-specific versioning conventions or release
-       policies that may override standard semver heuristics
+    4. Consult the project's versioning guidance in this order: `CHANGELOG.md`,
+       `CONTRIBUTING.md`, `README.md`, `docs/guides/DEVELOPER_GUIDE.md`,
+       `docs/api/core/version.md`, and `docs/architecture/VERSION_TIMELINE.md` if present
     5. Identify the highest-severity change type: breaking → MAJOR, new feature → MINOR, fix/docs → PATCH
     6. Determine minimum required version bump based on findings
+       - Pre-release suffixes do not upgrade severity on their own
+       - Build metadata does not affect precedence or bump classification
     7. Provide clear reasoning citing specific changes from CHANGELOG.md or commits
     Note: This recommendation requires manual confirmation before the version is applied.
   

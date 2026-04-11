@@ -1,0 +1,141 @@
+**ai_workflow.js Async Performance Review**  
+_⚠️ Coverage may be partial — not all source files were provided_
+
+---
+
+### 1. Overfetching
+✅ No issues found  
+_No fetch, REST, or GraphQL calls detected in analyzed files._
+
+---
+
+### 2. Promise Overhead
+
+- **File**: `.workflow_core/bin/ai-workflow.js`  
+  **Severity**: LOW  
+  **Dimension**: Promise Overhead  
+  **Issue**: Uses an async IIFE with sequential awaits (`await access(...); await import(...)`) where these could run concurrently if independent.  
+  **Fix**:  
+  _Before:_  
+  ```js
+  await access(parentCliPath);
+  await import(pathToFileURL(parentCliPath).href);
+  ```
+  _After:_  
+  ```js
+  await Promise.all([
+    access(parentCliPath),
+    import(pathToFileURL(parentCliPath).href)
+  ]);
+  ```
+  **Impact**: Minor; only relevant if both are independent and performance is critical.
+
+- **File**: `.workflow_core/src/loader.ts`  
+  **Severity**: LOW  
+  **Dimension**: Promise Overhead  
+  **Issue**: Several exported `async` functions (e.g., `loadPromptRoles`, `loadPersonas`) are thin wrappers around a single `await` call.  
+  **Fix**:  
+  _Before:_  
+  ```ts
+  export async function loadPromptRoles(filePath: string): Promise<PromptRolesConfig> {
+    const raw = await readYamlFile(filePath);
+    // ...
+  }
+  ```
+  _After:_  
+  ```ts
+  export function loadPromptRoles(filePath: string): Promise<PromptRolesConfig> {
+    return readYamlFile(filePath).then(raw => {
+      // ...
+    });
+  }
+  ```
+  **Impact**: Very minor; async/await overhead is negligible unless on a hot path.
+
+---
+
+### 3. Event Loop Congestion
+✅ No issues found  
+_No CPU-heavy synchronous work inside async paths detected._
+
+---
+
+### 4. Memory Leaks
+✅ No issues found  
+_No unclosed streams, unremoved listeners, or timer leaks detected._
+
+---
+
+### 5. API Call Batching
+✅ No issues found  
+_No N+1 fetch or batchable API patterns present._
+
+---
+
+### 6. Debouncing & Throttling
+✅ No issues found  
+_No event handlers or polling loops requiring debounce/throttle found._
+
+---
+
+### 7. Error Handling
+
+- **File**: `.workflow_core/bin/ai-workflow.js`  
+  **Severity**: HIGH  
+  **Dimension**: Error Handling  
+  **Issue**: Top-level async IIFE does not have a global unhandledRejection handler; errors are only caught within the IIFE.  
+  **Fix**:  
+  _Before:_  
+  ```js
+  (async () => {
+    try { ... } catch (error) { ... }
+  })();
+  ```
+  _After:_  
+  ```js
+  process.on('unhandledRejection', (err) => {
+    console.error('Unhandled rejection:', err);
+    process.exit(1);
+  });
+  (async () => { ... })();
+  ```
+  **Impact**: Prevents silent process crashes on unhandled promise rejections.
+
+---
+
+### 8. Promise Anti-Patterns
+✅ No issues found  
+_No explicit Promise constructors wrapping async code, no mixed .then/await, no redundant wrapping._
+
+---
+
+### 9. Resource Cleanup
+✅ No issues found  
+_No missing resource cleanup (AbortController, removeEventListener, stream close) detected._
+
+---
+
+## Prioritized Recommendations
+
+1. **Add a global unhandledRejection handler** in `.workflow_core/bin/ai-workflow.js` to prevent silent process crashes (HIGH).
+2. **Consider minor Promise overhead optimizations** in `.workflow_core/bin/ai-workflow.js` and `.workflow_core/src/loader.ts` if these are on hot paths (LOW).
+
+---
+
+## Summary Table
+
+| Dimension             | Issues Found | Highest Severity | Example File(s)                        |
+|-----------------------|--------------|------------------|----------------------------------------|
+| Overfetching          | 0            | —                | —                                      |
+| Promise Overhead      | 2            | LOW              | .workflow_core/bin/ai-workflow.js, .workflow_core/src/loader.ts |
+| Event Loop Congestion | 0            | —                | —                                      |
+| Memory Leaks          | 0            | —                | —                                      |
+| API Call Batching     | 0            | —                | —                                      |
+| Debounce/Throttling   | 0            | —                | —                                      |
+| Error Handling        | 1            | HIGH             | .workflow_core/bin/ai-workflow.js      |
+| Promise Anti-Patterns | 0            | —                | —                                      |
+| Resource Cleanup      | 0            | —                | —                                      |
+
+---
+
+**Note:** No critical memory/resource leaks or event loop congestion found. Error handling and minor promise optimizations are the main actionable items.

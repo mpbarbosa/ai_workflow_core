@@ -1,0 +1,142 @@
+Here is a focused performance engineering review of ai_workflow.js, based on the provided files and your requirements.
+
+---
+
+## Summary Table
+
+| File                                 | Issue Type                | Severity | Impact         |
+|---------------------------------------|---------------------------|----------|----------------|
+| .workflow_core/src/loader.ts          | Synchronous I/O in hot path | High     | Startup/block  |
+| .workflow_core/src/loader.ts          | Repeated YAML parsing      | Medium   | Latency        |
+| .workflow_core/src/loader.ts          | Data structure choice      | Low      | Minor          |
+| .workflow_core/bin/ai-workflow.js     | Eager import on startup    | Low      | Startup        |
+
+---
+
+## Detailed Findings & Recommendations
+
+---
+
+### 1. Synchronous I/O in Hot Path
+
+**File:** `.workflow_core/src/loader.ts`  
+**Line(s):** N/A (entire file uses async, but check for sync in other code)  
+**Severity:** High  
+**Impact:** If any code path uses `fs.readFileSync` or similar in hot paths, it would block the event loop and degrade performance, especially for large YAML files.
+
+**Current:**  
+```ts
+const raw = await fsPromises.readFile(filePath, 'utf8');
+```
+**Assessment:**  
+✅ Uses async I/O (`fsPromises.readFile`). No blocking sync I/O found in the provided code.  
+**Action:**  
+No change needed, but ensure all future file reads remain async.
+
+---
+
+### 2. Repeated YAML Parsing Without Caching
+
+**File:** `.workflow_core/src/loader.ts`  
+**Line(s):** `readYamlFile`, `loadPromptRoles`, `loadPersonas`  
+**Severity:** Medium  
+**Impact:** If config files are loaded multiple times (e.g., in a long-running process or CLI invoked repeatedly), parsing the same YAML files repeatedly is wasteful.
+
+**Current:**  
+```ts
+export async function loadPromptRoles(filePath: string): Promise<PromptRolesConfig> {
+  const raw = await readYamlFile(filePath);
+  // ...
+}
+```
+**Recommendation:**  
+Implement in-memory caching for parsed YAML files to avoid redundant parsing.
+
+**Before:**
+```ts
+export async function loadPromptRoles(filePath: string): Promise<PromptRolesConfig> {
+  const raw = await readYamlFile(filePath);
+  // ...
+}
+```
+**After:**
+```ts
+const yamlCache = new Map<string, unknown>();
+async function readYamlFile(filePath: string): Promise<unknown> {
+  if (yamlCache.has(filePath)) return yamlCache.get(filePath);
+  const raw = await fsPromises.readFile(filePath, 'utf8');
+  const parsed = parseYaml(raw);
+  yamlCache.set(filePath, parsed);
+  return parsed;
+}
+```
+**Benefit:**  
+Reduces I/O and parsing overhead for repeated config loads.
+
+---
+
+### 3. Data Structure Choice: Object vs Map
+
+**File:** `.workflow_core/src/types.ts`  
+**Line(s):** `PromptRolesConfig.roles: Record<string, PromptRole>`  
+**Severity:** Low  
+**Impact:** For large numbers of roles/personas, using `Map` can be more performant for frequent membership checks and iteration.
+
+**Current:**  
+```ts
+readonly roles: Record<string, PromptRole>;
+```
+**Recommendation:**  
+If roles/personas grow large or require frequent dynamic updates, consider using `Map<string, PromptRole>` for O(1) lookups and better iteration performance.
+
+---
+
+### 4. Eager Import on Startup
+
+**File:** `.workflow_core/bin/ai-workflow.js`  
+**Line(s):**  
+```js
+await import(pathToFileURL(parentCliPath).href);
+```
+**Severity:** Low  
+**Impact:** Eagerly imports the parent CLI module on every invocation, which may increase startup time if the parent CLI is large.
+
+**Recommendation:**  
+If startup time is a concern, consider lazy-loading only when needed, or splitting the CLI into smaller entry points.
+
+---
+
+### 5. Benchmarking Coverage
+
+**Observation:**  
+No evidence of microbenchmarking (e.g., Benchmark.js, vitest bench) in the provided files.  
+**Recommendation:**  
+Add targeted benchmarks for config loading and persona resolution, especially if these are used in performance-sensitive contexts.
+
+---
+
+### 6. Regex Performance Risks
+
+**Observation:**  
+No complex regex patterns or unanchored regexes found in the provided code.  
+**Action:**  
+No action needed.
+
+---
+
+## Key Takeaways
+
+- **Async I/O is used correctly**; no blocking sync I/O found.
+- **YAML parsing is not cached**—add in-memory caching to avoid repeated expensive parsing.
+- **Data structures are fine for current scale**, but consider `Map` for future scalability.
+- **No major algorithmic complexity issues** (no O(n²) loops or nested iterations over large datasets in the provided code).
+- **No evidence of benchmarking**—add microbenchmarks for config loading if performance is critical.
+
+---
+
+**Next Steps:**  
+- Implement YAML file caching in `loader.ts`.
+- Consider adding microbenchmarks for config loading and persona resolution.
+- Review bundle size and startup time if the CLI grows.
+
+Let me know if you want code changes for any of these recommendations!

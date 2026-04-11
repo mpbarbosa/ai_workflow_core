@@ -1,0 +1,45 @@
+{
+  "version": "1.0.0",
+  "created": "2026-04-11T01:06:18.000Z",
+  "createdEpoch": 1775869578,
+  "lastCleanup": "2026-04-11T01:06:18.000Z",
+  "lastCleanupEpoch": 1775869578,
+  "entries": [
+    {
+      "cacheKey": "step_22:/home/mpb/Documents/GitHub/ai_workflow.js:0",
+      "created": "2026-04-11T01:10:19.000Z",
+      "lastAccessed": "2026-04-11T01:10:19.000Z",
+      "accessCount": 1
+    },
+    {
+      "cacheKey": "db95aee3018c48ff0dfc25f64d9169a4918c531b97c954c5242985d385996dfa",
+      "created": "2026-04-11T01:10:33.000Z",
+      "lastAccessed": "2026-04-11T01:10:33.000Z",
+      "accessCount": 1
+    },
+    {
+      "cacheKey": "step_23:/home/mpb/Documents/GitHub/ai_workflow.js:1",
+      "created": "2026-04-11T01:10:52.000Z",
+      "lastAccessed": "2026-04-11T01:10:52.000Z",
+      "accessCount": 1
+    },
+    {
+      "cacheKey": "0ab837b2b819df4cc7e8a9591d606b9c6ad071d10f36dd967d9a5f17c99a5e15",
+      "created": "2026-04-11T01:12:18.000Z",
+      "lastAccessed": "2026-04-11T01:12:18.000Z",
+      "accessCount": 1
+    },
+    {
+      "cacheKey": "7ac7c86971c6f7d99a31dd47da717a48ad1026677c8d101c6320d8ae87a63dec",
+      "created": "2026-04-11T01:12:40.000Z",
+      "lastAccessed": "2026-04-11T01:12:40.000Z",
+      "accessCount": 1
+    },
+    {
+      "cacheKey": "step_20:/home/mpb/Documents/GitHub/ai_workflow.js:1",
+      "created": "2026-04-11T01:13:08.000Z",
+      "lastAccessed": "2026-04-11T01:13:08.000Z",
+      "accessCount": 1
+    }
+  ]
+}

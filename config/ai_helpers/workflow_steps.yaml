@@ -552,7 +552,7 @@ step8_test_exec_prompt:
   behavioral_guidelines: *behavioral_structured
   
   task_template: |
-    Analyze the results of `{test_command}` for the {project_name} project, diagnose the concrete issues surfaced by this run, and provide actionable recommendations for improving the relevant test or validation workflow and any directly related CI/CD integration.
+    Analyze the results of `{test_command}` for the {project_name} project, diagnose the concrete issues surfaced by this run, and provide actionable recommendations limited to the relevant test or validation workflow and any directly related GitHub Actions workflows.
 
     **Context:**
     - Project: {project_name} ({project_description})

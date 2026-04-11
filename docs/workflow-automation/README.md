@@ -605,7 +605,7 @@ rules:
 
 ## Related Documentation
 
-- [GitHub Actions Templates](../workflow-templates/README.md)
+- [GitHub Actions Templates](../../workflow-templates/README.md)
 - [Integration Best Practices](../guides/INTEGRATION_BEST_PRACTICES.md)
 - [Script Reference](../api/SCRIPT_API_REFERENCE.md)
 - [CI/CD Integration Guide](../advanced/CI_CD_INTEGRATION.md)

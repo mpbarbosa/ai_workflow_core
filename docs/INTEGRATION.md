@@ -361,16 +361,13 @@ See [AI Helpers Reference](api/AI_HELPERS_REFERENCE.md#token-efficiency-system) 
 ### Update to Latest Version
 
 ```bash
-# Navigate to submodule
+# Recommended: use the helper script from project root
+bash .workflow_core/scripts/update_submodules.sh --submodule .workflow_core --stage --commit-changes
+
+# Manual equivalent
 cd .workflow_core
-
-# Pull latest changes
 git pull origin main
-
-# Return to project root
 cd ..
-
-# Stage and commit the update
 git add .workflow_core
 git commit -m "Update ai_workflow_core to latest version"
 ```
@@ -378,14 +375,17 @@ git commit -m "Update ai_workflow_core to latest version"
 ### Update to Specific Version (Recommended)
 
 ```bash
+# Recommended: use the helper script from project root
+bash .workflow_core/scripts/update_submodules.sh \
+  --submodule .workflow_core \
+  --tag v1.2.7 \
+  --stage \
+  --commit-changes
+
+# Manual equivalent
 cd .workflow_core
-
-# Fetch all tags
 git fetch --tags
-
-# Checkout specific version
 git checkout v1.2.7
-
 cd ..
 git add .workflow_core
 git commit -m "Update ai_workflow_core to v1.2.7"
@@ -417,7 +417,7 @@ Add to your `.git/config`:
 Then run:
 
 ```bash
-git submodule update --remote .workflow_core
+bash .workflow_core/scripts/update_submodules.sh --submodule .workflow_core
 ```
 
 **⚠️ Warning:** Auto-update is convenient but can introduce unexpected changes. Only use in development environments.

@@ -71,3 +71,5 @@ as well as minor issue resolutions from the `fix-log-issues` workflow.
 | RI-021 | step_13 | Trailing punctuation in markdown headers (MD026) across 11 files | docs/ (11 files) | Low | done |
 | RI-022 | step_02 | Broken relative links in docs/reference/QUICK_REFERENCE_CARD.md lines 170-171 | docs/reference/QUICK_REFERENCE_CARD.md | Medium | done |
 | RI-023 | step_02 | Broken relative link in docs/misc/documentation_analysis_parallel.md line 416 | docs/misc/documentation_analysis_parallel.md | Low | done |
+| RI-024 | step_02 | Broken workflow templates link in workflow automation docs | docs/workflow-automation/README.md | Medium | done |
+| RI-025 | step_08 | Workflow config still targeted YAML-only validation instead of the repo's TypeScript/npm workflow | .workflow-config.yaml | Medium | done |

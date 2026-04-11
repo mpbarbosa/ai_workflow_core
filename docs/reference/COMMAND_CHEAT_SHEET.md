@@ -23,15 +23,14 @@ git clone --recurse-submodules <repo-url>
 
 ### Updating Submodule
 ```bash
-# Update to latest commit
-cd .workflow_core && git pull origin main && cd ..
+# Update a single submodule with the helper
+bash .workflow_core/scripts/update_submodules.sh --submodule .workflow_core
 
-# Update submodule reference in parent
-git add .workflow_core
-git commit -m "chore: update ai_workflow_core submodule"
+# Update and commit the submodule reference in parent
+bash .workflow_core/scripts/update_submodules.sh --submodule .workflow_core --stage --commit-changes
 
 # Update all submodules
-git submodule update --remote --merge
+bash .workflow_core/scripts/update_submodules.sh --stage
 ```
 
 ### Checking Submodule Status

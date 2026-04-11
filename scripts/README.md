@@ -4,6 +4,41 @@ This directory contains utility scripts that can be adapted for different langua
 
 ## Available Scripts
 
+### `update_submodules.sh.template`
+
+Automates repository submodule maintenance with optional staging, commit creation, and GitHub PR creation.
+
+**Purpose**: Replace manual multi-command submodule update flows with one repeatable script.
+
+**Usage:**
+```bash
+# Update every configured submodule using its tracked remote branch
+bash scripts/update_submodules.sh
+
+# Pin one submodule to a tag and commit the pointer change
+bash scripts/update_submodules.sh --submodule .workflow_core --tag v1.2.7 --stage --commit-changes
+
+# Update all submodules on a feature branch and open a PR
+bash scripts/update_submodules.sh \
+  --branch main \
+  --create-branch chore/update-submodules \
+  --create-pr
+```
+
+**What it does:**
+- Discovers submodules from `.gitmodules`
+- Updates all submodules or only selected ones
+- Supports remote, branch, tag, and commit pinning modes
+- Stages parent-repository submodule pointer changes
+- Creates a commit with a generated or explicit message
+- Optionally pushes the current branch and opens a pull request with `gh`
+- Optionally runs an integration health check after updating
+
+**Important defaults:**
+- Default update mode is `--remote`
+- Parent-repository commits and PRs are opt-in
+- The script refuses tracked dirty worktrees unless you explicitly allow them
+
 ### `check_integration_health.sh.template`
 
 **NEW**: Comprehensive integration health check and validation
@@ -153,6 +188,9 @@ Common placeholders used in script templates:
 - `{{ARTIFACT_DIR}}` - Artifact directory path (usually `.ai_workflow`)
 - `{{LOG_DIR}}` - Log directory path
 - `{{METRICS_DIR}}` - Metrics directory path
+
+The repository also includes concrete wrapper scripts such as `scripts/update_submodules.sh`
+that set project-local defaults and then delegate to the corresponding template.
 
 ## Language-Specific Adaptations
 

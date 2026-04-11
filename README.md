@@ -109,6 +109,7 @@ git commit -m "Pin ai_workflow_core to v1.0.2"
 
 **Important for dynamic codebases:**
 - Review [Version Management Guide](docs/guides/VERSION_MANAGEMENT.md) for update strategies
+- Update submodules with the bundled helper: `bash .workflow_core/scripts/update_submodules.sh`
 - Run health checks after updates: `bash .workflow_core/scripts/check_integration_health.sh`
 - See [Integration Best Practices](docs/guides/INTEGRATION_BEST_PRACTICES.md) for maintenance tips
 

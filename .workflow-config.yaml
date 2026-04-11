@@ -10,11 +10,12 @@ project:
   version: "1.0.2"
 
 tech_stack:
-  primary_language: "yaml"
-  build_system: "none"
-  test_framework: "validation-scripts"
-  test_command: "python3 scripts/validate_context_blocks.py config/ai_helpers.yaml"
+  primary_language: "typescript"
+  build_system: "npm"
+  test_framework: "jest"
+  test_command: "npm run test:all"
   lint_commands:
+    typescript: "eslint src/**/*.ts"
     yaml: "yamllint -d relaxed config/"
 
 structure:
@@ -24,6 +25,7 @@ structure:
     - workflow-templates/workflows
     - scripts
   test_dirs:
+    - src/__tests__
     - scripts
   docs_dirs:
     - docs

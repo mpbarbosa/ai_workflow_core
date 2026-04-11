@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 7.0.13
+# Version: 7.0.14
 #
 # Version history -> see CHANGELOG.md
 #
@@ -2172,8 +2172,8 @@ step6_test_review_prompt:
     - Modified Files: {modified_count}
     - Test Framework: {test_framework} via `{test_command}`
     - Commands: test=`{test_command}`, coverage=`{coverage_command}`
-    - Total Test Files: {test_count} ({tests_in_tests_dir} in `__tests__/`/`test/`, {tests_colocated} co-located)
-    - Quality Criteria: AAA pattern, descriptive names, DRY fixtures, isolated tests, deterministic execution
+    - Total Test Files: {test_count} ({tests_in_tests_dir} in `__tests__/`/`test/`, {tests_colocated} co-located, discovered via filesystem scan)
+    - Quality Criteria (project standards): AAA pattern, descriptive names, DRY fixtures, isolated tests, deterministic execution
 
     > **Note:** If the **Test Framework** above is a declarative/configuration format
     > (e.g., YAML, JSON, HCL) rather than a test runner, treat any such files as

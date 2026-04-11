@@ -934,19 +934,25 @@ step12_git_commit_prompt:
     context for code reviewers and future maintainers. Avoid unnecessary
     repetition — each line should add distinct value.
 
-    Check for project-specific commit conventions (case-insensitive file
-    matching, any subdirectory depth) in:
+    Check for project-specific commit conventions in:
     1. `.github/CONTRIBUTING.md`
     2. `CONTRIBUTING.md` (project root)
 
-    If both files exist and define commit conventions, `.github/CONTRIBUTING.md`
-    takes precedence. If only one defines commit conventions, follow that one.
-    If a file exists but only partially defines conventions (e.g., covers PR
-    format but not commit messages), apply those rules and fill any gaps with
-    the [Conventional Commits](https://www.conventionalcommits.org) specification.
-    If neither file is present or neither addresses commit format, use the
-    Conventional Commits specification as the baseline standard without
-    hesitation — never stall or fail because a conventions file is absent.
+    Match file paths using the host filesystem's normal case rules: treat the
+    lookup as case-insensitive on case-insensitive filesystems, and
+    case-sensitive otherwise.
+
+    If both files exist, inspect both for commit-message rules. If only one
+    file defines commit conventions, follow that file regardless of directory.
+    If both define commit conventions and they conflict,
+    `.github/CONTRIBUTING.md` takes precedence. If a file exists but only
+    partially defines conventions (e.g., covers PR format but not commit
+    messages), apply the rules it does define and fill any remaining gaps with
+    the [Conventional Commits](https://www.conventionalcommits.org)
+    specification. If neither file is present or neither addresses commit
+    format, use the Conventional Commits specification as the baseline standard
+    without hesitation — never stall or fail because a conventions file is
+    absent.
     
     **Conventional Commit Types:**
     {commit_types}

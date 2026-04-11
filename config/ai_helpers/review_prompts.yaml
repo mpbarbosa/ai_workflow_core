@@ -391,7 +391,7 @@ accessibility_review_prompt:
     - File Paths:
     {file_paths}
 
-    **File Contents:**
+    **File Contents (sampled source excerpts):**
     {file_content_block}
 
     **REQUIRED ACTIONS**:
@@ -427,7 +427,7 @@ performance_review_prompt:
     - File Paths:
     {file_paths}
 
-    **File Contents:**
+    **File Contents (sampled source excerpts):**
     {file_content_block}
 
     **Focus Areas** (prioritise based on what is present in the code):

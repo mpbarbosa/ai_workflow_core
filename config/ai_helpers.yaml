@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 7.0.19
+# Version: 7.0.20
 #
 # Version history -> see CHANGELOG.md
 #
@@ -6367,7 +6367,7 @@ accessibility_review_prompt:
     - File Paths:
     {file_paths}
 
-    **File Contents:**
+    **File Contents (sampled source excerpts):**
     {file_content_block}
 
     **REQUIRED ACTIONS**:
@@ -6403,7 +6403,7 @@ performance_review_prompt:
     - File Paths:
     {file_paths}
 
-    **File Contents:**
+    **File Contents (sampled source excerpts):**
     {file_content_block}
 
     **Focus Areas** (prioritise based on what is present in the code):

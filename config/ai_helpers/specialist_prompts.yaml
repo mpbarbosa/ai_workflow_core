@@ -187,9 +187,10 @@ async_flow_debugger_prompt:
 
     **File Context Guide**:
     The **File Contents** section below provides source file excerpts. Interpret them as follows:
-    - If an excerpt ends with `...(truncated — remainder omitted)`, the file was too large to
-      include in full. Analyse only the available portion and note "content truncated" in your
-      findings; do not speculate about omitted code.
+    - If an excerpt heading includes `[truncated]`, or the excerpt ends with
+      `...(truncated — remainder omitted)`, the file was too large to include in full.
+      Analyse only the available portion and note "content truncated" in your findings;
+      do not speculate about omitted code.
     - Use the file path to understand each file's role before analysing:
       - `eslint.config.js` / `.eslintrc.*` — linting rules and code-style enforcement
       - `jest.config.*` / `vitest.config.*` — test runner configuration

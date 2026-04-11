@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 7.0.16
+# Version: 7.0.17
 #
 # Version history -> see CHANGELOG.md
 #
@@ -2497,6 +2497,11 @@ step10_code_quality_prompt:
     
     **Code Quality Analysis Results:**
     {quality_summary}
+    
+    > **Note:** The **Automated Findings** section below is sourced from the most recent
+    > analysis run for the files in scope. Treat reported file counts, lint commands,
+    > and lint results as snapshots from that run, and explicitly call out any missing
+    > or truncated data before drawing conclusions.
     
     **Automated Findings:**
     {quality_report_content}

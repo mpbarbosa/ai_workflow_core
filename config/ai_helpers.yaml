@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 7.0.11
+# Version: 7.0.12
 #
 # Version history -> see CHANGELOG.md
 #
@@ -2045,22 +2045,26 @@ step5_directory_prompt:
   
   task_template: |
     Perform comprehensive validation of directory structure and architectural organization for this project.
-    Validation covers both **presence** (required directories/files exist — see **"Required" Directory Definition** below for the authoritative sources and rules) and **content/structure** (contents match the documented purpose — see **"Contents match the documented purpose"** below for explicit criteria and examples).
+    This Task section is self-contained: the authoritative definition of **required** directories/files and the explicit meaning of **contents match the documented purpose** are both included below in this same prompt block.
+    Validation covers both **presence** and **content/structure**:
+    - **Presence** = required directories/files exist. Treat a path as **required** only when that requirement is supported by `.workflow-config.yaml`, `project_kinds.yaml`, or project documentation explicitly visible in this prompt.
+    - **Content/structure** = a directory's contents match its declared or documented role (for example, source directories contain source files, test directories contain test files, and docs directories contain documentation files).
+    - Best-practice conventions that are not explicitly required by the visible evidence should be framed as recommendations, not as missing-directory defects.
 
-    **Validation Criteria:**
-    - Required configuration files: `.workflow-config.yaml` (if present, use as the primary source of truth for structure; otherwise fall back to project-kind guidance and language defaults)
-    - Project kind-specific required directories and files as defined in `project_kinds.yaml`
-    - Architecture documented in `README.md`, `docs/ARCHITECTURE.md`, and `CONTRIBUTING.md`
+    **Authoritative Validation Sources:**
+    - `.workflow-config.yaml` (if present, use as the primary source of truth for required structure)
+    - `project_kinds.yaml` project-kind guidance and defaults
+    - Architecture and structural guidance documented in `README.md`, `docs/ARCHITECTURE.md`, and `CONTRIBUTING.md`
 
     **"Required" Directory Definition:**
-    When `.workflow-config.yaml` is present, these keys define required directories:
+    When `.workflow-config.yaml` is present, the following keys define required directories/files:
     - `structure.source_dirs` → source code directories (e.g. `src/`) — must exist and contain source files
     - `structure.test_dirs` → test directories (e.g. `__tests__/`, `tests/`) — must exist and contain test files
     - `structure.docs_dirs` → documentation directories (e.g. `docs/`) — must exist and contain `.md` files
     - `structure.ui_dirs` → UI component directories — must contain component source files
     - `structure.css_dirs` → stylesheet directories — must contain `.css` files
     - `structure.static_assets` → specific asset files that must be present at their listed paths
-    When `.workflow-config.yaml` is absent, apply language/framework defaults (e.g. `src/`, `test/`, `docs/` for TypeScript/Node.js projects).
+    When `.workflow-config.yaml` is absent, fall back to project-kind guidance and language/framework defaults (e.g. `src/`, `test/`, `docs/` for TypeScript/Node.js projects).
 
     **"Contents match the documented purpose"** means:
     - `source_dirs` entries contain source code files (`.ts`, `.js`, `.vue`) — not build artifacts or data
@@ -2068,7 +2072,7 @@ step5_directory_prompt:
     - `docs_dirs` entries contain documentation files (`.md`, `.rst`, `.txt`)
     - Any directory described in `README.md` or `docs/ARCHITECTURE.md` matches its stated purpose
     - Example: a directory described as "UI component library" should contain component files, not config files
-    - Undocumented directories (absent from all documentation sources) are flagged for clarification, not treated as errors
+    - Undocumented directories (absent from all documentation sources) are flagged for clarification, not treated as hard errors unless another visible source explicitly requires them
 
     **Context:**
     - Project: {project_name} ({project_description})
@@ -2123,6 +2127,7 @@ step5_directory_prompt:
   
   approach: |
     Analyze ONLY the directories explicitly listed under "Current Directory Structure" above. Do not reference, invent, or assume the existence of any directories, files, or documentation not present in that list.
+    Do not report a directory as missing unless the visible evidence in this prompt makes it required. If a convention suggests a directory would be beneficial but the prompt does not establish it as required, present that as a recommendation instead of a defect.
 
     **Output:**
     - List of structure issues with specific directory paths

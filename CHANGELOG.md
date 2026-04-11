@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **`config/ai_helpers.yaml`** — Hardened `step5_directory_prompt` Task section (v7.0.12):
+  - Rewrote the opening block so the Task section is explicitly self-contained, with the authoritative definitions for required structure and content/structure included in the same prompt block.
+  - Clarified the precedence of structural evidence: prefer `.workflow-config.yaml`, then `project_kinds.yaml`, then visible project documentation.
+  - Distinguished required-directory defects from best-practice recommendations so optional conventions are less likely to be reported as missing-directory errors.
+
 ## [1.6.0] — 2026-04-10
 
 ### Added

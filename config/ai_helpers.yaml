@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 7.0.9
+# Version: 7.0.10
 #
 # Version history -> see CHANGELOG.md
 #
@@ -1732,12 +1732,17 @@ step2_consistency_prompt:
     fenced code-block language tags — for example, one file calling a concept
     "auto-commit" while another calls it "autocommit" is a consistency violation).
     Where project-specific conventions are documented — in particular
-    `.github/copilot-instructions.md` and `CONTRIBUTING.md` — treat those as the
-    authoritative style reference for this project and let them take precedence over
-    generic defaults. If either file is missing from the project, unavailable in the
-    provided context, or does not address a particular convention, fall back to
-    widely accepted generic markdown best practices (e.g., ATX-style headings,
-    consistent capitalisation within heading levels) for any undefined conventions.
+    `.github/copilot-instructions.md` and `CONTRIBUTING.md` — treat only the files
+    that are present in the project and available in the provided context as
+    authoritative style references, and let them take precedence over generic
+    defaults. If `.github/copilot-instructions.md` is missing or unavailable, use
+    `CONTRIBUTING.md` alone as the project-specific authority when it is available.
+    If either file is missing, unavailable, or too incomplete to settle a convention,
+    explicitly note that gap in your analysis, then fall back to widely accepted
+    generic markdown best practices (e.g., ATX-style headings, consistent
+    capitalisation within heading levels) for any undefined conventions. For
+    example, if `README.md` uses `## Quick Start` while `docs/GETTING_STARTED.md`
+    uses `## Quick start`, treat that heading-style mismatch as a consistency issue.
 
     **Context:**
     - Project: {project_name} ({project_description})

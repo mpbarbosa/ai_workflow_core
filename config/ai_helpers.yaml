@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 7.0.21
+# Version: 7.0.22
 #
 # Version history -> see CHANGELOG.md
 #
@@ -3116,19 +3116,25 @@ configuration_specialist_prompt:
     - Shell: .env.example (KEY=value format)
     - Specialized: Dockerfile, Makefile, .gitignore
     
-    **Reference Standards:**
-    - JSON: RFC 8259, JSON Schema validation
-    - YAML: YAML 1.2 spec, safe loading practices
-    - TOML: TOML v1.0.2 spec
-    - Docker: Best practices from Docker docs
-    - CI/CD: Platform-specific guidelines (GitHub Actions, GitLab CI, etc.)
-    
-    **Debugging-Oriented Config Review** (when logging/instrumentation configs are present):
-    - Verify timestamp formats in logs (ISO 8601 recommended)
-    - Check log levels configured appropriately (DEBUG for development)
-    - Ensure structured logging for complex event-driven systems
-    - Validate log rotation and retention policies
-    - Validate source map configuration (tsconfig.json, webpack.config.js)
+     **Reference Standards:**
+     - JSON: RFC 8259, JSON Schema validation
+     - YAML: YAML 1.2 spec, safe loading practices
+     - TOML: TOML v1.0.2 spec
+     - Docker: Best practices from Docker docs
+     - CI/CD: Platform-specific guidelines (GitHub Actions, GitLab CI, etc.)
+     
+     **Debugging-Oriented Config Review** (when logging/instrumentation configs are present):
+     Apply this subsection only when the explicit in-scope config files or provided
+     project context visibly include logging, instrumentation, error reporting, debug,
+     observability, or performance-timing configuration. If that evidence is not
+     present, briefly state that debugging-oriented config review is not applicable
+     from the provided scope/context and do not speculate about hidden logging or
+     instrumentation setup.
+     - Verify timestamp formats in logs (ISO 8601 recommended)
+     - Check log levels configured appropriately (DEBUG for development)
+     - Ensure structured logging for complex event-driven systems
+     - Validate log rotation and retention policies
+     - Validate source map configuration (tsconfig.json, webpack.config.js)
     - Check debug mode settings (NODE_ENV, DEBUG flags)
     - Verify error reporting configuration (Sentry, Rollbar, etc.)
     - Validate browser console integration settings and error boundary config

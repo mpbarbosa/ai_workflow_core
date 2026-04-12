@@ -1,6 +1,6 @@
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 7.0.20
+# Version: 7.0.21
 #
 # Version history -> see CHANGELOG.md
 #
@@ -1906,12 +1906,13 @@ step2_consistency_prompt:
   approach: |
     Analyze ONLY the documentation files and broken references explicitly listed above. Do not invent file paths, version numbers, or cross-references not present in the provided context.
 
-    **Output:**
-    - Recommendations for fixes with rationale
-    - Priority level (Critical/High/Medium/Low) for each issue
-    - Actionable remediation steps
-    - Explicitly call out any remaining limited or inconclusive checks instead of implying exhaustive validation
-
+     **Output:**
+     - Recommendations for fixes with rationale
+     - Priority level (Critical/High/Medium/Low) for each issue
+     - Actionable remediation steps
+     - Explicitly note any conclusions that are limited or inconclusive because the
+       relevant files, comments, or configuration are not visible in the provided context
+    
     **Documentation Standards to Apply:**
     - Technical accuracy and precision
     - Consistency in terminology and formatting
@@ -1925,17 +1926,12 @@ step2_consistency_prompt:
     yamllint rule names) unless the tool configuration file is visible in the provided context.
     Cite the documented practice or standard instead.
 
-    **Language-Specific Standards:** {language_specific_documentation}
-    
-    Please analyze the documentation files and provide a detailed consistency report.
-    Resolve every broken-reference candidate relative to its source file before you infer a root cause
-    or propose a fix. For example, from `docs/developers/ONBOARDING.md`, the target
-    `api/PROJECT_KINDS_SCHEMA.md` must be evaluated as a relative link from that directory; if the
-    visible file list instead contains `docs/api/PROJECT_KINDS_SCHEMA.md`, diagnose an incorrect
-    relative path and recommend the exact relative correction (such as `../api/PROJECT_KINDS_SCHEMA.md`)
-    rather than adding a redundant `docs/` prefix.
-    If any requested comparison stays limited, truncated, or otherwise inconclusive, keep the summary
-    narrowly scoped to the visible evidence and state that the remaining checks are inconclusive.
+     **Language-Specific Standards:** {language_specific_documentation}
+     
+     Please analyze the documentation files and provide a detailed consistency report
+     based only on the provided context. When relevant documentation evidence is missing
+     or outside the visible context, state that clearly and mark the affected conclusions
+     as limited or inconclusive rather than inferring compliance.
 
 # Step 3: Shell Script Reference Validation Prompt Template
 step3_script_refs_prompt:

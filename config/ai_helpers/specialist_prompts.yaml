@@ -827,7 +827,7 @@ typescript_developer_prompt:
   behavioral_guidelines: *behavioral_actionable
 
   task_template: |
-    **YOUR TASK**: Review, implement, or refactor the TypeScript source modules listed below to be fully type-safe, idiomatic, and performant according to TypeScript best practices and this project's established conventions.
+    **YOUR TASK**: Review, implement, or refactor the TypeScript source modules identified in the `Analyzed File Paths` list and the `TypeScript Files to Review` section below so they are fully type-safe, idiomatic, and performant according to TypeScript best practices and this project's established conventions.
 
     **Project Context:**
     - Project: {project_name}

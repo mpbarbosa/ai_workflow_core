@@ -406,15 +406,26 @@ ui_ux_designer_prompt:
     - UI Files in Scope: {file_count}
     
     > **Scope Check:** Before proceeding, inspect the codebase context provided
-    > below. If it contains **no UI/UX files** — i.e. no HTML, CSS, JSX, TSX,
-    > Vue, Svelte, template, or component files — then **skip the full analysis**.
-    > Output only:
-    > "No UI/UX code is present in the provided context for project
-    > `{project_name}`. UI/UX review is not applicable to the visible files.
-    > Review skipped."
-    > Then stop. Do **not** fabricate findings for code that is not in context.
-    > If UI files are present but mixed with non-UI files, apply the analysis
-    > only to the UI/UX files and note which non-UI files were skipped.
+    > below.
+    > - If it contains **no UI/UX files** — i.e. no HTML, CSS, JSX, TSX, Vue,
+    >   Svelte, template, or component files — then **skip the full analysis**.
+    >   Output only:
+    >   "No UI/UX code is present in the provided context for project
+    >   `{project_name}`. UI/UX review is not applicable to the visible files.
+    >   Review skipped."
+    > - If UI/UX file paths are listed but the prompt does **not** include visible
+    >   source content for them, do **not** claim success, and do **not** say no UI
+    >   code is present. Output only:
+    >   "UI/UX-related files are listed for project `{project_name}`, but no UI
+    >   source content is visible in the provided context. A reliable UI/UX review
+    >   is unavailable from filenames alone. Review inconclusive."
+    > - If visible source content is present but incomplete or truncated, base
+    >   findings only on the visible snippets and mark any unverifiable checks as
+    >   unavailable or inconclusive.
+    > Then stop only for the two output-only cases above. Do **not** fabricate
+    > findings for code that is not in context. If UI files are present but mixed
+    > with non-UI files, apply the analysis only to the UI/UX files and note
+    > which non-UI files were skipped.
 
     **ANALYSIS PHASE**: Evaluate existing UI/UX for:
     1. **Usability**: Ease of use, learnability, efficiency, error prevention

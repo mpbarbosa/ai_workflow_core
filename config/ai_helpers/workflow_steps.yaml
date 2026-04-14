@@ -25,8 +25,9 @@ step2_consistency_prompt:
     explicitly note that gap in your analysis, then fall back to widely accepted
     generic markdown best practices (e.g., ATX-style headings, consistent
     capitalisation within heading levels) for any undefined conventions. For
-    example, if `README.md` uses `## Quick Start` while `docs/GETTING_STARTED.md`
-    uses `## Quick start`, treat that heading-style mismatch as a consistency issue.
+    example, if `README.md` uses `## Quick Start` while another documentation file
+    in the provided scope uses `## Quick start`, treat that heading-style mismatch
+    as a consistency issue.
 
     **Context:**
     - Project: {project_name}
@@ -36,10 +37,13 @@ step2_consistency_prompt:
     - TypeScript source files: {ts_source_count} (not included in this partition — JSDoc source coverage is checked in the TypeScript Review step)
     - Scope: {change_scope}
     - Files in this analysis batch: {modified_count}
-    - Documentation scope: root-level `.md` files (e.g., `README.md`, `CHANGELOG.md`), `docs/` subdirectory and all its nested subdirs (e.g., `docs/architecture/`, `docs/guides/`), and `.github/` metadata including all nested subdirs (e.g., `.github/ISSUE_TEMPLATE/`, `.github/skills/`, `.github/workflows/`) — other hidden directories, hidden tool directories (`.workflow_core/`, `node_modules/`), archived snapshots (e.g., `.ai_workflow/archive/`), and build outputs (`dist/`, `coverage/`) are excluded unless explicitly listed in the files below; auto-generated `.md` files (e.g., those under `docs/api/html/`) should be flagged when they contain consistency violations but treated as **lower priority** than hand-authored docs, since they are regenerated on each build
+    - Documentation scope: the markdown files explicitly listed below, including root-level docs (e.g., `README.md`, `CHANGELOG.md`), any `docs/` subtree entries when present, and any markdown files under `.github/` when present — other hidden directories, hidden tool directories (`.workflow_core/`, `node_modules/`), archived snapshots (e.g., `.ai_workflow/archive/`), and build outputs (`dist/`, `coverage/`) are excluded unless explicitly listed in the files below; auto-generated `.md` files should be flagged when they contain consistency violations but treated as **lower priority** than hand-authored docs, since they are regenerated on each build
     - Files referenced in markdown tables, numbered lists, or inline links but absent from the file list are also in scope — flag them as potential documentation gaps (distinct from broken links)
     - Ignore non-markdown documentation sources outside the listed markdown files — such as repository source comments, standalone JSDoc in source files, YAML, JSON, or generated config files — unless they appear inside the markdown files under review as embedded examples/snippets
     - The complete list of files in scope for this partition is provided at the end of this prompt in the **Files to Analyze** section.
+
+    **Provided file contents and excerpts (authoritative for content-level claims):**
+    {file_contents}
     
     **Tasks:**
     
@@ -48,6 +52,8 @@ step2_consistency_prompt:
        - Verify version numbers follow semantic versioning (MAJOR.MINOR.PATCH)
        - Ensure version consistency across documentation and package manifests
          (check `package.json`, `package-lock.json`, and ecosystem-equivalent lockfiles)
+         only when those files or their relevant contents are explicitly visible in the provided context;
+         otherwise mark that comparison as limited or inconclusive and do not contradict the programmatic scan
        - Validate command examples match actual scripts/executables:
          npm/yarn scripts defined in `package.json`; automation scripts in `scripts/` or
          `bin/` (check all formats present — `.sh` shell scripts, `.js`/`.ts` Node.js
@@ -56,19 +62,26 @@ step2_consistency_prompt:
          CONTRIBUTING. "Documentation quality" for scripts means: inline comments
          explaining non-obvious logic, a usage example or `--help` reference in an
          adjacent README, and accurate descriptions in the root `scripts/README.md`
-         (if present).
+         (if present). If the relevant manifests or script files are not visible in the
+         provided context, mark the check as limited or inconclusive rather than assuming
+         the commands exist or match.
     
     2. **Content Synchronization:**
-       - Compare primary documentation files: `README.md`, `.github/copilot-instructions.md`,
-         `docs/ARCHITECTURE.md` (and any `CONTRIBUTING.md` / `CHANGELOG.md` present)
-       - Check if module/component docs match actual code structure; component API docs
-         are expected in `docs/API.md`, `docs/FUNCTIONAL_REQUIREMENTS.md`, or inline JSDoc
-       - Verify build/package configuration matches documented commands
+       - Compare the primary documentation files present in the provided context:
+         `README.md`, any `.github/copilot-instructions.md`, any architecture or
+         requirements documents, and any `CONTRIBUTING.md` / `CHANGELOG.md` present
+       - Check if module/component docs match actual code structure; use API,
+         requirements, or architecture docs only when those files are actually present
+         in the provided context, otherwise rely on inline documentation evidence only
+       - Verify build/package configuration matches documented commands only when the
+         supporting manifests, configs, or script files are explicitly visible in the
+         provided context; otherwise mark the comparison as limited or inconclusive
     
     3. **Architecture Consistency:**
-       - Validate directory structure matches documented structure; the primary source of
-         truth for the documented structure is `docs/ARCHITECTURE.md` (or a "Directory
-         structure" section in README.md if ARCHITECTURE.md is absent)
+       - Validate directory structure matches documented structure; use the
+         architecture document provided in this analysis batch as the primary source
+         of truth, or a "Directory structure" section in `README.md` if no separate
+         architecture document is present
        - Check if deployment/build steps match actual scripts
        - Verify dependency references are accurate
     
@@ -157,7 +170,8 @@ step2_consistency_prompt:
          (e.g. a component called "ListPanel" in one doc and "List Panel" in another)
        - Missing cross-references between related docs — flag when a concept, component,
          or module is documented in one place but not linked from a closely related file
-         (e.g. `README.md` mentions a component without linking to `docs/API.md`)
+         (e.g. `README.md` mentions a component without linking to a more detailed
+         documentation file that is present in the provided context)
     
     6. **Inline Documentation (JSDoc/TypeScript) Checks:**
        - Verify all exported functions and classes have JSDoc comments
@@ -170,8 +184,9 @@ step2_consistency_prompt:
          conventions rather than applying generic defaults
        - **Scope note:** These checks apply only to JSDoc visible within the documentation
          files listed in this partition (e.g. code blocks in `CONTRIBUTING.md`,
-         `.github/copilot-instructions.md`, or `docs/`). Full source-file JSDoc completeness
-         (all exported symbols in `src/`) is validated by the TypeScript Review step.
+         `.github/copilot-instructions.md`, or any docs files present in the provided
+         context). Full source-file JSDoc completeness (all exported symbols in `src/`)
+         is validated by the TypeScript Review step.
     
     **Files to Analyze:**
     {doc_files}
@@ -183,9 +198,15 @@ step2_consistency_prompt:
      - Recommendations for fixes with rationale
      - Priority level (Critical/High/Medium/Low) for each issue
      - Actionable remediation steps
-     - Explicitly note any conclusions that are limited or inconclusive because the
-       relevant files, comments, or configuration are not visible in the provided context
-    
+      - Explicitly note any conclusions that are limited or inconclusive because the
+        relevant files, comments, or configuration are not visible in the provided context
+      - If no additional semantic issues are supported by the visible file contents, say exactly:
+        "No additional issues found beyond the programmatic scan."
+      - Do not replace that statement with broader claims like "all documentation is consistent"
+        unless the visible file contents support that conclusion directly
+      - Do not claim overall consistency with package manifests, scripts, build steps, or
+        source code unless that supporting evidence is explicitly visible in the provided context
+
     **Documentation Standards to Apply:**
     - Technical accuracy and precision
     - Consistency in terminology and formatting
@@ -200,11 +221,13 @@ step2_consistency_prompt:
     Cite the documented practice or standard instead.
 
      **Language-Specific Standards:** {language_specific_documentation}
-     
-     Please analyze the documentation files and provide a detailed consistency report
-     based only on the provided context. When relevant documentation evidence is missing
-     or outside the visible context, state that clearly and mark the affected conclusions
-     as limited or inconclusive rather than inferring compliance.
+      
+      Please analyze the documentation files and provide a detailed consistency report
+      based only on the provided context. When relevant documentation evidence is missing
+      or outside the visible context, state that clearly and mark the affected conclusions
+      as limited or inconclusive rather than inferring compliance. Do not cite terminology,
+      version badges, heading-style mismatches, or inline JSDoc/TSDoc evidence unless the
+      exact supporting text is visible in the provided file contents above.
 
 # Step 3: Shell Script Reference Validation Prompt Template
 step3_script_refs_prompt:
@@ -592,19 +615,21 @@ step8_test_exec_prompt:
     
     **Tasks:**
     
-    1. **Test Failure Root Cause Analysis:**
-       - Identify why this run failed or produced incomplete results (assertion errors, runtime errors, timeouts, discovery/configuration problems, missing tests, crashed runners, or invalid validation-script targets)
-       - Determine whether the issue is most likely in project code, test code, test configuration, the invoked validation script, or the execution environment
-       - Categorize the issue precisely (breaking change, environment issue, flaky behavior, no-tests-found, config mismatch, validation-script misuse, or similar)
-       - Provide specific fix recommendations grounded in the listed command, config files, and raw output
-       - Priority level (Critical/High/Medium/Low) for each confirmed issue
+     1. **Test Failure Root Cause Analysis:**
+        - Identify why this run failed or produced incomplete results (assertion errors, runtime errors, timeouts, discovery/configuration problems, missing tests, crashed runners, or invalid validation-script targets)
+        - Determine whether the issue is most likely in project code, test code, test configuration, the invoked validation script, or the execution environment
+        - Categorize the issue precisely (breaking change, environment issue, flaky behavior, no-tests-found, config mismatch, validation-script misuse, or similar)
+        - If the supplied output or listed config filenames are insufficient to isolate a cause, mark the result as unavailable or inconclusive instead of guessing a specific misconfiguration
+        - Provide specific fix recommendations grounded in the listed command, config files, and raw output
+        - Priority level (Critical/High/Medium/Low) for each confirmed issue
     
-     2. **Coverage Gap Interpretation:**
-       - Analyze coverage metrics only when real coverage data or explicit coverage gaps are present in the provided context
-       - Identify which listed modules or files have low coverage, if any are named
-       - Determine whether coverage meaningfully meets the stated threshold
-       - If no tests ran or no coverage artifact is available, state that limitation explicitly instead of inferring missing coverage details
-       - Recommend additional coverage only for files, directories, or test types that are actually supported by the provided context
+      2. **Coverage Gap Interpretation:**
+        - Analyze coverage metrics only when real coverage data or explicit coverage gaps are present in the provided context
+        - Identify which listed modules or files have low coverage, if any are named
+        - Determine whether coverage meaningfully meets the stated threshold
+        - If no tests ran or no coverage artifact is available, state that limitation explicitly instead of inferring missing coverage details
+        - Treat placeholder values such as `unavailable`, `none reported`, or a missing coverage artifact as inconclusive input, not proof that coverage passed
+        - Recommend additional coverage only for files, directories, or test types that are actually supported by the provided context
     
      3. **Performance Bottleneck Detection:**
        - Identify slow-running tests or validation steps only when timing data or output signals support that conclusion
@@ -620,12 +645,13 @@ step8_test_exec_prompt:
        - Note: True flaky test detection requires multiple runs; provide best-effort analysis from single execution
        - Recommend fixes for identified potential flaky patterns, but do not label a failure as flaky without supporting evidence
     
-     5. **CI/CD Optimization Recommendations:**
-       - Assess code-level test/validation quality separately from CI/CD pipeline configuration
-       - When CI config files are listed above, reference those specific workflow filenames in recommendations and keep pipeline guidance tied to them
-       - When no CI config files are listed above, explicitly state that limitation and restrict CI/CD guidance to general best practices rather than project-specific workflow edits
-       - Suggest test splitting, caching, coverage gates, or parallelization only when they fit the detected command, test types, and available workflow context
-       - Propose pre-commit or local developer workflow improvements only when they follow naturally from the identified issue
+      5. **CI/CD Optimization Recommendations:**
+        - Assess code-level test/validation quality separately from CI/CD pipeline configuration
+        - When CI config files are listed above, reference those specific workflow filenames in recommendations and keep pipeline guidance tied to them
+        - When no CI config files are listed above, explicitly state that limitation and restrict CI/CD guidance to general best practices rather than project-specific workflow edits
+        - When a workflow filename is listed but its YAML contents are not provided, keep project-specific workflow advice conditional instead of claiming a step is present or missing
+        - Suggest test splitting, caching, coverage gates, or parallelization only when they fit the detected command, test types, and available workflow context
+        - Propose pre-commit or local developer workflow improvements only when they follow naturally from the identified issue
   
   approach: |
     Analyze ONLY the test execution results explicitly provided above. Do not invent
@@ -636,6 +662,9 @@ step8_test_exec_prompt:
     Provide specific, actionable recommendations grounded in the supplied data.
     Reference specific test directories, scripts, config files, or workflow files only when
     they are explicitly listed or directly inferable from the provided output and context.
+    If the runner produced no output, or the prompt only names config/workflow files without
+    showing their contents, do not assert a specific root cause or workflow gap unless the
+    visible evidence directly supports that conclusion.
     Clarify whether the run reflects unit, integration, e2e, validation-script execution,
     or a mixed scope based on `Test Types` and the command shown above.
     If no CI/CD configuration files are listed above, explicitly note this limitation and
@@ -643,7 +672,7 @@ step8_test_exec_prompt:
     pipeline configuration.
 
     **Output:**
-    - Root cause analysis for each failure with file:line:test references
+    - Root cause analysis for each failure with file:line:test references when the supplied evidence includes them; otherwise state that exact references are unavailable
     - Specific code fixes or test modifications needed
     - Coverage improvement action plan
     - Performance optimization recommendations
@@ -780,6 +809,8 @@ step10_code_quality_prompt:
   task_template: |
     Perform a comprehensive code quality review of the source code, tests, and documentation listed in the **Context** section below. Restrict your analysis to the files in scope — exclude third-party dependencies, node_modules, and generated/build artefacts. Identify anti-patterns, assess TDD adherence and test coverage, evaluate maintainability, check linting/formatting compliance and JSDoc documentation quality, and provide actionable recommendations grouped by priority (**quick wins** = low effort, high impact; **long-term** = architectural or structural changes requiring significant effort).
 
+    {partition_header}
+
     **Context:**
     - Project: {project_name}
     - Project Summary: {project_summary}
@@ -787,11 +818,16 @@ step10_code_quality_prompt:
     - Project Kind: {project_kind}
     - Technology Stack: {tech_stack_summary}
     - Scope: {change_scope}
-    - Files in Scope: {modified_count}
+    - Files in This Request: {files_in_scope}
+    - Modified Files in Run: {modified_count}
     - Code Files: {total_files} total
     - Language Breakdown: {language_breakdown}
 
-    > If no specific files are listed in the context below, review all source, test, and documentation files in the project root and `src/` directory.
+    > If no specific file paths or file contents are provided below, do **not** claim a
+    > repository-wide review succeeded. Limit conclusions to the visible automated findings
+    > and mark any code-, test-, docs-, or process-level checks that require missing evidence
+    > as unavailable or inconclusive instead of claiming success.
+    > {partition_scope_note}
     
     **Code Quality Analysis Results:**
     {quality_summary}
@@ -809,6 +845,14 @@ step10_code_quality_prompt:
     
     **Code Samples for Review:**
     {sample_code}
+
+    **File Contents for Review:**
+    {file_content_map}
+
+    > Entries labeled `(part X/Y)` are sequential slices of an oversized source file.
+    > Review only the visible slice(s) in this request. Do not assume the unseen remainder
+    > is clean, and do not treat the absence of other slices in this single prompt as proof
+    > that the file was fully reviewed elsewhere unless the prompt explicitly says so.
     
     **Tasks:**
     
@@ -820,8 +864,8 @@ step10_code_quality_prompt:
        - Validate documentation/comment quality
        - Check error handling patterns
        - Verify linting compliance (`npm run lint` / ESLint) — flag files or patterns that would fail lint checks
-       - Verify formatting compliance (`npm run format` / Prettier) — note inconsistencies with project formatter config
-       - Check JSDoc completeness: all public functions, classes, and exported symbols should have JSDoc; note missing or outdated JSDoc blocks
+       - Verify formatting compliance (`npm run format` / Prettier) only when a formatter command, config, or formatter output is visible in the provided context; otherwise mark formatting conclusions inconclusive
+       - Check JSDoc completeness only for public functions, classes, and exported symbols whose source is visible in the provided file contents; if exports are not shown, mark JSDoc coverage as unavailable or inconclusive
        - Identify and apply project-specific coding conventions from `CONTRIBUTING.md` or `.github/copilot-instructions.md`, when those files are present in the provided context; these take precedence over generic language defaults
        - Also consult other project guides found under `.github/` when present in the context (e.g., `CODE_REVIEW_GUIDE.md`, `TDD_GUIDE.md`, `UNIT_TEST_GUIDE.md`, `HIGH_COHESION_GUIDE.md`, `LOW_COUPLING_GUIDE.md`, `JAVASCRIPT_BEST_PRACTICES.md`)
     
@@ -858,7 +902,7 @@ step10_code_quality_prompt:
        - Identify technical debt priorities
     
     6. **Test Quality & TDD Adherence:**
-       - Assess test coverage breadth (are key behaviours, edge cases, and error paths tested?)
+       - Assess test coverage breadth (are key behaviours, edge cases, and error paths tested?) only when the relevant implementation files, test files, or explicit coverage artefacts are visible; otherwise mark coverage conclusions inconclusive
        - Evaluate TDD discipline: test naming clarity, test-first indicators, tests as documentation
        - Check test isolation (no shared mutable state, deterministic outcomes)
        - Identify brittle or flaky tests (time-dependent, order-dependent, over-mocked)
@@ -867,20 +911,29 @@ step10_code_quality_prompt:
        - Apply project `TDD_GUIDE.md` or `UNIT_TEST_GUIDE.md` standards when present in the provided context
 
      7. **Process & Commit Quality:**
-        - Review adherence to [Conventional Commits](https://www.conventionalcommits.org/): commit messages should use `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, etc. with correct format
-        - Check that commit messages reference related issues or PRs where appropriate
-        - Note any commits that bundle unrelated concerns (should be atomic)
-        - Assess whether PR descriptions (if visible) describe the change and reference related issues
+        - Review adherence to [Conventional Commits](https://www.conventionalcommits.org/) only when commit messages or history are visible in the provided context; otherwise mark commit-quality conclusions inconclusive
+        - Check that commit messages reference related issues or PRs where appropriate only when those artefacts are visible
+        - Note any commits that bundle unrelated concerns (should be atomic) only when the commit history or diffs are visible
+        - Assess whether PR descriptions (if visible) describe the change and reference related issues; if PR metadata is absent, state that this check could not be completed
         - Flag any secrets, debug artifacts, or generated files that should not be committed
   
   approach: |
     Analyse only the **{project_name}** files shown above. Do not reference ai_workflow.js, node_modules, or any other project not present in the context.
 
-    Review code quality, anti-patterns, technical debt, and maintainability for the provided code samples. Focus on actionable findings with specific file references.
+    Review code quality, anti-patterns, technical debt, and maintainability only for files whose paths or contents are explicitly shown above. Treat `Code Quality Analysis Results` and `Automated Findings` as supporting evidence, not proof that qualitative checks passed.
+
+    If the provided file contents are missing, truncated, or too partial to support a requested conclusion, explicitly state that the result is unavailable or inconclusive instead of claiming success.
+
+    Do not infer formatter compliance unless formatter tooling/configuration/output is visible in the prompt context.
+    Do not assert JSDoc completeness unless the relevant exported/public symbols are visible in the provided source.
+    Do not assert that test coverage is sufficient or that no coverage gaps exist unless the relevant code/tests or explicit coverage artefacts are visible.
+    Do not assess commit-message quality, PR quality, or atomicity unless commit history, diffs, or PR metadata are provided.
+
+    Separate confirmed findings from inconclusive checks so unsupported areas are not presented as passing.
 
     **Output:**
     - **Assessment**: Quality grade (A-F), maintainability score, standards compliance
-    - **Findings**: Anti-patterns, violations, tech debt with file:line references
+    - **Findings**: Anti-patterns, violations, tech debt, and explicitly inconclusive checks with file:line references when available
     - **Recommendations**: Top 5 refactoring priorities with effort estimates (quick wins vs long-term)
     
     **Tooling Note:** Where project-specific linting or static-analysis tools are visible in the provided context (including tech stack or config files), reference those tools when citing violations. Cite specific rule names only when the tool configuration is clearly visible in the context; otherwise describe the violation generically.
@@ -1270,7 +1323,7 @@ markdown_lint_prompt:
 
 # Step 04: Configuration Specialist Prompt Template
 # Purpose: Validate and analyze configuration files for schema correctness, security, and best practices
-# Version: 1.0.5 (v6.8.42 - Clarify File Contents ordering and ignore unrelated files outside scope)
+# Version: 1.0.7 (v6.8.44 - Add partition-aware scope guidance and generated-lockfile summaries)
 configuration_specialist_prompt:
   # Split role into prefix + guidelines for token efficiency
   role_ref: configuration_specialist  # resolved from config/prompt_roles.yaml
@@ -1291,15 +1344,28 @@ configuration_specialist_prompt:
     with related configs, and stack-specific best practices for the tech stack listed
     in **Project Context**, when provided.
 
+    {partition_header}
+
     ### Configuration Files in Scope
     {config_files_list}
 
     > **Note:** The scope list above defines the exact set of files to analyze.
+    > {partition_scope_note}
     > - If a listed file is absent from **File Contents** below, report it as "content
     >   unavailable" — do not infer its contents or skip it silently. A file's absence
     >   may reflect prompt scoping, project-specific exclusions, or the file not being
     >   present in the active workspace; do not treat that absence alone as a configuration
     >   defect.
+    > - If a **File Contents** entry includes an explicit truncation marker such as
+    >   `[truncated ...]` or `...(truncated — remainder omitted)`, treat that file as
+    >   partial evidence only. Report the unavailable remainder as inconclusive, limit
+    >   claims to the visible excerpt, and do not claim full-file validation or
+    >   "All configuration files validated successfully" unless every in-scope file is
+    >   present in full.
+    > - A **File Contents** entry may be a deliberate compact summary of a generated
+    >   lockfile or other oversized machine-generated config. When clearly labeled as a
+    >   summary, analyze only the summarized fields shown and do not assume the raw file
+    >   was inspected verbatim line by line.
     > - Ignore unrelated files even if they appear in another section of this prompt.
     >   Only the scope list above and the matching **File Contents** entries are in scope.
     > - If the scope list is empty or resolves to "none found", that is a valid outcome.
@@ -1309,10 +1375,11 @@ configuration_specialist_prompt:
     ### Project Context
     - Project Type: {project_kind}
     - Tech Stack: {tech_stack}
-    - Total Config Files: {config_count}
-    - Note: If this count differs from the number of entries in **Configuration Files
-      in Scope** above, use the scope list as the source of truth and briefly note
-      the discrepancy.
+    - Files in This Partition: {partition_config_count}
+    - Total Config Files in Run: {config_count}
+    - Note: If the partition count or total-run count differs from the number of entries
+      in **Configuration Files in Scope** above, use the scope list as the source of
+      truth for this request and briefly note the discrepancy.
     
     ### File Contents
     {config_files_content}
@@ -1376,10 +1443,16 @@ configuration_specialist_prompt:
     - **Recommendation**: Concrete fix with before/after example
     - **Impact**: What breaks or improves
     
-    **If no issues found**:
+    **If no issues found and every in-scope file is present in full**:
     - Explicitly state "All configuration files validated successfully"
     - Summarize what was checked (X files, Y validations performed)
     - Highlight any noteworthy best practices already in use
+    
+    **If any in-scope file content is truncated or unavailable**:
+    - Do NOT give an overall success verdict for the entire scope
+    - State which files were truncated or unavailable
+    - Mark the unseen remainder as inconclusive
+    - Limit any "no issues found" wording to the visible excerpt(s) only
     
     **Format Types:**
     - JSON: package.json, tsconfig.json, .vscode/*, composer.json

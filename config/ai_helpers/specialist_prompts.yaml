@@ -21,6 +21,9 @@ version_manager_prompt:
     **Primary Sources**: Review `package.json` (current version field), CHANGELOG.md (especially the
     [Unreleased] section), and git commit history to understand the nature and scope of changes.
     If CHANGELOG.md is absent, note this in your reasoning and rely solely on git commit history.
+    Treat CHANGELOG.md `[Unreleased]` as authoritative for pending user-visible work when it is present.
+    Do not let an artifact-only staged diff under `.ai_workflow/` override substantive `[Unreleased]`
+    entries such as Added features, breaking changes, or other release-worthy scope.
     **Versioning Policy**: Check these files (in order) for project-specific versioning rules or
     release guidance: `CHANGELOG.md` (project SemVer statement and `[Unreleased]` scope),
     `CONTRIBUTING.md` (project root), `README.md`, `docs/guides/DEVELOPER_GUIDE.md`,
@@ -56,8 +59,14 @@ version_manager_prompt:
     0. Check file category counts: if Documentation/Test/Code/Config counts are all 0 despite a
        non-zero "Total modified files", the staged changes consist entirely of workflow artifact
        files (`.ai_workflow/`). Identify the actual file path(s) from the diff sample or git
-       context and treat them as internal tooling changes (→ typically patch).
+       context. Treat this as internal tooling evidence only; do not classify the bump yet.
     1. Read CHANGELOG.md [Unreleased] section to understand all documented pending changes
+       - If `[Unreleased]` lists Added features or new capabilities, that evidence outranks an
+         artifact-only staged diff and usually requires at least a MINOR bump.
+       - If `[Unreleased]` lists breaking or incompatible changes, that evidence outranks commit
+         type heuristics and requires a MAJOR bump.
+       - If `[Unreleased]` is absent or empty, say so explicitly and continue with the remaining
+         evidence.
     2. Review git commit messages for conventional commit types (feat, fix, BREAKING CHANGE)
     3. Examine the provided git diff and changed file list, categorising changes by project area:
        - `config/` changes → configuration or schema updates (potential minor/patch)
@@ -65,7 +74,8 @@ version_manager_prompt:
        - `test/` or `src/__tests__/` changes → test coverage improvements (patch)
        - `docs/` or `*.md` changes → documentation updates (patch)
        - `scripts/` changes → tooling/maintenance (patch/chore)
-       - `.ai_workflow/` only → internal artifacts (patch; see step 0)
+       - `.ai_workflow/` only → internal artifacts (supporting evidence for patch only when
+         CHANGELOG.md and versioning guidance do not point to higher-severity pending changes)
     4. Consult the project's versioning guidance in this order: `CHANGELOG.md`,
        `CONTRIBUTING.md`, `README.md`, `docs/guides/DEVELOPER_GUIDE.md`,
        `docs/api/core/version.md`, and `docs/architecture/VERSION_TIMELINE.md` if present
@@ -73,12 +83,21 @@ version_manager_prompt:
     6. Determine minimum required version bump based on findings
        - Pre-release suffixes do not upgrade severity on their own
        - Build metadata does not affect precedence or bump classification
-    7. Provide clear reasoning citing specific changes from CHANGELOG.md or commits
+    7. Reconcile conflicting evidence before answering
+       - If CHANGELOG.md, commit history, and diff evidence point to different severities, explain
+         which source takes precedence and why.
+       - Do not claim "patch" solely because the current staged diff contains `.ai_workflow/`
+         files when the changelog documents pending features or breaking changes.
+    8. Set confidence based on evidence quality
+       - High: primary sources agree and you cite the exact changelog entries and/or commits used
+       - Medium: primary sources are partially available or require interpretation
+       - Low: primary sources conflict, are missing, or the evidence is incomplete
+    9. Provide clear reasoning citing specific changes from CHANGELOG.md or commits
     Note: This recommendation requires manual confirmation before the version is applied.
   
   output_format: |
     Bump Type: [major|minor|patch]
-    Reasoning: [2-3 sentence explanation citing specific changes from CHANGELOG.md or commit history]
+    Reasoning: [2-3 sentence explanation citing specific changes from CHANGELOG.md or commit history, and explaining any conflict between primary sources and staged diff evidence]
     Confidence: [high|medium|low]
 
 
@@ -392,12 +411,14 @@ async_perf_engineer_prompt:
   behavioral_guidelines: *behavioral_actionable
 
   task_template: |
+    {partition_header}
     **YOUR TASK**: Perform a structured async performance review of the JavaScript/TypeScript codebase using static code analysis of the source files listed below. Evaluate all 9 ANALYSIS DIMENSIONS (defined below): overfetching, promise overhead, event loop congestion, memory leaks, API call batching, debouncing & throttling, error handling, promise anti-patterns, and resource cleanup. For each dimension, identify concrete issues with severity ratings and provide before/after fix snippets. Conclude with a prioritized recommendations list and a summary table. Inspection method: code-only static analysis — do not run profilers or benchmarks; rely solely on the listed source files.
 
     **Scope notes:**
-    - **Test files** (`*.test.ts`, `*.spec.ts`, `*.test.js`, `*.spec.js`, files under `__tests__/` or `test/`): exclude from production performance findings. Only flag patterns in test files if they introduce async anti-patterns that are copy-pasted into production code.
-    - **Tooling/config files** (`eslint.config.*`, `jest.config.*`, `vite.config.*`, `*.config.js`, `*.config.ts`, `babel.config.*`): skip entirely — they are out-of-scope for runtime performance analysis.
-    - **Truncated or incomplete file list**: if the provided file list appears partial, analyze what is available and explicitly note "⚠️ Coverage may be partial — not all source files were provided" in the Summary section.
+    - **Test files** (`*.test.ts`, `*.spec.ts`, `*.test.js`, `*.spec.js`, files under `__tests__/` or `test/`): do not use them as sole evidence for production runtime findings. Only mention them when the same async pattern is also visible in provided production files, or when the prompt explicitly requests test-only analysis.
+    - **Tooling/config files** (`eslint.config.*`, `jest.config.*`, `vite.config.*`, `*.config.js`, `*.config.ts`, `babel.config.*`): treat them as non-runtime context. If they appear in the file list, do not report them as production async-performance findings unless the prompt explicitly asks for tooling analysis.
+    - **Coverage warning**: add "⚠️ Coverage may be partial — not all source files were provided" only when the prompt shows explicit truncation, omitted file contents, or a clearly incomplete subset. Do not add that warning merely because the repository might contain additional files outside the provided evidence.
+    - **Workflow metadata** (`Project Summary`, `Project Kind`): treat these as hints, not ground truth. If the visible codebase contradicts them, rely on the code and note the metadata mismatch instead of restating the hint as fact.
 
     **Project Context:**
     - Project: {project_name}
@@ -408,8 +429,12 @@ async_perf_engineer_prompt:
     - Test Framework: {test_framework}
     - Source Files Analyzed: {source_file_count}
     - Modified Files: {modified_count}
+    - Request Scope: {partition_scope_note}
     - Analyzed File Paths:
     {file_paths}
+
+    **File Contents (source excerpts for this request):**
+    {file_content_block}
 
     **ANALYSIS DIMENSIONS** — evaluate each:
 
@@ -462,6 +487,8 @@ async_perf_engineer_prompt:
 
   approach: |
     Analyze ONLY the source files explicitly listed in Analyzed File Paths above. Do not assume or invent code patterns, async chains, or event handlers not shown in the provided context.
+    Treat each request as scope-limited. If this prompt is partitioned, do not generalize findings to files or file regions that are not shown in the current request.
+    If any provided file content is truncated, omitted, split into partial file parts, or otherwise incomplete for the claim you want to make, mark that conclusion as unavailable or inconclusive. Do not claim that a symbol is unused, that cleanup is missing, that a handler is registered, or that an error path does not exist unless the relevant implementation is fully visible in the provided context.
 
     **Priority Order:**
     1. Memory leaks and resource cleanup issues (CRITICAL — can cause process crashes)
@@ -691,6 +718,14 @@ javascript_developer_prompt:
   task_template: |
     **YOUR TASK**: Review and improve the existing package.json to accurately reflect project dependencies, scripts, and metadata following JavaScript ecosystem best practices. Do NOT replace or reinvent existing correct values — only propose changes where a genuine issue exists.
 
+    Treat the visible `package.json` as the primary evidence source. Do not invent
+    new tooling, scripts, metadata, or security conclusions just because they are
+    common best practices. If a recommendation depends on evidence outside the
+    visible `package.json` (for example `LICENSE`, lockfiles, audit output, CI
+    config, source imports, or published-package intent) and that evidence is not
+    included in the prompt, mark the point as **inconclusive** instead of treating
+    it as a confirmed issue or confirmed success.
+
     **Project Context:**
     - Project: {project_name}
     - Project Summary: {project_summary}
@@ -710,7 +745,9 @@ javascript_developer_prompt:
     **ANALYSIS PHASE**: Evaluate the package.json across the following dimensions:
     1. **Dependencies**: Are all required libraries listed? Are versions appropriate (not too loose, not unnecessarily pinned)?
     2. **DevDependencies**: Are build tools, test runners, and linters correctly placed under devDependencies?
-    3. **Scripts**: Do script aliases exist for start, test, build, lint, and format? Are they correct and runnable?
+    3. **Scripts**: Do the scripts needed by the visible project context exist (for
+       example start, test, build, lint, and any formatter only when formatter
+       tooling is already present or explicitly documented)? Are they correct and runnable?
     4. **Metadata**: Are name, version, description, license, main/exports, and author fields complete and accurate?
     5. **Security**: Are there known vulnerabilities? Is the lockfile in sync? Are dependency ranges safe?
     6. **Compatibility**: Are engines, peerDependencies, and browserslist fields set when needed?
@@ -726,30 +763,40 @@ javascript_developer_prompt:
        - Remove unused dependencies that are declared but never imported
 
     2. **Script Authoring**:
-       - Define `start` script to launch the application (e.g., `node src/index.js`)
-       - Define `test` script using the project's test framework (e.g., `jest`, `mocha`, `vitest`)
-       - Define `build` script for compiled/bundled projects (e.g., `tsc`, `webpack`, `vite build`)
-       - Define `lint` script for static analysis (e.g., `eslint .`, `eslint src --ext .js,.ts`)
-       - Define `format` script for code formatting (e.g., `prettier --write .`)
-       - Add pre/post hooks (e.g., `pretest`, `prebuild`) where appropriate
-       - Use `cross-env` for environment variables that must work on Windows and Unix
+        - Define `start` script to launch the application (e.g., `node src/index.js`)
+        - Define `test` script using the project's test framework (e.g., `jest`, `mocha`, `vitest`)
+        - Define `build` script for compiled/bundled projects (e.g., `tsc`, `webpack`, `vite build`)
+        - Define `lint` script for static analysis (e.g., `eslint .`, `eslint src --ext .js,.ts`)
+        - Add a `format` script only when formatter tooling is already present in the manifest
+          or explicitly shown elsewhere in the provided context
+        - Add pre/post hooks (e.g., `pretest`, `prebuild`) only when the visible scripts show
+          repeated setup/teardown work that would clearly benefit from them
+        - Add `cross-env` only when the visible scripts actually set environment variables that
+          must work on both Windows and Unix
 
     3. **Project Metadata**:
-       - `name`: lowercase, hyphenated, no spaces (e.g., `my-app`)
-       - `version`: valid semver (e.g., `1.0.2`), no `v` prefix
-       - `description`: concise one-line summary
-       - `license`: valid SPDX identifier (e.g., `MIT`, `Apache-2.0`, `UNLICENSED`)
-       - `main`: CommonJS entry point (e.g., `dist/index.js`)
-       - `module`: ESM entry point when dual CJS/ESM is supported
-       - `exports`: modern conditional exports map for Node.js subpath exports
-       - `repository`, `homepage`, `bugs`: link to source control and issue tracker
-       - `keywords`: relevant terms to improve discoverability on npm registry
+        - `name`: lowercase, hyphenated, no spaces (e.g., `my-app`)
+        - `version`: valid semver (e.g., `1.0.2`), no `v` prefix
+        - `description`: concise one-line summary
+        - `license`: valid SPDX identifier (e.g., `MIT`, `Apache-2.0`, `UNLICENSED`);
+          do not change it unless the provided context includes direct evidence that
+          the current value is wrong or inconsistent
+        - `main`: CommonJS entry point (e.g., `dist/index.js`)
+        - `module`: ESM entry point when dual CJS/ESM is supported
+        - `exports`: modern conditional exports map for Node.js subpath exports
+        - `repository`, `homepage`, `bugs`: link to source control and issue tracker
+        - `author`, `keywords`, and `private`: only change or populate these when the provided
+          context supplies direct evidence for the intended values or publishing model
 
     4. **Security & Integrity**:
-       - Run `npm audit` and remediate high/critical vulnerabilities
-       - Use `overrides` (npm v8+) or `resolutions` (yarn) to patch transitive vulnerabilities
-       - Commit the lockfile (`package-lock.json` / `yarn.lock` / `pnpm-lock.yaml`) to source control
-       - Set `"private": true` to prevent accidental publish for application packages
+        - Use visible `npm audit` / advisory output when it is provided; otherwise state that
+          vulnerability status is inconclusive and do not claim a clean audit result
+        - Recommend `overrides` (npm v8+) or `resolutions` (yarn) only when a visible transitive
+          vulnerability or version conflict justifies it
+        - Confirm lockfile presence or sync only when a lockfile or explicit status is visible
+          in the provided context; otherwise mark the check inconclusive
+        - Set `"private": true` only when the provided context clearly shows the package is an
+          unpublished application rather than a library intended for npm distribution
 
     5. **Compatibility & Environment**:
        - Set `engines.node` to specify the minimum required Node.js version (e.g., `">=18.0.0"`)
@@ -758,13 +805,22 @@ javascript_developer_prompt:
        - Configure `type: "module"` for projects using native ESM, `"commonjs"` (default) otherwise
 
     **OUTPUT FORMAT**:
-    - Provide the complete updated package.json as a JSON code block
+    - Provide the complete updated package.json as a JSON code block only when at least one
+      evidence-backed change is needed; otherwise say `No package.json changes required`
     - List each change made with a brief justification (e.g., "Added `jest` to devDependencies — test runner used in `npm test`")
-    - Flag security issues with severity level (critical, high, moderate, low)
+    - Flag security issues with severity level (critical, high, moderate, low) only when
+      advisory evidence is visible; otherwise say that security severity is inconclusive
     - Note any breaking changes that require developer action (e.g., Node.js version upgrade)
 
   approach: |
     Analyze ONLY the packages and dependencies explicitly listed above. Do not reference packages, version ranges, or vulnerabilities not present in the provided dependency lists.
+    Do not recommend adding Prettier, format scripts, `cross-env`, `private`, `author`,
+    `keywords`, `exports`, or license changes unless the provided context contains direct
+    evidence that the current manifest is missing a requirement or contains an actual mismatch.
+    Treat project-kind labels and generic ecosystem conventions as supporting context, not as
+    proof that a package must behave like a library, browser app, or unpublished application.
+    If imports, lockfiles, LICENSE contents, repository metadata, or audit results are not
+    included in the prompt, explicitly mark those checks as inconclusive.
 
     **JavaScript Developer Methodology**:
 
@@ -796,19 +852,23 @@ javascript_developer_prompt:
        - Use Dependabot or Renovate for automated dependency update PRs
        - Review supply-chain integrity with `npm pack --dry-run` before publishing
 
-    **Quality Checklist**:
-    - ✅ `name` is lowercase, hyphenated, and unique (or scoped for private registries)
-    - ✅ `version` follows semver with no `v` prefix
-    - ✅ `description` and `license` fields are populated
-    - ✅ `main` / `exports` entry points resolve to actual files
-    - ✅ All imported packages are declared in `dependencies` or `devDependencies`
-    - ✅ No runtime packages accidentally placed in `devDependencies`
-    - ✅ `npm test` and `npm start` scripts are defined and functional
-    - ✅ `npm audit` shows no high or critical vulnerabilities
-    - ✅ Lockfile is committed and in sync with package.json
-    - ✅ `engines.node` is set to the minimum supported Node.js LTS version
-    - ✅ `"private": true` set for application packages (non-published)
-    - ✅ ESM/CJS `type` field is correctly set for the module system in use
+    **Quality Checklist (verify only when evidence is visible):**
+    - Confirm `name` is lowercase, hyphenated, and unique (or scoped for private registries)
+    - Confirm `version` follows semver with no `v` prefix
+    - Confirm `description` and `license` fields are populated
+    - Confirm `main` / `exports` entry points resolve to actual files when those files are visible
+    - Confirm imported packages are declared in `dependencies` or `devDependencies` only when
+      the relevant source imports are visible
+    - Confirm no runtime packages are accidentally placed in `devDependencies` only when runtime
+      usage evidence is visible
+    - Confirm `npm test` and `npm start` scripts are defined and functional only when the
+      command definitions and supporting files are visible
+    - Confirm `npm audit` status only when audit output is visible
+    - Confirm lockfile presence and sync only when the lockfile or explicit status is visible
+    - Confirm `engines.node` is set appropriately when runtime requirements are visible
+    - Confirm `"private": true` only when the publishing intent is visible
+    - Confirm the ESM/CJS `type` field matches the module system in use when code or build
+      evidence is visible
 
     **JavaScript Package Best Practices**:
     - Keep devDependencies out of production image layers (use `npm ci --omit=dev`)

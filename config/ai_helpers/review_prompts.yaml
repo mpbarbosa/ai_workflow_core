@@ -380,13 +380,13 @@ accessibility_review_prompt:
   behavioral_guidelines: *behavioral_structured
 
   task_template: |
-    **YOUR TASK**: Perform an API documentation accessibility review of {project_name}.
+    **YOUR TASK**: Perform an accessibility review of the provided UI-related artifacts for {project_name}.
 
     **Project Context:**
     - Project: {project_name}
     - Project Summary: {project_summary}
     - Framework: {framework}
-    - File Type: TypeDoc-generated API documentation (HTML)
+    - Evidence Scope: Sampled UI-related source files and/or generated markup/styles, depending on what is injected below
     - Source Files Analyzed: {source_file_count}
     - File Paths:
     {file_paths}
@@ -406,9 +406,13 @@ accessibility_review_prompt:
 
   approach: |
     Work only from the injected file contents above.
+    Treat the prompt context as excerpt-limited evidence. If any file block is truncated, omitted, or the injected artifacts are source/test files rather than rendered HTML/CSS output, do not claim a full accessibility pass; mark any unsupported check as unavailable or inconclusive.
+    Only assess checks that are directly supported by the visible artifact type. For example, if generated HTML/CSS is not present, do not claim landmark, ARIA, contrast, or reduced-motion compliance for the final rendered output.
+    Do not treat the mere absence of HTML landmarks, ARIA attributes, or semantic elements in terminal/native UI source (for example Ink or other non-DOM renderers) as an accessibility defect; report those checks as unavailable unless rendered markup is visible.
+    Only raise keyboard-accessibility findings when the visible excerpt directly shows a barrier. Missing focus management, focus order, or focus-visible logic in truncated or omitted sections is inconclusive rather than a defect.
     For each finding, specify: file path, line reference (if determinable), WCAG success criterion violated (e.g. 1.1.1, 1.4.3), severity (Critical/Major/Minor), and a concrete remediation example.
     Group findings by WCAG principle (Perceivable, Operable, Understandable, Robust).
-    If no accessibility issues are found in a file, state "No issues detected" rather than omitting it.
+    If no accessibility issues are visible in a file excerpt, state "No issues detected in the visible excerpts" and explicitly note any remaining uncertainty caused by missing or partial context.
 
 performance_review_prompt:
   # Covers: algorithmic complexity, CPU hotspots, memory leaks, bundle size, build performance, benchmarking
@@ -416,6 +420,7 @@ performance_review_prompt:
   behavioral_guidelines: *behavioral_structured
 
   task_template: |
+    {partition_header}
     **YOUR TASK**: Perform a performance engineering review of {project_name}. Evaluate performance across all dimensions relevant to this project's tech stack and role, including: script/module load time and startup cost, config/YAML parsing overhead, algorithmic complexity in hot paths, and I/O patterns (sync vs async).
 
     **Project Context:**
@@ -427,7 +432,9 @@ performance_review_prompt:
     - File Paths:
     {file_paths}
 
-    **File Contents (sampled source excerpts):**
+    {partition_scope_note}
+
+    **File Contents (source excerpts for this request):**
     {file_content_block}
 
     **Focus Areas** (prioritise based on what is present in the code):
@@ -449,6 +456,10 @@ performance_review_prompt:
 
   approach: |
     Work only from the injected file contents above.
-    For each finding: specify file path, line reference, severity (High/Medium/Low), estimated impact, and a concrete optimisation example with before/after code.
-    Include a summary table: | File | Issue Type | Severity | Impact |
+    When the workflow partitions source across multiple prompt logs, analyze only the files or file-parts listed in the current request. Treat entries labeled "(part X/Y)" as sequential slices of one oversized file, not as separate files.
+    Treat the prompt context as excerpt-limited evidence. If any file block is truncated, sampled, omitted, or otherwise partial, do not claim a full repository-wide performance pass; mark unsupported checks as unavailable or inconclusive.
+    Only cite exact line references when they are determinable from the visible excerpt. Otherwise say that the line reference is unavailable from the provided context and anchor the finding to the visible function, statement, or excerpt block instead of inventing precision.
+    Do not infer repo-wide absence of benchmarks, profiling, caching, or other supporting infrastructure from sampled excerpts alone. Only report an absence claim when the provided artifacts explicitly show it or the injected scope is clearly repository-complete for that concern.
+    For each supported finding, specify file path, line reference (if determinable), severity (High/Medium/Low), estimated impact, and a concrete optimisation example when the visible code is sufficient to justify that example.
+    Include a summary table: | File | Issue Type | Severity | Impact | for supported findings. If the visible excerpts do not support any concrete issue, say so explicitly instead of filling the table with theoretical concerns.
     Focus on actionable findings — do not flag theoretical issues without evidence in the provided code.

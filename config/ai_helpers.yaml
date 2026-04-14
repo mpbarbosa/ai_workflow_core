@@ -221,18 +221,22 @@ doc_analysis_prompt:
     - `CHANGELOG.md` for significant user-facing changes
     - Existing module-local docs or API references that document changed modules
     
+      **Provided file contents and excerpts**:
+    {file_contents}
+
+    
     **REQUIRED ACTIONS**:
-    1. **Read the changes**: Examine what was modified in each changed file
-    2. **Identify documentation impact**: Determine which sections in the listed docs need updates:
-       - `README.md`: features, setup instructions, usage examples, version references
-       - API reference docs (e.g., `docs/api/`): public function signatures, parameters, return types — follow JSDoc conventions
-       - Architecture/design docs (e.g., `docs/ARCHITECTURE.md`, `docs/architecture/`): architecture changes, new features, module structure
-       - Version numbers: update `CHANGELOG.md` (add entry under `[Unreleased]`) and any version strings in module headers or `src/index.js`
-       - Module READMEs: if code in that module changed
-       - Inline comments: for complex new logic; follow project markdown conventions described in `CONTRIBUTING.md`
-    3. **Determine specific edits**: Identify the exact lines or sections requiring updates — a "specific edit" means a concrete before/after text change tied to a file path, NOT a vague suggestion like "consider updating X"
-    4. **Verify accuracy**: Ensure examples, code snippets, and cross-references are still correct
-    5. **Handle missing or incomplete files**: If a referenced documentation file is missing or clearly incomplete, note it as a documentation gap in your output rather than skipping it or fabricating content — describe briefly what should be there
+     1. **Read the changes**: Examine what was modified in each changed file
+     2. **Identify documentation impact**: Determine which sections in the listed docs need updates:
+        - `README.md`: features, setup instructions, usage examples, version references
+        - API reference docs already present in the provided documentation set: public function signatures, parameters, return types — follow documented project conventions when available
+        - Architecture/design docs already present in the provided documentation set: architecture changes, new features, module structure
+        - Version numbers: update `CHANGELOG.md` (add entry under `[Unreleased]`) and any version strings in the changed docs or entrypoint/source files that are actually present in the provided change set
+        - Module READMEs: if code in that module changed
+        - Inline comments: for complex new logic; follow project conventions from any provided authority docs
+     3. **Determine specific edits**: Identify the exact lines or sections requiring updates — a "specific edit" means a concrete before/after text change tied to a file path, NOT a vague suggestion like "consider updating X"
+     4. **Verify accuracy**: Ensure examples, code snippets, and cross-references are still correct
+     5. **Handle missing or incomplete files**: If a documentation file from the provided scope is missing or clearly incomplete, note it as a documentation gap in your output rather than skipping it or fabricating content — describe briefly what should be there
     
     **OUTPUT FORMAT**: Use edit blocks showing before/after, or provide specific line-by-line changes. If no edits are needed, state "No updates required" with a one-line reason.
   
@@ -240,29 +244,29 @@ doc_analysis_prompt:
     Treat the listed documentation files as minimum required targets, not the exhaustive limit. You may inspect any existing documentation directly implicated by the changed files or the authoritative-doc rules above, but do not reference, invent, or assume missing documentation.
 
     **Methodology**:
-    1. **Analyze Changes**: Use `@workspace` to examine what was modified in each changed file
-       - Read the actual file contents to understand the changes
-       - Identify which changes are code vs. documentation
+     1. **Analyze Changes**: Use `@workspace` to examine what was modified in each changed file
+        - Read the actual file contents to understand the changes
+        - Identify which changes are code vs. documentation
        - Assess the scope and impact of each change
-    
-    2. **Prioritize Updates**: Start with most critical documentation
-       - Primary: README.md, .github/copilot-instructions.md
-       - Secondary: Technical docs in docs/ directory
-       - Tertiary: Inline code comments
-    
-    3. **Edit Surgically**: Provide EXACT text changes only where needed
-       - Use before/after blocks showing precise line changes
-       - Change ONLY affected sections - preserve everything else
+     
+     2. **Prioritize Updates**: Start with most critical documentation
+        - Primary: README.md, .github/copilot-instructions.md
+        - Secondary: additional technical docs already present in the provided scope
+        - Tertiary: Inline code comments
+     
+     3. **Edit Surgically**: Provide EXACT text changes only where needed
+        - Use before/after blocks showing precise line changes
+        - Change ONLY affected sections - preserve everything else
        - Include enough context to locate the exact section
        - If no changes needed, explicitly say "No updates required"
     
-    4. **Verify Consistency**: Maintain project standards
-       - Keep consistent terminology across all docs
-       - Preserve existing formatting and style
-       - Ensure cross-references remain valid
-       - Update version numbers if applicable
-    
-    **Project Conventions** (from `.github/CONTRIBUTING.md` — authoritative; root `CONTRIBUTING.md` is a redirect entry point only):
+     4. **Verify Consistency**: Maintain project standards
+        - Keep consistent terminology across all docs
+        - Preserve existing formatting and style
+        - Ensure cross-references remain valid
+        - Update version numbers if applicable
+     
+    **Project Conventions** (from repo-specific authority docs such as `.github/copilot-instructions.md`, `.github/CONTRIBUTING.md`, or `CONTRIBUTING.md` when present in the provided scope):
     {project_conventions}
     
     **Output Format**:
@@ -276,6 +280,8 @@ doc_analysis_prompt:
     - NEVER ask clarifying questions - make informed decisions
     - DEFAULT to no changes if documentation appears current
     - FOCUS on accuracy over completeness
+    - If a requested conclusion depends on missing or truncated file content, state "Unavailable" or "Inconclusive" instead of guessing
+    - Only claim documentation is current when visible file contents support that conclusion
 
 # Consistency Analysis Prompt Template
 consistency_prompt:
@@ -978,15 +984,26 @@ ui_ux_designer_prompt:
     - UI Files in Scope: {file_count}
     
     > **Scope Check:** Before proceeding, inspect the codebase context provided
-    > below. If it contains **no UI/UX files** — i.e. no HTML, CSS, JSX, TSX,
-    > Vue, Svelte, template, or component files — then **skip the full analysis**.
-    > Output only:
-    > "No UI/UX code is present in the provided context for project
-    > `{project_name}`. UI/UX review is not applicable to the visible files.
-    > Review skipped."
-    > Then stop. Do **not** fabricate findings for code that is not in context.
-    > If UI files are present but mixed with non-UI files, apply the analysis
-    > only to the UI/UX files and note which non-UI files were skipped.
+    > below.
+    > - If it contains **no UI/UX files** — i.e. no HTML, CSS, JSX, TSX, Vue,
+    >   Svelte, template, or component files — then **skip the full analysis**.
+    >   Output only:
+    >   "No UI/UX code is present in the provided context for project
+    >   `{project_name}`. UI/UX review is not applicable to the visible files.
+    >   Review skipped."
+    > - If UI/UX file paths are listed but the prompt does **not** include visible
+    >   source content for them, do **not** claim success, and do **not** say no UI
+    >   code is present. Output only:
+    >   "UI/UX-related files are listed for project `{project_name}`, but no UI
+    >   source content is visible in the provided context. A reliable UI/UX review
+    >   is unavailable from filenames alone. Review inconclusive."
+    > - If visible source content is present but incomplete or truncated, base
+    >   findings only on the visible snippets and mark any unverifiable checks as
+    >   unavailable or inconclusive.
+    > Then stop only for the two output-only cases above. Do **not** fabricate
+    > findings for code that is not in context. If UI files are present but mixed
+    > with non-UI files, apply the analysis only to the UI/UX files and note
+    > which non-UI files were skipped.
 
     **ANALYSIS PHASE**: Evaluate existing UI/UX for:
     1. **Usability**: Ease of use, learnability, efficiency, error prevention
@@ -1752,8 +1769,9 @@ step2_consistency_prompt:
     explicitly note that gap in your analysis, then fall back to widely accepted
     generic markdown best practices (e.g., ATX-style headings, consistent
     capitalisation within heading levels) for any undefined conventions. For
-    example, if `README.md` uses `## Quick Start` while `docs/GETTING_STARTED.md`
-    uses `## Quick start`, treat that heading-style mismatch as a consistency issue.
+    example, if `README.md` uses `## Quick Start` while another documentation file
+    in the provided scope uses `## Quick start`, treat that heading-style mismatch
+    as a consistency issue.
 
     **Context:**
     - Project: {project_name}
@@ -1763,10 +1781,13 @@ step2_consistency_prompt:
     - TypeScript source files: {ts_source_count} (not included in this partition — JSDoc source coverage is checked in the TypeScript Review step)
     - Scope: {change_scope}
     - Files in this analysis batch: {modified_count}
-    - Documentation scope: root-level `.md` files (e.g., `README.md`, `CHANGELOG.md`), `docs/` subdirectory and all its nested subdirs (e.g., `docs/architecture/`, `docs/guides/`), and `.github/` metadata including all nested subdirs (e.g., `.github/ISSUE_TEMPLATE/`, `.github/skills/`, `.github/workflows/`) — other hidden directories, hidden tool directories (`.workflow_core/`, `node_modules/`), archived snapshots (e.g., `.ai_workflow/archive/`), and build outputs (`dist/`, `coverage/`) are excluded unless explicitly listed in the files below; auto-generated `.md` files (e.g., those under `docs/api/html/`) should be flagged when they contain consistency violations but treated as **lower priority** than hand-authored docs, since they are regenerated on each build
+    - Documentation scope: the markdown files explicitly listed below, including root-level docs (e.g., `README.md`, `CHANGELOG.md`), any `docs/` subtree entries when present, and any markdown files under `.github/` when present — other hidden directories, hidden tool directories (`.workflow_core/`, `node_modules/`), archived snapshots (e.g., `.ai_workflow/archive/`), and build outputs (`dist/`, `coverage/`) are excluded unless explicitly listed in the files below; auto-generated `.md` files should be flagged when they contain consistency violations but treated as **lower priority** than hand-authored docs, since they are regenerated on each build
     - Files referenced in markdown tables, numbered lists, or inline links but absent from the file list are also in scope — flag them as potential documentation gaps (distinct from broken links)
     - Ignore non-markdown documentation sources outside the listed markdown files — such as repository source comments, standalone JSDoc in source files, YAML, JSON, or generated config files — unless they appear inside the markdown files under review as embedded examples/snippets
     - The complete list of files in scope for this partition is provided at the end of this prompt in the **Files to Analyze** section.
+
+    **Provided file contents and excerpts (authoritative for content-level claims):**
+    {file_contents}
     
     **Tasks:**
     
@@ -1775,6 +1796,8 @@ step2_consistency_prompt:
        - Verify version numbers follow semantic versioning (MAJOR.MINOR.PATCH)
        - Ensure version consistency across documentation and package manifests
          (check `package.json`, `package-lock.json`, and ecosystem-equivalent lockfiles)
+         only when those files or their relevant contents are explicitly visible in the provided context;
+         otherwise mark that comparison as limited or inconclusive and do not contradict the programmatic scan
        - Validate command examples match actual scripts/executables:
          npm/yarn scripts defined in `package.json`; automation scripts in `scripts/` or
          `bin/` (check all formats present — `.sh` shell scripts, `.js`/`.ts` Node.js
@@ -1783,19 +1806,26 @@ step2_consistency_prompt:
          CONTRIBUTING. "Documentation quality" for scripts means: inline comments
          explaining non-obvious logic, a usage example or `--help` reference in an
          adjacent README, and accurate descriptions in the root `scripts/README.md`
-         (if present).
+         (if present). If the relevant manifests or script files are not visible in the
+         provided context, mark the check as limited or inconclusive rather than assuming
+         the commands exist or match.
     
     2. **Content Synchronization:**
-       - Compare primary documentation files: `README.md`, `.github/copilot-instructions.md`,
-         `docs/ARCHITECTURE.md` (and any `CONTRIBUTING.md` / `CHANGELOG.md` present)
-       - Check if module/component docs match actual code structure; component API docs
-         are expected in `docs/API.md`, `docs/FUNCTIONAL_REQUIREMENTS.md`, or inline JSDoc
-       - Verify build/package configuration matches documented commands
+       - Compare the primary documentation files present in the provided context:
+         `README.md`, any `.github/copilot-instructions.md`, any architecture or
+         requirements documents, and any `CONTRIBUTING.md` / `CHANGELOG.md` present
+       - Check if module/component docs match actual code structure; use API,
+         requirements, or architecture docs only when those files are actually present
+         in the provided context, otherwise rely on inline documentation evidence only
+       - Verify build/package configuration matches documented commands only when the
+         supporting manifests, configs, or script files are explicitly visible in the
+         provided context; otherwise mark the comparison as limited or inconclusive
     
     3. **Architecture Consistency:**
-       - Validate directory structure matches documented structure; the primary source of
-         truth for the documented structure is `docs/ARCHITECTURE.md` (or a "Directory
-         structure" section in README.md if ARCHITECTURE.md is absent)
+       - Validate directory structure matches documented structure; use the
+         architecture document provided in this analysis batch as the primary source
+         of truth, or a "Directory structure" section in `README.md` if no separate
+         architecture document is present
        - Check if deployment/build steps match actual scripts
        - Verify dependency references are accurate
     
@@ -1884,7 +1914,8 @@ step2_consistency_prompt:
          (e.g. a component called "ListPanel" in one doc and "List Panel" in another)
        - Missing cross-references between related docs — flag when a concept, component,
          or module is documented in one place but not linked from a closely related file
-         (e.g. `README.md` mentions a component without linking to `docs/API.md`)
+         (e.g. `README.md` mentions a component without linking to a more detailed
+         documentation file that is present in the provided context)
     
     6. **Inline Documentation (JSDoc/TypeScript) Checks:**
        - Verify all exported functions and classes have JSDoc comments
@@ -1897,8 +1928,9 @@ step2_consistency_prompt:
          conventions rather than applying generic defaults
        - **Scope note:** These checks apply only to JSDoc visible within the documentation
          files listed in this partition (e.g. code blocks in `CONTRIBUTING.md`,
-         `.github/copilot-instructions.md`, or `docs/`). Full source-file JSDoc completeness
-         (all exported symbols in `src/`) is validated by the TypeScript Review step.
+         `.github/copilot-instructions.md`, or any docs files present in the provided
+         context). Full source-file JSDoc completeness (all exported symbols in `src/`)
+         is validated by the TypeScript Review step.
     
     **Files to Analyze:**
     {doc_files}
@@ -1910,9 +1942,15 @@ step2_consistency_prompt:
      - Recommendations for fixes with rationale
      - Priority level (Critical/High/Medium/Low) for each issue
      - Actionable remediation steps
-     - Explicitly note any conclusions that are limited or inconclusive because the
-       relevant files, comments, or configuration are not visible in the provided context
-    
+      - Explicitly note any conclusions that are limited or inconclusive because the
+        relevant files, comments, or configuration are not visible in the provided context
+      - If no additional semantic issues are supported by the visible file contents, say exactly:
+        "No additional issues found beyond the programmatic scan."
+      - Do not replace that statement with broader claims like "all documentation is consistent"
+        unless the visible file contents support that conclusion directly
+      - Do not claim overall consistency with package manifests, scripts, build steps, or
+        source code unless that supporting evidence is explicitly visible in the provided context
+
     **Documentation Standards to Apply:**
     - Technical accuracy and precision
     - Consistency in terminology and formatting
@@ -1927,11 +1965,13 @@ step2_consistency_prompt:
     Cite the documented practice or standard instead.
 
      **Language-Specific Standards:** {language_specific_documentation}
-     
-     Please analyze the documentation files and provide a detailed consistency report
-     based only on the provided context. When relevant documentation evidence is missing
-     or outside the visible context, state that clearly and mark the affected conclusions
-     as limited or inconclusive rather than inferring compliance.
+      
+      Please analyze the documentation files and provide a detailed consistency report
+      based only on the provided context. When relevant documentation evidence is missing
+      or outside the visible context, state that clearly and mark the affected conclusions
+      as limited or inconclusive rather than inferring compliance. Do not cite terminology,
+      version badges, heading-style mismatches, or inline JSDoc/TSDoc evidence unless the
+      exact supporting text is visible in the provided file contents above.
 
 # Step 3: Shell Script Reference Validation Prompt Template
 step3_script_refs_prompt:
@@ -2319,19 +2359,21 @@ step8_test_exec_prompt:
     
     **Tasks:**
     
-    1. **Test Failure Root Cause Analysis:**
-       - Identify why this run failed or produced incomplete results (assertion errors, runtime errors, timeouts, discovery/configuration problems, missing tests, crashed runners, or invalid validation-script targets)
-       - Determine whether the issue is most likely in project code, test code, test configuration, the invoked validation script, or the execution environment
-       - Categorize the issue precisely (breaking change, environment issue, flaky behavior, no-tests-found, config mismatch, validation-script misuse, or similar)
-       - Provide specific fix recommendations grounded in the listed command, config files, and raw output
-       - Priority level (Critical/High/Medium/Low) for each confirmed issue
+     1. **Test Failure Root Cause Analysis:**
+        - Identify why this run failed or produced incomplete results (assertion errors, runtime errors, timeouts, discovery/configuration problems, missing tests, crashed runners, or invalid validation-script targets)
+        - Determine whether the issue is most likely in project code, test code, test configuration, the invoked validation script, or the execution environment
+        - Categorize the issue precisely (breaking change, environment issue, flaky behavior, no-tests-found, config mismatch, validation-script misuse, or similar)
+        - If the supplied output or listed config filenames are insufficient to isolate a cause, mark the result as unavailable or inconclusive instead of guessing a specific misconfiguration
+        - Provide specific fix recommendations grounded in the listed command, config files, and raw output
+        - Priority level (Critical/High/Medium/Low) for each confirmed issue
     
-     2. **Coverage Gap Interpretation:**
-       - Analyze coverage metrics only when real coverage data or explicit coverage gaps are present in the provided context
-       - Identify which listed modules or files have low coverage, if any are named
-       - Determine whether coverage meaningfully meets the stated threshold
-       - If no tests ran or no coverage artifact is available, state that limitation explicitly instead of inferring missing coverage details
-       - Recommend additional coverage only for files, directories, or test types that are actually supported by the provided context
+      2. **Coverage Gap Interpretation:**
+        - Analyze coverage metrics only when real coverage data or explicit coverage gaps are present in the provided context
+        - Identify which listed modules or files have low coverage, if any are named
+        - Determine whether coverage meaningfully meets the stated threshold
+        - If no tests ran or no coverage artifact is available, state that limitation explicitly instead of inferring missing coverage details
+        - Treat placeholder values such as `unavailable`, `none reported`, or a missing coverage artifact as inconclusive input, not proof that coverage passed
+        - Recommend additional coverage only for files, directories, or test types that are actually supported by the provided context
     
      3. **Performance Bottleneck Detection:**
        - Identify slow-running tests or validation steps only when timing data or output signals support that conclusion
@@ -2347,12 +2389,13 @@ step8_test_exec_prompt:
        - Note: True flaky test detection requires multiple runs; provide best-effort analysis from single execution
        - Recommend fixes for identified potential flaky patterns, but do not label a failure as flaky without supporting evidence
     
-     5. **CI/CD Optimization Recommendations:**
-       - Assess code-level test/validation quality separately from CI/CD pipeline configuration
-       - When CI config files are listed above, reference those specific workflow filenames in recommendations and keep pipeline guidance tied to them
-       - When no CI config files are listed above, explicitly state that limitation and restrict CI/CD guidance to general best practices rather than project-specific workflow edits
-       - Suggest test splitting, caching, coverage gates, or parallelization only when they fit the detected command, test types, and available workflow context
-       - Propose pre-commit or local developer workflow improvements only when they follow naturally from the identified issue
+      5. **CI/CD Optimization Recommendations:**
+        - Assess code-level test/validation quality separately from CI/CD pipeline configuration
+        - When CI config files are listed above, reference those specific workflow filenames in recommendations and keep pipeline guidance tied to them
+        - When no CI config files are listed above, explicitly state that limitation and restrict CI/CD guidance to general best practices rather than project-specific workflow edits
+        - When a workflow filename is listed but its YAML contents are not provided, keep project-specific workflow advice conditional instead of claiming a step is present or missing
+        - Suggest test splitting, caching, coverage gates, or parallelization only when they fit the detected command, test types, and available workflow context
+        - Propose pre-commit or local developer workflow improvements only when they follow naturally from the identified issue
   
   approach: |
     Analyze ONLY the test execution results explicitly provided above. Do not invent
@@ -2363,6 +2406,9 @@ step8_test_exec_prompt:
     Provide specific, actionable recommendations grounded in the supplied data.
     Reference specific test directories, scripts, config files, or workflow files only when
     they are explicitly listed or directly inferable from the provided output and context.
+    If the runner produced no output, or the prompt only names config/workflow files without
+    showing their contents, do not assert a specific root cause or workflow gap unless the
+    visible evidence directly supports that conclusion.
     Clarify whether the run reflects unit, integration, e2e, validation-script execution,
     or a mixed scope based on `Test Types` and the command shown above.
     If no CI/CD configuration files are listed above, explicitly note this limitation and
@@ -2370,7 +2416,7 @@ step8_test_exec_prompt:
     pipeline configuration.
 
     **Output:**
-    - Root cause analysis for each failure with file:line:test references
+    - Root cause analysis for each failure with file:line:test references when the supplied evidence includes them; otherwise state that exact references are unavailable
     - Specific code fixes or test modifications needed
     - Coverage improvement action plan
     - Performance optimization recommendations
@@ -2507,6 +2553,8 @@ step10_code_quality_prompt:
   task_template: |
     Perform a comprehensive code quality review of the source code, tests, and documentation listed in the **Context** section below. Restrict your analysis to the files in scope — exclude third-party dependencies, node_modules, and generated/build artefacts. Identify anti-patterns, assess TDD adherence and test coverage, evaluate maintainability, check linting/formatting compliance and JSDoc documentation quality, and provide actionable recommendations grouped by priority (**quick wins** = low effort, high impact; **long-term** = architectural or structural changes requiring significant effort).
 
+    {partition_header}
+
     **Context:**
     - Project: {project_name}
     - Project Summary: {project_summary}
@@ -2514,11 +2562,16 @@ step10_code_quality_prompt:
     - Project Kind: {project_kind}
     - Technology Stack: {tech_stack_summary}
     - Scope: {change_scope}
-    - Files in Scope: {modified_count}
+    - Files in This Request: {files_in_scope}
+    - Modified Files in Run: {modified_count}
     - Code Files: {total_files} total
     - Language Breakdown: {language_breakdown}
 
-    > If no specific files are listed in the context below, review all source, test, and documentation files in the project root and `src/` directory.
+    > If no specific file paths or file contents are provided below, do **not** claim a
+    > repository-wide review succeeded. Limit conclusions to the visible automated findings
+    > and mark any code-, test-, docs-, or process-level checks that require missing evidence
+    > as unavailable or inconclusive instead of claiming success.
+    > {partition_scope_note}
     
     **Code Quality Analysis Results:**
     {quality_summary}
@@ -2536,6 +2589,14 @@ step10_code_quality_prompt:
     
     **Code Samples for Review:**
     {sample_code}
+
+    **File Contents for Review:**
+    {file_content_map}
+
+    > Entries labeled `(part X/Y)` are sequential slices of an oversized source file.
+    > Review only the visible slice(s) in this request. Do not assume the unseen remainder
+    > is clean, and do not treat the absence of other slices in this single prompt as proof
+    > that the file was fully reviewed elsewhere unless the prompt explicitly says so.
     
     **Tasks:**
     
@@ -2547,8 +2608,8 @@ step10_code_quality_prompt:
        - Validate documentation/comment quality
        - Check error handling patterns
        - Verify linting compliance (`npm run lint` / ESLint) — flag files or patterns that would fail lint checks
-       - Verify formatting compliance (`npm run format` / Prettier) — note inconsistencies with project formatter config
-       - Check JSDoc completeness: all public functions, classes, and exported symbols should have JSDoc; note missing or outdated JSDoc blocks
+       - Verify formatting compliance (`npm run format` / Prettier) only when a formatter command, config, or formatter output is visible in the provided context; otherwise mark formatting conclusions inconclusive
+       - Check JSDoc completeness only for public functions, classes, and exported symbols whose source is visible in the provided file contents; if exports are not shown, mark JSDoc coverage as unavailable or inconclusive
        - Identify and apply project-specific coding conventions from `CONTRIBUTING.md` or `.github/copilot-instructions.md`, when those files are present in the provided context; these take precedence over generic language defaults
        - Also consult other project guides found under `.github/` when present in the context (e.g., `CODE_REVIEW_GUIDE.md`, `TDD_GUIDE.md`, `UNIT_TEST_GUIDE.md`, `HIGH_COHESION_GUIDE.md`, `LOW_COUPLING_GUIDE.md`, `JAVASCRIPT_BEST_PRACTICES.md`)
     
@@ -2585,7 +2646,7 @@ step10_code_quality_prompt:
        - Identify technical debt priorities
     
     6. **Test Quality & TDD Adherence:**
-       - Assess test coverage breadth (are key behaviours, edge cases, and error paths tested?)
+       - Assess test coverage breadth (are key behaviours, edge cases, and error paths tested?) only when the relevant implementation files, test files, or explicit coverage artefacts are visible; otherwise mark coverage conclusions inconclusive
        - Evaluate TDD discipline: test naming clarity, test-first indicators, tests as documentation
        - Check test isolation (no shared mutable state, deterministic outcomes)
        - Identify brittle or flaky tests (time-dependent, order-dependent, over-mocked)
@@ -2594,20 +2655,29 @@ step10_code_quality_prompt:
        - Apply project `TDD_GUIDE.md` or `UNIT_TEST_GUIDE.md` standards when present in the provided context
 
      7. **Process & Commit Quality:**
-        - Review adherence to [Conventional Commits](https://www.conventionalcommits.org/): commit messages should use `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, etc. with correct format
-        - Check that commit messages reference related issues or PRs where appropriate
-        - Note any commits that bundle unrelated concerns (should be atomic)
-        - Assess whether PR descriptions (if visible) describe the change and reference related issues
+        - Review adherence to [Conventional Commits](https://www.conventionalcommits.org/) only when commit messages or history are visible in the provided context; otherwise mark commit-quality conclusions inconclusive
+        - Check that commit messages reference related issues or PRs where appropriate only when those artefacts are visible
+        - Note any commits that bundle unrelated concerns (should be atomic) only when the commit history or diffs are visible
+        - Assess whether PR descriptions (if visible) describe the change and reference related issues; if PR metadata is absent, state that this check could not be completed
         - Flag any secrets, debug artifacts, or generated files that should not be committed
   
   approach: |
     Analyse only the **{project_name}** files shown above. Do not reference ai_workflow.js, node_modules, or any other project not present in the context.
 
-    Review code quality, anti-patterns, technical debt, and maintainability for the provided code samples. Focus on actionable findings with specific file references.
+    Review code quality, anti-patterns, technical debt, and maintainability only for files whose paths or contents are explicitly shown above. Treat `Code Quality Analysis Results` and `Automated Findings` as supporting evidence, not proof that qualitative checks passed.
+
+    If the provided file contents are missing, truncated, or too partial to support a requested conclusion, explicitly state that the result is unavailable or inconclusive instead of claiming success.
+
+    Do not infer formatter compliance unless formatter tooling/configuration/output is visible in the prompt context.
+    Do not assert JSDoc completeness unless the relevant exported/public symbols are visible in the provided source.
+    Do not assert that test coverage is sufficient or that no coverage gaps exist unless the relevant code/tests or explicit coverage artefacts are visible.
+    Do not assess commit-message quality, PR quality, or atomicity unless commit history, diffs, or PR metadata are provided.
+
+    Separate confirmed findings from inconclusive checks so unsupported areas are not presented as passing.
 
     **Output:**
     - **Assessment**: Quality grade (A-F), maintainability score, standards compliance
-    - **Findings**: Anti-patterns, violations, tech debt with file:line references
+    - **Findings**: Anti-patterns, violations, tech debt, and explicitly inconclusive checks with file:line references when available
     - **Recommendations**: Top 5 refactoring priorities with effort estimates (quick wins vs long-term)
     
     **Tooling Note:** Where project-specific linting or static-analysis tools are visible in the provided context (including tech stack or config files), reference those tools when citing violations. Cite specific rule names only when the tool configuration is clearly visible in the context; otherwise describe the violation generically.
@@ -2733,6 +2803,7 @@ step12_git_commit_prompt:
     **Context:**
     - Project: {project_name}
     - Project Summary: {project_summary}
+    - Workflow: Tests & Documentation Automation v{script_version} (ai_workflow automated pipeline run for this project's current version; project version typically sourced from `package.json`, with `.workflow-config.yaml` available as supplemental project metadata when present)
     - Workflow: Tests & Documentation Automation v{script_version} (ai_workflow automated pipeline run for this project's current version; project version typically sourced from `package.json`, with `.workflow-config.yaml` available as supplemental project metadata when present)
     - Change Scope: {change_scope} (changed file paths listed in "Changed Files" section below)
     
@@ -2997,7 +3068,7 @@ markdown_lint_prompt:
 
 # Step 04: Configuration Specialist Prompt Template
 # Purpose: Validate and analyze configuration files for schema correctness, security, and best practices
-# Version: 1.0.5 (v6.8.42 - Clarify File Contents ordering and ignore unrelated files outside scope)
+# Version: 1.0.7 (v6.8.44 - Add partition-aware scope guidance and generated-lockfile summaries)
 configuration_specialist_prompt:
   # Split role into prefix + guidelines for token efficiency
   role_ref: configuration_specialist  # resolved from config/prompt_roles.yaml
@@ -3018,15 +3089,28 @@ configuration_specialist_prompt:
     with related configs, and stack-specific best practices for the tech stack listed
     in **Project Context**, when provided.
 
+    {partition_header}
+
     ### Configuration Files in Scope
     {config_files_list}
 
     > **Note:** The scope list above defines the exact set of files to analyze.
+    > {partition_scope_note}
     > - If a listed file is absent from **File Contents** below, report it as "content
     >   unavailable" — do not infer its contents or skip it silently. A file's absence
     >   may reflect prompt scoping, project-specific exclusions, or the file not being
     >   present in the active workspace; do not treat that absence alone as a configuration
     >   defect.
+    > - If a **File Contents** entry includes an explicit truncation marker such as
+    >   `[truncated ...]` or `...(truncated — remainder omitted)`, treat that file as
+    >   partial evidence only. Report the unavailable remainder as inconclusive, limit
+    >   claims to the visible excerpt, and do not claim full-file validation or
+    >   "All configuration files validated successfully" unless every in-scope file is
+    >   present in full.
+    > - A **File Contents** entry may be a deliberate compact summary of a generated
+    >   lockfile or other oversized machine-generated config. When clearly labeled as a
+    >   summary, analyze only the summarized fields shown and do not assume the raw file
+    >   was inspected verbatim line by line.
     > - Ignore unrelated files even if they appear in another section of this prompt.
     >   Only the scope list above and the matching **File Contents** entries are in scope.
     > - If the scope list is empty or resolves to "none found", that is a valid outcome.
@@ -3036,10 +3120,11 @@ configuration_specialist_prompt:
     ### Project Context
     - Project Type: {project_kind}
     - Tech Stack: {tech_stack}
-    - Total Config Files: {config_count}
-    - Note: If this count differs from the number of entries in **Configuration Files
-      in Scope** above, use the scope list as the source of truth and briefly note
-      the discrepancy.
+    - Files in This Partition: {partition_config_count}
+    - Total Config Files in Run: {config_count}
+    - Note: If the partition count or total-run count differs from the number of entries
+      in **Configuration Files in Scope** above, use the scope list as the source of
+      truth for this request and briefly note the discrepancy.
     
     ### File Contents
     {config_files_content}
@@ -3103,10 +3188,16 @@ configuration_specialist_prompt:
     - **Recommendation**: Concrete fix with before/after example
     - **Impact**: What breaks or improves
     
-    **If no issues found**:
+    **If no issues found and every in-scope file is present in full**:
     - Explicitly state "All configuration files validated successfully"
     - Summarize what was checked (X files, Y validations performed)
     - Highlight any noteworthy best practices already in use
+    
+    **If any in-scope file content is truncated or unavailable**:
+    - Do NOT give an overall success verdict for the entire scope
+    - State which files were truncated or unavailable
+    - Mark the unseen remainder as inconclusive
+    - Limit any "no issues found" wording to the visible excerpt(s) only
     
     **Format Types:**
     - JSON: package.json, tsconfig.json, .vscode/*, composer.json
@@ -3855,6 +3946,9 @@ version_manager_prompt:
     **Primary Sources**: Review `package.json` (current version field), CHANGELOG.md (especially the
     [Unreleased] section), and git commit history to understand the nature and scope of changes.
     If CHANGELOG.md is absent, note this in your reasoning and rely solely on git commit history.
+    Treat CHANGELOG.md `[Unreleased]` as authoritative for pending user-visible work when it is present.
+    Do not let an artifact-only staged diff under `.ai_workflow/` override substantive `[Unreleased]`
+    entries such as Added features, breaking changes, or other release-worthy scope.
     **Versioning Policy**: Check these files (in order) for project-specific versioning rules or
     release guidance: `CHANGELOG.md` (project SemVer statement and `[Unreleased]` scope),
     `CONTRIBUTING.md` (project root), `README.md`, `docs/guides/DEVELOPER_GUIDE.md`,
@@ -3890,8 +3984,14 @@ version_manager_prompt:
     0. Check file category counts: if Documentation/Test/Code/Config counts are all 0 despite a
        non-zero "Total modified files", the staged changes consist entirely of workflow artifact
        files (`.ai_workflow/`). Identify the actual file path(s) from the diff sample or git
-       context and treat them as internal tooling changes (→ typically patch).
+       context. Treat this as internal tooling evidence only; do not classify the bump yet.
     1. Read CHANGELOG.md [Unreleased] section to understand all documented pending changes
+       - If `[Unreleased]` lists Added features or new capabilities, that evidence outranks an
+         artifact-only staged diff and usually requires at least a MINOR bump.
+       - If `[Unreleased]` lists breaking or incompatible changes, that evidence outranks commit
+         type heuristics and requires a MAJOR bump.
+       - If `[Unreleased]` is absent or empty, say so explicitly and continue with the remaining
+         evidence.
     2. Review git commit messages for conventional commit types (feat, fix, BREAKING CHANGE)
     3. Examine the provided git diff and changed file list, categorising changes by project area:
        - `config/` changes → configuration or schema updates (potential minor/patch)
@@ -3899,7 +3999,8 @@ version_manager_prompt:
        - `test/` or `src/__tests__/` changes → test coverage improvements (patch)
        - `docs/` or `*.md` changes → documentation updates (patch)
        - `scripts/` changes → tooling/maintenance (patch/chore)
-       - `.ai_workflow/` only → internal artifacts (patch; see step 0)
+       - `.ai_workflow/` only → internal artifacts (supporting evidence for patch only when
+         CHANGELOG.md and versioning guidance do not point to higher-severity pending changes)
     4. Consult the project's versioning guidance in this order: `CHANGELOG.md`,
        `CONTRIBUTING.md`, `README.md`, `docs/guides/DEVELOPER_GUIDE.md`,
        `docs/api/core/version.md`, and `docs/architecture/VERSION_TIMELINE.md` if present
@@ -3907,12 +4008,21 @@ version_manager_prompt:
     6. Determine minimum required version bump based on findings
        - Pre-release suffixes do not upgrade severity on their own
        - Build metadata does not affect precedence or bump classification
-    7. Provide clear reasoning citing specific changes from CHANGELOG.md or commits
+    7. Reconcile conflicting evidence before answering
+       - If CHANGELOG.md, commit history, and diff evidence point to different severities, explain
+         which source takes precedence and why.
+       - Do not claim "patch" solely because the current staged diff contains `.ai_workflow/`
+         files when the changelog documents pending features or breaking changes.
+    8. Set confidence based on evidence quality
+       - High: primary sources agree and you cite the exact changelog entries and/or commits used
+       - Medium: primary sources are partially available or require interpretation
+       - Low: primary sources conflict, are missing, or the evidence is incomplete
+    9. Provide clear reasoning citing specific changes from CHANGELOG.md or commits
     Note: This recommendation requires manual confirmation before the version is applied.
   
   output_format: |
     Bump Type: [major|minor|patch]
-    Reasoning: [2-3 sentence explanation citing specific changes from CHANGELOG.md or commit history]
+    Reasoning: [2-3 sentence explanation citing specific changes from CHANGELOG.md or commit history, and explaining any conflict between primary sources and staged diff evidence]
     Confidence: [high|medium|low]
 
 
@@ -4226,12 +4336,14 @@ async_perf_engineer_prompt:
   behavioral_guidelines: *behavioral_actionable
 
   task_template: |
+    {partition_header}
     **YOUR TASK**: Perform a structured async performance review of the JavaScript/TypeScript codebase using static code analysis of the source files listed below. Evaluate all 9 ANALYSIS DIMENSIONS (defined below): overfetching, promise overhead, event loop congestion, memory leaks, API call batching, debouncing & throttling, error handling, promise anti-patterns, and resource cleanup. For each dimension, identify concrete issues with severity ratings and provide before/after fix snippets. Conclude with a prioritized recommendations list and a summary table. Inspection method: code-only static analysis — do not run profilers or benchmarks; rely solely on the listed source files.
 
     **Scope notes:**
-    - **Test files** (`*.test.ts`, `*.spec.ts`, `*.test.js`, `*.spec.js`, files under `__tests__/` or `test/`): exclude from production performance findings. Only flag patterns in test files if they introduce async anti-patterns that are copy-pasted into production code.
-    - **Tooling/config files** (`eslint.config.*`, `jest.config.*`, `vite.config.*`, `*.config.js`, `*.config.ts`, `babel.config.*`): skip entirely — they are out-of-scope for runtime performance analysis.
-    - **Truncated or incomplete file list**: if the provided file list appears partial, analyze what is available and explicitly note "⚠️ Coverage may be partial — not all source files were provided" in the Summary section.
+    - **Test files** (`*.test.ts`, `*.spec.ts`, `*.test.js`, `*.spec.js`, files under `__tests__/` or `test/`): do not use them as sole evidence for production runtime findings. Only mention them when the same async pattern is also visible in provided production files, or when the prompt explicitly requests test-only analysis.
+    - **Tooling/config files** (`eslint.config.*`, `jest.config.*`, `vite.config.*`, `*.config.js`, `*.config.ts`, `babel.config.*`): treat them as non-runtime context. If they appear in the file list, do not report them as production async-performance findings unless the prompt explicitly asks for tooling analysis.
+    - **Coverage warning**: add "⚠️ Coverage may be partial — not all source files were provided" only when the prompt shows explicit truncation, omitted file contents, or a clearly incomplete subset. Do not add that warning merely because the repository might contain additional files outside the provided evidence.
+    - **Workflow metadata** (`Project Summary`, `Project Kind`): treat these as hints, not ground truth. If the visible codebase contradicts them, rely on the code and note the metadata mismatch instead of restating the hint as fact.
 
     **Project Context:**
     - Project: {project_name}
@@ -4242,8 +4354,12 @@ async_perf_engineer_prompt:
     - Test Framework: {test_framework}
     - Source Files Analyzed: {source_file_count}
     - Modified Files: {modified_count}
+    - Request Scope: {partition_scope_note}
     - Analyzed File Paths:
     {file_paths}
+
+    **File Contents (source excerpts for this request):**
+    {file_content_block}
 
     **ANALYSIS DIMENSIONS** — evaluate each:
 
@@ -4296,6 +4412,8 @@ async_perf_engineer_prompt:
 
   approach: |
     Analyze ONLY the source files explicitly listed in Analyzed File Paths above. Do not assume or invent code patterns, async chains, or event handlers not shown in the provided context.
+    Treat each request as scope-limited. If this prompt is partitioned, do not generalize findings to files or file regions that are not shown in the current request.
+    If any provided file content is truncated, omitted, split into partial file parts, or otherwise incomplete for the claim you want to make, mark that conclusion as unavailable or inconclusive. Do not claim that a symbol is unused, that cleanup is missing, that a handler is registered, or that an error path does not exist unless the relevant implementation is fully visible in the provided context.
 
     **Priority Order:**
     1. Memory leaks and resource cleanup issues (CRITICAL — can cause process crashes)
@@ -4525,6 +4643,14 @@ javascript_developer_prompt:
   task_template: |
     **YOUR TASK**: Review and improve the existing package.json to accurately reflect project dependencies, scripts, and metadata following JavaScript ecosystem best practices. Do NOT replace or reinvent existing correct values — only propose changes where a genuine issue exists.
 
+    Treat the visible `package.json` as the primary evidence source. Do not invent
+    new tooling, scripts, metadata, or security conclusions just because they are
+    common best practices. If a recommendation depends on evidence outside the
+    visible `package.json` (for example `LICENSE`, lockfiles, audit output, CI
+    config, source imports, or published-package intent) and that evidence is not
+    included in the prompt, mark the point as **inconclusive** instead of treating
+    it as a confirmed issue or confirmed success.
+
     **Project Context:**
     - Project: {project_name}
     - Project Summary: {project_summary}
@@ -4544,7 +4670,9 @@ javascript_developer_prompt:
     **ANALYSIS PHASE**: Evaluate the package.json across the following dimensions:
     1. **Dependencies**: Are all required libraries listed? Are versions appropriate (not too loose, not unnecessarily pinned)?
     2. **DevDependencies**: Are build tools, test runners, and linters correctly placed under devDependencies?
-    3. **Scripts**: Do script aliases exist for start, test, build, lint, and format? Are they correct and runnable?
+    3. **Scripts**: Do the scripts needed by the visible project context exist (for
+       example start, test, build, lint, and any formatter only when formatter
+       tooling is already present or explicitly documented)? Are they correct and runnable?
     4. **Metadata**: Are name, version, description, license, main/exports, and author fields complete and accurate?
     5. **Security**: Are there known vulnerabilities? Is the lockfile in sync? Are dependency ranges safe?
     6. **Compatibility**: Are engines, peerDependencies, and browserslist fields set when needed?
@@ -4560,30 +4688,40 @@ javascript_developer_prompt:
        - Remove unused dependencies that are declared but never imported
 
     2. **Script Authoring**:
-       - Define `start` script to launch the application (e.g., `node src/index.js`)
-       - Define `test` script using the project's test framework (e.g., `jest`, `mocha`, `vitest`)
-       - Define `build` script for compiled/bundled projects (e.g., `tsc`, `webpack`, `vite build`)
-       - Define `lint` script for static analysis (e.g., `eslint .`, `eslint src --ext .js,.ts`)
-       - Define `format` script for code formatting (e.g., `prettier --write .`)
-       - Add pre/post hooks (e.g., `pretest`, `prebuild`) where appropriate
-       - Use `cross-env` for environment variables that must work on Windows and Unix
+        - Define `start` script to launch the application (e.g., `node src/index.js`)
+        - Define `test` script using the project's test framework (e.g., `jest`, `mocha`, `vitest`)
+        - Define `build` script for compiled/bundled projects (e.g., `tsc`, `webpack`, `vite build`)
+        - Define `lint` script for static analysis (e.g., `eslint .`, `eslint src --ext .js,.ts`)
+        - Add a `format` script only when formatter tooling is already present in the manifest
+          or explicitly shown elsewhere in the provided context
+        - Add pre/post hooks (e.g., `pretest`, `prebuild`) only when the visible scripts show
+          repeated setup/teardown work that would clearly benefit from them
+        - Add `cross-env` only when the visible scripts actually set environment variables that
+          must work on both Windows and Unix
 
     3. **Project Metadata**:
-       - `name`: lowercase, hyphenated, no spaces (e.g., `my-app`)
-       - `version`: valid semver (e.g., `1.0.2`), no `v` prefix
-       - `description`: concise one-line summary
-       - `license`: valid SPDX identifier (e.g., `MIT`, `Apache-2.0`, `UNLICENSED`)
-       - `main`: CommonJS entry point (e.g., `dist/index.js`)
-       - `module`: ESM entry point when dual CJS/ESM is supported
-       - `exports`: modern conditional exports map for Node.js subpath exports
-       - `repository`, `homepage`, `bugs`: link to source control and issue tracker
-       - `keywords`: relevant terms to improve discoverability on npm registry
+        - `name`: lowercase, hyphenated, no spaces (e.g., `my-app`)
+        - `version`: valid semver (e.g., `1.0.2`), no `v` prefix
+        - `description`: concise one-line summary
+        - `license`: valid SPDX identifier (e.g., `MIT`, `Apache-2.0`, `UNLICENSED`);
+          do not change it unless the provided context includes direct evidence that
+          the current value is wrong or inconsistent
+        - `main`: CommonJS entry point (e.g., `dist/index.js`)
+        - `module`: ESM entry point when dual CJS/ESM is supported
+        - `exports`: modern conditional exports map for Node.js subpath exports
+        - `repository`, `homepage`, `bugs`: link to source control and issue tracker
+        - `author`, `keywords`, and `private`: only change or populate these when the provided
+          context supplies direct evidence for the intended values or publishing model
 
     4. **Security & Integrity**:
-       - Run `npm audit` and remediate high/critical vulnerabilities
-       - Use `overrides` (npm v8+) or `resolutions` (yarn) to patch transitive vulnerabilities
-       - Commit the lockfile (`package-lock.json` / `yarn.lock` / `pnpm-lock.yaml`) to source control
-       - Set `"private": true` to prevent accidental publish for application packages
+        - Use visible `npm audit` / advisory output when it is provided; otherwise state that
+          vulnerability status is inconclusive and do not claim a clean audit result
+        - Recommend `overrides` (npm v8+) or `resolutions` (yarn) only when a visible transitive
+          vulnerability or version conflict justifies it
+        - Confirm lockfile presence or sync only when a lockfile or explicit status is visible
+          in the provided context; otherwise mark the check inconclusive
+        - Set `"private": true` only when the provided context clearly shows the package is an
+          unpublished application rather than a library intended for npm distribution
 
     5. **Compatibility & Environment**:
        - Set `engines.node` to specify the minimum required Node.js version (e.g., `">=18.0.0"`)
@@ -4592,13 +4730,22 @@ javascript_developer_prompt:
        - Configure `type: "module"` for projects using native ESM, `"commonjs"` (default) otherwise
 
     **OUTPUT FORMAT**:
-    - Provide the complete updated package.json as a JSON code block
+    - Provide the complete updated package.json as a JSON code block only when at least one
+      evidence-backed change is needed; otherwise say `No package.json changes required`
     - List each change made with a brief justification (e.g., "Added `jest` to devDependencies — test runner used in `npm test`")
-    - Flag security issues with severity level (critical, high, moderate, low)
+    - Flag security issues with severity level (critical, high, moderate, low) only when
+      advisory evidence is visible; otherwise say that security severity is inconclusive
     - Note any breaking changes that require developer action (e.g., Node.js version upgrade)
 
   approach: |
     Analyze ONLY the packages and dependencies explicitly listed above. Do not reference packages, version ranges, or vulnerabilities not present in the provided dependency lists.
+    Do not recommend adding Prettier, format scripts, `cross-env`, `private`, `author`,
+    `keywords`, `exports`, or license changes unless the provided context contains direct
+    evidence that the current manifest is missing a requirement or contains an actual mismatch.
+    Treat project-kind labels and generic ecosystem conventions as supporting context, not as
+    proof that a package must behave like a library, browser app, or unpublished application.
+    If imports, lockfiles, LICENSE contents, repository metadata, or audit results are not
+    included in the prompt, explicitly mark those checks as inconclusive.
 
     **JavaScript Developer Methodology**:
 
@@ -4630,19 +4777,23 @@ javascript_developer_prompt:
        - Use Dependabot or Renovate for automated dependency update PRs
        - Review supply-chain integrity with `npm pack --dry-run` before publishing
 
-    **Quality Checklist**:
-    - ✅ `name` is lowercase, hyphenated, and unique (or scoped for private registries)
-    - ✅ `version` follows semver with no `v` prefix
-    - ✅ `description` and `license` fields are populated
-    - ✅ `main` / `exports` entry points resolve to actual files
-    - ✅ All imported packages are declared in `dependencies` or `devDependencies`
-    - ✅ No runtime packages accidentally placed in `devDependencies`
-    - ✅ `npm test` and `npm start` scripts are defined and functional
-    - ✅ `npm audit` shows no high or critical vulnerabilities
-    - ✅ Lockfile is committed and in sync with package.json
-    - ✅ `engines.node` is set to the minimum supported Node.js LTS version
-    - ✅ `"private": true` set for application packages (non-published)
-    - ✅ ESM/CJS `type` field is correctly set for the module system in use
+    **Quality Checklist (verify only when evidence is visible):**
+    - Confirm `name` is lowercase, hyphenated, and unique (or scoped for private registries)
+    - Confirm `version` follows semver with no `v` prefix
+    - Confirm `description` and `license` fields are populated
+    - Confirm `main` / `exports` entry points resolve to actual files when those files are visible
+    - Confirm imported packages are declared in `dependencies` or `devDependencies` only when
+      the relevant source imports are visible
+    - Confirm no runtime packages are accidentally placed in `devDependencies` only when runtime
+      usage evidence is visible
+    - Confirm `npm test` and `npm start` scripts are defined and functional only when the
+      command definitions and supporting files are visible
+    - Confirm `npm audit` status only when audit output is visible
+    - Confirm lockfile presence and sync only when the lockfile or explicit status is visible
+    - Confirm `engines.node` is set appropriately when runtime requirements are visible
+    - Confirm `"private": true` only when the publishing intent is visible
+    - Confirm the ESM/CJS `type` field matches the module system in use when code or build
+      evidence is visible
 
     **JavaScript Package Best Practices**:
     - Keep devDependencies out of production image layers (use `npm ci --omit=dev`)
@@ -6416,13 +6567,13 @@ accessibility_review_prompt:
   behavioral_guidelines: *behavioral_structured
 
   task_template: |
-    **YOUR TASK**: Perform an API documentation accessibility review of {project_name}.
+    **YOUR TASK**: Perform an accessibility review of the provided UI-related artifacts for {project_name}.
 
     **Project Context:**
     - Project: {project_name}
     - Project Summary: {project_summary}
     - Framework: {framework}
-    - File Type: TypeDoc-generated API documentation (HTML)
+    - Evidence Scope: Sampled UI-related source files and/or generated markup/styles, depending on what is injected below
     - Source Files Analyzed: {source_file_count}
     - File Paths:
     {file_paths}
@@ -6442,9 +6593,13 @@ accessibility_review_prompt:
 
   approach: |
     Work only from the injected file contents above.
+    Treat the prompt context as excerpt-limited evidence. If any file block is truncated, omitted, or the injected artifacts are source/test files rather than rendered HTML/CSS output, do not claim a full accessibility pass; mark any unsupported check as unavailable or inconclusive.
+    Only assess checks that are directly supported by the visible artifact type. For example, if generated HTML/CSS is not present, do not claim landmark, ARIA, contrast, or reduced-motion compliance for the final rendered output.
+    Do not treat the mere absence of HTML landmarks, ARIA attributes, or semantic elements in terminal/native UI source (for example Ink or other non-DOM renderers) as an accessibility defect; report those checks as unavailable unless rendered markup is visible.
+    Only raise keyboard-accessibility findings when the visible excerpt directly shows a barrier. Missing focus management, focus order, or focus-visible logic in truncated or omitted sections is inconclusive rather than a defect.
     For each finding, specify: file path, line reference (if determinable), WCAG success criterion violated (e.g. 1.1.1, 1.4.3), severity (Critical/Major/Minor), and a concrete remediation example.
     Group findings by WCAG principle (Perceivable, Operable, Understandable, Robust).
-    If no accessibility issues are found in a file, state "No issues detected" rather than omitting it.
+    If no accessibility issues are visible in a file excerpt, state "No issues detected in the visible excerpts" and explicitly note any remaining uncertainty caused by missing or partial context.
 
 performance_review_prompt:
   # Covers: algorithmic complexity, CPU hotspots, memory leaks, bundle size, build performance, benchmarking
@@ -6452,6 +6607,7 @@ performance_review_prompt:
   behavioral_guidelines: *behavioral_structured
 
   task_template: |
+    {partition_header}
     **YOUR TASK**: Perform a performance engineering review of {project_name}. Evaluate performance across all dimensions relevant to this project's tech stack and role, including: script/module load time and startup cost, config/YAML parsing overhead, algorithmic complexity in hot paths, and I/O patterns (sync vs async).
 
     **Project Context:**
@@ -6463,7 +6619,9 @@ performance_review_prompt:
     - File Paths:
     {file_paths}
 
-    **File Contents (sampled source excerpts):**
+    {partition_scope_note}
+
+    **File Contents (source excerpts for this request):**
     {file_content_block}
 
     **Focus Areas** (prioritise based on what is present in the code):
@@ -6485,6 +6643,10 @@ performance_review_prompt:
 
   approach: |
     Work only from the injected file contents above.
-    For each finding: specify file path, line reference, severity (High/Medium/Low), estimated impact, and a concrete optimisation example with before/after code.
-    Include a summary table: | File | Issue Type | Severity | Impact |
+    When the workflow partitions source across multiple prompt logs, analyze only the files or file-parts listed in the current request. Treat entries labeled "(part X/Y)" as sequential slices of one oversized file, not as separate files.
+    Treat the prompt context as excerpt-limited evidence. If any file block is truncated, sampled, omitted, or otherwise partial, do not claim a full repository-wide performance pass; mark unsupported checks as unavailable or inconclusive.
+    Only cite exact line references when they are determinable from the visible excerpt. Otherwise say that the line reference is unavailable from the provided context and anchor the finding to the visible function, statement, or excerpt block instead of inventing precision.
+    Do not infer repo-wide absence of benchmarks, profiling, caching, or other supporting infrastructure from sampled excerpts alone. Only report an absence claim when the provided artifacts explicitly show it or the injected scope is clearly repository-complete for that concern.
+    For each supported finding, specify file path, line reference (if determinable), severity (High/Medium/Low), estimated impact, and a concrete optimisation example when the visible code is sufficient to justify that example.
+    Include a summary table: | File | Issue Type | Severity | Impact | for supported findings. If the visible excerpts do not support any concrete issue, say so explicitly instead of filling the table with theoretical concerns.
     Focus on actionable findings — do not flag theoretical issues without evidence in the provided code.

@@ -19,18 +19,21 @@ doc_analysis_prompt:
     - `CHANGELOG.md` for significant user-facing changes
     - Existing module-local docs or API references that document changed modules
     
+   **Provided file contents and excerpts**:
+    {file_contents}
+
     **REQUIRED ACTIONS**:
-    1. **Read the changes**: Examine what was modified in each changed file
-    2. **Identify documentation impact**: Determine which sections in the listed docs need updates:
-       - `README.md`: features, setup instructions, usage examples, version references
-       - API reference docs (e.g., `docs/api/`): public function signatures, parameters, return types — follow JSDoc conventions
-       - Architecture/design docs (e.g., `docs/ARCHITECTURE.md`, `docs/architecture/`): architecture changes, new features, module structure
-       - Version numbers: update `CHANGELOG.md` (add entry under `[Unreleased]`) and any version strings in module headers or `src/index.js`
-       - Module READMEs: if code in that module changed
-       - Inline comments: for complex new logic; follow project markdown conventions described in `CONTRIBUTING.md`
-    3. **Determine specific edits**: Identify the exact lines or sections requiring updates — a "specific edit" means a concrete before/after text change tied to a file path, NOT a vague suggestion like "consider updating X"
-    4. **Verify accuracy**: Ensure examples, code snippets, and cross-references are still correct
-    5. **Handle missing or incomplete files**: If a referenced documentation file is missing or clearly incomplete, note it as a documentation gap in your output rather than skipping it or fabricating content — describe briefly what should be there
+     1. **Read the changes**: Examine what was modified in each changed file
+     2. **Identify documentation impact**: Determine which sections in the listed docs need updates:
+        - `README.md`: features, setup instructions, usage examples, version references
+        - API reference docs already present in the provided documentation set: public function signatures, parameters, return types — follow documented project conventions when available
+        - Architecture/design docs already present in the provided documentation set: architecture changes, new features, module structure
+        - Version numbers: update `CHANGELOG.md` (add entry under `[Unreleased]`) and any version strings in the changed docs or entrypoint/source files that are actually present in the provided change set
+        - Module READMEs: if code in that module changed
+        - Inline comments: for complex new logic; follow project conventions from any provided authority docs
+     3. **Determine specific edits**: Identify the exact lines or sections requiring updates — a "specific edit" means a concrete before/after text change tied to a file path, NOT a vague suggestion like "consider updating X"
+     4. **Verify accuracy**: Ensure examples, code snippets, and cross-references are still correct
+     5. **Handle missing or incomplete files**: If a documentation file from the provided scope is missing or clearly incomplete, note it as a documentation gap in your output rather than skipping it or fabricating content — describe briefly what should be there
     
     **OUTPUT FORMAT**: Use edit blocks showing before/after, or provide specific line-by-line changes. If no edits are needed, state "No updates required" with a one-line reason.
   
@@ -38,29 +41,29 @@ doc_analysis_prompt:
     Treat the listed documentation files as minimum required targets, not the exhaustive limit. You may inspect any existing documentation directly implicated by the changed files or the authoritative-doc rules above, but do not reference, invent, or assume missing documentation.
 
     **Methodology**:
-    1. **Analyze Changes**: Use `@workspace` to examine what was modified in each changed file
-       - Read the actual file contents to understand the changes
-       - Identify which changes are code vs. documentation
+     1. **Analyze Changes**: Use `@workspace` to examine what was modified in each changed file
+        - Read the actual file contents to understand the changes
+        - Identify which changes are code vs. documentation
        - Assess the scope and impact of each change
-    
-    2. **Prioritize Updates**: Start with most critical documentation
-       - Primary: README.md, .github/copilot-instructions.md
-       - Secondary: Technical docs in docs/ directory
-       - Tertiary: Inline code comments
-    
-    3. **Edit Surgically**: Provide EXACT text changes only where needed
-       - Use before/after blocks showing precise line changes
-       - Change ONLY affected sections - preserve everything else
+     
+     2. **Prioritize Updates**: Start with most critical documentation
+        - Primary: README.md, .github/copilot-instructions.md
+        - Secondary: additional technical docs already present in the provided scope
+        - Tertiary: Inline code comments
+     
+     3. **Edit Surgically**: Provide EXACT text changes only where needed
+        - Use before/after blocks showing precise line changes
+        - Change ONLY affected sections - preserve everything else
        - Include enough context to locate the exact section
        - If no changes needed, explicitly say "No updates required"
     
-    4. **Verify Consistency**: Maintain project standards
-       - Keep consistent terminology across all docs
-       - Preserve existing formatting and style
-       - Ensure cross-references remain valid
-       - Update version numbers if applicable
-    
-    **Project Conventions** (from `.github/CONTRIBUTING.md` — authoritative; root `CONTRIBUTING.md` is a redirect entry point only):
+     4. **Verify Consistency**: Maintain project standards
+        - Keep consistent terminology across all docs
+        - Preserve existing formatting and style
+        - Ensure cross-references remain valid
+        - Update version numbers if applicable
+     
+    **Project Conventions** (from repo-specific authority docs such as `.github/copilot-instructions.md`, `.github/CONTRIBUTING.md`, or `CONTRIBUTING.md` when present in the provided scope):
     {project_conventions}
     
     **Output Format**:
@@ -74,6 +77,8 @@ doc_analysis_prompt:
     - NEVER ask clarifying questions - make informed decisions
     - DEFAULT to no changes if documentation appears current
     - FOCUS on accuracy over completeness
+    - If a requested conclusion depends on missing or truncated file content, state "Unavailable" or "Inconclusive" instead of guessing
+    - Only claim documentation is current when visible file contents support that conclusion
 
 # Consistency Analysis Prompt Template
 consistency_prompt:

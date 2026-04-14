@@ -56,7 +56,7 @@ INDEX_HEADER = """\
 HEADER = """\
 # AI Prompt Templates Configuration
 # Purpose: Centralized AI prompt strings for workflow automation
-# Version: 7.0.24
+# Version: 7.0.25
 #
 # Version history -> see CHANGELOG.md
 #

@@ -1353,9 +1353,14 @@ configuration_specialist_prompt:
     {partition_header}
 
     ### Configuration Files in Scope
+    Each entry below is grouped by parent directory and formatted as
+    `**Directory Label**: comma-separated filenames`. In this list, `Root`
+    means the project root directory.
     {config_files_list}
 
     > **Note:** The scope list above defines the exact set of files to analyze.
+    > Treat each labeled line as a directory-scoped bucket of files, not as a
+    > separate instruction block with hidden requirements.
     > {partition_scope_note}
     > - If a listed file is absent from **File Contents** below, report it as "content
     >   unavailable" — do not infer its contents or skip it silently. A file's absence

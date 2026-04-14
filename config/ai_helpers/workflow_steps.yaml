@@ -257,6 +257,9 @@ step3_script_refs_prompt:
     **Script Documentation Coverage:**
     (shows which documentation files reference each script)
     {doc_coverage_map}
+    If the visible coverage map is truncated, clipped, or ends with an explicit truncation marker
+    (for example `... [truncated]`), treat it as incomplete evidence, say so explicitly in your
+    report, and do not claim exhaustive coverage counts from the hidden portion.
 
     **Scripts in Scope (authoritative — analyze only these paths; do not infer or include any additional scripts):**
     {all_scripts}
@@ -338,6 +341,9 @@ step3_script_refs_prompt:
     - Recommendations for improving script documentation
     - Priority level (Critical/High/Medium/Low) for each issue
     - Actionable remediation steps with examples
+    - A closing coverage summary line such as `Summary: N scripts missing documentation references`
+      when the visible evidence supports a reliable count; if the coverage map is incomplete,
+      use a partial-count warning instead of presenting the number as exhaustive
     
     **Documentation Standards to Apply:**
     - Clear and concise command syntax documentation

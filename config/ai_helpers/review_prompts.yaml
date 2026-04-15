@@ -400,16 +400,21 @@ accessibility_review_prompt:
     3. Review keyboard accessibility: missing tabindex, illogical tab order, missing focus indicators
     4. Audit colour contrast: inline styles or CSS custom properties with insufficient contrast ratios
     5. Check semantic HTML structure: heading hierarchy, landmark elements, form label associations
-    6. Verify navigation landmark structure: presence and correct use of <nav>, <main>, <header>, <footer> elements
-    7. Check link text clarity: flag bare anchor text such as "here", "click here", or "read more" that lacks descriptive context
+    6. Verify navigation landmark structure where visible: presence and correct use of <nav>, <main>, <header>, <footer> elements
+    7. Check visible link text clarity: flag bare anchor text such as "here", "click here", or "read more" that lacks descriptive context, but do not treat `aria-label` text as visible anchor text
     8. Check for reduced-motion compliance: CSS animations without prefers-reduced-motion guards
 
   approach: |
     Work only from the injected file contents above.
     Treat the prompt context as excerpt-limited evidence. If any file block is truncated, omitted, or the injected artifacts are source/test files rather than rendered HTML/CSS output, do not claim a full accessibility pass; mark any unsupported check as unavailable or inconclusive.
+    If prompt metadata, embedded file content, or visible UI strings show conflicting version numbers, report the version mismatch explicitly instead of normalizing it away or treating one value as authoritative.
     Only assess checks that are directly supported by the visible artifact type. For example, if generated HTML/CSS is not present, do not claim landmark, ARIA, contrast, or reduced-motion compliance for the final rendered output.
     Do not treat the mere absence of HTML landmarks, ARIA attributes, or semantic elements in terminal/native UI source (for example Ink or other non-DOM renderers) as an accessibility defect; report those checks as unavailable unless rendered markup is visible.
+    Do not infer `<main>`, `<nav>`, or any other semantic landmark from class names, surrounding structure, or expected framework output; only claim a landmark is present when the actual element or explicit ARIA role is visible in the excerpt.
     Only raise keyboard-accessibility findings when the visible excerpt directly shows a barrier. Missing focus management, focus order, or focus-visible logic in truncated or omitted sections is inconclusive rather than a defect.
+    Only raise a missing-label finding when the control itself lacks an accessible name in the visible excerpt and no explicit associated label is shown there. Do not infer a missing label if the excerpt already shows the relevant `aria-label`, `aria-labelledby`, or `<label for>` association on that control.
+    When assessing link clarity, distinguish visible text from accessible names. Text that appears only in `aria-label`, `aria-labelledby`, `title`, or other non-rendered attributes is not visible anchor text.
+    If the visible CSS excerpt already includes a `prefers-reduced-motion` guard or a `:focus-visible` rule, treat that specific check as satisfied for the visible excerpt instead of calling it inconclusive.
     For each finding, specify: file path, line reference (if determinable), WCAG success criterion violated (e.g. 1.1.1, 1.4.3), severity (Critical/Major/Minor), and a concrete remediation example.
     Group findings by WCAG principle (Perceivable, Operable, Understandable, Robust).
     If no accessibility issues are visible in a file excerpt, state "No issues detected in the visible excerpts" and explicitly note any remaining uncertainty caused by missing or partial context.
@@ -446,20 +451,22 @@ performance_review_prompt:
 
     **REQUIRED ACTIONS**:
     1. Identify algorithmic complexity issues: O(n²) or worse loops, nested iterations over large datasets
-    2. Find synchronous blocking operations in hot paths: synchronous file I/O, large JSON.parse(), blocking regex
+    2. Find synchronous blocking operations in hot paths: synchronous file I/O, large JSON.parse(), blocking regex. If the visible excerpt shows only a standalone synchronous operation but not repeated execution, startup-critical use, or another latency-sensitive call path, report the operation as present and the hot-path impact as inconclusive.
     3. Detect memory allocation hotspots: objects created inside tight loops, missing object pooling, closure leaks
     4. Review data structure choices: Object vs Map, Array vs Set for membership tests, typed arrays for numeric data
     5. Identify missing memoization: repeated expensive computations without caching
     6. Analyse bundle/build impact: large imports that could be tree-shaken, missing dynamic imports for lazy loading
-    7. Review benchmarking coverage: identify computational hot paths with no benchmark (npm bench / vitest bench)
+    7. Review benchmarking coverage: identify computational hot paths with no benchmark (npm bench / vitest bench) only when the visible excerpt clearly establishes the hot path and the provided scope contains enough evidence to support the absence claim
     8. Flag regex performance risks: catastrophic backtracking patterns, unanchored patterns on large strings
 
   approach: |
     Work only from the injected file contents above.
     When the workflow partitions source across multiple prompt logs, analyze only the files or file-parts listed in the current request. Treat entries labeled "(part X/Y)" as sequential slices of one oversized file, not as separate files.
     Treat the prompt context as excerpt-limited evidence. If any file block is truncated, sampled, omitted, or otherwise partial, do not claim a full repository-wide performance pass; mark unsupported checks as unavailable or inconclusive.
+    If a visible excerpt shows a synchronous operation (for example JSON.parse, readFileSync, or a regex match) but does not show repeated execution, loop nesting, startup-critical placement, or another latency-sensitive path, do not label it a confirmed hot path and do not inflate severity from that missing context. State that the blocking operation is visible and that its hot-path impact is unconfirmed from the excerpt.
     Only cite exact line references when they are determinable from the visible excerpt. Otherwise say that the line reference is unavailable from the provided context and anchor the finding to the visible function, statement, or excerpt block instead of inventing precision.
+    When a function body is shown in the excerpt, treat exact line references inside that visible block as determinable and include them for every supported finding. Do not omit line references when the excerpt clearly pins the statement location.
     Do not infer repo-wide absence of benchmarks, profiling, caching, or other supporting infrastructure from sampled excerpts alone. Only report an absence claim when the provided artifacts explicitly show it or the injected scope is clearly repository-complete for that concern.
     For each supported finding, specify file path, line reference (if determinable), severity (High/Medium/Low), estimated impact, and a concrete optimisation example when the visible code is sufficient to justify that example.
     Include a summary table: | File | Issue Type | Severity | Impact | for supported findings. If the visible excerpts do not support any concrete issue, say so explicitly instead of filling the table with theoretical concerns.
-    Focus on actionable findings — do not flag theoretical issues without evidence in the provided code.
+    Focus on actionable findings — do not flag theoretical issues without evidence in the provided code, and do not promote a speculative concern merely to avoid an empty findings table.

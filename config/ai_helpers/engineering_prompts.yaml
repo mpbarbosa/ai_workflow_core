@@ -253,7 +253,7 @@ test_strategy_prompt:
        - Estimate testing effort (small/medium/large)
   
   approach: |
-    Analyse only the **{project_name}** codebase described above. Do not reference ai_workflow.js or any other project not in the context.
+    Analyse only the **{project_name}** codebase described above. Do not reference other repositories or any project not in the context.
 
     Review the coverage stats and test files listed to identify gaps, prioritize recommendations, and produce a clear strategic roadmap.
 

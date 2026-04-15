@@ -30,6 +30,7 @@ quality_prompt: engineering_prompts.yaml
 issue_extraction_prompt: engineering_prompts.yaml
 
 # workflow_steps.yaml
+step1_5_copilot_instructions_prompt: workflow_steps.yaml
 step2_consistency_prompt: workflow_steps.yaml
 step3_script_refs_prompt: workflow_steps.yaml
 step5_directory_prompt: workflow_steps.yaml

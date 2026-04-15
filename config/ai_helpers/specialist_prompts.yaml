@@ -22,8 +22,15 @@ version_manager_prompt:
     [Unreleased] section), and git commit history to understand the nature and scope of changes.
     If CHANGELOG.md is absent, note this in your reasoning and rely solely on git commit history.
     Treat CHANGELOG.md `[Unreleased]` as authoritative for pending user-visible work when it is present.
+    If you cannot inspect or cite the `[Unreleased]` content from the provided context, say so
+    explicitly and treat CHANGELOG-based conclusions as unavailable or inconclusive rather than
+    claiming there are no pending features or breaking changes.
     Do not let an artifact-only staged diff under `.ai_workflow/` override substantive `[Unreleased]`
     entries such as Added features, breaking changes, or other release-worthy scope.
+    Treat diff samples and changed-file excerpts as partial evidence unless they explicitly cover the
+    full staged scope. Do not claim "the only staged changes are ..." unless the provided file list
+    is empty or every listed path is under `.ai_workflow/` and no non-artifact paths appear anywhere
+    else in the provided git context.
     **Versioning Policy**: Check these files (in order) for project-specific versioning rules or
     release guidance: `CHANGELOG.md` (project SemVer statement and `[Unreleased]` scope),
     `CONTRIBUTING.md` (project root), `README.md`, `docs/guides/DEVELOPER_GUIDE.md`,
@@ -57,16 +64,22 @@ version_manager_prompt:
   
   approach: |
     0. Check file category counts: if Documentation/Test/Code/Config counts are all 0 despite a
-       non-zero "Total modified files", the staged changes consist entirely of workflow artifact
-       files (`.ai_workflow/`). Identify the actual file path(s) from the diff sample or git
-       context. Treat this as internal tooling evidence only; do not classify the bump yet.
+       non-zero change count, the visible staged changes may be workflow artifact files
+       (`.ai_workflow/`). Verify the actual file path(s) from the changed-files block, diff sample,
+       or git context before drawing conclusions.
+       - If the available file list or diff sample is partial, say the full staged scope is
+         inconclusive.
+       - Do not state that only `.ai_workflow/` files changed unless the provided evidence fully
+         supports that claim.
     1. Read CHANGELOG.md [Unreleased] section to understand all documented pending changes
-       - If `[Unreleased]` lists Added features or new capabilities, that evidence outranks an
-         artifact-only staged diff and usually requires at least a MINOR bump.
-       - If `[Unreleased]` lists breaking or incompatible changes, that evidence outranks commit
-         type heuristics and requires a MAJOR bump.
-       - If `[Unreleased]` is absent or empty, say so explicitly and continue with the remaining
-         evidence.
+        - If `[Unreleased]` lists Added features or new capabilities, that evidence outranks an
+          artifact-only staged diff and usually requires at least a MINOR bump.
+        - If `[Unreleased]` lists breaking or incompatible changes, that evidence outranks commit
+          type heuristics and requires a MAJOR bump.
+        - If `[Unreleased]` is absent or empty, say so explicitly and continue with the remaining
+          evidence.
+        - If the prompt does not actually provide the `[Unreleased]` content or a reliable excerpt,
+          state that the changelog check is unavailable or inconclusive.
     2. Review git commit messages for conventional commit types (feat, fix, BREAKING CHANGE)
     3. Examine the provided git diff and changed file list, categorising changes by project area:
        - `config/` changes → configuration or schema updates (potential minor/patch)
@@ -89,15 +102,18 @@ version_manager_prompt:
        - Do not claim "patch" solely because the current staged diff contains `.ai_workflow/`
          files when the changelog documents pending features or breaking changes.
     8. Set confidence based on evidence quality
-       - High: primary sources agree and you cite the exact changelog entries and/or commits used
+       - High: primary sources agree, you cite the exact changelog entries and/or commits used, and
+         the provided file scope is complete enough to support your claim
        - Medium: primary sources are partially available or require interpretation
-       - Low: primary sources conflict, are missing, or the evidence is incomplete
-    9. Provide clear reasoning citing specific changes from CHANGELOG.md or commits
+       - Low: primary sources conflict, are missing, or the evidence is incomplete; missing
+         changelog text or partial diff/file coverage cannot justify high confidence
+    9. Provide clear reasoning citing specific changes from CHANGELOG.md or commits, and explicitly
+       name any unavailable or inconclusive checks you could not complete
     Note: This recommendation requires manual confirmation before the version is applied.
   
   output_format: |
     Bump Type: [major|minor|patch]
-    Reasoning: [2-3 sentence explanation citing specific changes from CHANGELOG.md or commit history, and explaining any conflict between primary sources and staged diff evidence]
+    Reasoning: [2-3 sentence explanation citing specific changes from CHANGELOG.md or commit history, explaining any conflict between primary sources and staged diff evidence, and explicitly naming any unavailable or inconclusive checks]
     Confidence: [high|medium|low]
 
 
@@ -419,6 +435,7 @@ async_perf_engineer_prompt:
     - **Tooling/config files** (`eslint.config.*`, `jest.config.*`, `vite.config.*`, `*.config.js`, `*.config.ts`, `babel.config.*`): treat them as non-runtime context. If they appear in the file list, do not report them as production async-performance findings unless the prompt explicitly asks for tooling analysis.
     - **Coverage warning**: add "⚠️ Coverage may be partial — not all source files were provided" only when the prompt shows explicit truncation, omitted file contents, or a clearly incomplete subset. Do not add that warning merely because the repository might contain additional files outside the provided evidence.
     - **Workflow metadata** (`Project Summary`, `Project Kind`): treat these as hints, not ground truth. If the visible codebase contradicts them, rely on the code and note the metadata mismatch instead of restating the hint as fact.
+    - **Valid test idioms**: Jest/Vitest assertions such as `await expect(promise).rejects.toThrow(...)` are valid test patterns. Do not recommend wrapping them in `try/catch`, and do not turn them into production error-handling findings.
 
     **Project Context:**
     - Project: {project_name}
@@ -489,6 +506,9 @@ async_perf_engineer_prompt:
     Analyze ONLY the source files explicitly listed in Analyzed File Paths above. Do not assume or invent code patterns, async chains, or event handlers not shown in the provided context.
     Treat each request as scope-limited. If this prompt is partitioned, do not generalize findings to files or file regions that are not shown in the current request.
     If any provided file content is truncated, omitted, split into partial file parts, or otherwise incomplete for the claim you want to make, mark that conclusion as unavailable or inconclusive. Do not claim that a symbol is unused, that cleanup is missing, that a handler is registered, or that an error path does not exist unless the relevant implementation is fully visible in the provided context.
+    If an analyzed path is labeled `(part X/Y)`, do not issue a whole-file clean bill of health from that excerpt alone. Keep any "no issues found" statement scoped to the visible excerpt/partition, and mark whole-file conclusions as unavailable or inconclusive unless the needed parts are all present in the current request.
+    If every provided file is either a test file or a tooling/config file, explicitly conclude that no production async-performance findings are supported by the current evidence. In that case, avoid speculative "general production" advice and keep any optional observations scoped to the visible test/tooling context.
+    Never flag a test-only assertion idiom (for example `await expect(...).rejects.toThrow(...)`) as an async error-handling defect.
 
     **Priority Order:**
     1. Memory leaks and resource cleanup issues (CRITICAL — can cause process crashes)

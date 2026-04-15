@@ -380,6 +380,7 @@ accessibility_review_prompt:
   behavioral_guidelines: *behavioral_structured
 
   task_template: |
+    {partition_header}
     **YOUR TASK**: Perform an accessibility review of the provided UI-related artifacts for {project_name}.
 
     **Project Context:**
@@ -390,6 +391,8 @@ accessibility_review_prompt:
     - Source Files Analyzed: {source_file_count}
     - File Paths:
     {file_paths}
+
+    {partition_scope_note}
 
     **File Contents (sampled source excerpts):**
     {file_content_block}

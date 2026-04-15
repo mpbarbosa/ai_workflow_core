@@ -7,9 +7,9 @@ step1_5_copilot_instructions_prompt:
   behavioral_guidelines: *behavioral_actionable
 
   task_template: |
-    **YOUR TASK**: Audit and correct `{copilot_instructions_path}` so it matches the live repository.
+    **YOUR TASK**: Audit and correct `{copilot_instructions_path}` so it becomes a concise, durable, high-signal Copilot guidance file for the live repository.
 
-    This is a mandatory authority file for Copilot-assisted development. Treat the current file as untrusted input: it may contain stale versions, outdated workflow counts, wrong file paths, or obsolete implementation claims.
+    This is a repository authority file for Copilot-assisted development. Treat the current file as untrusted input: it may contain stale versions, duplicated reference material, overly broad project-handbook content, wrong file paths, or obsolete implementation claims.
 
     **Authoritative repo facts (highest priority — use these instead of trusting the current document):**
     {repo_facts}
@@ -20,29 +20,30 @@ step1_5_copilot_instructions_prompt:
     ```
 
     **Required corrections**:
-    1. Fix stale repo metadata, version numbers, workflow-step counts, and command references.
-    2. Remove or rewrite claims that are not supported by the authoritative repo facts or visible source files.
-    3. Preserve useful sections and project-specific guidance when they are still correct.
-    4. Keep the file focused on real repository behavior rather than aspirational roadmap text unless the roadmap is explicitly documented in visible repo files.
-    5. If a claim cannot be verified from the provided repo facts or visible file content, rewrite it conservatively instead of inventing details.
+    1. Keep the file focused on guidance that directly improves Copilot's coding decisions for this repository.
+    2. Preserve durable, project-specific guidance such as architecture boundaries, design principles, documentation-sync rules, and standard validation commands when they are supported by the repo facts.
+    3. Remove or condense content that belongs in other owned docs: implementation status snapshots, numeric inventories, workflow or command lists, installation walkthroughs, migration details, and other broad reference-manual material.
+    4. When detailed reference material is still useful, replace duplicated detail with short pointers to the authoritative documents instead of copying the full content.
+    5. Rewrite any unsupported or stale claim conservatively instead of inventing details.
 
     **Output format**: Return ONLY one fenced ```markdown block containing the full corrected replacement for `{copilot_instructions_path}`. Do not add commentary before or after the fenced block.
 
   approach: |
     **Editing methodology**:
     1. Start from the authoritative repo facts, not from the current document.
-    2. Reconcile the current file section by section:
-       - Project overview and version statements
-       - Workflow step counts and phase descriptions
-       - Directory/module inventories
-       - CLI commands, scripts, and GitHub Actions references
-       - Testing, documentation, and architecture claims
-    3. Prefer exact visible facts over approximate wording.
-    4. Preserve markdown structure where it remains valid, but rewrite stale sections completely when needed.
+    2. First decide whether each section is:
+       - still relevant to a Copilot guidance file,
+       - worth condensing,
+       - better extracted into an existing document and replaced with a pointer,
+       - or redundant and removable.
+    3. Prefer durable guidance over volatile reference data.
+    4. Preserve useful markdown structure where it remains valid, but rewrite stale or oversized sections completely when needed.
 
     **Hard rules**:
-    - Do NOT invent missing files, counts, commands, or capabilities.
-    - Do NOT keep incorrect numeric claims (for example step counts or test counts) when the repo facts disagree.
+    - Do NOT invent missing files, counts, commands, capabilities, or documents.
+    - Do NOT recreate exhaustive inventories, count summaries, release-status snapshots, or tutorial-style content inside the Copilot instructions file unless the repo facts clearly show they are essential to Copilot guidance.
+    - Do NOT keep incorrect numeric or status claims when the repo facts disagree.
+    - Do prefer brief links or pointers to authoritative docs when detailed material already exists elsewhere in the repository.
     - Do NOT output a patch, summary, or bullet list — output the complete corrected file only.
     - If the current file contains broad historical claims that cannot be validated, replace them with wording grounded in the provided facts.
 

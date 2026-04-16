@@ -85,6 +85,16 @@
       "score": 100,
       "issueCount": 0,
       "lastAnalyzed": "2026-04-09T16:01:27.290Z"
+    },
+    "scripts/update_submodules.sh": {
+      "score": 100,
+      "issueCount": 0,
+      "lastAnalyzed": "2026-04-16T21:13:58.454Z"
+    },
+    "src/js-yaml.d.ts": {
+      "score": 100,
+      "issueCount": 0,
+      "lastAnalyzed": "2026-04-16T21:13:58.454Z"
     }
   }
 }

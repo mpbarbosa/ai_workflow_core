@@ -1508,7 +1508,7 @@ metadata:
     - version: "1.5.0"
       date: "2026-02-22"
       changes: "Added location_based_service project kind for geolocation-aware client SPAs (tourist guides, map apps, POI browsers)"
-    - version: "1.4.1"
+    - version: "1.4.2"
       date: "2026-02-21"
       changes: "Added nodejs_automation project kind for Node.js CLI tools and automation frameworks"
     - version: "1.3.1"

@@ -31,6 +31,11 @@ structure:
     - docs
     - examples
 
+deploy:
+  enabled: true
+  script: "scripts/deploy.sh"
+  description: "Validate and publish ai_workflow_core to npm"
+
 # ============================================================================
 # WORKFLOW EXECUTION CONFIGURATION (v4.0.0+)
 # ============================================================================

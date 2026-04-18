@@ -1806,13 +1806,15 @@ step2_consistency_prompt:
     
        **Analysis Framework** (apply to each entry):
     
-       a) **False Positive Check**: Is the target truly missing or a false positive?
-          - Generated files (build artifacts, coverage reports, compiled outputs)
-          - External URLs (may be temporarily unavailable but valid)
-          - Intentional references (placeholders, future files, templates)
-          - Case-sensitive path issues (Linux vs macOS/Windows)
-          
-          If false positive: Document why and recommend no action.
+        a) **False Positive Check**: Is the target truly missing or a false positive?
+           - Resolve the target relative to the source file's directory before deciding whether it is missing
+           - Generated files (build artifacts, coverage reports, compiled outputs)
+           - External URLs (may be temporarily unavailable but valid)
+           - Intentional references (placeholders, future files, templates)
+           - Case-sensitive path issues (Linux vs macOS/Windows)
+           - If the source-relative resolved path already appears in the visible file list, diagnose the problem as an incorrect relative link or scan-resolution issue and name that exact path in the root cause instead of claiming the target is absent
+            
+           If false positive: Document why and recommend no action.
     
        b) **Root Cause Determination**: If truly missing, what caused it?
           - **Renamed file**: File exists but at different name
@@ -1847,11 +1849,11 @@ step2_consistency_prompt:
        **Output Format for Each Reference**:
        
        ### Reference: [file.md:line] → [target]
-       - **Status**: [False Positive / Truly Broken]
-       - **Root Cause**: [Specific cause with evidence]
-       - **Recommended Fix**: [Specific action with example]
-       - **Priority**: [Critical/High/Medium/Low] - [Justification]
-       - **Impact**: [Who is affected and how]
+        - **Status**: [False Positive / Truly Broken / Unverified From Visible Context]
+        - **Root Cause**: [Specific cause with evidence]
+        - **Recommended Fix**: [Specific action with example]
+        - **Priority**: [Critical/High/Medium/Low] - [Justification]
+        - **Impact**: [Who is affected and how]
     
     5. **Quality Checks:**
        - Missing documentation for new features
@@ -1903,7 +1905,8 @@ step2_consistency_prompt:
     - Recommendations for fixes with rationale
     - Priority level (Critical/High/Medium/Low) for each issue
     - Actionable remediation steps
-    
+    - Explicitly call out any remaining limited or inconclusive checks instead of implying exhaustive validation
+
     **Documentation Standards to Apply:**
     - Technical accuracy and precision
     - Consistency in terminology and formatting
@@ -1920,6 +1923,14 @@ step2_consistency_prompt:
     **Language-Specific Standards:** {language_specific_documentation}
     
     Please analyze the documentation files and provide a detailed consistency report.
+    Resolve every broken-reference candidate relative to its source file before you infer a root cause
+    or propose a fix. For example, from `docs/developers/ONBOARDING.md`, the target
+    `api/PROJECT_KINDS_SCHEMA.md` must be evaluated as a relative link from that directory; if the
+    visible file list instead contains `docs/api/PROJECT_KINDS_SCHEMA.md`, diagnose an incorrect
+    relative path and recommend the exact relative correction (such as `../api/PROJECT_KINDS_SCHEMA.md`)
+    rather than adding a redundant `docs/` prefix.
+    If any requested comparison stays limited, truncated, or otherwise inconclusive, keep the summary
+    narrowly scoped to the visible evidence and state that the remaining checks are inconclusive.
 
 # Step 3: Shell Script Reference Validation Prompt Template
 step3_script_refs_prompt:
@@ -2721,7 +2732,7 @@ step12_git_commit_prompt:
     **Context:**
     - Project: {project_name}
     - Project Summary: {project_summary}
-    - Workflow: Tests & Documentation Automation v{script_version} (ai_workflow automated pipeline; version defined in `package.json` and `.workflow-config.yaml`)
+    - Workflow: Tests & Documentation Automation v{script_version} (ai_workflow automated pipeline run for this project's current version; project version typically sourced from `package.json`, with `.workflow-config.yaml` available as supplemental project metadata when present)
     - Change Scope: {change_scope} (changed file paths listed in "Changed Files" section below)
     
     **Git Repository Analysis:**
@@ -2729,6 +2740,9 @@ step12_git_commit_prompt:
     
     **Changed Files:**
     {changed_files}
+
+    Treat "Changed Files" as the authoritative list of project files in scope
+    for this commit.
     
     **Staged Commit Statistics (includes workflow artifacts and individual file names):**
     {diff_summary}
@@ -2738,6 +2752,23 @@ step12_git_commit_prompt:
     
     **Diff Sample (first 100 lines):**
     {diff_sample}
+
+    The diff sample is partial and may omit files or surrounding context. Do
+    not claim validation, synchronization, alignment, or completeness unless
+    the provided context explicitly shows it. If counts disagree or the
+    evidence is partial, use cautious wording and avoid unsupported exact
+    claims.
+
+    Do not treat filenames, file categories, commit heuristics, or
+    auto-extracted issue summaries as proof of a specific change within a file.
+    Only mention a file-level action, rationale, improvement, or impact when
+    the provided diff content or explicit contextual text shows it.
+
+    If the visible evidence is too limited to support a confident body
+    paragraph, bullet list, or breaking-change conclusion, prefer a shorter
+    commit message and leave the uncertain detail unstated. Do not add "No
+    breaking changes detected" or similar certainty language unless the
+    provided context explicitly supports that conclusion.
     
     **Tasks:**
     
@@ -2785,6 +2816,9 @@ step12_git_commit_prompt:
     
     Optional body paragraph explaining what and why, not how.
     Wrap at 72 characters per line.
+
+    It is acceptable to return only the subject line when a fuller body would
+    require speculation beyond the provided evidence.
     
     - List key changes as bullet points
     - Each bullet should be clear and actionable
@@ -2810,40 +2844,35 @@ markdown_lint_prompt:
     following style-guide hierarchy (highest priority first):
 
     1. **`.github/copilot-instructions.md`** — primary project-level
-       authority; check whether this file exists before applying its
-       rules.
-    2. **`.github/CONTRIBUTING.md`** — secondary authority; check
-       whether this file exists before applying its rules. Contains the
-       full contribution guidelines including code style and immutability
-       principles.
-    3. **Generic markdown defaults** — apply when neither
-       project-specific file exists, or for any rule not addressed by
-       those files. Examples of generic defaults: CommonMark spec
-       compliance, ATX-style headings (`#` prefixes), 4-space nested
-       list indentation, blank lines before/after fenced code blocks,
-       and descriptive link text (avoid bare URLs as link labels).
-
-    > **Note:** The root `CONTRIBUTING.md` is a conventional entry-point
-    > pointer only — it redirects to `.github/CONTRIBUTING.md` and does
-    > not contain authoritative rules itself. **Do not apply its content
-    > as authoritative markdown style rules**, even if it contains
-    > markdown formatting guidance.
+        authority; check whether this file exists before applying its
+        rules.
+    2. **Contribution guidance files that actually exist** — check, in
+       order, `.github/CONTRIBUTING.md`, `docs/CONTRIBUTING.md`, and
+       `CONTRIBUTING.md`. Apply only the markdown or documentation rules
+       that are explicitly present in the visible file content.
+    3. **Generic markdown defaults** — apply when project-specific files
+       are absent or silent on a topic. Examples: CommonMark compliance,
+       ATX-style headings (`#` prefixes), 4-space nested list
+       indentation, blank lines before/after fenced code blocks, and
+       descriptive link text.
 
     **Before beginning your analysis**, confirm which of the above files
     are present in the codebase. If project-specific files are found,
     briefly identify the most relevant markdown rules they define. If
-    neither `.github/copilot-instructions.md` nor
-    `.github/CONTRIBUTING.md` exists, apply generic markdown best
-    practices for all rules.
+    a file exists but does not define markdown guidance relevant to this
+    task, say so and fall back to the next source in the hierarchy. Do
+    not assume a missing file exists, and do not assume one
+    `CONTRIBUTING` location redirects to another unless the visible file
+    content explicitly says so.
 
-    If only one of the two project-specific files is present, apply its
-    rules for the topics it covers and fall back to generic markdown
-    defaults for everything else.
+    If only one project-specific file is present, apply its rules for
+    the topics it covers and fall back to generic markdown defaults for
+    everything else.
 
-    If `.github/copilot-instructions.md` and `.github/CONTRIBUTING.md`
-    give conflicting guidance, `.github/copilot-instructions.md` takes
-    precedence. In all cases, project-specific conventions override
-    generic markdown defaults.
+    If multiple project-specific files are present and they conflict,
+    `.github/copilot-instructions.md` takes precedence over contribution
+    guides. In all cases, project-specific conventions override generic
+    markdown defaults only when their content is visible and relevant.
     
     # Markdown Linting Results
     {lint_report}
@@ -2854,8 +2883,8 @@ markdown_lint_prompt:
     
     # Focus Areas (Enabled Rules Only)
     
-    The following rules are **DISABLED** in .mdlrc and should be
-    **IGNORED** in your analysis:
+    The following rules are treated as **DISABLED** for this analysis and
+    should be **IGNORED** in your response:
     - MD001 (header level increments) - AI formatting pattern
     - MD002 (first header level) - document structure flexibility
     - MD012 (multiple blank lines) - visual separation preference
@@ -2893,7 +2922,16 @@ markdown_lint_prompt:
          by raw violation frequency
     
     2. **Critical Issues**:
-       - List specific files and line numbers with enabled rule violations
+       - List specific files and line numbers with enabled rule
+         violations only when the provided evidence explicitly includes
+         them
+       - If the visible lint output includes only aggregate counts,
+         top-file totals, or other partial evidence, say
+         `Unavailable from visible lint output` or
+         `Inconclusive from provided evidence` instead of inferring file-
+         or line-specific violations
+       - Do not assign a rule to a file unless the visible evidence links
+         that rule to that file
        - Explain impact on rendering or accessibility
        - DO NOT mention disabled rules (MD001, MD002, MD012, MD013, MD022,
          MD029, MD031, MD032)
@@ -2907,13 +2945,18 @@ markdown_lint_prompt:
          echo >> {{}}' \;`
     
     4. **Editor Configuration**:
-       - Suggest .editorconfig settings to prevent future issues
+       - Suggest `.editorconfig` settings only as recommendations unless
+         the file content is explicitly shown in the provided evidence
        - Recommend VS Code / editor settings
-    
+
     5. **Prevention Strategy**:
        - How to avoid these issues in AI-generated markdown
        - Pre-commit hook recommendations
        - Workflow automation improvements
+       - Base repo-specific recommendations only on files or
+         configuration visibly present in the provided evidence
+       - If existing automation already covers a rule, acknowledge that
+         coverage before suggesting incremental improvements
   
   approach: |
     Analyze ONLY the markdown files and lint results explicitly listed above. Do not report violations for rules not in the enabled set.
@@ -2922,10 +2965,16 @@ markdown_lint_prompt:
     Disabled rules (MD001, MD002, MD012, MD013, MD022, MD029, MD031, MD032)
     are intentionally relaxed for AI-generated content and should not be
     mentioned in your analysis.
+
+    Treat aggregate totals, top-file lists, and anti-pattern summaries as
+    partial evidence. If the visible data does not include exact enabled-
+    rule file/line mappings, do not fabricate them; prefer an explicit
+    unavailable or inconclusive result.
     
     **Output Format:**
     - Concise analysis focused on enabled rules only
-    - Specific file paths and line numbers for violations
+    - Specific file paths and line numbers for violations only when
+      visible evidence supports them
     - Actionable recommendations with commands/examples
     - Focus on automation and prevention
     
@@ -2936,9 +2985,13 @@ markdown_lint_prompt:
     - Header punctuation: Style guide - headers are labels, not sentences
     
     **Reference Documentation:**
-    - See docs/MARKDOWN_LINTING_GUIDE.md for complete guidance
-    - .mdlrc configuration documents disabled rules with rationale
-    - .editorconfig provides automated formatting rules
+    - Cite only repo files that are actually visible in the provided
+      evidence
+    - Do not claim `.mdlrc`, `.editorconfig`, CI requirements, or
+      markdown-specific guide files exist unless the visible evidence
+      confirms them
+    - When visible evidence already shows existing pre-commit or CI
+      coverage, acknowledge it instead of recommending it as missing
 
 
 # Step 04: Configuration Specialist Prompt Template

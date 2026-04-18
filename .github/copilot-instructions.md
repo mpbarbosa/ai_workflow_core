@@ -1,67 +1,51 @@
 # GitHub Copilot Instructions: ai_workflow_core
 
-> **Purpose:** This file provides durable, high-signal guidance for Copilot-assisted development in the `ai_workflow_core` repository. It is not a project handbook or reference manual—keep content focused on Copilot-relevant architecture, design, documentation sync, and validation rules. Link to authoritative docs for details.
+> **Purpose:** Durable, high-signal guidance for Copilot-assisted development in this repository. Focus on stable architecture, design principles, documentation sync, and validation. Link to authoritative docs for details.
 
 ---
 
-## Scope and Role
+## Scope
 
-- **ai_workflow_core** is a language-agnostic foundational template system for AI-powered workflow automation.
-- This repository provides configuration templates, schemas, and examples for use as a Git submodule in other projects.
-- It is **not** a workflow execution engine; do not reference or assume step orchestration or runtime logic here.
+- `ai_workflow_core` is a language-agnostic foundational template system for AI-powered workflow automation.
+- This repository provides configuration templates, schemas, and loader utilities for use as a submodule in other projects.
+- It does **not** implement workflow execution, step orchestration, or runtime logic.
 
 ---
 
-## Durable Copilot Guidance
+## Copilot Guidance
 
-### 1. Architecture and Boundaries
+### Architecture and Boundaries
 
-- **Templates and Schemas Only:** All code and configuration in this repo is for template, schema, or documentation purposes. No execution logic or runtime orchestration is present.
-- **Supporting Surfaces:** Key files include `.workflow-config.yaml` (project-local config) and `.ai_workflow/` (runtime artifacts, cache, checkpoints).
-- **No Source Layers:** There are no stable source code layers or public package entry points in this repository.
+- **Source:** All primary modules and public API are in `src/`.
+- **Supporting surfaces:** `.workflow-config.yaml` (project-local config), `.ai_workflow/` (runtime artifacts, cache, checkpoints).
+- **Public entry points:** `main -> dist/index.js`, `types -> dist/index.d.ts`.
+- **No execution engine:** Do not reference or assume workflow execution or orchestration logic.
 
-### 2. Design Principles
+### Design Principles
 
-- **Language-Agnostic:** All templates and schemas must remain language-neutral.
-- **Placeholder Patterns:** Use `{{PLACEHOLDER}}` syntax in templates. Never replace placeholders with project-specific values in core templates.
-- **Separation of Concerns:** Keep configuration, documentation, and example integrations clearly separated.
-- **Documentation Alignment:** All user-facing changes to templates or schemas must be reflected in the relevant documentation (see below).
+- **Language-agnostic:** Templates and schemas must remain language-neutral.
+- **Placeholder syntax:** Use `{{PLACEHOLDER}}` in templates; never substitute project-specific values in core templates.
+- **Separation of concerns:** Keep configuration, documentation, and examples clearly separated.
+- **Documentation alignment:** All user-facing changes to templates or schemas must be reflected in the relevant documentation.
 
-### 3. Documentation Sync Rules
+### Documentation Sync
 
-- **Update authoritative docs** when making user-facing changes:
-  - `README.md` for project overview, usage, and placeholder reference.
+- **Update authoritative docs** for user-facing changes:
+  - `README.md` for overview, usage, and placeholder reference.
   - `docs/ARCHITECTURE.md` for architecture or layout changes.
   - `docs/guides/MIGRATION_GUIDE.md` for migration or breaking changes.
   - `CHANGELOG.md` for all significant changes.
 - **Do not duplicate** inventories, command lists, or status snapshots here—link to the above docs instead.
 
-### 4. Validation Commands
+### Validation
 
 - **Always validate substantive changes** with:
   - `npm run lint`
   - `npm test`
   - `npm run build`
-- Use narrower scripts only for intentionally scoped tasks.
 - For configuration or template changes, validate YAML syntax and placeholder documentation as described in the authoritative docs.
 
-### 5. Reference and Integration
-
-- **For detailed reference:** See `README.md`, `docs/ARCHITECTURE.md`, and `CHANGELOG.md`.
-- **For integration patterns:** See `.workflow-config.yaml` and `.ai_workflow/` in this repo, and refer to the parent project ([ai_workflow](https://github.com/mpbarbosa/ai_workflow)) for execution engine details.
-- **For migration or compatibility:** See `docs/guides/MIGRATION_GUIDE.md`.
-
----
-
-## What to Avoid
-
-- Do **not** include implementation status, numeric inventories, or workflow/command lists—these belong in the main documentation.
-- Do **not** reference or describe workflow execution, step orchestration, or runtime logic—this repository does not provide those features.
-- Do **not** copy detailed reference material—link to the authoritative document instead.
-
----
-
-## Authoritative References
+### References
 
 - [README.md](../README.md) – Project overview, usage, placeholder reference
 - [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md) – Architecture and design
@@ -70,4 +54,6 @@
 
 ---
 
-_Last updated: 2026-04-16 • For Copilot-assisted development in ai_workflow_core_
+**Do not include implementation status, numeric inventories, or workflow/command lists here. Do not reference workflow execution or runtime logic. Link to authoritative docs for details.**
+
+_Last updated: 2026-04-18 • For Copilot-assisted development in ai_workflow_core_

@@ -27,7 +27,7 @@
 #   - copilot_sdk_engineer: GitHub Copilot SDK wrapper specialist for CLI session lifecycle,
 #     request serialization, SSE stream parsing, BYOK auth, hook adapters, and agentic
 #     execution patterns (olinda_copilot_sdk.ts team alignment)
-# - 1.4.2 (2026-04-02): Added 4 ai_workflow.js team roles
+# - 1.4.3 (2026-04-02): Added 4 ai_workflow.js team roles
 #   - workflow_orchestration_engineer: DAG-based workflow engine, step registry, dependency
 #     resolution, checkpoint/resume, and orchestrator event system specialist
 #   - workflow_step_engineer: Workflow step authoring, step contract compliance, AI prompt
@@ -883,7 +883,7 @@ roles:
       - Priority-based speech queue design: queue ordering by priority level (municipality > neighbourhood > street > periodic), deduplication, cancellation of lower-priority utterances on higher-priority arrival
       - Brazilian Portuguese TTS text normalisation: address abbreviation expansion (R. → Rua, Av. → Avenida), number-to-word conversion, acronym handling (CEP, IBGE, UF), natural phrasing for location announcements
       - Speech configuration parameters: rate (0.1–10.0), pitch (0.0–2.0), volume (0.0–1.0) validation and clamping, user preference persistence
-      - WCAG 2.1 AA/AAA compliance: success criteria 1.1.1 (non-text content), 1.3.1 (info and relationships), 1.4.2 (use of colour), 2.1.1 (keyboard), 2.4.3 (focus order), 4.1.3 (status messages)
+      - WCAG 2.1 AA/AAA compliance: success criteria 1.1.1 (non-text content), 1.3.1 (info and relationships), 1.4.3 (use of colour), 2.1.1 (keyboard), 2.4.3 (focus order), 4.1.3 (status messages)
       - ARIA live regions: aria-live="polite" vs "assertive" selection, aria-atomic, aria-relevant, screen-reader announcement sequencing, avoiding announcement floods
       - Focus management: focus trap for modal dialogs, focus restoration after dynamic content updates, skip-link implementation and testing
       - Accessible button state communication: aria-disabled vs disabled attribute trade-offs, aria-describedby for contextual status messages, role="status" live regions

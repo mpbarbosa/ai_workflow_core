@@ -3,7 +3,7 @@
 **Foundational configuration and templates for AI-powered workflow automation across multiple languages**
 
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](docs/LICENSE)
-[![Version](https://img.shields.io/badge/version-1.4.2-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-1.4.3-blue.svg)]()
 
 ## Overview
 

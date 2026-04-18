@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **`.github/copilot-instructions.md`** — Corrected repository-boundary guidance so it acknowledges the configuration-focused TypeScript loader package surface (`src/index.ts` / `dist/`) while still forbidding workflow-execution claims.
+- **`config/ai_helpers.yaml`** — Hardened `step12_git_commit_prompt` so partial diff context no longer justifies speculative file-specific body bullets, inferred benefits, or a forced "No breaking changes detected" line; the prompt now prefers shorter commit messages when the visible evidence is inconclusive.
+- **`config/ai_helpers.yaml`** — Hardened `step2_consistency_prompt` documentation-link analysis rules so broken-reference reviews must resolve targets relative to the source file, can report `Unverified From Visible Context` when evidence is incomplete, and must not imply exhaustive success when checks remain inconclusive.
 - **`package.json`** — npm publish now runs `build:helpers` via `prepublishOnly`, so the generated `config/ai_helpers.yaml` artifact is merged and validated before deployment.
 - **`config/ai_helpers.yaml`** — Hardened `step5_directory_prompt` Task section (v7.0.12):
   - Rewrote the opening block so the Task section is explicitly self-contained, with the authoritative definitions for required structure and content/structure included in the same prompt block.

@@ -628,5 +628,5 @@ git submodule add <your-fork-url> .workflow_core
 **Version History:**
 - v1.6.0 (2026-04-10): Added `validateConfig()`; created PROMPT_ROLES_REFERENCE.md; expanded FUNCTIONAL_REQUIREMENTS.md; fixed `resolvePersona` prototype-key bug
 - v1.5.0 (2026-04-10): Added `listPersonas()` to TypeScript loader; expanded AI_HELPERS_REFERENCE.md to v7.0.5; synced version numbers
-- v1.4.2 (2026-04-09): TypeScript loader (`loadPersonas`, `resolveAllPersonas`, `resolvePersona`, `isPersonaConfig`)
+- v1.4.3 (2026-04-09): TypeScript loader (`loadPersonas`, `resolveAllPersonas`, `resolvePersona`, `isPersonaConfig`)
 - v1.0.2 (2026-01-31): Initial architecture documentation

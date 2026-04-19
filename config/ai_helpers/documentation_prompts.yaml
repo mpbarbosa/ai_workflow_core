@@ -12,7 +12,12 @@ doc_analysis_prompt:
     
     **Changed files**: {changed_files}
     **Documentation to review**: {doc_files}
-    **Also in scope**: Any files referenced in the Quick links table of `CONTRIBUTING.md` (e.g., `docs/GETTING_STARTED.md`, `docs/ARCHITECTURE.md`, `docs/API.md`) that exist in the repository are also in scope for updates.
+    **Also in scope**: The listed documentation files are the minimum required review set, not the exhaustive limit. Existing authoritative docs directly affected by the changed files are also in scope, including:
+    - `README.md` for overview, usage, and public entry points
+    - `docs/ARCHITECTURE.md` for architecture or layout changes
+    - `docs/guides/MIGRATION_GUIDE.md` for breaking changes or migration steps
+    - `CHANGELOG.md` for significant user-facing changes
+    - Existing module-local docs or API references that document changed modules
     
     **REQUIRED ACTIONS**:
     1. **Read the changes**: Examine what was modified in each changed file
@@ -30,7 +35,7 @@ doc_analysis_prompt:
     **OUTPUT FORMAT**: Use edit blocks showing before/after, or provide specific line-by-line changes. If no edits are needed, state "No updates required" with a one-line reason.
   
   approach: |
-    Analyze ONLY the documentation files explicitly listed above. Do not reference, invent, or assume documentation not in that list.
+    Treat the listed documentation files as minimum required targets, not the exhaustive limit. You may inspect any existing documentation directly implicated by the changed files or the authoritative-doc rules above, but do not reference, invent, or assume missing documentation.
 
     **Methodology**:
     1. **Analyze Changes**: Use `@workspace` to examine what was modified in each changed file

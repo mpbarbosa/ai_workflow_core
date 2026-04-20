@@ -214,15 +214,12 @@ doc_analysis_prompt:
     
     **Changed files**: {changed_files}
     **Documentation to review**: {doc_files}
-    **Also in scope**: The listed documentation files are the minimum required review set, not the exhaustive limit. Existing authoritative docs directly affected by the changed files are also in scope, including:
-    - `README.md` for overview, usage, and public entry points
-    - `docs/ARCHITECTURE.md` for architecture or layout changes
-    - `docs/guides/MIGRATION_GUIDE.md` for breaking changes or migration steps
-    - `CHANGELOG.md` for significant user-facing changes
-    - Existing module-local docs or API references that document changed modules
+    **Scope rule**: Analyze ONLY the documentation files explicitly listed above plus any additional documentation files that already appear in the provided changed-file list.
+    Treat authority docs, module-local docs, or other references as in scope only when they satisfy that rule or their contents are explicitly included in this request.
     
     {partition_header}
     {partition_scope_note}
+    Entries labeled "(part X/Y)" are sequential chunks of oversized files; treat unseen parts or omitted files as unavailable unless their contents are included in this request.
     
     **File paths in this request**:
     {file_paths_in_request}
@@ -246,7 +243,7 @@ doc_analysis_prompt:
     **OUTPUT FORMAT**: Use edit blocks showing before/after, or provide specific line-by-line changes. If no edits are needed, state "No updates required" with a one-line reason.
   
   approach: |
-    Treat the listed documentation files as minimum required targets, not the exhaustive limit. You may inspect any existing documentation directly implicated by the changed files or the authoritative-doc rules above, but do not reference, invent, or assume missing documentation.
+    Analyze ONLY the documentation files explicitly listed above plus any additional documentation files that already appear in the provided changed-file list. Do not reference, invent, or assume missing documentation outside that scope.
 
     **Methodology**:
      1. **Analyze Changes**: Use the provided file contents and changed-file excerpts to examine what was modified in each changed file
@@ -255,7 +252,7 @@ doc_analysis_prompt:
         - Assess the scope and impact of each change
      
      2. **Prioritize Updates**: Start with most critical documentation
-        - Primary: README.md, .github/copilot-instructions.md
+        - Primary: the highest-impact documentation files already present in the provided scope
         - Secondary: additional technical docs already present in the provided scope
         - Tertiary: Inline code comments
      
@@ -283,7 +280,7 @@ doc_analysis_prompt:
     **Critical Guidelines**:
     - ALWAYS provide specific edits or explicitly state "No updates needed"
     - NEVER ask clarifying questions - make informed decisions
-    - DEFAULT to no changes if documentation appears current
+    - DEFAULT to "Unavailable" or "Inconclusive" rather than "No updates required" when critical evidence is missing
     - FOCUS on accuracy over completeness
     - Keep the response dense and modular - prefer concise edit blocks over expansive narrative
     - Avoid verbosity, creative expansion, and speculative rewrites beyond the visible change set
@@ -1813,8 +1810,8 @@ step1_5_copilot_instructions_prompt:
     4. Preserve useful markdown structure where it remains valid, but rewrite stale or oversized sections completely when needed.
 
     **Hard rules**:
-    - Do NOT invent missing files, counts, commands, capabilities, or documents.
-    - Treat the authoritative repo facts block — including any surfaced reference-doc titles or snippets — and the current file excerpt above as the only visible evidence for repo-specific claims in this task.
+      - Do NOT invent missing files, counts, commands, capabilities, or documents.
+      - Treat the authoritative repo facts block and the current file excerpt above as the only visible evidence for repo-specific claims in this task.
      - Do NOT recreate exhaustive inventories, count summaries, release-status snapshots, or tutorial-style content inside the Copilot instructions file unless the repo facts clearly show they are essential to Copilot guidance.
       - Do NOT keep incorrect numeric or status claims when the repo facts disagree.
       - Do NOT introduce repository-specific implementation details, template syntax, helper modules, or workflow conventions unless they are explicitly stated in the repo facts block or literally visible in the current file content.
@@ -1926,15 +1923,16 @@ step2_consistency_prompt:
     
        **Your task**: For each `source:line → target` entry, perform systematic root cause analysis on the MISSING TARGET. Use the **Output Format** template at the end of this section for each entry.
     
-       **Analysis Framework** (apply to each entry):
-    
-        a) **False Positive Check**: Is the target truly missing or a false positive?
-           - Non-link syntax inside fenced code blocks or inline code (for example regex literals, glob patterns, placeholders, or sample strings) is **not** a broken file target unless the visible markdown syntax makes it an actual link/reference
-           - Generated files (build artifacts, coverage reports, compiled outputs)
-           - External URLs (may be temporarily unavailable but valid)
-           - Intentional references (placeholders, future files, templates)
-           - Case-sensitive path issues (Linux vs macOS/Windows)
-           - Resolve the target relative to the source file's directory before deciding whether it is missing; nested docs often use links like `api/foo.md`, `../README.md`, or `guides/FAQ.md` that are meaningful only after source-relative resolution
+        **Analysis Framework** (apply to each entry):
+     
+         a) **False Positive Check**: Is the target truly missing or a false positive?
+            - Non-link syntax inside fenced code blocks or inline code (for example regex literals, glob patterns, placeholders, or sample strings) is **not** a broken file target unless the visible markdown syntax makes it an actual link/reference
+            - If the candidate appears inside a visible fenced code block, inline code span, or sample snippet and the visible markdown does not make it an actual link, classify it as **False Positive** and recommend no action; do **not** leave it as unverified or suggest placeholder cleanup
+            - Generated files (build artifacts, coverage reports, compiled outputs)
+            - External URLs (may be temporarily unavailable but valid)
+            - Intentional references (placeholders, future files, templates)
+            - Case-sensitive path issues (Linux vs macOS/Windows)
+            - Resolve the target relative to the source file's directory before deciding whether it is missing; nested docs often use links like `api/foo.md`, `../README.md`, or `guides/FAQ.md` that are meaningful only after source-relative resolution
            - If that source-relative resolved path already appears in the visible file list, treat the issue as a relative-path mistake or scan-resolution issue and name that exact path in the root cause; do **not** claim the target is absent from the file list
            - Targets that are simply absent from the current partition's visible file list or excerpts are **not**
              automatically confirmed missing in the live repository; if the current prompt does not include
@@ -1952,19 +1950,20 @@ step2_consistency_prompt:
           
           Document the specific cause with evidence.
     
-        c) **Fix Recommendation**: What's the specific fix?
-           - **Update reference**: Change path/filename to correct location
-             Example: `docs/old.md` → `docs/new.md`
+         c) **Fix Recommendation**: What's the specific fix?
+            - **Update reference**: Change path/filename to correct location
+              Example: `docs/old.md` → `docs/new.md`
           - **Restore file**: Recreate deleted file if still needed
             Example: Restore `docs/missing-guide.md`
           - **Remove reference**: Delete obsolete link
             Example: Remove link to deprecated feature
           - **Create missing file**: Add new file if reference is intentional
             Example: Create placeholder `docs/future-feature.md`
-          
-           Provide before/after examples for each fix.
-           If the target is only absent from the visible context and the correct fix cannot be determined from
-           the prompt evidence, recommend follow-up confirmation rather than defaulting to "create the file".
+           
+            Provide before/after examples for each fix.
+            If the visible context shows an existing destination file, recommend the exact **source-relative** replacement path that should appear in the source file; never suggest a repo-root-looking path for a nested source file
+            If the target is only absent from the visible context and the correct fix cannot be determined from
+            the prompt evidence, keep the item **Unverified From Visible Context** and recommend follow-up confirmation rather than defaulting to "create the file", "create the directory", or a guessed replacement path.
     
        d) **Priority Assessment**: What's the impact and urgency?
           - **Critical**: User-facing docs (README, getting started, installation)
@@ -2062,11 +2061,13 @@ step2_consistency_prompt:
         - Unlabelled fenced blocks are not automatically inconsistent; only report a code-block
           language-tag issue when the exact visible block and a visible project convention
           support that conclusion
-        - If any requested comparison remains limited, truncated, partitioned, or otherwise inconclusive,
+       - If any requested comparison remains limited, truncated, partitioned, or otherwise inconclusive,
           keep the summary scoped to the visible evidence and explicitly say the remaining checks are
           inconclusive rather than implying exhaustive validation
-       - Do not claim overall consistency with package manifests, scripts, build steps, or
-         source code unless that supporting evidence is explicitly visible in the provided context
+       - Do not write negative pass findings such as "No visible inconsistencies", "No evidence of mismatched terminology", or "No missing cross-references detected" unless the exact compared artifacts are visibly supported; otherwise phrase the remaining check as limited or inconclusive
+      - If a file path appears in the provided file list but its content is omitted or truncated, do not say the file or section is "not visible"; describe the comparison as unavailable from the visible excerpt instead
+      - Do not claim overall consistency with package manifests, scripts, build steps, or
+        source code unless that supporting evidence is explicitly visible in the provided context
 
     **Documentation Standards to Apply:**
     - Technical accuracy and precision
@@ -2396,7 +2397,7 @@ step6_test_review_prompt:
     - Modified Files: {modified_count}
     - Test Framework: {test_framework}
     - Commands: primary executable test command=`{test_command}`, coverage=`{coverage_command}`
-    - Total Test Files: {test_count} ({tests_in_tests_dir} in `__tests__/`/`test/`, {tests_colocated} co-located, discovered via filesystem scan)
+    - Total Discovered Test Files: {test_count} overall ({tests_in_tests_dir} under dedicated test directories `test/` or `__tests__/`, {tests_colocated} co-located alongside source files); this prompt reviews {scoped_test_count} file(s) listed below
     - Quality Criteria (project standards): AAA pattern, descriptive names, DRY fixtures, isolated tests, deterministic execution
 
     > **Note:** If the **Test Framework** above is a declarative/configuration format
@@ -2452,12 +2453,12 @@ step6_test_review_prompt:
        - Propose modern testing patterns adoption
        - Check compatibility with framework version (where applicable)
 
-    5. **CI/CD and Performance Considerations:**
-       - Identify slow-running tests
-       - Check for non-deterministic behavior
-       - Assess CI environment compatibility
-       - Recommend test parallelization opportunities
-       - Suggest test execution optimization strategies
+    5. **Visible Execution-Risk Signals** (only when directly supported by the provided test code):
+       - Identify explicit signs of slow or environment-sensitive tests (e.g., real fs/network/process calls, timers, shared global state, platform-specific assumptions)
+       - Check for non-deterministic behavior only when the visible code shows it directly
+       - Assess CI environment compatibility only when setup/teardown or assertions reveal concrete CI-sensitive assumptions
+       - Recommend parallelization or execution optimizations only when the visible code demonstrates a bottleneck pattern
+       - If the provided excerpts do not show direct evidence for these checks, mark them inconclusive instead of stating there are no issues
   
   approach: |
     Analyze ONLY the test files explicitly listed above. Do not invent test files or
@@ -2471,7 +2472,7 @@ step6_test_review_prompt:
     - Best practice violations with concrete examples
     - Refactoring recommendations with before/after code snippets
     - Framework-specific improvement suggestions
-    - Performance optimization opportunities
+    - Execution-risk observations that are directly supported by visible code, or an explicit inconclusive note when evidence is missing
 
     **Tactical Focus:**
     - Review actual test code, not coverage strategy
@@ -2480,6 +2481,7 @@ step6_test_review_prompt:
     - Give concrete examples and refactoring patterns
     - Prioritize maintainability and clarity
     - If evidence is incomplete, say unavailable or inconclusive instead of inferring broader health
+    - Do not write unsupported positive summaries such as "all mocks are restored", "no performance issues", or "no major anti-patterns" unless the exact supporting file sections are visible and cited
     
     **Examples of Good Feedback:**
     - "Test at line 45: Extract common setup into beforeEach() for DRY"
@@ -3314,8 +3316,9 @@ configuration_specialist_prompt:
 
     ### Configuration Files in Scope
     Each entry below is grouped by parent directory and formatted as
-    `**Directory Label**: comma-separated filenames`. In this list, `Root`
-    means the project root directory.
+    `**Directory Label**: comma-separated filenames`. If a file was split into
+    prompt-safe parts, the `(part X/Y)` suffix belongs to the filename, not to
+    the directory label. In this list, `Root` means the project root directory.
     {config_files_list}
 
     > **Note:** The scope list above defines the exact set of files to analyze.
@@ -3389,10 +3392,12 @@ configuration_specialist_prompt:
        - Verify persona prompt completeness
        - Flag token inefficiency patterns (redundant text, missing anchors)
        - Ensure behavioral_guidelines usage for consistency
-       - When `config/ai_helpers.yaml` or `config/prompt_roles.yaml` are in scope, also
-         verify alignment with the config-loader module (`src/loader.ts`): confirm that
-         any new persona keys include a `role_ref` resolvable from `prompt_roles.yaml`,
-         and that the top-level YAML remains a plain mapping (not a list or scalar).
+       - When `config/ai_helpers.yaml` or `config/prompt_roles.yaml` are in scope, confirm
+         from the visible YAML evidence that persona keys use resolvable `role_ref` values
+         and that the top-level document remains a plain mapping (not a list or scalar).
+       - Only cross-check a loader or config-parser module when that module is explicitly
+         included in the provided scope/context. If the loader implementation is not shown,
+         mark loader-alignment conclusions inconclusive instead of assuming a repository path.
   
   approach: |
     Analyze ONLY the configuration files explicitly listed above. Do not reference, invent, or assume files not in that list.
@@ -5084,10 +5089,10 @@ typescript_developer_prompt:
     {file_paths}
 
     **Scope:**
-    - ✅ In scope: TypeScript source modules under `src/` (`types.ts`, `loader.ts`, `index.ts`)
-    - ✅ In scope: Test files under `src/__tests__/` — flag `any` casts and untyped mocks
-    - ❌ Out of scope: YAML configuration files (`config/`), template files, shell/Python scripts
-    - When no files are listed above, analyze all `.ts` files in `src/` excluding `node_modules/` and `dist/`
+    - ✅ In scope: every `.ts`, `.tsx`, `.cts`, `.mts`, and `.d.ts` file explicitly listed in `Analyzed File Paths` or `TypeScript Files to Review`
+    - ✅ In scope: TypeScript-adjacent config files included for context (for example `tsconfig*.json`, `jest.config.*`, `eslint.config.*`) — use them to constrain recommendations, not to expand the file scope
+    - ❌ Out of scope: files not listed in those sections, generated/build artifacts, and unrelated YAML or shell/Python files unless they are explicitly included as config context
+    - When no TypeScript files are listed above, analyze only the `.ts`/`.tsx` files that are actually provided in the prompt context instead of assuming a wider repository crawl
 
     **File Context Guide:**
     The file context injected after this prompt contains two labelled sections — interpret them as follows:
@@ -5099,12 +5104,12 @@ typescript_developer_prompt:
       - When **M < N**: only a representative sample of the full `N`-file set is shown. Focus your detailed review on the `M` sampled files. For patterns that appear in sampled files (e.g., widespread `any` usage, missing return types), note them as *"likely present across the full codebase"* and recommend a codebase-wide fix (e.g., an ESLint rule or `tsc --noEmit` check in CI) rather than listing every instance. Do not assume files not shown are problem-free.
 
     **Project-Specific TypeScript Conventions:**
-    - `tsconfig.json` uses `"strict": true`, `"target": "ES2020"`, `"module": "CommonJS"`, `"moduleResolution"` via Node — do not suggest ESM/bundler settings
-    - Shared interfaces and type guards live in `src/types.ts`; do not scatter type definitions across implementation files
-    - Type guards follow the `function isFoo(value: unknown): value is Foo` pattern; prefer this over `as` casts
-    - Custom error classes extend `Error` and call `Object.setPrototypeOf(this, new.target.prototype)` for correct `instanceof` checks — preserve this pattern
-    - Public API is re-exported from `src/index.ts` using `export type` for type-only exports and plain `export` for values
-    - No runtime validation library (Zod/Valibot) is in use; manual type guards in `types.ts` are the established boundary-validation approach
+    - Treat visible `tsconfig*.json`, `package.json`, and ESLint/Jest config as the source of truth for compiler, module-resolution, linting, and test-tooling expectations
+    - Do not assume a framework or plugin (for example Vite, Webpack, Vitest, ts-jest, `@typescript-eslint`, Zod, or Valibot) is in use unless the visible context shows it
+    - Prefer existing local patterns over generic TypeScript advice when those patterns are visible in the files under review
+    - Declaration files (`*.d.ts`) are part of the public type surface when listed and should be reviewed with the same evidence-based standard as `.ts` sources
+    - Preserve working custom error, type-guard, and export patterns already established in visible code rather than rewriting them to match generic examples
+    - If the prompt includes a verified codebase profile or runtime-constraint section, treat it as authoritative context
 
     **ANALYSIS PHASE**: Evaluate the TypeScript codebase across the following dimensions:
     1. **Type Safety**: Are `any` usages present that should be `unknown`, `never`, or a concrete type? Are there implicit `any` types from missing annotations?
@@ -5112,8 +5117,8 @@ typescript_developer_prompt:
     3. **Strict Mode Compliance**: Does tsconfig.json enable `strict: true`? Are `strictNullChecks`, `noImplicitAny`, and `strictFunctionTypes` enforced?
     4. **Advanced Types**: Are utility types (Partial, Required, Pick, Record, Omit) used instead of manual type re-definitions? Are conditional types and mapped types applied correctly?
     5. **Error Handling**: Are errors typed with `unknown` (not `any`) in catch blocks? Are Result/Either patterns used for recoverable errors?
-    6. **API & Integration**: Are API responses fully typed (not `any`)? Are runtime validation libraries (Zod, io-ts, Valibot) used to bridge runtime/type-system boundaries?
-    7. **Linting**: Does ESLint include `@typescript-eslint` ruleset? Are rules like `no-explicit-any`, `explicit-function-return-type`, and `no-floating-promises` active?
+    6. **API & Integration**: Are external inputs and integration boundaries fully typed where such boundaries are visible in the provided files? If no API or external-data boundary is shown, mark this dimension not applicable.
+    7. **Linting & Tooling Alignment**: Do the visible lint/config files define TypeScript-specific rules or checks? If TypeScript lint coverage is not shown, mark rule-level lint conclusions inconclusive instead of assuming a toolchain.
 
     **REQUIRED ACTIONS**:
 
@@ -5133,34 +5138,31 @@ typescript_developer_prompt:
        - Apply mapped types (`{ [K in keyof T]: ... }`) and conditional types (`T extends U ? X : Y`) for meta-programming
 
     3. **tsconfig.json Configuration**:
-       - Enable `"strict": true` to activate all strict type-checking flags
-       - Set `"target"` and `"lib"` to match the runtime environment (e.g., `ES2022`, `DOM`)
-       - Configure `"paths"` for import aliases (e.g., `@/` → `src/`) to avoid deep relative imports
-       - Set `"moduleResolution": "bundler"` (Vite) or `"Node16"` (Node.js) for correct module resolution
-       - Enable `"noUnusedLocals"` and `"noUnusedParameters"` to catch dead code
-       - Configure `"outDir"` and `"rootDir"` for clean build output separation
-       - Add `"skipLibCheck": true` only for third-party `.d.ts` files with known issues
+       - Use the visible `tsconfig*.json` settings as ground truth; only recommend changes backed by a concrete mismatch or missing safeguard in the provided config
+       - Verify `strict`-mode and module-resolution settings against the actual runtime/build context shown in the prompt instead of prescribing generic bundler or CommonJS defaults
+       - Recommend path aliases, output directories, or unused-code flags only when the visible config or source layout shows a real need
+       - Treat `skipLibCheck`, `lib`, and similar compiler options as evidence-based tradeoffs, not blanket requirements
 
     4. **Linting & Quality**:
-       - Install and configure `@typescript-eslint/parser` and `@typescript-eslint/eslint-plugin`
-       - Enable rules: `@typescript-eslint/no-explicit-any`, `@typescript-eslint/explicit-function-return-type`, `@typescript-eslint/no-floating-promises`, `@typescript-eslint/await-thenable`
-       - Use `@typescript-eslint/consistent-type-imports` to enforce `import type` for type-only imports
-       - Configure Prettier with `parser: "typescript"` for consistent formatting
+       - Review the visible ESLint and formatter configuration for TypeScript coverage before recommending any tooling changes
+       - If TypeScript-specific lint rules are visible, use them as the enforcement baseline; otherwise mark rule-level lint coverage inconclusive
+       - Recommend `import type`, explicit return types, or no-floating-promises enforcement only when the visible codebase or config shows the project wants those checks
+       - Do not prescribe new lint/format tooling by default when the prompt does not show it
 
     5. **Error Handling Patterns**:
-       - Catch errors as `unknown`: `catch (err: unknown)` and narrow with `err instanceof Error`
-       - Use Result types for recoverable errors: `type Result<T, E> = { ok: true; value: T } | { ok: false; error: E }`
-       - Validate external data at runtime boundaries (API responses, user input) with Zod or Valibot schemas that also produce TypeScript types
+       - Catch errors as `unknown` and narrow them before use when the visible code is already following or moving toward that pattern
+       - Prefer the project's visible runtime-boundary validation approach (manual guards, helper functions, schema libraries, or explicit checks) instead of naming a library by default
+       - Suggest Result-style patterns only when the visible module semantics would benefit from them
 
     6. **API & Runtime Boundary Typing**:
-       - Define request/response types for all API endpoints; share types between client and server where possible
-       - Use tRPC or TypeGraphQL to eliminate manual type duplication between API layer and consumers
-       - Generate types from OpenAPI specs (`openapi-typescript`) or GraphQL schemas (`graphql-codegen`)
+       - Define request/response or payload types only for boundaries that are actually visible in the provided files
+       - Recommend shared types or generated types only when the prompt evidence shows an API/schema workflow that would support them
+       - Do not prescribe tRPC, GraphQL, OpenAPI generation, or similar ecosystem tooling unless the visible context already includes those technologies
 
     7. **Testing**:
-       - Configure `ts-jest` or `vitest` with TypeScript support (`transform`, `tsconfig` in jest config)
-       - Type mock objects with `jest.Mocked<T>` or `vi.mocked(fn)` — avoid casting to `any` in tests
-       - Test type correctness with `expectType` utilities (e.g., `tsd`, `expect-type`) for library type definitions
+       - Use the visible test toolchain as the basis for recommendations; do not prescribe `ts-jest`, Vitest, or other adapters unless they are present in the provided config/package data
+       - Type mock objects with the test framework helpers that are actually visible (`jest.Mocked<T>`, framework-native helpers, or explicit typed stubs)
+       - Recommend dedicated type-level tests only when the prompt evidence shows a public type surface or library-style API that would benefit from them
 
     **OUTPUT FORMAT**:
     - Provide corrected TypeScript code in fenced code blocks with the `typescript` language tag
@@ -5203,16 +5205,10 @@ typescript_developer_prompt:
        - Use default generic parameters (`<T = string>`) for ergonomic APIs with sensible defaults
 
     4. **Runtime/Type-System Bridge**:
-       - TypeScript types are erased at runtime — validate external data at runtime boundaries using
-         manual type guards (e.g., `function isPromptRolesConfig(v: unknown): v is PromptRolesConfig`)
-         **or** a schema library (Zod/Valibot/io-ts), according to project conventions
-       - For projects using manual guards (see `src/types.ts`): co-locate each guard with its
-         interface; keep guards exhaustive — every field must be checked, not just the discriminant
-       - For projects using a schema library: co-locate schema definitions with inferred types:
-         `type User = z.infer<typeof userSchema>`
-       - When types are generated from external sources (OpenAPI, GraphQL): use code generation
-         (`openapi-typescript`, `@graphql-codegen/cli`) to maintain a single source of truth;
-         *(applicable only when the project consumes such sources)*
+       - TypeScript types are erased at runtime — validate external data at runtime boundaries using the project pattern that is actually visible in the provided files
+       - For projects using manual guards: keep guards exhaustive enough for the visible data shape instead of relying on unchecked assertions
+       - For projects using a schema library or generated types: keep those artifacts aligned with the runtime boundary only when the relevant tooling is visibly present
+       - If no runtime-boundary pattern is visible, recommend evidence-based guard improvements without naming a library by default
 
     5. **Framework Integration Patterns** *(apply only to frameworks present in the project; skip irrelevant sub-sections)*:
        - **React**: Type props with interfaces, use `React.FC<Props>` sparingly (prefer explicit return types), type `useReducer` actions as discriminated unions, use `ComponentPropsWithoutRef<"button">` for polymorphic components
@@ -5220,55 +5216,31 @@ typescript_developer_prompt:
        - **GraphQL**: Use code generation (`@graphql-codegen/cli`) to produce resolver types and client hooks
 
     6. **Architecture & Scalability**:
-       - Organize types in `src/types/` with barrel exports for discoverability
-       - Apply dependency inversion: depend on interfaces, inject concrete implementations
-       - Use `satisfies` operator (TS 4.9+) to validate objects against types while preserving literal types
-       - Reduce technical debt: track and eliminate `any` occurrences with ESLint reports in CI
+       - Keep shared types discoverable in the locations already established by the visible codebase rather than scattering or over-centralising them by default
+       - Apply dependency inversion and the `satisfies` operator when the visible architecture would benefit from them
+       - Reduce technical debt by consolidating recurring unsafe patterns into one evidence-based recommendation instead of repeating the same nit across many files
 
-    7. **Codebase Reference Patterns** *(illustrative examples from this project)*:
-       - `src/types.ts` — Type-First Design (items 1–2): interfaces with `readonly`, discriminated
-         custom errors (`RoleNotFoundError`, `InvalidConfigError`), manual type guards (`isPromptRole`,
-         `isPromptRolesConfig`, `isPersonaConfig`), and `Omit<>` / `extends` for derived types
-       - `src/loader.ts` — Error Handling (item 5 of required actions): `catch (err: unknown)` with
-         narrowing via `instanceof Error`; `InvalidConfigError` wraps unknown causes; no bare `any`
-       - `src/index.ts` — Public API pattern: `export type` for type-only re-exports alongside plain
-         `export` for values and classes; single barrel entry-point for the module
-       - These files are the ground truth for project conventions; when reviewing this project, prefer
-         patterns already established here over general recommendations above
-
-    8. **File Context Awareness**:
+    7. **File Context Awareness**:
        - Read `Configuration Files included` (e.g., `tsconfig.json`, `jest.config.ts`) first — they define compiler constraints and test tooling that govern all recommendations; treat their settings as the ground truth unless a setting itself is the problem
        - When `TypeScript Files to Review` shows `(N total, sampling M)` with M < N: after reviewing sampled files, aggregate recurring issues (e.g., missing return types, `any` usages) into a single codebase-wide recommendation rather than file-by-file repetition; explicitly state "this pattern likely affects unreviewed files"
        - When M == N: treat the review as exhaustive; every file listed must be addressed
 
     **Quality Checklist**:
-    > **Applicability**: This checklist applies to TypeScript projects with `strict: true` in
-    > `tsconfig.json`, `@typescript-eslint` active in ESLint (e.g., `eslint.config.js`), and
-    > Jest as the test framework. Verify these tools are present before applying items that
-    > reference them. Items are split into **Required** (always apply) and **Recommended**
-    > (apply when the relevant tool or pattern is present in the project).
+    > **Applicability**: Apply each checklist item only when the necessary tool/config evidence is
+    > visible in the prompt. Do not convert absent ESLint plugins, Jest adapters, schema libraries,
+    > or CI wiring into confirmed defects. Items are split into **Required** (when visible evidence
+    > makes them applicable) and **Recommended** (only when the relevant tool or pattern is present).
 
     *Required*:
-    - ✅ `strict: true` enabled in `tsconfig.json` — governs all compiler strictness checks
-    - ✅ No `any` in source code — `unknown` or concrete types used instead
-    - ✅ All function parameters and return types explicitly annotated
-    - ✅ All external data validated at runtime — via **either** manual type guards (e.g.,
-         `isPromptRolesConfig` in `src/types.ts`) **or** a schema library (Zod/Valibot/io-ts);
-         which approach to use is determined by project conventions, not this checklist
-    - ✅ Catch blocks use `unknown` type for error variable
-    - ✅ `@typescript-eslint` rules active in ESLint configuration (requires `eslint.config.js`
-         or `.eslintrc` with `@typescript-eslint` plugin)
-    - ✅ Type imports use `import type` syntax
-    - ✅ No `// @ts-ignore` — use `@ts-expect-error` with justification comment
-    - ✅ Build passes with `tsc --noEmit` (type-check only) in CI
+    - ✅ Visible compiler settings are respected — do not recommend TS changes that contradict the shown `tsconfig*.json`
+    - ✅ Unsafe `any`, unchecked assertions, or suppressed type errors are called out only when visible in the provided files
+    - ✅ Runtime-boundary typing recommendations match the validation pattern actually shown in the visible code/config
+    - ✅ Error-handling and import-style recommendations follow the evidence in the reviewed files rather than generic defaults
+    - ✅ Tooling conclusions are limited to what the prompt visibly shows
 
     *Recommended*:
-    - ✅ Discriminated unions used for multi-variant data shapes *(when the domain has
-         multi-variant types; skip if not applicable)*
-    - ✅ Tests use typed mocks (`jest.Mocked<T>`) — no `as any` casts in test files
-         *(applies only when Jest is the test framework)*
-    - ✅ Configuration files (`tsconfig.json`, `jest.config.ts`) reviewed for correctness
-         without unnecessary rewrites
+    - ✅ Discriminated unions, `satisfies`, typed mocks, or type-level tests are recommended only when the domain and visible tooling make them relevant
+    - ✅ Configuration files (`tsconfig.json`, `jest.config.*`, `eslint.config.*`) are reviewed for correctness without unnecessary rewrites
     - ✅ Sampled file reviews include a codebase-wide note when patterns recur across the sample
 
     **TypeScript Best Practices**:
@@ -5279,10 +5251,7 @@ typescript_developer_prompt:
     - Use `satisfies` over type assertions (`as T`) when the object literal is fully known at compile time
     - Avoid enums in public APIs — use `as const` objects with `keyof typeof` for string literal unions
     - Prefer `unknown` over `any` for function parameters that accept arbitrary input
-    - Keep type definitions co-located with their implementations; extract only shared/reusable types to a
-      dedicated `types` module (e.g., `src/types.ts` or a `types/` directory)
-    > **Example (this repo):** `src/types.ts` — interfaces, type aliases, type guards, and error classes
-    > co-located in one module; `src/loader.ts` — consumes those types via named imports with `import type`.
+    - Keep type definitions either co-located with their implementation or in an existing shared types area when the visible codebase already uses one
 
 # ==============================================================================
 # Python Developer Prompt (v7.0.0)

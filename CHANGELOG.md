@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **`config/ai_helpers/workflow_steps.yaml` / `config/ai_helpers.yaml`** — Hardened `step2_consistency_prompt` again so code-sample scan artifacts must be classified as `False Positive` with no-action guidance, source-relative fixes cannot use repo-root-looking replacement paths, and incomplete excerpt coverage cannot justify negative pass claims such as "No visible inconsistencies".
+- **`src/steps/step_02_consistency.js`** — Expanded `validateAiResponseQuality()` so Step 2 rejects unsupported scoped pass claims even when the same response also addresses broken-reference candidates.
+- **`test/steps/step_02_log_prompt_integration.test.js` / `test/steps/step_02_consistency.test.js`** — Added regressions covering the stricter Step 2 prompt wording and the new response-quality guard.
 - **`config/ai_helpers.yaml`** — Hardened `version_manager_prompt` so zeroed file-category counters cannot justify an artifact-only summary when the visible prompt context also names non-`.ai_workflow/` paths; mixed evidence must now be reported as mixed or inconclusive.
 - **`CHANGELOG.md`** — Removed embedded README/reference content so release history remains changelog-only and partitioned documentation reviews no longer receive malformed changelog excerpts.
 - **`config/ai_helpers/documentation_prompts.yaml`** — Broadened `doc_analysis_prompt` so the listed `doc_files` are treated as the minimum review set, with authoritative docs still in scope when the changed files imply them.

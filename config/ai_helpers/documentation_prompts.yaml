@@ -12,15 +12,12 @@ doc_analysis_prompt:
     
     **Changed files**: {changed_files}
     **Documentation to review**: {doc_files}
-    **Also in scope**: The listed documentation files are the minimum required review set, not the exhaustive limit. Existing authoritative docs directly affected by the changed files are also in scope, including:
-    - `README.md` for overview, usage, and public entry points
-    - `docs/ARCHITECTURE.md` for architecture or layout changes
-    - `docs/guides/MIGRATION_GUIDE.md` for breaking changes or migration steps
-    - `CHANGELOG.md` for significant user-facing changes
-    - Existing module-local docs or API references that document changed modules
+    **Scope rule**: Analyze ONLY the documentation files explicitly listed above plus any additional documentation files that already appear in the provided changed-file list.
+    Treat authority docs, module-local docs, or other references as in scope only when they satisfy that rule or their contents are explicitly included in this request.
     
     {partition_header}
     {partition_scope_note}
+    Entries labeled "(part X/Y)" are sequential chunks of oversized files; treat unseen parts or omitted files as unavailable unless their contents are included in this request.
     
     **File paths in this request**:
     {file_paths_in_request}
@@ -44,7 +41,7 @@ doc_analysis_prompt:
     **OUTPUT FORMAT**: Use edit blocks showing before/after, or provide specific line-by-line changes. If no edits are needed, state "No updates required" with a one-line reason.
   
   approach: |
-    Treat the listed documentation files as minimum required targets, not the exhaustive limit. You may inspect any existing documentation directly implicated by the changed files or the authoritative-doc rules above, but do not reference, invent, or assume missing documentation.
+    Analyze ONLY the documentation files explicitly listed above plus any additional documentation files that already appear in the provided changed-file list. Do not reference, invent, or assume missing documentation outside that scope.
 
     **Methodology**:
      1. **Analyze Changes**: Use the provided file contents and changed-file excerpts to examine what was modified in each changed file
@@ -53,7 +50,7 @@ doc_analysis_prompt:
         - Assess the scope and impact of each change
      
      2. **Prioritize Updates**: Start with most critical documentation
-        - Primary: README.md, .github/copilot-instructions.md
+        - Primary: the highest-impact documentation files already present in the provided scope
         - Secondary: additional technical docs already present in the provided scope
         - Tertiary: Inline code comments
      
@@ -81,7 +78,7 @@ doc_analysis_prompt:
     **Critical Guidelines**:
     - ALWAYS provide specific edits or explicitly state "No updates needed"
     - NEVER ask clarifying questions - make informed decisions
-    - DEFAULT to no changes if documentation appears current
+    - DEFAULT to "Unavailable" or "Inconclusive" rather than "No updates required" when critical evidence is missing
     - FOCUS on accuracy over completeness
     - Keep the response dense and modular - prefer concise edit blocks over expansive narrative
     - Avoid verbosity, creative expansion, and speculative rewrites beyond the visible change set

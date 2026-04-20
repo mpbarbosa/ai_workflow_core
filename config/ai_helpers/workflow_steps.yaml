@@ -54,8 +54,8 @@ step1_5_copilot_instructions_prompt:
     4. Preserve useful markdown structure where it remains valid, but rewrite stale or oversized sections completely when needed.
 
     **Hard rules**:
-    - Do NOT invent missing files, counts, commands, capabilities, or documents.
-    - Treat the authoritative repo facts block — including any surfaced reference-doc titles or snippets — and the current file excerpt above as the only visible evidence for repo-specific claims in this task.
+      - Do NOT invent missing files, counts, commands, capabilities, or documents.
+      - Treat the authoritative repo facts block and the current file excerpt above as the only visible evidence for repo-specific claims in this task.
      - Do NOT recreate exhaustive inventories, count summaries, release-status snapshots, or tutorial-style content inside the Copilot instructions file unless the repo facts clearly show they are essential to Copilot guidance.
       - Do NOT keep incorrect numeric or status claims when the repo facts disagree.
       - Do NOT introduce repository-specific implementation details, template syntax, helper modules, or workflow conventions unless they are explicitly stated in the repo facts block or literally visible in the current file content.
@@ -167,15 +167,16 @@ step2_consistency_prompt:
     
        **Your task**: For each `source:line → target` entry, perform systematic root cause analysis on the MISSING TARGET. Use the **Output Format** template at the end of this section for each entry.
     
-       **Analysis Framework** (apply to each entry):
-    
-        a) **False Positive Check**: Is the target truly missing or a false positive?
-           - Non-link syntax inside fenced code blocks or inline code (for example regex literals, glob patterns, placeholders, or sample strings) is **not** a broken file target unless the visible markdown syntax makes it an actual link/reference
-           - Generated files (build artifacts, coverage reports, compiled outputs)
-           - External URLs (may be temporarily unavailable but valid)
-           - Intentional references (placeholders, future files, templates)
-           - Case-sensitive path issues (Linux vs macOS/Windows)
-           - Resolve the target relative to the source file's directory before deciding whether it is missing; nested docs often use links like `api/foo.md`, `../README.md`, or `guides/FAQ.md` that are meaningful only after source-relative resolution
+        **Analysis Framework** (apply to each entry):
+     
+         a) **False Positive Check**: Is the target truly missing or a false positive?
+            - Non-link syntax inside fenced code blocks or inline code (for example regex literals, glob patterns, placeholders, or sample strings) is **not** a broken file target unless the visible markdown syntax makes it an actual link/reference
+            - If the candidate appears inside a visible fenced code block, inline code span, or sample snippet and the visible markdown does not make it an actual link, classify it as **False Positive** and recommend no action; do **not** leave it as unverified or suggest placeholder cleanup
+            - Generated files (build artifacts, coverage reports, compiled outputs)
+            - External URLs (may be temporarily unavailable but valid)
+            - Intentional references (placeholders, future files, templates)
+            - Case-sensitive path issues (Linux vs macOS/Windows)
+            - Resolve the target relative to the source file's directory before deciding whether it is missing; nested docs often use links like `api/foo.md`, `../README.md`, or `guides/FAQ.md` that are meaningful only after source-relative resolution
            - If that source-relative resolved path already appears in the visible file list, treat the issue as a relative-path mistake or scan-resolution issue and name that exact path in the root cause; do **not** claim the target is absent from the file list
            - Targets that are simply absent from the current partition's visible file list or excerpts are **not**
              automatically confirmed missing in the live repository; if the current prompt does not include
@@ -193,19 +194,20 @@ step2_consistency_prompt:
           
           Document the specific cause with evidence.
     
-        c) **Fix Recommendation**: What's the specific fix?
-           - **Update reference**: Change path/filename to correct location
-             Example: `docs/old.md` → `docs/new.md`
+         c) **Fix Recommendation**: What's the specific fix?
+            - **Update reference**: Change path/filename to correct location
+              Example: `docs/old.md` → `docs/new.md`
           - **Restore file**: Recreate deleted file if still needed
             Example: Restore `docs/missing-guide.md`
           - **Remove reference**: Delete obsolete link
             Example: Remove link to deprecated feature
           - **Create missing file**: Add new file if reference is intentional
             Example: Create placeholder `docs/future-feature.md`
-          
-           Provide before/after examples for each fix.
-           If the target is only absent from the visible context and the correct fix cannot be determined from
-           the prompt evidence, recommend follow-up confirmation rather than defaulting to "create the file".
+           
+            Provide before/after examples for each fix.
+            If the visible context shows an existing destination file, recommend the exact **source-relative** replacement path that should appear in the source file; never suggest a repo-root-looking path for a nested source file
+            If the target is only absent from the visible context and the correct fix cannot be determined from
+            the prompt evidence, keep the item **Unverified From Visible Context** and recommend follow-up confirmation rather than defaulting to "create the file", "create the directory", or a guessed replacement path.
     
        d) **Priority Assessment**: What's the impact and urgency?
           - **Critical**: User-facing docs (README, getting started, installation)
@@ -303,11 +305,13 @@ step2_consistency_prompt:
         - Unlabelled fenced blocks are not automatically inconsistent; only report a code-block
           language-tag issue when the exact visible block and a visible project convention
           support that conclusion
-        - If any requested comparison remains limited, truncated, partitioned, or otherwise inconclusive,
+       - If any requested comparison remains limited, truncated, partitioned, or otherwise inconclusive,
           keep the summary scoped to the visible evidence and explicitly say the remaining checks are
           inconclusive rather than implying exhaustive validation
-       - Do not claim overall consistency with package manifests, scripts, build steps, or
-         source code unless that supporting evidence is explicitly visible in the provided context
+       - Do not write negative pass findings such as "No visible inconsistencies", "No evidence of mismatched terminology", or "No missing cross-references detected" unless the exact compared artifacts are visibly supported; otherwise phrase the remaining check as limited or inconclusive
+      - If a file path appears in the provided file list but its content is omitted or truncated, do not say the file or section is "not visible"; describe the comparison as unavailable from the visible excerpt instead
+      - Do not claim overall consistency with package manifests, scripts, build steps, or
+        source code unless that supporting evidence is explicitly visible in the provided context
 
     **Documentation Standards to Apply:**
     - Technical accuracy and precision
@@ -637,7 +641,7 @@ step6_test_review_prompt:
     - Modified Files: {modified_count}
     - Test Framework: {test_framework}
     - Commands: primary executable test command=`{test_command}`, coverage=`{coverage_command}`
-    - Total Test Files: {test_count} ({tests_in_tests_dir} in `__tests__/`/`test/`, {tests_colocated} co-located, discovered via filesystem scan)
+    - Total Discovered Test Files: {test_count} overall ({tests_in_tests_dir} under dedicated test directories `test/` or `__tests__/`, {tests_colocated} co-located alongside source files); this prompt reviews {scoped_test_count} file(s) listed below
     - Quality Criteria (project standards): AAA pattern, descriptive names, DRY fixtures, isolated tests, deterministic execution
 
     > **Note:** If the **Test Framework** above is a declarative/configuration format
@@ -693,12 +697,12 @@ step6_test_review_prompt:
        - Propose modern testing patterns adoption
        - Check compatibility with framework version (where applicable)
 
-    5. **CI/CD and Performance Considerations:**
-       - Identify slow-running tests
-       - Check for non-deterministic behavior
-       - Assess CI environment compatibility
-       - Recommend test parallelization opportunities
-       - Suggest test execution optimization strategies
+    5. **Visible Execution-Risk Signals** (only when directly supported by the provided test code):
+       - Identify explicit signs of slow or environment-sensitive tests (e.g., real fs/network/process calls, timers, shared global state, platform-specific assumptions)
+       - Check for non-deterministic behavior only when the visible code shows it directly
+       - Assess CI environment compatibility only when setup/teardown or assertions reveal concrete CI-sensitive assumptions
+       - Recommend parallelization or execution optimizations only when the visible code demonstrates a bottleneck pattern
+       - If the provided excerpts do not show direct evidence for these checks, mark them inconclusive instead of stating there are no issues
   
   approach: |
     Analyze ONLY the test files explicitly listed above. Do not invent test files or
@@ -712,7 +716,7 @@ step6_test_review_prompt:
     - Best practice violations with concrete examples
     - Refactoring recommendations with before/after code snippets
     - Framework-specific improvement suggestions
-    - Performance optimization opportunities
+    - Execution-risk observations that are directly supported by visible code, or an explicit inconclusive note when evidence is missing
 
     **Tactical Focus:**
     - Review actual test code, not coverage strategy
@@ -721,6 +725,7 @@ step6_test_review_prompt:
     - Give concrete examples and refactoring patterns
     - Prioritize maintainability and clarity
     - If evidence is incomplete, say unavailable or inconclusive instead of inferring broader health
+    - Do not write unsupported positive summaries such as "all mocks are restored", "no performance issues", or "no major anti-patterns" unless the exact supporting file sections are visible and cited
     
     **Examples of Good Feedback:**
     - "Test at line 45: Extract common setup into beforeEach() for DRY"
@@ -1555,8 +1560,9 @@ configuration_specialist_prompt:
 
     ### Configuration Files in Scope
     Each entry below is grouped by parent directory and formatted as
-    `**Directory Label**: comma-separated filenames`. In this list, `Root`
-    means the project root directory.
+    `**Directory Label**: comma-separated filenames`. If a file was split into
+    prompt-safe parts, the `(part X/Y)` suffix belongs to the filename, not to
+    the directory label. In this list, `Root` means the project root directory.
     {config_files_list}
 
     > **Note:** The scope list above defines the exact set of files to analyze.
@@ -1630,10 +1636,12 @@ configuration_specialist_prompt:
        - Verify persona prompt completeness
        - Flag token inefficiency patterns (redundant text, missing anchors)
        - Ensure behavioral_guidelines usage for consistency
-       - When `config/ai_helpers.yaml` or `config/prompt_roles.yaml` are in scope, also
-         verify alignment with the config-loader module (`src/loader.ts`): confirm that
-         any new persona keys include a `role_ref` resolvable from `prompt_roles.yaml`,
-         and that the top-level YAML remains a plain mapping (not a list or scalar).
+       - When `config/ai_helpers.yaml` or `config/prompt_roles.yaml` are in scope, confirm
+         from the visible YAML evidence that persona keys use resolvable `role_ref` values
+         and that the top-level document remains a plain mapping (not a list or scalar).
+       - Only cross-check a loader or config-parser module when that module is explicitly
+         included in the provided scope/context. If the loader implementation is not shown,
+         mark loader-alignment conclusions inconclusive instead of assuming a repository path.
   
   approach: |
     Analyze ONLY the configuration files explicitly listed above. Do not reference, invent, or assume files not in that list.

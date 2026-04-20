@@ -25,8 +25,20 @@ step1_5_copilot_instructions_prompt:
     3. Remove or condense content that belongs in other owned docs: implementation status snapshots, numeric inventories, workflow or command lists, installation walkthroughs, migration details, and other broad reference-manual material.
     4. When detailed reference material is still useful, replace duplicated detail with short pointers to the authoritative documents instead of copying the full content.
     5. Rewrite any unsupported or stale claim conservatively instead of inventing details.
+    6. If a project-specific detail is not explicitly supported by the authoritative repo facts block or by the visible current file content above, omit it or rewrite it in generic terms instead of presenting it as a verified repository fact.
 
-    **Output format**: Return ONLY one fenced ```markdown block containing the full corrected replacement for `{copilot_instructions_path}`. Do not add commentary before or after the fenced block.
+    **Output format**:
+    1. Start with `## Findings`.
+    2. Under that heading, add one `### Finding N - <short title>` subsection for each concrete problem, omission, or explicit "no issue" decision that matters to the rewrite.
+    3. Within each finding, include these bullets exactly:
+       - `**Classification**`: `supported guidance` | `unsupported claim` | `stale detail` | `duplicate reference` | `inconclusive`
+       - `**Current file evidence**`: cite the relevant section, line range, or state `none`
+       - `**Repo-fact evidence**`: cite the supporting repo fact, or state `not available`
+       - `**Action**`: `keep` | `rewrite` | `remove` | `omit pending evidence`
+       - `**Why this matters**`: one sentence explaining the practical impact on Copilot guidance quality
+    4. If no corrections are needed, still include `## Findings` with a single finding that clearly says no issue was confirmed and why.
+    5. After the findings, add `## Corrected File` followed by ONLY one fenced ```markdown block containing the full corrected replacement for `{copilot_instructions_path}`.
+    6. Do not use additional fenced code blocks outside the final corrected-file block.
 
   approach: |
     **Editing methodology**:
@@ -41,11 +53,18 @@ step1_5_copilot_instructions_prompt:
 
     **Hard rules**:
     - Do NOT invent missing files, counts, commands, capabilities, or documents.
+    - Treat the authoritative repo facts block — including any surfaced reference-doc titles or snippets — and the current file excerpt above as the only visible evidence for repo-specific claims in this task.
     - Do NOT recreate exhaustive inventories, count summaries, release-status snapshots, or tutorial-style content inside the Copilot instructions file unless the repo facts clearly show they are essential to Copilot guidance.
-    - Do NOT keep incorrect numeric or status claims when the repo facts disagree.
-    - Do prefer brief links or pointers to authoritative docs when detailed material already exists elsewhere in the repository.
-    - Do NOT output a patch, summary, or bullet list — output the complete corrected file only.
-    - If the current file contains broad historical claims that cannot be validated, replace them with wording grounded in the provided facts.
+     - Do NOT keep incorrect numeric or status claims when the repo facts disagree.
+     - Do NOT introduce repository-specific implementation details, template syntax, helper modules, or workflow conventions unless they are explicitly stated in the repo facts block or literally visible in the current file content.
+     - Do prefer brief links or pointers to authoritative docs when detailed material already exists elsewhere in the repository.
+     - If a concise repository description is directly corroborated by surfaced reference-doc titles or snippets, do not mark it unsupported solely because the full document is not reproduced in the prompt.
+     - When pointing to authoritative docs, reference the relevant document set surfaced in repo facts; do not imply that `README.md` is the sole authority unless the repo facts explicitly show that.
+     - Make every changed, removed, or intentionally retained suspicious section explicit in `## Findings`; do not rely on the corrected file alone to communicate what was wrong.
+     - Each finding must map to a concrete section or claim from the current file, even when the action is "keep" or "omit pending evidence".
+     - Do NOT output a patch; the final fenced markdown block must be the complete corrected file.
+     - If the current file contains broad historical claims that cannot be validated, replace them with wording grounded in the provided facts.
+     - If a current-file statement looks plausible but the repo facts do not confirm it, prefer omission or more general wording over repeating it as a verified fact.
 
 step2_consistency_prompt:
   # Split role into prefix + guidelines for token efficiency
@@ -90,6 +109,7 @@ step2_consistency_prompt:
 
     **Provided file contents and excerpts (authoritative for content-level claims):**
     {file_contents}
+    - Some excerpts may be truncated, omitted, or unavailable. Treat those markers as hard evidence limits: cite only the visible text, and mark any partition-wide or file-wide conclusion that depends on omitted content as limited or inconclusive.
     
     **Tasks:**
     
@@ -151,6 +171,8 @@ step2_consistency_prompt:
            - External URLs (may be temporarily unavailable but valid)
            - Intentional references (placeholders, future files, templates)
            - Case-sensitive path issues (Linux vs macOS/Windows)
+           - Resolve the target relative to the source file's directory before deciding whether it is missing; nested docs often use links like `api/foo.md`, `../README.md`, or `guides/FAQ.md` that are meaningful only after source-relative resolution
+           - If that source-relative resolved path already appears in the visible file list, treat the issue as a relative-path mistake or scan-resolution issue and name that exact path in the root cause; do **not** claim the target is absent from the file list
            - Targets that are simply absent from the current partition's visible file list or excerpts are **not**
              automatically confirmed missing in the live repository; if the current prompt does not include
              enough repo-wide evidence to resolve the target, mark the item as unverified rather than inventing
@@ -261,12 +283,27 @@ step2_consistency_prompt:
      - Actionable remediation steps
       - Explicitly note any conclusions that are limited or inconclusive because the
         relevant files, comments, or configuration are not visible in the provided context
-      - If no additional semantic issues are supported by the visible file contents, say exactly:
-        "No additional issues found beyond the programmatic scan."
-      - Do not replace that statement with broader claims like "all documentation is consistent"
-        unless the visible file contents support that conclusion directly
-      - Do not claim overall consistency with package manifests, scripts, build steps, or
-        source code unless that supporting evidence is explicitly visible in the provided context
+        - If no additional semantic issues are supported by the visible file contents, say exactly:
+          "No additional issues found beyond the programmatic scan."
+        - Do not replace that statement with broader claims like "all documentation is consistent"
+          unless the visible file contents support that conclusion directly
+        - Do not claim that no version numbers or badges are present unless the relevant
+          in-scope files or excerpts needed to support that absence are actually visible in the
+          prompt or already established by the programmatic scan
+        - Do not claim heading, list, or code-fence consistency across files unless the exact
+          supporting headings, list items, or fenced blocks are visible for each compared file;
+          otherwise keep the claim scoped to the visible excerpts or mark it inconclusive
+        - Do not claim missing-documentation, missing-cross-reference, or stub-level checks
+          passed merely because a file name appears in the file list; require visible file
+          content or mark the check inconclusive
+        - Unlabelled fenced blocks are not automatically inconsistent; only report a code-block
+          language-tag issue when the exact visible block and a visible project convention
+          support that conclusion
+        - If any requested comparison remains limited, truncated, partitioned, or otherwise inconclusive,
+          keep the summary scoped to the visible evidence and explicitly say the remaining checks are
+          inconclusive rather than implying exhaustive validation
+       - Do not claim overall consistency with package manifests, scripts, build steps, or
+         source code unless that supporting evidence is explicitly visible in the provided context
 
     **Documentation Standards to Apply:**
     - Technical accuracy and precision
@@ -292,9 +329,18 @@ step2_consistency_prompt:
       Do not classify regex fragments, placeholders, or other non-link tokens from code
       examples as broken references, and do not promote tentative phrases such as "may be
       sparse" into actionable findings or summary-table entries.
+      Resolve every broken-reference candidate relative to its source file before you infer a root
+      cause or propose a fix. For example, from `docs/developers/ONBOARDING.md`, the target
+      `api/PROJECT_KINDS_SCHEMA.md` resolves to `docs/developers/api/PROJECT_KINDS_SCHEMA.md`;
+      if the visible file list instead contains `docs/api/PROJECT_KINDS_SCHEMA.md`, diagnose the
+      problem as an incorrect relative link and recommend the exact relative correction
+      (`../api/PROJECT_KINDS_SCHEMA.md`) rather than adding a redundant `docs/` prefix.
       Do not explain a broken-reference candidate by saying only that the target "is not present
       in the provided context" when the current partition may be incomplete; either cite visible
       evidence of the actual root cause or mark the item as unverified from visible context.
+      Do not end with blanket statements that imply complete validation when any requested check
+      stayed limited or inconclusive; keep the conclusion narrowly scoped to the evidence that was
+      actually visible.
 
 # Step 3: Shell Script Reference Validation Prompt Template
 step3_script_refs_prompt:
@@ -327,6 +373,9 @@ step3_script_refs_prompt:
     If the visible coverage map is truncated, clipped, or ends with an explicit truncation marker
     (for example `... [truncated]`), treat it as incomplete evidence, say so explicitly in your
     report, and do not claim exhaustive coverage counts from the hidden portion.
+    If a coverage entry is annotated as `path variant: ...` or `basename only: ...`, treat that
+    as weaker evidence than an exact path match. Do not mark the script as cleanly documented
+    until the visible invocation form and repository-root context agree with the scoped path.
 
     **Scripts in Scope (authoritative — analyze only these paths; do not infer or include any additional scripts):**
     {all_scripts}
@@ -363,10 +412,12 @@ step3_script_refs_prompt:
        - Ensure usage examples reference the correct script path and invocation form
     
      2. **Reference Accuracy:**
-       - Validate documented command-line arguments, flags, and invocation form match the implementation
-       - Check version numbers are consistent across documentation
-       - Verify cross-references between scripts, related workflows, and documentation are accurate
-       - Validate script path references in code comments and documentation
+        - Validate documented command-line arguments, flags, and invocation form match the implementation
+        - Check version numbers are consistent across documentation
+        - Verify cross-references between scripts, related workflows, and documentation are accurate
+        - Validate script path references in code comments and documentation
+        - When docs mention a script through a different root prefix (for example `.workflow_core/scripts/foo.sh`
+          vs `scripts/foo.sh`), report the path-context mismatch or ambiguity instead of claiming a clean pass
     
      3. **Documentation Completeness:**
        - Missing purpose/description for any script in scope
@@ -405,6 +456,8 @@ step3_script_refs_prompt:
     If scripts are listed but none are shell scripts, continue evaluating those automation entrypoints and skip shell-specific checks that do not apply.
     When the documentation excerpts are truncated or limited to only the beginning of each file, keep claims scoped to the visible text. Do not state that every script lacks usage examples, arguments, or troubleshooting guidance unless those conclusions are supported by either a complete coverage map or explicit full-document evidence.
     Treat README command examples, command tables, automation-script sections, and dedicated guide links as valid forms of documentation when they are visible in the provided excerpts.
+    If CI/CD workflows, Dockerfiles, compose files, or manifests are not visible in the provided evidence, mark CI/container conclusions as unavailable or inconclusive rather than absent.
+    Recommendation examples must preserve the script's visible interface. Do not invent placeholder flags, positional arguments, or "Arguments: None" blocks when the implementation shows a different invocation model or when the interface is not visible.
 
     **Output:**
     - List of script reference issues with file:line locations
@@ -448,7 +501,7 @@ step5_directory_prompt:
     **Authoritative Validation Sources:**
     - `.workflow-config.yaml` (if present, use as the primary source of truth for required structure)
     - `project_kinds.yaml` project-kind guidance and defaults (typically sourced from `.workflow_core/config/project_kinds.yaml` for this workflow, or from equivalent project-kind guidance included in the visible prompt context)
-    - Architecture and structural guidance documented in `README.md`, `docs/ARCHITECTURE.md`, and `CONTRIBUTING.md`
+    - Architecture and structural guidance documented in `README.md`, `INDEX.md`, `docs/ARCHITECTURE.md`, `CONTRIBUTING.md`, and directory-local `README.md` / `INDEX.md` files when visible
 
     **"Required" Directory Definition:**
     When `.workflow-config.yaml` is present, the following keys define required directories/files:
@@ -479,14 +532,22 @@ step5_directory_prompt:
     - Scope: {change_scope}
     - Modified Files: {modified_count}
     - Critical Directories Missing: {missing_critical}
-    - Undocumented Directories: {undocumented_dirs}
+    - Directories Not Matched in Scanned Docs: {undocumented_dirs}
     - Documentation Mismatches: {doc_structure_mismatch}
     
     **Phase 1 Automated Findings:**
     {structure_issues_content}
+    Treat these automated findings as heuristics from the scanned documentation set, not as authoritative documentation defects. Re-check them against the visible excerpts before confirming any documentation issue.
     
     **Current Directory Structure:**
     {dir_tree}
+
+    **Documentation Excerpts (partial — selected lines from README.md, INDEX.md, docs/ARCHITECTURE.md, CONTRIBUTING.md, `.github/copilot-instructions.md`, and directory-local README / INDEX files when available):**
+    {doc_context}
+    Treat these excerpts as partial evidence. Do not claim "No documentation found", "X is undocumented", or "primary documentation does not describe Y" unless the relevant documentation sources are visible here and the visible text supports that conclusion.
+    If the authoritative documentation files are absent, truncated, or only partially shown, mark the documentation status as unavailable or inconclusive instead of asserting either a clean pass or a confirmed documentation defect.
+    Treat visible directory trees, folder inventories, and README files inside a directory as valid documentation evidence for that directory.
+    A visible repository-layout inventory entry (for example in `INDEX.md`) is evidence that the listed directory exists and contains the listed files. Do not overstate that situation as "no documentation" for the directory or its contents.
     
     **Tasks:**
     
@@ -523,8 +584,10 @@ step5_directory_prompt:
        - Potential restructuring recommendations
   
   approach: |
-    Analyze ONLY the directories explicitly listed under "Current Directory Structure" above. Do not reference, invent, or assume the existence of any directories, files, or documentation not present in that list.
+    Analyze ONLY the directories explicitly listed under "Current Directory Structure" above. Do not reference, invent, or assume the existence of any directories not present in that list, and do not rely on documentation content outside the visible excerpts provided in this prompt.
     Do not report a directory as missing unless the visible evidence in this prompt makes it required. If a convention suggests a directory would be beneficial but the prompt does not establish it as required, present that as a recommendation instead of a defect.
+    Do not state that a directory is undocumented, or that the primary documentation fails to describe it, unless the relevant README/architecture/contributing excerpts are visible and support that conclusion. Otherwise mark the documentation result as unavailable or inconclusive.
+    Treat automated "undocumented" findings as provisional. If the excerpts show a repository inventory, directory-local README/INDEX file, or any other concrete structure evidence for that directory, downgrade the point to clarification-needed unless the visible text clearly shows a real documentation gap.
 
     **Output:**
     - List of structure issues with specific directory paths
@@ -550,9 +613,11 @@ step6_test_review_prompt:
   behavioral_guidelines: *behavioral_actionable
   
   task_template: |
-    Review the {test_framework} test file(s) listed in **Existing Test Files in Scope** below,
-    run via `{test_command}`. Provide tactical, code-level recommendations
-    for improving test quality.
+    Review the {test_framework} test file(s) and test-related artifacts listed in
+    **Existing Test Files in Scope** below. Use `{test_command}` only as the primary
+    command for executable tests in scope; some listed files may be declarative
+    fixtures or test-adjacent artifacts discovered during the filesystem scan.
+    Provide tactical, code-level recommendations for improving test quality.
 
     > **Tactical recommendations** are concrete, file-level suggestions — e.g., rename
     > a vague test name to describe expected behavior, extract repeated setup into
@@ -566,8 +631,8 @@ step6_test_review_prompt:
     - Primary Language: {primary_language}
     - Change Scope: {change_scope}
     - Modified Files: {modified_count}
-    - Test Framework: {test_framework} via `{test_command}`
-    - Commands: test=`{test_command}`, coverage=`{coverage_command}`
+    - Test Framework: {test_framework}
+    - Commands: primary executable test command=`{test_command}`, coverage=`{coverage_command}`
     - Total Test Files: {test_count} ({tests_in_tests_dir} in `__tests__/`/`test/`, {tests_colocated} co-located, discovered via filesystem scan)
     - Quality Criteria (project standards): AAA pattern, descriptive names, DRY fixtures, isolated tests, deterministic execution
 
@@ -583,6 +648,10 @@ step6_test_review_prompt:
     > **Note:** Test file contents are truncated to fit token limits; listed files may
     > not appear in the snapshot below. If a file is absent from **Test File Contents**,
     > analyze only what is provided — do not invent or assume missing content.
+    > When evidence is missing or truncated, mark that conclusion unavailable or
+    > inconclusive instead of claiming success. Do not assert "no performance issues",
+    > "no CI issues", or other repository-wide conclusions unless the provided
+    > evidence shows them directly.
 
     **Test File Contents:**
     {test_file_contents}
@@ -647,6 +716,7 @@ step6_test_review_prompt:
     - Focus on HOW tests are written, not WHAT to test
     - Give concrete examples and refactoring patterns
     - Prioritize maintainability and clarity
+    - If evidence is incomplete, say unavailable or inconclusive instead of inferring broader health
     
     **Examples of Good Feedback:**
     - "Test at line 45: Extract common setup into beforeEach() for DRY"
@@ -654,7 +724,9 @@ step6_test_review_prompt:
     - "Test name 'test 1' is unclear - rename to 'should return empty array when no items match'"
     - "Mock at line 67 is overly complex - use jest.fn() with mockReturnValue instead"
     
-    Please analyze the existing tests and provide a detailed test strategy report with specific, actionable recommendations for improving test coverage and quality.
+    Please analyze the existing tests and provide a detailed review limited to the
+    visible evidence, with specific, actionable recommendations for improving test
+    quality and any concrete coverage gaps shown in the provided files.
 
 # Step 8: Test Execution Analysis Prompt Template
 step8_test_exec_prompt:
@@ -702,6 +774,8 @@ step8_test_exec_prompt:
           - Do not prescribe `testMatch`, `testRegex`, missing-test-file, or file-naming fixes as confirmed remediation unless the visible output or provided config contents directly point to that problem
           - When config filenames are listed without their contents, do not cite unseen keys such as `testMatch`, `testRegex`, or `roots`, and do not cite unseen directories or patterns such as `test/`, `src/**/__tests__`, or file-naming conventions as evidence
           - In that insufficient-evidence case, keep follow-up actions limited to neutral diagnostics (for example rerunning locally, capturing stderr, or listing discovered tests) and label them as diagnostic next steps rather than fixes
+          - Do not describe an inconclusive or silent run as a confirmed broken, non-functional, or misconfigured test setup unless the visible evidence proves that conclusion
+          - Keep severity proportional to the confirmed evidence; reserve `Critical` for explicitly confirmed blocking failures, not merely for missing or inconclusive output
           - Provide specific fix recommendations grounded in the listed command, config files, and raw output
           - Priority level (Critical/High/Medium/Low) for each confirmed issue
     
@@ -727,13 +801,14 @@ step8_test_exec_prompt:
        - Note: True flaky test detection requires multiple runs; provide best-effort analysis from single execution
        - Recommend fixes for identified potential flaky patterns, but do not label a failure as flaky without supporting evidence
     
-       5. **CI/CD Optimization Recommendations:**
-         - Assess code-level test/validation quality separately from CI/CD pipeline configuration
-         - When CI config files are listed above, reference those specific workflow filenames in recommendations and keep pipeline guidance tied to them
-         - When no CI config files are listed above, explicitly state that limitation and restrict CI/CD guidance to general best practices rather than project-specific workflow edits
-         - When a workflow filename is listed but its YAML contents are not provided, keep project-specific workflow advice conditional instead of claiming a step is present or missing
-         - Phrase workflow-specific recommendations conditionally (for example, "if `ci.yml` does not already...") unless the workflow YAML contents are visible in the prompt
-         - Suggest test splitting, caching, coverage gates, or parallelization only when they fit the detected command, test types, and available workflow context
+        5. **CI/CD Optimization Recommendations:**
+          - Assess code-level test/validation quality separately from CI/CD pipeline configuration
+          - When CI config files are listed above, reference those specific workflow filenames in recommendations and keep pipeline guidance tied to them
+          - When no CI config files are listed above, explicitly state that limitation and restrict CI/CD guidance to general best practices rather than project-specific workflow edits
+          - When no CI config files are listed above, use neutral forward-looking wording such as "consider adding a basic CI workflow" rather than repository-history claims such as "restore CI" unless that history is explicitly shown
+          - When a workflow filename is listed but its YAML contents are not provided, keep project-specific workflow advice conditional instead of claiming a step is present or missing
+          - Phrase workflow-specific recommendations conditionally (for example, "if `ci.yml` does not already...") unless the workflow YAML contents are visible in the prompt
+          - Suggest test splitting, caching, coverage gates, or parallelization only when they fit the detected command, test types, and available workflow context
          - Propose pre-commit or local developer workflow improvements only when they follow naturally from the identified issue
   
   approach: |
@@ -758,6 +833,9 @@ step8_test_exec_prompt:
     explicitly shown in the prompt.
     In an inconclusive run, keep next steps diagnostic and evidence-preserving rather than phrasing
     them as confirmed repository fixes.
+    Do not elevate severity beyond the confirmed evidence in an inconclusive run, and avoid phrases
+    such as "validation is non-functional" unless the prompt explicitly proves the suite or pipeline
+    is broken.
     When workflow filenames are listed without YAML contents, keep repository-specific CI guidance
     explicitly conditional and avoid stating that a step is missing, present, or misconfigured.
     Clarify whether the run reflects unit, integration, e2e, validation-script execution,
@@ -765,10 +843,12 @@ step8_test_exec_prompt:
     If no CI/CD configuration files are listed above, explicitly note this limitation and
     restrict CI/CD recommendations to general best practices rather than project-specific
     pipeline configuration.
+    Do not use repository-history claims such as "restore" unless that history is explicitly shown
+    in the prompt.
 
     **Output:**
     - Root cause analysis for each failure with file:line:test references when the supplied evidence includes them; otherwise state that exact references are unavailable
-    - Specific code fixes or test modifications needed
+    - Specific code fixes or test modifications needed when the evidence supports them; otherwise diagnostic next steps
     - Coverage improvement action plan
     - Performance optimization recommendations
     - Flaky test remediation steps
@@ -800,6 +880,12 @@ step9_dependencies_prompt:
     > state `No supported manifest files found` and avoid speculative recommendations. If any of
     > the referenced sections are missing, empty, or clearly insufficient, explicitly call out the
     > gap, explain how it limits the analysis, and restrict conclusions to the evidence available.
+    >
+    > Treat each requested check independently. If the prompt only includes summarized dependency
+    > status without a manifest excerpt, runtime-version pin data, or dependency-tree/usage
+    > evidence, the review is **limited**, not full. Do **not** claim `no version conflicts`,
+    > `no unused dependencies`, `no duplicate packages`, `including transitive dependencies`, or
+    > other success conclusions unless that exact evidence is supplied below.
 
     **Context:**
     - Project: {project_name}
@@ -830,6 +916,17 @@ step9_dependencies_prompt:
     
     **Outdated Packages:**
     {outdated_list}
+
+    **Evidence Boundaries:**
+    - Manifest Detail Level: {manifest_evidence_level}
+    - Runtime Version Evidence: {runtime_version_evidence}
+    - Lockfile Evidence: {lockfile_evidence}
+    - Dependency Tree / Usage Evidence: {dependency_tree_evidence}
+
+    **Manifest Excerpt (if available):**
+    ```json
+    {manifest_snippet}
+    ```
     
     **Tasks:**
     
@@ -877,6 +974,11 @@ step9_dependencies_prompt:
     Prioritize security vulnerabilities first, then version drift, then optimizations.
     Start by stating whether the provided evidence is sufficient for a full review, a limited
     review, or no review because no supported manifest files were found.
+    Treat missing evidence as `Unavailable` or `Inconclusive`, not as a pass. For example:
+    - No manifest excerpt => semver-range, runtime-version, and version-conflict analysis is limited
+    - No dependency tree / usage scan => duplicate, unused, peer-resolution, and transitive claims stay inconclusive
+    - No explicit runtime pin file data => do not recommend adding `engines` or `.nvmrc` if they are already shown
+    Do not turn absent evidence into reassuring summaries.
 
     **Output:**
     - Analysis status and any evidence gaps or missing sections
@@ -959,6 +1061,7 @@ step10_code_quality_prompt:
        - Validate documentation/comment quality
        - Check error handling patterns
        - Verify linting compliance (`npm run lint` / ESLint) only when the provided context shows both the lint result and enough command/config scope to determine that the visible file or path is covered; otherwise mark file-level lint conclusions inconclusive
+       - Do not collapse multi-language or multi-file automated lint summaries into blanket statements such as "all files in scope pass linting"; only restate the checks that can be traced to each visible file or path
        - Verify formatting compliance (`npm run format` / Prettier) only when a formatter command, config, or formatter output is visible in the provided context; otherwise mark formatting conclusions inconclusive
        - Check JSDoc completeness only for public functions, classes, and exported symbols whose source is visible in the provided file contents; if exports are not shown, mark JSDoc coverage as unavailable or inconclusive
        - Identify and apply project-specific coding conventions from `CONTRIBUTING.md` or `.github/copilot-instructions.md`, when those files are present in the provided context; these take precedence over generic language defaults
@@ -984,7 +1087,7 @@ step10_code_quality_prompt:
     4. **Anti-Pattern Detection:**
        - Identify code smells (duplicated code, long functions)
        - Detect language-specific anti-patterns
-       - Find improper global usage
+       - Find improper global usage; treat exported environment variables, `process.env` mutation, `globalThis`/`window` writes, and other shared process/module state as global interaction rather than claiming "no globals"
        - Spot tight coupling between modules
        - Identify monolithic functions
        - Detect violation of DRY principle
@@ -1021,11 +1124,13 @@ step10_code_quality_prompt:
     If the provided file contents are missing, truncated, or too partial to support a requested conclusion, explicitly state that the result is unavailable or inconclusive instead of claiming success.
 
     Do not treat a reported lint command or lint result as evidence for a specific file unless the visible command, config, or path scope shows that the file is actually covered.
+    Do not restate repository-wide or multi-language automated summaries as "all files in scope pass" unless each claimed check is traceable to the visible file(s) in this request.
     Do not infer formatter compliance unless formatter tooling/configuration/output is visible in the prompt context.
     Do not claim compliance with project-specific conventions unless the relevant convention documents are included in the prompt context.
     Do not assert JSDoc completeness unless the relevant exported/public symbols are visible in the provided source.
     Do not assert that test coverage is sufficient or that no coverage gaps exist unless the relevant code/tests or explicit coverage artefacts are visible.
     Do not assess commit-message quality, PR quality, or atomicity unless commit history, diffs, or PR metadata are provided.
+    When a file visibly exports or mutates process environment, global state, or other shared module-level state, do not say "no globals"; describe whether that global interaction is intentional and acceptable.
 
     Separate confirmed findings from inconclusive checks so unsupported areas are not presented as passing.
 
@@ -1183,6 +1288,17 @@ step12_git_commit_prompt:
     the provided context explicitly shows it. If counts disagree or the
     evidence is partial, use cautious wording and avoid unsupported exact
     claims.
+
+    Do not treat filenames, file categories, commit heuristics, or
+    auto-extracted issue summaries as proof of a specific change within a file.
+    Only mention a file-level action, rationale, improvement, or impact when
+    the provided diff content or explicit contextual text shows it.
+
+    If the visible evidence is too limited to support a confident body
+    paragraph, bullet list, or breaking-change conclusion, prefer a shorter
+    commit message and leave the uncertain detail unstated. Do not add "No
+    breaking changes detected" or similar certainty language unless the
+    provided context explicitly supports that conclusion.
     
     **Tasks:**
     

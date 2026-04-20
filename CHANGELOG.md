@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **`config/ai_helpers.yaml`** — Hardened `version_manager_prompt` so zeroed file-category counters cannot justify an artifact-only summary when the visible prompt context also names non-`.ai_workflow/` paths; mixed evidence must now be reported as mixed or inconclusive.
 - **`CHANGELOG.md`** — Removed embedded README/reference content so release history remains changelog-only and partitioned documentation reviews no longer receive malformed changelog excerpts.
 - **`config/ai_helpers/documentation_prompts.yaml`** — Broadened `doc_analysis_prompt` so the listed `doc_files` are treated as the minimum review set, with authoritative docs still in scope when the changed files imply them.
 - **`src/__tests__/changelog_structure.test.ts`** — Added regression coverage to prevent embedded documentation sections from reappearing inside `CHANGELOG.md`.

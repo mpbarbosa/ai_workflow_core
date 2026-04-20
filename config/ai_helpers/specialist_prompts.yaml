@@ -31,6 +31,9 @@ version_manager_prompt:
     full staged scope. Do not claim "the only staged changes are ..." unless the provided file list
     is empty or every listed path is under `.ai_workflow/` and no non-artifact paths appear anywhere
     else in the provided git context.
+    If any visible evidence names a path outside `.ai_workflow/` (for example in `Changed Files`,
+    diff headers, or git context), treat the staged scope as mixed or inconclusive and do not
+    describe it as artifact-only.
     **Versioning Policy**: Check these files (in order) for project-specific versioning rules or
     release guidance: `CHANGELOG.md` (project SemVer statement and `[Unreleased]` scope),
     `CONTRIBUTING.md` (project root), `README.md`, `docs/guides/DEVELOPER_GUIDE.md`,
@@ -69,8 +72,12 @@ version_manager_prompt:
        or git context before drawing conclusions.
        - If the available file list or diff sample is partial, say the full staged scope is
          inconclusive.
+       - If any visible path is outside `.ai_workflow/`, treat the staged scope as mixed or
+         inconclusive even when the category counters are all zero.
        - Do not state that only `.ai_workflow/` files changed unless the provided evidence fully
          supports that claim.
+       - When the visible evidence includes both `.ai_workflow/` artifacts and project files, say
+         that the scope is mixed rather than collapsing it into an artifact-only summary.
     1. Read CHANGELOG.md [Unreleased] section to understand all documented pending changes
         - If `[Unreleased]` lists Added features or new capabilities, that evidence outranks an
           artifact-only staged diff and usually requires at least a MINOR bump.
@@ -222,10 +229,9 @@ async_flow_debugger_prompt:
 
     **File Context Guide**:
     The **File Contents** section below provides source file excerpts. Interpret them as follows:
-    - If an excerpt heading includes `[truncated]`, or the excerpt ends with
-      `...(truncated — remainder omitted)`, the file was too large to include in full.
-      Analyse only the available portion and note "content truncated" in your findings;
-      do not speculate about omitted code.
+    - If a path is labeled `(part X/Y)`, the file was intentionally split across multiple
+      prompt-safe partitions. Analyse only the visible partition in this request and keep
+      conclusions scoped to the visible excerpt/partition rather than claiming whole-file health.
     - Use the file path to understand each file's role before analysing:
       - `eslint.config.js` / `.eslintrc.*` — linting rules and code-style enforcement
       - `jest.config.*` / `vitest.config.*` — test runner configuration
@@ -252,6 +258,8 @@ async_flow_debugger_prompt:
 
   approach: |
     Analyze ONLY the source files and async patterns explicitly listed above. Do not assume or invent code paths, promise chains, or event handlers not shown in the provided context.
+    If a file path is labeled `(part X/Y)`, keep every conclusion scoped to the visible excerpt/partition; do not issue a whole-file clean bill of health unless every partition is visibly present in the current request.
+    If no runtime traces, logs, timestamps, or profiler output are provided, mark timing extraction and duration claims unavailable instead of inventing them from static source alone.
 
     **Step 0: Pattern Presence Scan**
     Before analysing, identify which async patterns are present in the provided files:
@@ -291,10 +299,11 @@ async_flow_debugger_prompt:
     - Test error propagation to observers
     
     **Step 4: Timing Analysis**
-    - Extract execution timestamps
+    - Extract execution timestamps only when explicit runtime traces or logs are provided
     - Identify race conditions (parallel operations)
     - Check for missing Promise.all() or sequential awaits
     - Verify timeout handling
+    - If timestamps/durations are not explicitly visible in the provided evidence, state "Timing evidence unavailable from static source excerpts"
   
   output_format: |
     **Async Flow Analysis**
@@ -302,8 +311,8 @@ async_flow_debugger_prompt:
     Patterns Present: [List async patterns found: async/await | promise chains | network/fetch | none]
     
     Execution Chain: *(omit if no async functions found)*
-    1. [Step description] - [SUCCESS/FAILED] - [Duration]
-    2. [Step description] - [SUCCESS/FAILED] - [Duration]
+    1. [Step description] - [SUCCESS/FAILED] - [Duration if explicit timing evidence is visible; otherwise unavailable]
+    2. [Step description] - [SUCCESS/FAILED] - [Duration if explicit timing evidence is visible; otherwise unavailable]
     3. [Break point] ← Execution stopped here
     
     Error Path Diagram: *(omit if no try/catch or .catch() found)*
@@ -321,7 +330,7 @@ async_flow_debugger_prompt:
     - Location: [Specific file:line]
     - Code: [Exact fix with surrounding context]
     
-    **Validation**: [How to test async behavior]
+    **Validation**: [How to test async behavior; if the current evidence is static source only, say runtime timing validation is unavailable from this request]
 
 # Data Structure Debugging Specialist
 data_structure_debugger_prompt:

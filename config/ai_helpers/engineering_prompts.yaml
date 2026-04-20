@@ -257,6 +257,14 @@ test_strategy_prompt:
 
     Review the coverage stats and test files listed to identify gaps, prioritize recommendations, and produce a clear strategic roadmap.
 
+    **Evidence Boundaries:**
+    - Treat the supplied coverage stats and test file list as the full evidence set unless source or test file contents are explicitly included.
+    - If the test file inventory is truncated, summarized, contains placeholders/ellipsis, or omits file contents, explicitly state that the evidence is incomplete and mark any dependent conclusion as unavailable or inconclusive.
+    - Do not name modules, subsystems, files, or architectural areas unless they appear explicitly in the supplied context.
+    - Do not claim integration, e2e, browser/API, observer/event, workflow, orchestrator, or checkpointing gaps unless the provided context explicitly shows those surfaces.
+    - When existing test implementations are not shown, do not claim that mocks are wrong or production-mismatched; at most, recommend verifying them if the project appears to use mocks.
+    - Separate observed evidence from follow-up recommendations. Recommendations may be conditional, but claims about current coverage must stay evidence-backed.
+
     **Output:**
     - Coverage gap analysis with severity levels (Critical/High/Medium/Low)
     - Prioritized list of testing recommendations

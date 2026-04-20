@@ -19,6 +19,12 @@ doc_analysis_prompt:
     - `CHANGELOG.md` for significant user-facing changes
     - Existing module-local docs or API references that document changed modules
     
+    {partition_header}
+    {partition_scope_note}
+    
+    **File paths in this request**:
+    {file_paths_in_request}
+
    **Provided file contents and excerpts**:
     {file_contents}
 

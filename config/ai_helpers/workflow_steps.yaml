@@ -36,9 +36,11 @@ step1_5_copilot_instructions_prompt:
        - `**Repo-fact evidence**`: cite the supporting repo fact, or state `not available`
        - `**Action**`: `keep` | `rewrite` | `remove` | `omit pending evidence`
        - `**Why this matters**`: one sentence explaining the practical impact on Copilot guidance quality
-    4. If no corrections are needed, still include `## Findings` with a single finding that clearly says no issue was confirmed and why.
-    5. After the findings, add `## Corrected File` followed by ONLY one fenced ```markdown block containing the full corrected replacement for `{copilot_instructions_path}`.
-    6. Do not use additional fenced code blocks outside the final corrected-file block.
+       - Mark a finding as `supported guidance` only when the `Repo-fact evidence` bullet cites a surfaced repo fact that explicitly supports the retained guidance; if support is missing, use `not available` and a non-supported classification instead.
+       - Do not emit findings for topics that are absent from the current file unless the omission itself is explicitly required by the task; `Current file evidence: none` is only valid for those explicit omission cases.
+     4. If no corrections are needed, still include `## Findings` with a single finding that clearly says no issue was confirmed and why.
+     5. After the findings, add `## Corrected File` followed by ONLY one fenced ```markdown block containing the full corrected replacement for `{copilot_instructions_path}`.
+     6. Do not use additional fenced code blocks outside the final corrected-file block.
 
   approach: |
     **Editing methodology**:
@@ -54,17 +56,19 @@ step1_5_copilot_instructions_prompt:
     **Hard rules**:
     - Do NOT invent missing files, counts, commands, capabilities, or documents.
     - Treat the authoritative repo facts block — including any surfaced reference-doc titles or snippets — and the current file excerpt above as the only visible evidence for repo-specific claims in this task.
-    - Do NOT recreate exhaustive inventories, count summaries, release-status snapshots, or tutorial-style content inside the Copilot instructions file unless the repo facts clearly show they are essential to Copilot guidance.
-     - Do NOT keep incorrect numeric or status claims when the repo facts disagree.
-     - Do NOT introduce repository-specific implementation details, template syntax, helper modules, or workflow conventions unless they are explicitly stated in the repo facts block or literally visible in the current file content.
-     - Do prefer brief links or pointers to authoritative docs when detailed material already exists elsewhere in the repository.
-     - If a concise repository description is directly corroborated by surfaced reference-doc titles or snippets, do not mark it unsupported solely because the full document is not reproduced in the prompt.
-     - When pointing to authoritative docs, reference the relevant document set surfaced in repo facts; do not imply that `README.md` is the sole authority unless the repo facts explicitly show that.
-     - Make every changed, removed, or intentionally retained suspicious section explicit in `## Findings`; do not rely on the corrected file alone to communicate what was wrong.
-     - Each finding must map to a concrete section or claim from the current file, even when the action is "keep" or "omit pending evidence".
-     - Do NOT output a patch; the final fenced markdown block must be the complete corrected file.
-     - If the current file contains broad historical claims that cannot be validated, replace them with wording grounded in the provided facts.
-     - If a current-file statement looks plausible but the repo facts do not confirm it, prefer omission or more general wording over repeating it as a verified fact.
+     - Do NOT recreate exhaustive inventories, count summaries, release-status snapshots, or tutorial-style content inside the Copilot instructions file unless the repo facts clearly show they are essential to Copilot guidance.
+      - Do NOT keep incorrect numeric or status claims when the repo facts disagree.
+      - Do NOT introduce repository-specific implementation details, template syntax, helper modules, or workflow conventions unless they are explicitly stated in the repo facts block or literally visible in the current file content.
+      - Do NOT cite invented repo-fact headings, labels, or document titles; quote or paraphrase only repo-fact sections that are visibly present in the surfaced repo facts block.
+      - Do prefer brief links or pointers to authoritative docs when detailed material already exists elsewhere in the repository.
+      - If a concise repository description is directly corroborated by surfaced reference-doc titles or snippets, do not mark it unsupported solely because the full document is not reproduced in the prompt.
+      - When pointing to authoritative docs, reference the relevant document set surfaced in repo facts; do not imply that `README.md` is the sole authority unless the repo facts explicitly show that.
+      - Make every changed, removed, or intentionally retained suspicious section explicit in `## Findings`; do not rely on the corrected file alone to communicate what was wrong.
+      - Each finding must map to a concrete section or claim from the current file, even when the action is "keep" or "omit pending evidence".
+      - If repo-fact support is absent, write `Repo-fact evidence: not available`; do not substitute generic best practices, plausibility, or inferred project conventions as repo-fact support.
+      - Do NOT output a patch; the final fenced markdown block must be the complete corrected file.
+      - If the current file contains broad historical claims that cannot be validated, replace them with wording grounded in the provided facts.
+      - If a current-file statement looks plausible but the repo facts do not confirm it, prefer omission or more general wording over repeating it as a verified fact.
 
 step2_consistency_prompt:
   # Split role into prefix + guidelines for token efficiency

@@ -25,7 +25,7 @@ doc_analysis_prompt:
     **File paths in this request**:
     {file_paths_in_request}
 
-   **Provided file contents and excerpts**:
+    **Provided file contents and excerpts**:
     {file_contents}
 
     **REQUIRED ACTIONS**:

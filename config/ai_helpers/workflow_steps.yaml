@@ -554,8 +554,10 @@ step5_directory_prompt:
     {doc_context}
     Treat these excerpts as partial evidence. Do not claim "No documentation found", "X is undocumented", or "primary documentation does not describe Y" unless the relevant documentation sources are visible here and the visible text supports that conclusion.
     If the authoritative documentation files are absent, truncated, or only partially shown, mark the documentation status as unavailable or inconclusive instead of asserting either a clean pass or a confirmed documentation defect.
-    Treat visible directory trees, folder inventories, and README files inside a directory as valid documentation evidence for that directory.
+    Treat visible directory trees, folder inventories, README files inside a directory, and visible excerpts from files located under a directory as valid documentation evidence for that directory.
     A visible repository-layout inventory entry (for example in `INDEX.md`) is evidence that the listed directory exists and contains the listed files. Do not overstate that situation as "no documentation" for the directory or its contents.
+    A visible excerpt from `docs/ARCHITECTURE.md`, `docs/API.md`, or another file under `docs/` is itself evidence that `docs/` is being used for documentation. Do not report `docs/` as undocumented when such an excerpt is already visible.
+    Do not make clean-pass claims for checks like misplaced config/build files or absent architectural violations unless the prompt includes enough visible file-level evidence to support them. Otherwise mark those checks as unavailable or inconclusive.
     
     **Tasks:**
     
@@ -595,7 +597,8 @@ step5_directory_prompt:
     Analyze ONLY the directories explicitly listed under "Current Directory Structure" above. Do not reference, invent, or assume the existence of any directories not present in that list, and do not rely on documentation content outside the visible excerpts provided in this prompt.
     Do not report a directory as missing unless the visible evidence in this prompt makes it required. If a convention suggests a directory would be beneficial but the prompt does not establish it as required, present that as a recommendation instead of a defect.
     Do not state that a directory is undocumented, or that the primary documentation fails to describe it, unless the relevant README/architecture/contributing excerpts are visible and support that conclusion. Otherwise mark the documentation result as unavailable or inconclusive.
-    Treat automated "undocumented" findings as provisional. If the excerpts show a repository inventory, directory-local README/INDEX file, or any other concrete structure evidence for that directory, downgrade the point to clarification-needed unless the visible text clearly shows a real documentation gap.
+    Treat automated "undocumented" findings as provisional. If the excerpts show a repository inventory, directory-local README/INDEX file, a visible file excerpt under that directory, or any other concrete structure evidence for that directory, downgrade the point to clarification-needed unless the visible text clearly shows a real documentation gap.
+    Do not make clean-pass claims such as "no misplaced config or build files detected" or "no architectural violations detected" unless the prompt includes enough visible file-level evidence to support that conclusion. If the prompt only shows directory names or partial excerpts, mark those checks as unavailable or inconclusive instead.
 
     **Output:**
     - List of structure issues with specific directory paths
@@ -756,11 +759,11 @@ step8_test_exec_prompt:
     - Test Scope: Limit analysis to the work implied by `{test_command}`, the detected test types (`{test_types}`), the detected test config files (`{test_config_paths}`), and the execution evidence below. If this run is a validation-script invocation rather than a conventional unit/integration/e2e suite, treat it as validation-script analysis rather than assuming broader test-suite coverage.
     - Test Config Files: {test_config_paths}
     - Exit Code: {test_exit_code}
-    - Results: {tests_passed}/{tests_total} passed, {tests_failed} failed, {tests_skipped} skipped
-    - Coverage Threshold: {coverage_threshold}%
+    - Results: {results_summary}
+    - Coverage Threshold: {coverage_threshold}
     - Coverage Gaps: {coverage_gaps}
     - CI/CD Config: {ci_config_paths}
-    - Scope: automated test suite only
+    - Scope: {scope_label}
     - Test Types: {test_types}
     
     **Test Execution Results:**
@@ -780,9 +783,11 @@ step8_test_exec_prompt:
           - Categorize the issue precisely (breaking change, environment issue, flaky behavior, no-tests-found, config mismatch, validation-script misuse, or similar)
           - If the supplied output or listed config filenames are insufficient to isolate a cause, mark the result as unavailable or inconclusive instead of guessing a specific misconfiguration
           - If the runner produced no console output, treat configuration or discovery failure as unconfirmed unless the visible evidence explicitly includes a "no tests found" message or equivalent diagnostic
+          - When `Test Types` is `validation-script`, keep diagnostics scoped to the configured command itself rather than assuming a conventional test runner or test-discovery phase
           - Do not prescribe `testMatch`, `testRegex`, missing-test-file, or file-naming fixes as confirmed remediation unless the visible output or provided config contents directly point to that problem
           - When config filenames are listed without their contents, do not cite unseen keys such as `testMatch`, `testRegex`, or `roots`, and do not cite unseen directories or patterns such as `test/`, `src/**/__tests__`, or file-naming conventions as evidence
           - In that insufficient-evidence case, keep follow-up actions limited to neutral diagnostics (for example rerunning locally, capturing stderr, or listing discovered tests) and label them as diagnostic next steps rather than fixes
+          - For silent `validation-script` runs, do not recommend listing discovered tests, renaming test entry points, or addressing missing tests unless the visible evidence explicitly shows an actual test runner and test-discovery failure
           - Do not describe an inconclusive or silent run as a confirmed broken, non-functional, or misconfigured test setup unless the visible evidence proves that conclusion
           - Keep severity proportional to the confirmed evidence; reserve `Critical` for explicitly confirmed blocking failures, not merely for missing or inconclusive output
           - Provide specific fix recommendations grounded in the listed command, config files, and raw output
@@ -832,10 +837,16 @@ step8_test_exec_prompt:
     If the runner produced no output, or the prompt only names config/workflow files without
     showing their contents, do not assert a specific root cause or workflow gap unless the
     visible evidence directly supports that conclusion.
+    When `Test Types` is `validation-script`, keep the analysis anchored to the configured
+    command and its visible output instead of inferring unit-test discovery or missing-test
+    problems.
     In that no-output case, prefer wording such as "root cause unavailable from captured evidence"
     or "runner exited silently" over guessing discovery/configuration defects, and avoid prescribing
     `testMatch`, `testRegex`, or test-path fixes as confirmed remediation unless the visible output
     or config contents point to them.
+    For silent `validation-script` runs, limit next steps to rerunning the command, capturing
+    stderr/stdout, and checking the referenced script or validator configuration unless the
+    prompt includes explicit runner-specific diagnostics.
     When config filenames are listed without file contents, do not mention unseen config keys such
     as `testMatch`, `testRegex`, or `roots`, and do not mention unseen directories or filename
     patterns such as `test/`, `src/**/__tests__`, or naming conventions unless those details are
@@ -987,6 +998,8 @@ step9_dependencies_prompt:
     - No manifest excerpt => semver-range, runtime-version, and version-conflict analysis is limited
     - No dependency tree / usage scan => duplicate, unused, peer-resolution, and transitive claims stay inconclusive
     - No explicit runtime pin file data => do not recommend adding `engines` or `.nvmrc` if they are already shown
+    - If the evidence boundary explicitly says `runtime pin files: none found`, treat that as confirmed absence from the supplied scan, not as an unresolved gap
+    - A detected lockfile without a visible dependency tree is not enough to claim `no transitive dependencies`, `no peer dependency issues`, or `no bundle size issues`
     Do not turn absent evidence into reassuring summaries.
 
     **Output:**
@@ -1535,7 +1548,7 @@ markdown_lint_prompt:
 
 # Step 04: Configuration Specialist Prompt Template
 # Purpose: Validate and analyze configuration files for schema correctness, security, and best practices
-# Version: 1.0.7 (v6.8.44 - Add partition-aware scope guidance and generated-lockfile summaries)
+# Version: 1.0.8 (v6.8.45 - Tighten evidence rules for sparse configs and freshness claims)
 configuration_specialist_prompt:
   # Split role into prefix + guidelines for token efficiency
   role_ref: configuration_specialist  # resolved from config/prompt_roles.yaml
@@ -1580,12 +1593,16 @@ configuration_specialist_prompt:
     >   claims to the visible excerpt, and do not claim full-file validation or
     >   "All configuration files validated successfully" unless every in-scope file is
     >   present in full.
-    > - A **File Contents** entry may be a deliberate compact summary of a generated
-    >   lockfile or other oversized machine-generated config. When clearly labeled as a
-    >   summary, analyze only the summarized fields shown and do not assume the raw file
-    >   was inspected verbatim line by line.
-    > - Ignore unrelated files even if they appear in another section of this prompt.
-    >   Only the scope list above and the matching **File Contents** entries are in scope.
+     > - A **File Contents** entry may be a deliberate compact summary of a generated
+     >   lockfile or other oversized machine-generated config. When clearly labeled as a
+     >   summary, analyze only the summarized fields shown and do not assume the raw file
+     >   was inspected verbatim line by line.
+     > - Keep praise evidence-bound. If a file is sparse or only a slice is visible, do
+     >   not generalize that evidence into broad claims such as "follows standard
+     >   Node/TypeScript ignore patterns" unless the visible content actually shows that
+     >   wider coverage.
+     > - Ignore unrelated files even if they appear in another section of this prompt.
+     >   Only the scope list above and the matching **File Contents** entries are in scope.
     > - If the scope list is empty or resolves to "none found", that is a valid outcome.
     >   State that no configuration files were in scope for this run and do not infer
     >   any additional files.
@@ -1663,16 +1680,20 @@ configuration_specialist_prompt:
     - **Recommendation**: Concrete fix with before/after example
     - **Impact**: What breaks or improves
     
-    **If no issues found and every in-scope file is present in full**:
-    - Explicitly state "All configuration files validated successfully"
-    - Summarize what was checked (X files, Y validations performed)
-    - Highlight any noteworthy best practices already in use
+     **If no issues found and every in-scope file is present in full**:
+     - Explicitly state "All configuration files validated successfully"
+     - Summarize what was checked (X files, Y validations performed)
+     - Highlight only best practices that are directly visible in the shown content
+     - Do not use freshness or safety adjectives such as "safe", "latest", or
+       "up-to-date" unless the visible evidence explicitly demonstrates them (for
+       example via a pinned version, dated verification output, or an in-scope check)
     
-    **If any in-scope file content is truncated or unavailable**:
-    - Do NOT give an overall success verdict for the entire scope
-    - State which files were truncated or unavailable
-    - Mark the unseen remainder as inconclusive
-    - Limit any "no issues found" wording to the visible excerpt(s) only
+     **If any in-scope file content is truncated or unavailable**:
+     - Do NOT give an overall success verdict for the entire scope
+     - State which files were truncated or unavailable
+     - Mark the unseen remainder as inconclusive
+     - Limit any "no issues found" wording to the visible excerpt(s) only
+     - Keep any positive observations narrowly scoped to what is explicitly visible
     
     **Format Types:**
     - JSON: package.json, tsconfig.json, .vscode/*, composer.json

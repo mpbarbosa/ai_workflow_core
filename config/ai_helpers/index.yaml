@@ -38,6 +38,7 @@ step6_test_review_prompt: workflow_steps.yaml
 step8_test_exec_prompt: workflow_steps.yaml
 step9_dependencies_prompt: workflow_steps.yaml
 step10_code_quality_prompt: workflow_steps.yaml
+cohesion_review_prompt: workflow_steps.yaml
 error_resilience_prompt: workflow_steps.yaml
 step12_git_commit_prompt: workflow_steps.yaml
 markdown_lint_prompt: workflow_steps.yaml

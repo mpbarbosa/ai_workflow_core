@@ -27,13 +27,11 @@ doc_analysis_prompt:
 
     **REQUIRED ACTIONS**:
      1. **Read the changes**: Examine what was modified in each changed file
-     2. **Identify documentation impact**: Determine which sections in the listed docs need updates:
-        - `README.md`: features, setup instructions, usage examples, version references
-        - API reference docs already present in the provided documentation set: public function signatures, parameters, return types — follow documented project conventions when available
-        - Architecture/design docs already present in the provided documentation set: architecture changes, new features, module structure
-        - Version numbers: update `CHANGELOG.md` (add entry under `[Unreleased]`) and any version strings in the changed docs or entrypoint/source files that are actually present in the provided change set
-        - Module READMEs: if code in that module changed
-        - Inline comments: for complex new logic; follow project conventions from any provided authority docs
+     2. **Identify documentation impact**: Determine which sections in the listed documentation files need updates:
+        - Treat the files in `Documentation to review` as the only documentation targets for edits
+        - Use the changed files only as evidence for whether those scoped documentation targets need updates
+        - Review API references, usage instructions, architecture descriptions, and version strings only when those topics appear in the scoped documentation files
+        - Do not propose edits to `README.md`, `CHANGELOG.md`, module READMEs, source-file JSDoc, or inline code comments unless those files are explicitly included in `Documentation to review` or already appear in the provided changed-file list as documentation files
      3. **Determine specific edits**: Identify the exact lines or sections requiring updates — a "specific edit" means a concrete before/after text change tied to a file path, NOT a vague suggestion like "consider updating X"
      4. **Verify accuracy**: Ensure examples, code snippets, and cross-references are still correct
      5. **Handle missing or incomplete files**: If a documentation file from the provided scope is missing or clearly incomplete, note it as a documentation gap in your output rather than skipping it or fabricating content — describe briefly what should be there
@@ -52,7 +50,7 @@ doc_analysis_prompt:
      2. **Prioritize Updates**: Start with most critical documentation
         - Primary: the highest-impact documentation files already present in the provided scope
         - Secondary: additional technical docs already present in the provided scope
-        - Tertiary: Inline code comments
+        - Use non-documentation changed files as supporting evidence only; they are not standalone edit targets for this prompt
      
      3. **Edit Surgically**: Provide EXACT text changes only where needed
         - Use before/after blocks showing precise line changes
@@ -80,6 +78,7 @@ doc_analysis_prompt:
     - NEVER ask clarifying questions - make informed decisions
     - DEFAULT to "Unavailable" or "Inconclusive" rather than "No updates required" when critical evidence is missing
     - If the visible files are real project files but do not materially affect the scoped documentation target, return "Not applicable" instead of "No updates required"
+    - Do not review source-file JSDoc, inline code comments, or non-documentation files as standalone deliverables unless those files are themselves in the scoped documentation set
     - FOCUS on accuracy over completeness
     - Keep the response dense and modular - prefer concise edit blocks over expansive narrative
     - Avoid verbosity, creative expansion, and speculative rewrites beyond the visible change set

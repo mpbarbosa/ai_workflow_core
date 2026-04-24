@@ -351,6 +351,12 @@ quality_prompt:
   
   task_template: |
     Review the following files for code quality: {files_to_review}
+
+    **Provided file contents and excerpts (authoritative for content-level claims):**
+    {file_content_map}
+
+    **Scope note:**
+    {quality_scope_note}
     
     Analyze:
     1. **Code Organization** - Logical structure and separation of concerns
@@ -366,6 +372,13 @@ quality_prompt:
     - Suggest concrete improvements
     - Prioritize findings by severity
     - Provide code examples for recommended fixes
+    - Work only from the injected file contents above; if a listed file is absent,
+      truncated, or summarized too narrowly for a claim, mark that conclusion
+      unavailable or inconclusive instead of treating the file as fully reviewed
+    - Do not say all listed files are clean, standard, or issue-free unless every
+      listed file is visible in full in the prompt
+    - Treat `tsconfig*.json`, `jsconfig*.json`, and `.vscode/*.json` as JSONC-capable configs when comments are visible; do not flag those comments as strict-JSON syntax errors
+    - Do not recommend adding comments, READMEs, or rationale notes unless the visible file is unusually opaque, risky, or missing explanation for a concrete maintenance-critical choice
     
     **Observer Pattern & Event-Driven Code** (when applicable):
     - Check for event type validation in observer.update() methods

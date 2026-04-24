@@ -106,8 +106,8 @@ step2_consistency_prompt:
     - TypeScript source files: {ts_source_count} (not included in this partition — JSDoc source coverage is checked in the TypeScript Review step)
     - Scope: {change_scope}
     - Files in this analysis batch: {modified_count}
-    - Documentation scope: the markdown files explicitly listed below, including root-level docs (e.g., `README.md`, `CHANGELOG.md`), any `docs/` subtree entries when present, and any markdown files under `.github/` when present — other hidden directories, hidden tool directories (`.workflow_core/`, `node_modules/`), archived snapshots (e.g., `.ai_workflow/archive/`), and build outputs (`dist/`, `coverage/`) are excluded unless explicitly listed in the files below; auto-generated `.md` files should be flagged when they contain consistency violations but treated as **lower priority** than hand-authored docs, since they are regenerated on each build
-    - Files referenced in markdown tables, numbered lists, or inline links but absent from the file list are also in scope — flag them as potential documentation gaps (distinct from broken links)
+    - Documentation scope: the markdown files explicitly listed below, including root-level docs (e.g., `README.md`, `CHANGELOG.md`), any `docs/` subtree entries when present, and any markdown files under `.github/` when present — other hidden directories, hidden tool directories (`.workflow_core/`, `node_modules/`), archived snapshots (e.g., `.ai_workflow/archive/`), and build outputs (`dist/`, `coverage/`) are excluded unless explicitly listed in the files below; auto-generated `.md` files should be flagged when they contain consistency violations but treated as **lower priority** than hand-authored docs, since they are regenerated on each build. Generated documentation copies should be treated as standalone scope items only when they are explicitly listed and their excerpts are visible.
+    - Files referenced in markdown tables, numbered lists, or inline links but absent from the file list are **not automatically in scope** for content-level comparisons in a partitioned run — treat them as broken-reference candidates or potential documentation gaps only when the reference itself is visible, and keep the root cause unverified from visible context unless the target or a more specific explanation is also visible
     - Ignore non-markdown documentation sources outside the listed markdown files — such as repository source comments, standalone JSDoc in source files, YAML, JSON, or generated config files — unless they appear inside the markdown files under review as embedded examples/snippets
     - The complete list of files in scope for this partition is provided at the end of this prompt in the **Files to Analyze** section.
 
@@ -299,19 +299,23 @@ step2_consistency_prompt:
         - Do not claim heading, list, or code-fence consistency across files unless the exact
           supporting headings, list items, or fenced blocks are visible for each compared file;
           otherwise keep the claim scoped to the visible excerpts or mark it inconclusive
-        - Do not claim missing-documentation, missing-cross-reference, or stub-level checks
-          passed merely because a file name appears in the file list; require visible file
-          content or mark the check inconclusive
-        - Unlabelled fenced blocks are not automatically inconsistent; only report a code-block
-          language-tag issue when the exact visible block and a visible project convention
-          support that conclusion
+         - Do not claim missing-documentation, missing-cross-reference, or stub-level checks
+           passed merely because a file name appears in the file list; require visible file
+           content or mark the check inconclusive
+         - Treat off-list referenced files as candidate targets, not additional in-scope
+           documents, unless their own contents are also visible in the provided context
+         - Unlabelled fenced blocks are not automatically inconsistent; only report a code-block
+           language-tag issue when the exact visible block and a visible project convention
+           support that conclusion
        - If any requested comparison remains limited, truncated, partitioned, or otherwise inconclusive,
           keep the summary scoped to the visible evidence and explicitly say the remaining checks are
           inconclusive rather than implying exhaustive validation
        - Do not write negative pass findings such as "No visible inconsistencies", "No evidence of mismatched terminology", or "No missing cross-references detected" unless the exact compared artifacts are visibly supported; otherwise phrase the remaining check as limited or inconclusive
-      - If a file path appears in the provided file list but its content is omitted or truncated, do not say the file or section is "not visible"; describe the comparison as unavailable from the visible excerpt instead
-      - Do not claim overall consistency with package manifests, scripts, build steps, or
-        source code unless that supporting evidence is explicitly visible in the provided context
+       - If a file path appears in the provided file list but its content is omitted or truncated, do not say the file or section is "not visible"; describe the comparison as unavailable from the visible excerpt instead
+       - Do not claim overall consistency with package manifests, scripts, build steps, or
+         source code unless that supporting evidence is explicitly visible in the provided context
+       - Do not project a finding from a generated documentation copy onto a hand-authored
+         source document unless both paths are explicitly visible in the provided context
 
     **Documentation Standards to Apply:**
     - Technical accuracy and precision
@@ -509,7 +513,7 @@ step5_directory_prompt:
     **Authoritative Validation Sources:**
     - `.workflow-config.yaml` (if present, use as the primary source of truth for required structure)
     - `project_kinds.yaml` project-kind guidance and defaults (typically sourced from `.workflow_core/config/project_kinds.yaml` for this workflow, or from equivalent project-kind guidance included in the visible prompt context)
-    - Architecture and structural guidance documented in `README.md`, `INDEX.md`, `docs/ARCHITECTURE.md`, `CONTRIBUTING.md`, and directory-local `README.md` / `INDEX.md` files when visible
+    - Architecture and structural guidance documented in `README.md`, `INDEX.md`, `docs/ARCHITECTURE.md`, `CONTRIBUTING.md`, `.github/SKILLS.md`, and directory-local `README.md` / `INDEX.md` files when visible
 
     **"Required" Directory Definition:**
     When `.workflow-config.yaml` is present, the following keys define required directories/files:
@@ -550,13 +554,14 @@ step5_directory_prompt:
     **Current Directory Structure:**
     {dir_tree}
 
-    **Documentation Excerpts (partial — selected lines from README.md, INDEX.md, docs/ARCHITECTURE.md, CONTRIBUTING.md, `.github/copilot-instructions.md`, and directory-local README / INDEX files when available):**
+    **Documentation Excerpts (partial — selected lines from README.md, INDEX.md, docs/ARCHITECTURE.md, CONTRIBUTING.md, `.github/copilot-instructions.md`, `.github/SKILLS.md`, and directory-local README / INDEX files when available):**
     {doc_context}
     Treat these excerpts as partial evidence. Do not claim "No documentation found", "X is undocumented", or "primary documentation does not describe Y" unless the relevant documentation sources are visible here and the visible text supports that conclusion.
     If the authoritative documentation files are absent, truncated, or only partially shown, mark the documentation status as unavailable or inconclusive instead of asserting either a clean pass or a confirmed documentation defect.
     Treat visible directory trees, folder inventories, README files inside a directory, and visible excerpts from files located under a directory as valid documentation evidence for that directory.
     A visible repository-layout inventory entry (for example in `INDEX.md`) is evidence that the listed directory exists and contains the listed files. Do not overstate that situation as "no documentation" for the directory or its contents.
     A visible excerpt from `docs/ARCHITECTURE.md`, `docs/API.md`, or another file under `docs/` is itself evidence that `docs/` is being used for documentation. Do not report `docs/` as undocumented when such an excerpt is already visible.
+    Treat `.github/SKILLS.md` and similar repository inventories as valid documentation evidence for referenced Copilot skill directories and files when those paths are visibly listed.
     Do not make clean-pass claims for checks like misplaced config/build files or absent architectural violations unless the prompt includes enough visible file-level evidence to support them. Otherwise mark those checks as unavailable or inconclusive.
     
     **Tasks:**
@@ -599,6 +604,7 @@ step5_directory_prompt:
     Do not state that a directory is undocumented, or that the primary documentation fails to describe it, unless the relevant README/architecture/contributing excerpts are visible and support that conclusion. Otherwise mark the documentation result as unavailable or inconclusive.
     Treat automated "undocumented" findings as provisional. If the excerpts show a repository inventory, directory-local README/INDEX file, a visible file excerpt under that directory, or any other concrete structure evidence for that directory, downgrade the point to clarification-needed unless the visible text clearly shows a real documentation gap.
     Do not make clean-pass claims such as "no misplaced config or build files detected" or "no architectural violations detected" unless the prompt includes enough visible file-level evidence to support that conclusion. If the prompt only shows directory names or partial excerpts, mark those checks as unavailable or inconclusive instead.
+    Do not recommend adding build artifacts such as `dist/` to `.gitignore` unless the visible prompt evidence explicitly shows both the artifact path and the current ignore policy. Some repositories intentionally commit generated outputs.
 
     **Output:**
     - List of structure issues with specific directory paths
@@ -1065,6 +1071,13 @@ step10_code_quality_prompt:
     **Code Samples for Review:**
     {sample_code}
 
+    **Supplementary Tooling, Convention, and Test Evidence:**
+    {supporting_quality_scope_note}
+    {supporting_quality_context}
+
+    **Mandatory Cohesion / Coupling Guide Status:**
+    {cohesion_guide_status}
+
     **File Contents for Review:**
     {file_content_map}
 
@@ -1089,6 +1102,7 @@ step10_code_quality_prompt:
        - Identify and apply project-specific coding conventions from `CONTRIBUTING.md` or `.github/copilot-instructions.md`, when those files are present in the provided context; these take precedence over generic language defaults
        - Do not claim compliance with project conventions unless the relevant convention source is visible in the prompt context; otherwise mark project-convention compliance inconclusive
        - Also consult other project guides found under `.github/` when present in the context (e.g., `CODE_REVIEW_GUIDE.md`, `TDD_GUIDE.md`, `UNIT_TEST_GUIDE.md`, `HIGH_COHESION_GUIDE.md`, `LOW_COUPLING_GUIDE.md`, `JAVASCRIPT_BEST_PRACTICES.md`)
+       - For projects that contain code files, treat `.github/HIGH_COHESION_GUIDE.md` and `.github/LOW_COUPLING_GUIDE.md` as mandatory guidance files; if either is reported missing in the visible context, include that as a concrete project issue rather than an optional suggestion
     
     2. **Best Practices Validation:**
        - Verify separation of concerns
@@ -1098,28 +1112,31 @@ step10_code_quality_prompt:
        - Validate proper variable declarations
        - Check for magic numbers/strings
     
-    3. **Maintainability & Readability Analysis:**
-       - Assess function complexity (cyclomatic complexity)
-       - Evaluate function length (should be reasonable)
-       - Check variable naming clarity
-       - Review code organization and structure
-       - Assess comment quality and documentation
-       - Identify overly complex logic
+     3. **Maintainability & Readability Analysis:**
+        - Assess function complexity (cyclomatic complexity)
+        - Evaluate function length (should be reasonable)
+        - Check variable naming clarity
+        - Review code organization and structure
+        - Assess whether each module/function has a single, cohesive responsibility
+        - Assess comment quality and documentation
+        - Identify overly complex logic
     
     4. **Anti-Pattern Detection:**
-       - Identify code smells (duplicated code, long functions)
-       - Detect language-specific anti-patterns
-       - Find improper global usage; treat exported environment variables, `process.env` mutation, `globalThis`/`window` writes, and other shared process/module state as global interaction rather than claiming "no globals"
-       - Spot tight coupling between modules
-       - Identify monolithic functions
-       - Detect violation of DRY principle
+        - Identify code smells (duplicated code, long functions)
+        - Detect language-specific anti-patterns
+        - Find improper global usage; treat exported environment variables, `process.env` mutation, `globalThis`/`window` writes, and other shared process/module state as global interaction rather than claiming "no globals"
+        - Spot tight coupling between modules
+        - Identify low-cohesion modules that mix unrelated responsibilities
+        - Identify monolithic functions
+        - Detect violation of DRY principle
     
-    5. **Refactoring Recommendations:**
-       - Suggest modularization opportunities
-       - Recommend function extraction for clarity
-       - Propose design pattern applications
-       - Suggest performance optimizations
-       - Recommend code reuse strategies
+     5. **Refactoring Recommendations:**
+        - Suggest modularization opportunities
+        - Recommend function extraction for clarity
+        - Recommend responsibility splits that increase cohesion and reduce coupling
+        - Propose design pattern applications
+        - Suggest performance optimizations
+        - Recommend code reuse strategies
        - Identify technical debt priorities
     
     6. **Test Quality & TDD Adherence:**
@@ -1152,6 +1169,7 @@ step10_code_quality_prompt:
     Do not assert JSDoc completeness unless the relevant exported/public symbols are visible in the provided source.
     Do not assert that test coverage is sufficient or that no coverage gaps exist unless the relevant code/tests or explicit coverage artefacts are visible.
     Do not assess commit-message quality, PR quality, or atomicity unless commit history, diffs, or PR metadata are provided.
+    For projects with code files, treat `.github/HIGH_COHESION_GUIDE.md` and `.github/LOW_COUPLING_GUIDE.md` as mandatory. When either is missing in the provided guide-status block, report that absence explicitly and include remediation.
     When a file visibly exports or mutates process environment, global state, or other shared module-level state, do not say "no globals"; describe whether that global interaction is intentional and acceptable.
 
     Separate confirmed findings from inconclusive checks so unsupported areas are not presented as passing.
@@ -1164,6 +1182,49 @@ step10_code_quality_prompt:
     **Tooling Note:** Where project-specific linting or static-analysis tools are visible in the provided context (including tech stack or config files), reference those tools when citing violations. Cite specific rule names only when the tool configuration is clearly visible in the context; otherwise describe the violation generically.
 
     Please provide a comprehensive code quality assessment with specific, actionable recommendations.
+
+cohesion_review_prompt:
+  role_ref: software_architect
+  behavioral_guidelines: *behavioral_structured
+
+  task_template: |
+    Perform a focused cohesion and coupling review for **{project_name}** using only the code excerpts and guide-status evidence below.
+
+    **Context:**
+    - Project: {project_name}
+    - Primary Language: {primary_language}
+
+    **Mandatory Guide Status:**
+    {cohesion_guide_status}
+
+    **File Contents for Review:**
+    {file_content_map}
+
+    **Tasks:**
+    1. Determine whether each visible file or file fragment is highly cohesive or mixes unrelated responsibilities
+    2. Identify coupling hotspots between modules, shared state, orchestration, and helper layers
+    3. Flag missing `.github/HIGH_COHESION_GUIDE.md` or `.github/LOW_COUPLING_GUIDE.md` as project issues whenever the guide-status block marks them missing
+    4. Recommend the smallest refactors that increase cohesion and reduce coupling without over-fragmenting the code
+
+  approach: |
+    Work only from the visible code excerpts and the mandatory guide-status block.
+    Do not infer unseen modules or claim file-level cleanliness outside the visible excerpts.
+    Prefer concrete statements about responsibilities, boundaries, and dependency direction over generic style feedback.
+    When a module mixes unrelated concerns, explain the split in terms of responsibilities rather than line counts alone.
+
+  output_format: |
+    **Cohesion & Coupling Review**
+
+    **Guide Compliance**:
+    - [List missing mandatory guide files, or state that both mandatory guides are present]
+
+    **Findings**:
+    | Area | Issue | Impact | Recommended Change |
+    |------|-------|--------|--------------------|
+    [One row per confirmed finding; use ✅ if none found in the visible excerpts]
+
+    **Refactoring Direction**:
+    [Concrete recommendations to improve cohesion and reduce coupling]
 
 # Error Resilience Prompt Template
 # Supplementary per-partition pass run by Step 10 (code quality) for all project kinds
@@ -1626,6 +1687,7 @@ configuration_specialist_prompt:
        - Check for malformed structures, invalid escaping, encoding issues
        - Verify schema compliance where applicable (e.g., `package.json` must have `name` and `version`; `tsconfig.json` requires `compilerOptions`)
        - Flag missing required fields or invalid value types (e.g., `"strict": "yes"` instead of `true` in tsconfig)
+       - Treat `tsconfig*.json`, `jsconfig*.json`, and `.vscode/*.json` as JSONC-capable configs; do not flag comments in those files as syntax errors solely because strict JSON forbids comments
     
     2. **Security Analysis**:
        - ⚠️ CRITICAL: Check for exposed secrets (API keys, passwords, tokens)
@@ -1656,12 +1718,17 @@ configuration_specialist_prompt:
        - When `config/ai_helpers.yaml` or `config/prompt_roles.yaml` are in scope, confirm
          from the visible YAML evidence that persona keys use resolvable `role_ref` values
          and that the top-level document remains a plain mapping (not a list or scalar).
+         Do not infer top-level structure from a mid-file slice that begins inside a
+         scalar or block value; require the document start or another unambiguous
+         top-level mapping key in the visible excerpt before making that claim.
        - Only cross-check a loader or config-parser module when that module is explicitly
          included in the provided scope/context. If the loader implementation is not shown,
          mark loader-alignment conclusions inconclusive instead of assuming a repository path.
   
   approach: |
     Analyze ONLY the configuration files explicitly listed above. Do not reference, invent, or assume files not in that list.
+    Treat `tsconfig*.json`, `jsconfig*.json`, and `.vscode/*.json` as JSONC-capable when comments are visible; do not report those comments as strict-JSON syntax errors.
+    Do not recommend adding comments, READMEs, or rationale notes unless the visible configuration is genuinely opaque, risky, or missing explanation for a concrete maintenance-critical choice.
 
     **Validation Priority:**
     1. Security issues (CRITICAL - exposed secrets, weak defaults)

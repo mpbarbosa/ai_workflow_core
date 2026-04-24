@@ -12,8 +12,8 @@ doc_analysis_prompt:
     
     **Changed files**: {changed_files}
     **Documentation to review**: {doc_files}
-    **Scope rule**: Analyze ONLY the documentation files explicitly listed above plus any additional documentation files that already appear in the provided changed-file list.
-    Treat authority docs, module-local docs, or other references as in scope only when they satisfy that rule or their contents are explicitly included in this request.
+    **Scope rule**: Treat the files in `Documentation to review` as the only documentation edit targets for this request.
+    Use the changed-file list strictly as supporting evidence for whether those scoped documentation targets need updates.
     
     {partition_header}
     {partition_scope_note}
@@ -21,6 +21,12 @@ doc_analysis_prompt:
     
     **File paths in this request**:
     {file_paths_in_request}
+
+    **Scoped documentation targets**:
+    {scoped_doc_paths}
+
+    **Direct documentation target excerpts**:
+    {scoped_doc_contents}
 
     **Provided file contents and excerpts**:
     {file_contents}
@@ -36,16 +42,17 @@ doc_analysis_prompt:
      4. **Verify accuracy**: Ensure examples, code snippets, and cross-references are still correct
      5. **Handle missing or incomplete files**: If a documentation file from the provided scope is missing or clearly incomplete, note it as a documentation gap in your output rather than skipping it or fabricating content — describe briefly what should be there
     
-    **OUTPUT FORMAT**: Use edit blocks showing before/after, or provide specific line-by-line changes. If no edits are needed, state "No updates required" with a one-line reason only when the visible file contents support that conclusion. If the provided evidence is tangential to the scoped documentation target, state "Not applicable" instead.
+    **OUTPUT FORMAT**: Use edit blocks showing before/after, or provide specific line-by-line changes. Choose exactly one verdict per scoped documentation file or clearly labeled file section: specific edit, "No updates required", "Not applicable", "Unavailable", or "Inconclusive". Never combine "Not applicable" with "No updates required" for the same file. If no edits are needed, state "No updates required" with a one-line reason only when the visible file contents support that conclusion. If the provided evidence is tangential to the scoped documentation target, state "Not applicable" instead.
   
   approach: |
-    Analyze ONLY the documentation files explicitly listed above plus any additional documentation files that already appear in the provided changed-file list. Do not reference, invent, or assume missing documentation outside that scope.
+    Analyze ONLY the documentation files explicitly listed in `Documentation to review`. Do not reference, invent, or assume missing documentation outside that scope.
 
     **Methodology**:
      1. **Analyze Changes**: Use the provided file contents and changed-file excerpts to examine what was modified in each changed file
         - Read the actual file contents to understand the changes
         - Identify which changes are code vs. documentation
         - Assess the scope and impact of each change
+        - Keep the direct documentation target excerpts central to your conclusions when partition-specific evidence is partial
      
      2. **Prioritize Updates**: Start with most critical documentation
         - Primary: the highest-impact documentation files already present in the provided scope
@@ -76,6 +83,7 @@ doc_analysis_prompt:
     **Critical Guidelines**:
     - ALWAYS provide specific edits or explicitly state "No updates needed"
     - NEVER ask clarifying questions - make informed decisions
+    - Choose exactly one verdict per scoped documentation file or clearly labeled file section; never combine "Not applicable" with "No updates required" for the same file
     - DEFAULT to "Unavailable" or "Inconclusive" rather than "No updates required" when critical evidence is missing
     - If the visible files are real project files but do not materially affect the scoped documentation target, return "Not applicable" instead of "No updates required"
     - Do not review source-file JSDoc, inline code comments, or non-documentation files as standalone deliverables unless those files are themselves in the scoped documentation set

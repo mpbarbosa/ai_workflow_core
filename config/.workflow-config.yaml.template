@@ -46,7 +46,15 @@ workflow:
     auto_commit: false           # Automatically commit workflow artifacts
     
   # Step execution pipeline
-  # Each step can be customized per project
+  # Each step can be customized per project.
+  #
+  # IMPORTANT for ai_workflow.js:
+  #   - Every workflow.steps entry must declare an `id`.
+  #   - Start from the generated/canonical dependency graph for this project.
+  #   - Keep canonical dependencies unless you intentionally need a different order.
+  #   - Any dependency override must include `dependency_comment` explaining why.
+  #   - Prefer customizing `enabled`, `name`, `description`, and `ai_persona`
+  #     before changing dependencies.
   steps:
     # ========================================================================
     # PRE-PROCESSING STEPS

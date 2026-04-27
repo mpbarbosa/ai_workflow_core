@@ -446,7 +446,7 @@ performance_review_prompt:
     {file_content_block}
 
     **Focus Areas** (prioritise based on what is present in the code):
-    - Script/module startup: unnecessary eager imports, slow initialisation, top-level await misuse
+    - Script/module startup: unnecessary eager imports, slow initialisation, top-level await misuse, but only when the visible excerpt clearly shows a startup-critical or frequently invoked path
     - Config & data parsing: repeated YAML/JSON parsing, missing caching of parsed results, large file loads
     - Workflow overhead: redundant filesystem traversals, repeated glob/stat calls, unoptimised shell invocations
     - Algorithmic hot paths: O(n²) or worse loops, nested iterations over large datasets
@@ -458,7 +458,7 @@ performance_review_prompt:
     3. Detect memory allocation hotspots: objects created inside tight loops, missing object pooling, closure leaks
     4. Review data structure choices: Object vs Map, Array vs Set for membership tests, typed arrays for numeric data
     5. Identify missing memoization: repeated expensive computations without caching
-    6. Analyse bundle/build impact: large imports that could be tree-shaken, missing dynamic imports for lazy loading
+    6. Analyse bundle/build impact: large imports that could be tree-shaken, missing dynamic imports for lazy loading, but only when the visible excerpt shows a shared entry point, browser-facing bundle path, or an optional heavyweight dependency on a cold path
     7. Review benchmarking coverage: identify computational hot paths with no benchmark (npm bench / vitest bench) only when the visible excerpt clearly establishes the hot path and the provided scope contains enough evidence to support the absence claim
     8. Flag regex performance risks: catastrophic backtracking patterns, unanchored patterns on large strings
 
@@ -466,7 +466,9 @@ performance_review_prompt:
     Work only from the injected file contents above.
     When the workflow partitions source across multiple prompt logs, analyze only the files or file-parts listed in the current request. Treat entries labeled "(part X/Y)" as sequential slices of one oversized file, not as separate files.
     Treat the prompt context as excerpt-limited evidence. If any file block is truncated, sampled, omitted, or otherwise partial, do not claim a full repository-wide performance pass; mark unsupported checks as unavailable or inconclusive.
+    Treat ordinary top-level imports in CLI command modules as normal unless the excerpt clearly shows a startup-critical entry point, an optional heavyweight dependency that can be deferred, or a shared barrel/export surface that amplifies load cost.
     If a visible excerpt shows a synchronous operation (for example JSON.parse, readFileSync, or a regex match) but does not show repeated execution, loop nesting, startup-critical placement, or another latency-sensitive path, do not label it a confirmed hot path and do not inflate severity from that missing context. State that the blocking operation is visible and that its hot-path impact is unconfirmed from the excerpt.
+    Do not recommend lazy loading, code splitting, or benchmarking merely because those techniques exist in principle. Only raise them when the visible excerpt shows a concrete startup-sensitive path, optional dependency boundary, or demonstrated hot path.
     Only cite exact line references when they are determinable from the visible excerpt. Otherwise say that the line reference is unavailable from the provided context and anchor the finding to the visible function, statement, or excerpt block instead of inventing precision.
     When a function body is shown in the excerpt, treat exact line references inside that visible block as determinable and include them for every supported finding. Do not omit line references when the excerpt clearly pins the statement location.
     Do not infer repo-wide absence of benchmarks, profiling, caching, or other supporting infrastructure from sampled excerpts alone. Only report an absence claim when the provided artifacts explicitly show it or the injected scope is clearly repository-complete for that concern.

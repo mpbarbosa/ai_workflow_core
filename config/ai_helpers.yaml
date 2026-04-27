@@ -236,13 +236,15 @@ doc_analysis_prompt:
     **REQUIRED ACTIONS**:
      1. **Read the changes**: Examine what was modified in each changed file
      2. **Identify documentation impact**: Determine which sections in the listed documentation files need updates:
-        - Treat the files in `Documentation to review` as the only documentation targets for edits
-        - Use the changed files only as evidence for whether those scoped documentation targets need updates
-        - Review API references, usage instructions, architecture descriptions, and version strings only when those topics appear in the scoped documentation files
-        - Do not propose edits to `README.md`, `CHANGELOG.md`, module READMEs, source-file JSDoc, or inline code comments unless those files are explicitly included in `Documentation to review` or already appear in the provided changed-file list as documentation files
-     3. **Determine specific edits**: Identify the exact lines or sections requiring updates — a "specific edit" means a concrete before/after text change tied to a file path, NOT a vague suggestion like "consider updating X"
-     4. **Verify accuracy**: Ensure examples, code snippets, and cross-references are still correct
-     5. **Handle missing or incomplete files**: If a documentation file from the provided scope is missing or clearly incomplete, note it as a documentation gap in your output rather than skipping it or fabricating content — describe briefly what should be there
+         - Treat the files in `Documentation to review` as the only documentation targets for edits
+         - Use the changed files only as evidence for whether those scoped documentation targets need updates
+         - Review API references, usage instructions, architecture descriptions, and version strings only when those topics appear in the scoped documentation files
+         - Do not add roadmap-only, future, or "coming soon" placeholders to current-state documentation sections (for example released step tables, implementation summaries, or stable-status blocks) unless the scoped document already presents that section as planned/future work or the visible implementation evidence shows the feature already exists
+         - Do not propose edits to `README.md`, `CHANGELOG.md`, module READMEs, source-file JSDoc, or inline code comments unless those files are explicitly included in `Documentation to review` or already appear in the provided changed-file list as documentation files
+      3. **Determine specific edits**: Identify the exact lines or sections requiring updates — a "specific edit" means a concrete before/after text change tied to a file path, NOT a vague suggestion like "consider updating X"
+      4. **Verify accuracy**: Ensure examples, code snippets, and cross-references are still correct
+         - Treat adjacent metadata summary lines (for example version, tests, coverage, and `Last updated`) as a linked block: update each line only when a replacement value is explicitly visible in the evidence, and leave unsupported lines as unavailable/inconclusive instead of guessing
+      5. **Handle missing or incomplete files**: If a documentation file from the provided scope is missing or clearly incomplete, note it as a documentation gap in your output rather than skipping it or fabricating content — describe briefly what should be there
     
     **OUTPUT FORMAT**: Use edit blocks showing before/after, or provide specific line-by-line changes. Choose exactly one verdict per scoped documentation file or clearly labeled file section: specific edit, "No updates required", "Not applicable", "Unavailable", or "Inconclusive". Never combine "Not applicable" with "No updates required" for the same file. If no edits are needed, state "No updates required" with a one-line reason only when the visible file contents support that conclusion. If the provided evidence is tangential to the scoped documentation target, state "Not applicable" instead.
   
@@ -282,18 +284,20 @@ doc_analysis_prompt:
     - Group related changes together
     - Be concrete and actionable - no suggestions, only edits
     
-    **Critical Guidelines**:
-    - ALWAYS provide specific edits or explicitly state "No updates needed"
-    - NEVER ask clarifying questions - make informed decisions
-    - Choose exactly one verdict per scoped documentation file or clearly labeled file section; never combine "Not applicable" with "No updates required" for the same file
-    - DEFAULT to "Unavailable" or "Inconclusive" rather than "No updates required" when critical evidence is missing
-    - If the visible files are real project files but do not materially affect the scoped documentation target, return "Not applicable" instead of "No updates required"
-    - Do not review source-file JSDoc, inline code comments, or non-documentation files as standalone deliverables unless those files are themselves in the scoped documentation set
-    - FOCUS on accuracy over completeness
-    - Keep the response dense and modular - prefer concise edit blocks over expansive narrative
-    - Avoid verbosity, creative expansion, and speculative rewrites beyond the visible change set
-    - If a requested conclusion depends on missing or truncated file content, state "Unavailable" or "Inconclusive" instead of guessing
-    - Only claim documentation is current when visible file contents support that conclusion
+     **Critical Guidelines**:
+     - ALWAYS provide specific edits or explicitly state "No updates needed"
+     - NEVER ask clarifying questions - make informed decisions
+     - Choose exactly one verdict per scoped documentation file or clearly labeled file section; never combine "Not applicable" with "No updates required" for the same file
+     - DEFAULT to "Unavailable" or "Inconclusive" rather than "No updates required" when critical evidence is missing
+     - If the visible files are real project files but do not materially affect the scoped documentation target, return "Not applicable" instead of "No updates required"
+     - Do not add planned/future items from roadmap evidence into current-state/released documentation unless the scoped document explicitly labels that section as planned/future or visible implementation evidence confirms the feature already exists
+     - Do not review source-file JSDoc, inline code comments, or non-documentation files as standalone deliverables unless those files are themselves in the scoped documentation set
+     - FOCUS on accuracy over completeness
+     - Keep the response dense and modular - prefer concise edit blocks over expansive narrative
+     - Avoid verbosity, creative expansion, and speculative rewrites beyond the visible change set
+     - If a requested conclusion depends on missing or truncated file content, state "Unavailable" or "Inconclusive" instead of guessing
+     - Only claim documentation is current when visible file contents support that conclusion
+     - Never invent release dates, `Last updated` dates, or replacement metadata values that are not explicitly visible in the evidence
 
 # Consistency Analysis Prompt Template
 consistency_prompt:
@@ -1939,7 +1943,10 @@ step2_consistency_prompt:
        Example: `README.md:15 → docs/getting-started.md` means line 15 of `README.md` links to `docs/getting-started.md`, which does not exist.
        These entries are scan-time candidates from automated checks. Treat them as a starting
        point for evidence-based review, not as proof of root cause. The SOURCE files all exist;
-       the TARGET failed automated resolution at scan time.
+       the TARGET failed automated resolution at scan time. Some entries may also include
+       an `existing repo path: ...` hint when the raw target matches another visible path
+       in the repository; treat that hint as concrete evidence of a likely relative-path
+       mistake or scan-resolution issue, not as an unverified absence.
        {broken_refs_content}
     
        **Your task**: For each `source:line → target` entry, perform systematic root cause analysis on the MISSING TARGET. Use the **Output Format** template at the end of this section for each entry.
@@ -1954,11 +1961,12 @@ step2_consistency_prompt:
             - Intentional references (placeholders, future files, templates)
             - Case-sensitive path issues (Linux vs macOS/Windows)
             - Resolve the target relative to the source file's directory before deciding whether it is missing; nested docs often use links like `api/foo.md`, `../README.md`, or `guides/FAQ.md` that are meaningful only after source-relative resolution
-           - If that source-relative resolved path already appears in the visible file list, treat the issue as a relative-path mistake or scan-resolution issue and name that exact path in the root cause; do **not** claim the target is absent from the file list
-           - Targets that are simply absent from the current partition's visible file list or excerpts are **not**
-             automatically confirmed missing in the live repository; if the current prompt does not include
-             enough repo-wide evidence to resolve the target, mark the item as unverified rather than inventing
-             a root cause
+            - If that source-relative resolved path already appears in the visible file list, treat the issue as a relative-path mistake or scan-resolution issue and name that exact path in the root cause; do **not** claim the target is absent from the file list
+            - If a candidate entry explicitly includes an `existing repo path: ...` hint, use that path as grounded repo evidence and classify the issue as a relative-path mistake or scan-resolution issue instead of leaving it unverified
+            - Targets that are simply absent from the current partition's visible file list or excerpts are **not**
+              automatically confirmed missing in the live repository; if the current prompt does not include
+              enough repo-wide evidence to resolve the target, mark the item as unverified rather than inventing
+              a root cause
 
            If false positive: Document why and recommend no action.
     
@@ -2875,11 +2883,13 @@ step10_code_quality_prompt:
        - Verify linting compliance (`npm run lint` / ESLint) only when the provided context shows both the lint result and enough command/config scope to determine that the visible file or path is covered; otherwise mark file-level lint conclusions inconclusive
        - Do not collapse multi-language or multi-file automated lint summaries into blanket statements such as "all files in scope pass linting"; only restate the checks that can be traced to each visible file or path
        - Verify formatting compliance (`npm run format` / Prettier) only when a formatter command, config, or formatter output is visible in the provided context; otherwise mark formatting conclusions inconclusive
-       - Check JSDoc completeness only for public functions, classes, and exported symbols whose source is visible in the provided file contents; if exports are not shown, mark JSDoc coverage as unavailable or inconclusive
-       - Identify and apply project-specific coding conventions from `CONTRIBUTING.md` or `.github/copilot-instructions.md`, when those files are present in the provided context; these take precedence over generic language defaults
-       - Do not claim compliance with project conventions unless the relevant convention source is visible in the prompt context; otherwise mark project-convention compliance inconclusive
-       - Also consult other project guides found under `.github/` when present in the context (e.g., `CODE_REVIEW_GUIDE.md`, `TDD_GUIDE.md`, `UNIT_TEST_GUIDE.md`, `HIGH_COHESION_GUIDE.md`, `LOW_COUPLING_GUIDE.md`, `JAVASCRIPT_BEST_PRACTICES.md`)
-       - For projects that contain code files, treat `.github/HIGH_COHESION_GUIDE.md` and `.github/LOW_COUPLING_GUIDE.md` as mandatory guidance files; if either is reported missing in the visible context, include that as a concrete project issue rather than an optional suggestion
+       - When supplementary evidence shows formatter config or formatter scripts are present, do not recommend adding/restoring formatter tooling or config; limit the conclusion to whether compliance is still inconclusive
+        - Check JSDoc completeness only for public functions, classes, and exported symbols whose source is visible in the provided file contents; if exports are not shown, mark JSDoc coverage as unavailable or inconclusive
+        - Identify and apply project-specific coding conventions from `CONTRIBUTING.md` or `.github/copilot-instructions.md`, when those files are present in the provided context; these take precedence over generic language defaults
+        - Do not claim compliance with project conventions unless the relevant convention source is visible in the prompt context; otherwise mark project-convention compliance inconclusive
+        - Also consult other project guides found under `.github/` when present in the context (e.g., `CODE_REVIEW_GUIDE.md`, `TDD_GUIDE.md`, `UNIT_TEST_GUIDE.md`, `HIGH_COHESION_GUIDE.md`, `LOW_COUPLING_GUIDE.md`, `JAVASCRIPT_BEST_PRACTICES.md`)
+        - For projects that contain code files, treat `.github/HIGH_COHESION_GUIDE.md` and `.github/LOW_COUPLING_GUIDE.md` as mandatory guidance files; if either is reported missing in the visible context, include that as a concrete project issue rather than an optional suggestion
+       - When the guide-status block marks either mandatory guide as PRESENT, do not recommend adding or restoring that guide
     
     2. **Best Practices Validation:**
        - Verify separation of concerns
@@ -2941,12 +2951,15 @@ step10_code_quality_prompt:
 
     Do not treat a reported lint command or lint result as evidence for a specific file unless the visible command, config, or path scope shows that the file is actually covered.
     Do not restate repository-wide or multi-language automated summaries as "all files in scope pass" unless each claimed check is traceable to the visible file(s) in this request.
+    If automated findings are aggregate by language or run-wide, describe them as aggregate snapshots rather than file-level pass/fail evidence.
     Do not infer formatter compliance unless formatter tooling/configuration/output is visible in the prompt context.
+    If supplementary evidence shows formatter config or formatter scripts are present, do not recommend adding or restoring formatter tooling; only discuss whether file-level compliance remains inconclusive.
     Do not claim compliance with project-specific conventions unless the relevant convention documents are included in the prompt context.
     Do not assert JSDoc completeness unless the relevant exported/public symbols are visible in the provided source.
     Do not assert that test coverage is sufficient or that no coverage gaps exist unless the relevant code/tests or explicit coverage artefacts are visible.
     Do not assess commit-message quality, PR quality, or atomicity unless commit history, diffs, or PR metadata are provided.
     For projects with code files, treat `.github/HIGH_COHESION_GUIDE.md` and `.github/LOW_COUPLING_GUIDE.md` as mandatory. When either is missing in the provided guide-status block, report that absence explicitly and include remediation.
+    When the guide-status block marks a mandatory guide as PRESENT, do not recommend adding or restoring it.
     When a file visibly exports or mutates process environment, global state, or other shared module-level state, do not say "no globals"; describe whether that global interaction is intentional and acceptable.
 
     Separate confirmed findings from inconclusive checks so unsupported areas are not presented as passing.
@@ -4707,6 +4720,7 @@ async_perf_engineer_prompt:
     **Scope notes:**
     - **Test files** (`*.test.ts`, `*.spec.ts`, `*.test.js`, `*.spec.js`, files under `__tests__/` or `test/`): do not use them as sole evidence for production runtime findings. Only mention them when the same async pattern is also visible in provided production files, or when the prompt explicitly requests test-only analysis.
     - **Tooling/config files** (`eslint.config.*`, `jest.config.*`, `vite.config.*`, `*.config.js`, `*.config.ts`, `babel.config.*`): treat them as non-runtime context. If they appear in the file list, do not report them as production async-performance findings unless the prompt explicitly asks for tooling analysis.
+    - **Generated, vendored, and workflow-support files** (`docs/api-generated/**`, `venv/**`, `site-packages/**`, `vendor/**`, `third_party/**`, `__mocks__/**`, `.github/**`): treat them as out of scope for production async findings unless the prompt explicitly requests tooling, generated-doc, or vendored-code analysis.
     - **Coverage warning**: add "⚠️ Coverage may be partial — not all source files were provided" only when the prompt shows explicit truncation, omitted file contents, or a clearly incomplete subset. Do not add that warning merely because the repository might contain additional files outside the provided evidence.
     - **Workflow metadata** (`Project Summary`, `Project Kind`): treat these as hints, not ground truth. If the visible codebase contradicts them, rely on the code and note the metadata mismatch instead of restating the hint as fact.
     - **Valid test idioms**: Jest/Vitest assertions such as `await expect(promise).rejects.toThrow(...)` are valid test patterns. Do not recommend wrapping them in `try/catch`, and do not turn them into production error-handling findings.
@@ -4719,7 +4733,7 @@ async_perf_engineer_prompt:
     - Build System: {build_system}
     - Test Framework: {test_framework}
     - Source Files Analyzed: {source_file_count}
-    - Modified Files: {modified_count}
+    - Readable Runtime Files in Review Scope: {modified_count}
     - Request Scope: {partition_scope_note}
     - Analyzed File Paths:
     {file_paths}
@@ -6966,7 +6980,7 @@ performance_review_prompt:
     {file_content_block}
 
     **Focus Areas** (prioritise based on what is present in the code):
-    - Script/module startup: unnecessary eager imports, slow initialisation, top-level await misuse
+    - Script/module startup: unnecessary eager imports, slow initialisation, top-level await misuse, but only when the visible excerpt clearly shows a startup-critical or frequently invoked path
     - Config & data parsing: repeated YAML/JSON parsing, missing caching of parsed results, large file loads
     - Workflow overhead: redundant filesystem traversals, repeated glob/stat calls, unoptimised shell invocations
     - Algorithmic hot paths: O(n²) or worse loops, nested iterations over large datasets
@@ -6978,7 +6992,7 @@ performance_review_prompt:
     3. Detect memory allocation hotspots: objects created inside tight loops, missing object pooling, closure leaks
     4. Review data structure choices: Object vs Map, Array vs Set for membership tests, typed arrays for numeric data
     5. Identify missing memoization: repeated expensive computations without caching
-    6. Analyse bundle/build impact: large imports that could be tree-shaken, missing dynamic imports for lazy loading
+    6. Analyse bundle/build impact: large imports that could be tree-shaken, missing dynamic imports for lazy loading, but only when the visible excerpt shows a shared entry point, browser-facing bundle path, or an optional heavyweight dependency on a cold path
     7. Review benchmarking coverage: identify computational hot paths with no benchmark (npm bench / vitest bench) only when the visible excerpt clearly establishes the hot path and the provided scope contains enough evidence to support the absence claim
     8. Flag regex performance risks: catastrophic backtracking patterns, unanchored patterns on large strings
 
@@ -6986,7 +7000,9 @@ performance_review_prompt:
     Work only from the injected file contents above.
     When the workflow partitions source across multiple prompt logs, analyze only the files or file-parts listed in the current request. Treat entries labeled "(part X/Y)" as sequential slices of one oversized file, not as separate files.
     Treat the prompt context as excerpt-limited evidence. If any file block is truncated, sampled, omitted, or otherwise partial, do not claim a full repository-wide performance pass; mark unsupported checks as unavailable or inconclusive.
+    Treat ordinary top-level imports in CLI command modules as normal unless the excerpt clearly shows a startup-critical entry point, an optional heavyweight dependency that can be deferred, or a shared barrel/export surface that amplifies load cost.
     If a visible excerpt shows a synchronous operation (for example JSON.parse, readFileSync, or a regex match) but does not show repeated execution, loop nesting, startup-critical placement, or another latency-sensitive path, do not label it a confirmed hot path and do not inflate severity from that missing context. State that the blocking operation is visible and that its hot-path impact is unconfirmed from the excerpt.
+    Do not recommend lazy loading, code splitting, or benchmarking merely because those techniques exist in principle. Only raise them when the visible excerpt shows a concrete startup-sensitive path, optional dependency boundary, or demonstrated hot path.
     Only cite exact line references when they are determinable from the visible excerpt. Otherwise say that the line reference is unavailable from the provided context and anchor the finding to the visible function, statement, or excerpt block instead of inventing precision.
     When a function body is shown in the excerpt, treat exact line references inside that visible block as determinable and include them for every supported finding. Do not omit line references when the excerpt clearly pins the statement location.
     Do not infer repo-wide absence of benchmarks, profiling, caching, or other supporting infrastructure from sampled excerpts alone. Only report an absence claim when the provided artifacts explicitly show it or the injected scope is clearly repository-complete for that concern.

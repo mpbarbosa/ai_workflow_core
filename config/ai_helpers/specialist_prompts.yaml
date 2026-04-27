@@ -442,6 +442,7 @@ async_perf_engineer_prompt:
     **Scope notes:**
     - **Test files** (`*.test.ts`, `*.spec.ts`, `*.test.js`, `*.spec.js`, files under `__tests__/` or `test/`): do not use them as sole evidence for production runtime findings. Only mention them when the same async pattern is also visible in provided production files, or when the prompt explicitly requests test-only analysis.
     - **Tooling/config files** (`eslint.config.*`, `jest.config.*`, `vite.config.*`, `*.config.js`, `*.config.ts`, `babel.config.*`): treat them as non-runtime context. If they appear in the file list, do not report them as production async-performance findings unless the prompt explicitly asks for tooling analysis.
+    - **Generated, vendored, and workflow-support files** (`docs/api-generated/**`, `venv/**`, `site-packages/**`, `vendor/**`, `third_party/**`, `__mocks__/**`, `.github/**`): treat them as out of scope for production async findings unless the prompt explicitly requests tooling, generated-doc, or vendored-code analysis.
     - **Coverage warning**: add "⚠️ Coverage may be partial — not all source files were provided" only when the prompt shows explicit truncation, omitted file contents, or a clearly incomplete subset. Do not add that warning merely because the repository might contain additional files outside the provided evidence.
     - **Workflow metadata** (`Project Summary`, `Project Kind`): treat these as hints, not ground truth. If the visible codebase contradicts them, rely on the code and note the metadata mismatch instead of restating the hint as fact.
     - **Valid test idioms**: Jest/Vitest assertions such as `await expect(promise).rejects.toThrow(...)` are valid test patterns. Do not recommend wrapping them in `try/catch`, and do not turn them into production error-handling findings.
@@ -454,7 +455,7 @@ async_perf_engineer_prompt:
     - Build System: {build_system}
     - Test Framework: {test_framework}
     - Source Files Analyzed: {source_file_count}
-    - Modified Files: {modified_count}
+    - Readable Runtime Files in Review Scope: {modified_count}
     - Request Scope: {partition_scope_note}
     - Analyzed File Paths:
     {file_paths}

@@ -162,7 +162,10 @@ step2_consistency_prompt:
        Example: `README.md:15 → docs/getting-started.md` means line 15 of `README.md` links to `docs/getting-started.md`, which does not exist.
        These entries are scan-time candidates from automated checks. Treat them as a starting
        point for evidence-based review, not as proof of root cause. The SOURCE files all exist;
-       the TARGET failed automated resolution at scan time.
+       the TARGET failed automated resolution at scan time. Some entries may also include
+       an `existing repo path: ...` hint when the raw target matches another visible path
+       in the repository; treat that hint as concrete evidence of a likely relative-path
+       mistake or scan-resolution issue, not as an unverified absence.
        {broken_refs_content}
     
        **Your task**: For each `source:line → target` entry, perform systematic root cause analysis on the MISSING TARGET. Use the **Output Format** template at the end of this section for each entry.
@@ -177,11 +180,12 @@ step2_consistency_prompt:
             - Intentional references (placeholders, future files, templates)
             - Case-sensitive path issues (Linux vs macOS/Windows)
             - Resolve the target relative to the source file's directory before deciding whether it is missing; nested docs often use links like `api/foo.md`, `../README.md`, or `guides/FAQ.md` that are meaningful only after source-relative resolution
-           - If that source-relative resolved path already appears in the visible file list, treat the issue as a relative-path mistake or scan-resolution issue and name that exact path in the root cause; do **not** claim the target is absent from the file list
-           - Targets that are simply absent from the current partition's visible file list or excerpts are **not**
-             automatically confirmed missing in the live repository; if the current prompt does not include
-             enough repo-wide evidence to resolve the target, mark the item as unverified rather than inventing
-             a root cause
+            - If that source-relative resolved path already appears in the visible file list, treat the issue as a relative-path mistake or scan-resolution issue and name that exact path in the root cause; do **not** claim the target is absent from the file list
+            - If a candidate entry explicitly includes an `existing repo path: ...` hint, use that path as grounded repo evidence and classify the issue as a relative-path mistake or scan-resolution issue instead of leaving it unverified
+            - Targets that are simply absent from the current partition's visible file list or excerpts are **not**
+              automatically confirmed missing in the live repository; if the current prompt does not include
+              enough repo-wide evidence to resolve the target, mark the item as unverified rather than inventing
+              a root cause
 
            If false positive: Document why and recommend no action.
     
@@ -1098,11 +1102,13 @@ step10_code_quality_prompt:
        - Verify linting compliance (`npm run lint` / ESLint) only when the provided context shows both the lint result and enough command/config scope to determine that the visible file or path is covered; otherwise mark file-level lint conclusions inconclusive
        - Do not collapse multi-language or multi-file automated lint summaries into blanket statements such as "all files in scope pass linting"; only restate the checks that can be traced to each visible file or path
        - Verify formatting compliance (`npm run format` / Prettier) only when a formatter command, config, or formatter output is visible in the provided context; otherwise mark formatting conclusions inconclusive
-       - Check JSDoc completeness only for public functions, classes, and exported symbols whose source is visible in the provided file contents; if exports are not shown, mark JSDoc coverage as unavailable or inconclusive
-       - Identify and apply project-specific coding conventions from `CONTRIBUTING.md` or `.github/copilot-instructions.md`, when those files are present in the provided context; these take precedence over generic language defaults
-       - Do not claim compliance with project conventions unless the relevant convention source is visible in the prompt context; otherwise mark project-convention compliance inconclusive
-       - Also consult other project guides found under `.github/` when present in the context (e.g., `CODE_REVIEW_GUIDE.md`, `TDD_GUIDE.md`, `UNIT_TEST_GUIDE.md`, `HIGH_COHESION_GUIDE.md`, `LOW_COUPLING_GUIDE.md`, `JAVASCRIPT_BEST_PRACTICES.md`)
-       - For projects that contain code files, treat `.github/HIGH_COHESION_GUIDE.md` and `.github/LOW_COUPLING_GUIDE.md` as mandatory guidance files; if either is reported missing in the visible context, include that as a concrete project issue rather than an optional suggestion
+       - When supplementary evidence shows formatter config or formatter scripts are present, do not recommend adding/restoring formatter tooling or config; limit the conclusion to whether compliance is still inconclusive
+        - Check JSDoc completeness only for public functions, classes, and exported symbols whose source is visible in the provided file contents; if exports are not shown, mark JSDoc coverage as unavailable or inconclusive
+        - Identify and apply project-specific coding conventions from `CONTRIBUTING.md` or `.github/copilot-instructions.md`, when those files are present in the provided context; these take precedence over generic language defaults
+        - Do not claim compliance with project conventions unless the relevant convention source is visible in the prompt context; otherwise mark project-convention compliance inconclusive
+        - Also consult other project guides found under `.github/` when present in the context (e.g., `CODE_REVIEW_GUIDE.md`, `TDD_GUIDE.md`, `UNIT_TEST_GUIDE.md`, `HIGH_COHESION_GUIDE.md`, `LOW_COUPLING_GUIDE.md`, `JAVASCRIPT_BEST_PRACTICES.md`)
+        - For projects that contain code files, treat `.github/HIGH_COHESION_GUIDE.md` and `.github/LOW_COUPLING_GUIDE.md` as mandatory guidance files; if either is reported missing in the visible context, include that as a concrete project issue rather than an optional suggestion
+       - When the guide-status block marks either mandatory guide as PRESENT, do not recommend adding or restoring that guide
     
     2. **Best Practices Validation:**
        - Verify separation of concerns
@@ -1164,12 +1170,15 @@ step10_code_quality_prompt:
 
     Do not treat a reported lint command or lint result as evidence for a specific file unless the visible command, config, or path scope shows that the file is actually covered.
     Do not restate repository-wide or multi-language automated summaries as "all files in scope pass" unless each claimed check is traceable to the visible file(s) in this request.
+    If automated findings are aggregate by language or run-wide, describe them as aggregate snapshots rather than file-level pass/fail evidence.
     Do not infer formatter compliance unless formatter tooling/configuration/output is visible in the prompt context.
+    If supplementary evidence shows formatter config or formatter scripts are present, do not recommend adding or restoring formatter tooling; only discuss whether file-level compliance remains inconclusive.
     Do not claim compliance with project-specific conventions unless the relevant convention documents are included in the prompt context.
     Do not assert JSDoc completeness unless the relevant exported/public symbols are visible in the provided source.
     Do not assert that test coverage is sufficient or that no coverage gaps exist unless the relevant code/tests or explicit coverage artefacts are visible.
     Do not assess commit-message quality, PR quality, or atomicity unless commit history, diffs, or PR metadata are provided.
     For projects with code files, treat `.github/HIGH_COHESION_GUIDE.md` and `.github/LOW_COUPLING_GUIDE.md` as mandatory. When either is missing in the provided guide-status block, report that absence explicitly and include remediation.
+    When the guide-status block marks a mandatory guide as PRESENT, do not recommend adding or restoring it.
     When a file visibly exports or mutates process environment, global state, or other shared module-level state, do not say "no globals"; describe whether that global interaction is intentional and acceptable.
 
     Separate confirmed findings from inconclusive checks so unsupported areas are not presented as passing.

@@ -53,6 +53,9 @@ workflow:
   #   - Start from the generated/canonical dependency graph for this project.
   #   - Keep canonical dependencies unless you intentionally need a different order.
   #   - Any dependency override must include `dependency_comment` explaining why.
+  #   - If you disable a step, also disable or rewire every enabled dependent.
+  #   - Leave project-kind-gated steps enabled unless you want to remove the
+  #     whole branch; most of them self-skip when the project kind does not apply.
   #   - Prefer customizing `enabled`, `name`, `description`, and `ai_persona`
   #     before changing dependencies.
   steps:

@@ -26,6 +26,13 @@ structure:
 # ============================================================================
 # WORKFLOW EXECUTION CONFIGURATION (v4.0.0+)
 # ============================================================================
+# WARNING:
+#   This template is a broad starting point for project metadata and legacy
+#   workflow customization ideas. The live ai_workflow.js runtime does NOT take
+#   the step list below as authoritative execution order. Runtime planning starts
+#   from the canonical graph in src/orchestrator/main_orchestrator.js and applies
+#   workflow.steps as overrides.
+#
 # Define the execution order and behavior of workflow steps.
 # Steps are executed in the order defined below, respecting dependencies.
 #
@@ -53,10 +60,28 @@ workflow:
   #   - Start from the generated/canonical dependency graph for this project.
   #   - Keep canonical dependencies unless you intentionally need a different order.
   #   - Any dependency override must include `dependency_comment` explaining why.
-  #   - If you disable a step, also disable or rewire every enabled dependent.
-  #   - Leave project-kind-gated steps enabled unless you want to remove the
-  #     whole branch; most of them self-skip when the project kind does not apply.
-  #   - Prefer customizing `enabled`, `name`, `description`, and `ai_persona`
+  #   - `dependency_comment` documents an allowed override; it does not bypass locked
+  #     prerequisite edges such as step_09 <- step_08, step_10 <- step_09,
+  #     step_11 <- step_13, step_0f <- step_17, or step_12 <- step_0f.
+  #   - Keep each dependency_comment evidence-bound to the repository. Before
+  #     claiming that tests, linting, or another prerequisite branch is unavailable,
+  #     verify that against visible tech_stack commands, manifest scripts, and
+  #     in-scope config values.
+#   - If you disable a step, also disable or rewire every enabled dependent.
+#   - Compute the whole dependent branch, not just the next step: if a locked
+#     prerequisite stays disabled, the downstream enabled branch must stay
+#     disabled too.
+#   - For full-stage runs, omitted steps are excluded from the selected plan.
+#     Keep the dependency closure valid when trimming workflow.steps.
+#   - Keep the terminal tail step_17 -> step_0f -> step_12 at the end. Do not
+#     make upstream review branches depend on step_17 or move step_17 ahead of
+#     review branches like step_22 and step_23.
+#   - Do not rewire around missing lint tooling by swapping step_10, step_13,
+#     and step_11. Those steps already self-skip safely when their tools are
+#     unavailable.
+#   - Leave project-kind-gated steps enabled unless you want to remove the
+#     whole branch; most of them self-skip when the project kind does not apply.
+#   - Prefer customizing `enabled`, `name`, `description`, and `ai_persona`
   #     before changing dependencies.
   steps:
     # ========================================================================

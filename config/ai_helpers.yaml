@@ -235,18 +235,20 @@ doc_analysis_prompt:
 
     **REQUIRED ACTIONS**:
      1. **Read the changes**: Examine what was modified in each changed file
-     2. **Identify documentation impact**: Determine which sections in the listed documentation files need updates:
-         - Treat the files in `Documentation to review` as the only documentation targets for edits
-         - Use the changed files only as evidence for whether those scoped documentation targets need updates
-         - Review API references, usage instructions, architecture descriptions, and version strings only when those topics appear in the scoped documentation files
-         - Do not add roadmap-only, future, or "coming soon" placeholders to current-state documentation sections (for example released step tables, implementation summaries, or stable-status blocks) unless the scoped document already presents that section as planned/future work or the visible implementation evidence shows the feature already exists
-         - Do not propose edits to `README.md`, `CHANGELOG.md`, module READMEs, source-file JSDoc, or inline code comments unless those files are explicitly included in `Documentation to review` or already appear in the provided changed-file list as documentation files
+      2. **Identify documentation impact**: Determine which sections in the listed documentation files need updates:
+          - Treat the files in `Documentation to review` as the only documentation targets for edits
+          - Use the changed files only as evidence for whether those scoped documentation targets need updates
+          - Treat markdown documentation outside `docs/` as misplaced unless the file is `README.md` or `CHANGELOG.md`; when such a scoped file is visible, prefer moving it into `docs/` or the matching `docs/` subdirectory instead of normalizing new root-level docs
+          - Review API references, usage instructions, architecture descriptions, and version strings only when those topics appear in the scoped documentation files
+          - Do not add roadmap-only, future, or "coming soon" placeholders to current-state documentation sections (for example released step tables, implementation summaries, or stable-status blocks) unless the scoped document already presents that section as planned/future work or the visible implementation evidence shows the feature already exists
+          - Do not propose edits to `README.md`, `CHANGELOG.md`, module READMEs, source-file JSDoc, or inline code comments unless those files are explicitly included in `Documentation to review` or already appear in the provided changed-file list as documentation files
       3. **Determine specific edits**: Identify the exact lines or sections requiring updates — a "specific edit" means a concrete before/after text change tied to a file path, NOT a vague suggestion like "consider updating X"
       4. **Verify accuracy**: Ensure examples, code snippets, and cross-references are still correct
          - Treat adjacent metadata summary lines (for example version, tests, coverage, and `Last updated`) as a linked block: update each line only when a replacement value is explicitly visible in the evidence, and leave unsupported lines as unavailable/inconclusive instead of guessing
       5. **Handle missing or incomplete files**: If a documentation file from the provided scope is missing or clearly incomplete, note it as a documentation gap in your output rather than skipping it or fabricating content — describe briefly what should be there
     
     **OUTPUT FORMAT**: Use edit blocks showing before/after, or provide specific line-by-line changes. Choose exactly one verdict per scoped documentation file or clearly labeled file section: specific edit, "No updates required", "Not applicable", "Unavailable", or "Inconclusive". Never combine "Not applicable" with "No updates required" for the same file. If no edits are needed, state "No updates required" with a one-line reason only when the visible file contents support that conclusion. If the provided evidence is tangential to the scoped documentation target, state "Not applicable" instead.
+    If the visible scoped document includes a directory tree, project structure, module inventory, runtime boot path, or responsibility list, cross-check changed files against that visible inventory. A changed file that should appear in that visible inventory but is missing or no longer described is a documentation issue, not "No updates required".
   
   approach: |
     Analyze ONLY the documentation files explicitly listed in `Documentation to review`. Do not reference, invent, or assume missing documentation outside that scope.
@@ -292,6 +294,7 @@ doc_analysis_prompt:
      - If the visible files are real project files but do not materially affect the scoped documentation target, return "Not applicable" instead of "No updates required"
      - Do not add planned/future items from roadmap evidence into current-state/released documentation unless the scoped document explicitly labels that section as planned/future or visible implementation evidence confirms the feature already exists
      - Do not review source-file JSDoc, inline code comments, or non-documentation files as standalone deliverables unless those files are themselves in the scoped documentation set
+     - When a scoped doc visibly inventories files or modules, verify that changed files are still represented there before clearing the doc as current
      - FOCUS on accuracy over completeness
      - Keep the response dense and modular - prefer concise edit blocks over expansive narrative
      - Avoid verbosity, creative expansion, and speculative rewrites beyond the visible change set
@@ -444,22 +447,24 @@ technical_writer_prompt:
        - Use case-insensitive search for filenames (USER_GUIDE = User_Guide = user-guide)
     
     3. **File Location Decision Rules** (Priority order - MUST FOLLOW):
-       a. **UPDATE EXISTING** (Highest Priority): If similar file exists in ANY subdirectory → UPDATE IT in place
-       b. **FOLLOW PATTERN** (High Priority): If organized subdirectory structure exists → CREATE in appropriate subdirectory
-       c. **ROOT ONLY IF** (Fallback): Only create at docs/ root if NO subdirectory structure exists
-       d. **NEVER CREATE DUPLICATES**: Never create docs/FILE.md if docs/subdir/FILE.md exists
+        a. **UPDATE EXISTING** (Highest Priority): If similar file exists in ANY subdirectory → UPDATE IT in place
+        b. **FOLLOW PATTERN** (High Priority): If organized subdirectory structure exists → CREATE in appropriate subdirectory
+        c. **ROOT EXCEPTIONS ONLY** (Required): Keep only `README.md` and `CHANGELOG.md` at project root; place every other markdown documentation file under `docs/`
+        d. **NEVER CREATE DUPLICATES**: Never create docs/FILE.md if docs/subdir/FILE.md exists
     
     4. **Examples of Correct Behavior**:
-       - ✅ GOOD: docs/user/USER_GUIDE.md exists → UPDATE docs/user/USER_GUIDE.md (not create docs/USER_GUIDE.md)
-       - ✅ GOOD: docs/api/ directory exists → CREATE docs/api/NEW_API_ENDPOINT.md (not docs/API.md)
-       - ✅ GOOD: docs/guides/ exists with 5 files → CREATE docs/guides/NEW_TUTORIAL.md (follows pattern)
-       - ✅ GOOD: No docs/ subdirectories exist → CREATE docs/README.md (appropriate for flat structure)
+        - ✅ GOOD: docs/user/USER_GUIDE.md exists → UPDATE docs/user/USER_GUIDE.md (not create docs/USER_GUIDE.md)
+        - ✅ GOOD: docs/api/ directory exists → CREATE docs/api/NEW_API_ENDPOINT.md (not docs/API.md)
+        - ✅ GOOD: docs/guides/ exists with 5 files → CREATE docs/guides/NEW_TUTORIAL.md (follows pattern)
+        - ✅ GOOD: Project needs contribution guidance → CREATE docs/CONTRIBUTING.md (not CONTRIBUTING.md)
+        - ✅ GOOD: No docs/ subdirectories exist → CREATE docs/SETUP.md (appropriate for flat structure)
     
     5. **Examples of Incorrect Behavior** (AVOID THESE):
-       - ❌ BAD: docs/user/USER_GUIDE.md exists → Creating docs/USER_GUIDE.md (DUPLICATE!)
-       - ❌ BAD: docs/api/ directory exists → Creating docs/API_GUIDE.md (WRONG LOCATION!)
-       - ❌ BAD: docs/architecture/ has SYSTEM.md → Creating docs/ARCHITECTURE.md (IGNORES PATTERN!)
-       - ❌ BAD: Multiple subdirs exist → Creating files at docs/ root (BREAKS ORGANIZATION!)
+        - ❌ BAD: docs/user/USER_GUIDE.md exists → Creating docs/USER_GUIDE.md (DUPLICATE!)
+        - ❌ BAD: docs/api/ directory exists → Creating docs/API_GUIDE.md (WRONG LOCATION!)
+        - ❌ BAD: docs/architecture/ has SYSTEM.md → Creating docs/ARCHITECTURE.md (IGNORES PATTERN!)
+        - ❌ BAD: Multiple subdirs exist → Creating files at docs/ root (BREAKS ORGANIZATION!)
+        - ❌ BAD: Creating CONTRIBUTING.md, ARCHITECTURE.md, or FUNCTIONAL_REQUIREMENTS.md at project root
     
     6. **Directory Pattern Recognition**:
        - **By Audience**: docs/user/, docs/developer/, docs/admin/ → Create in appropriate audience directory
@@ -1818,10 +1823,12 @@ step1_5_copilot_instructions_prompt:
        - `**Action**`: `keep` | `rewrite` | `remove` | `omit pending evidence`
        - `**Why this matters**`: one sentence explaining the practical impact on Copilot guidance quality
        - Mark a finding as `supported guidance` only when the `Repo-fact evidence` bullet cites a surfaced repo fact that explicitly supports the retained guidance; if support is missing, use `not available` and a non-supported classification instead.
+       - When citing `Repo-fact evidence`, quote exact surfaced text or name the surfaced heading verbatim; do not paraphrase or summarize repo facts as if they were surfaced verbatim.
+       - If one current-file section contains multiple distinct claims, split them into separate findings or classify the unsupported subset separately; do not classify the whole section as supported when only part of it is grounded.
        - Do not emit findings for topics that are absent from the current file unless the omission itself is explicitly required by the task; `Current file evidence: none` is only valid for those explicit omission cases.
-     4. If no corrections are needed, still include `## Findings` with a single finding that clearly says no issue was confirmed and why.
-     5. After the findings, add `## Corrected File` followed by ONLY one fenced ```markdown block containing the full corrected replacement for `{copilot_instructions_path}`.
-     6. Do not use additional fenced code blocks outside the final corrected-file block.
+      4. If no corrections are needed, still include `## Findings` with a single finding that clearly says no issue was confirmed and why.
+      5. After the findings, add `## Corrected File` followed by ONLY one fenced ```markdown block containing the full corrected replacement for `{copilot_instructions_path}`.
+      6. Do not use additional fenced code blocks outside the final corrected-file block.
 
   approach: |
     **Editing methodology**:
@@ -1847,6 +1854,7 @@ step1_5_copilot_instructions_prompt:
       - Make every changed, removed, or intentionally retained suspicious section explicit in `## Findings`; do not rely on the corrected file alone to communicate what was wrong.
       - Each finding must map to a concrete section or claim from the current file, even when the action is "keep" or "omit pending evidence".
       - If repo-fact support is absent, write `Repo-fact evidence: not available`; do not substitute generic best practices, plausibility, or inferred project conventions as repo-fact support.
+      - Do not emit meta-cleanliness findings like `No invented or unsupported details`; use the single no-issue finding only when the entire file needs no corrections.
       - Do NOT output a patch; the final fenced markdown block must be the complete corrected file.
       - If the current file contains broad historical claims that cannot be validated, replace them with wording grounded in the provided facts.
       - If a current-file statement looks plausible but the repo facts do not confirm it, prefer omission or more general wording over repeating it as a verified fact.
@@ -1905,17 +1913,22 @@ step2_consistency_prompt:
          (check `package.json`, `package-lock.json`, and ecosystem-equivalent lockfiles)
          only when those files or their relevant contents are explicitly visible in the provided context;
          otherwise mark that comparison as limited or inconclusive and do not contradict the programmatic scan
-       - Validate command examples match actual scripts/executables:
-         npm/yarn scripts defined in `package.json`; automation scripts in `scripts/` or
-         `bin/` (check all formats present — `.sh` shell scripts, `.js`/`.ts` Node.js
-         scripts, Python scripts, or other executables — skip format-specific checks for
-         types absent from the repository); and any executables referenced in README or
-         CONTRIBUTING. "Documentation quality" for scripts means: inline comments
-         explaining non-obvious logic, a usage example or `--help` reference in an
-         adjacent README, and accurate descriptions in the root `scripts/README.md`
-         (if present). If the relevant manifests or script files are not visible in the
-         provided context, mark the check as limited or inconclusive rather than assuming
-         the commands exist or match.
+        - Validate command examples match actual scripts/executables:
+          npm/yarn scripts defined in `package.json`; automation scripts in `scripts/` or
+          `bin/` (check all formats present — `.sh` shell scripts, `.js`/`.ts` Node.js
+          scripts, Python scripts, or other executables — skip format-specific checks for
+          types absent from the repository); and any executables referenced in README or
+          CONTRIBUTING. "Documentation quality" for scripts means: inline comments
+          explaining non-obvious logic, a usage example or `--help` reference in an
+          adjacent README, and accurate descriptions in the root `scripts/README.md`
+          (if present). If the relevant manifests or script files are not visible in the
+          provided context, mark the check as limited or inconclusive rather than assuming
+          the commands exist or match.
+        - Do **not** treat a documented command as mismatched merely because its executable
+          name does not appear in the visible markdown file list. Commands may refer to
+          external CLIs, package-manager binaries, or tools outside the listed docs; only
+          flag a command mismatch when visible manifests, scripts, or file contents
+          contradict the documented usage.
     
     2. **Content Synchronization:**
        - Compare the primary documentation files present in the provided context:
@@ -2083,6 +2096,9 @@ step2_consistency_prompt:
           "No additional issues found beyond the programmatic scan."
         - Do not replace that statement with broader claims like "all documentation is consistent"
           unless the visible file contents support that conclusion directly
+        - If you use the exact sentence "No additional issues found beyond the programmatic scan.",
+          do not append unsupported pass claims after it; either stop there or keep any
+          remaining checks explicitly limited or inconclusive
         - Do not claim that no version numbers or badges are present unless the relevant
           in-scope files or excerpts needed to support that absence are actually visible in the
           prompt or already established by the programmatic scan
@@ -2102,10 +2118,13 @@ step2_consistency_prompt:
           inconclusive rather than implying exhaustive validation
        - Do not write negative pass findings such as "No visible inconsistencies", "No evidence of mismatched terminology", or "No missing cross-references detected" unless the exact compared artifacts are visibly supported; otherwise phrase the remaining check as limited or inconclusive
        - If a file path appears in the provided file list but its content is omitted or truncated, do not say the file or section is "not visible"; describe the comparison as unavailable from the visible excerpt instead
-       - Do not claim overall consistency with package manifests, scripts, build steps, or
-         source code unless that supporting evidence is explicitly visible in the provided context
-       - Do not project a finding from a generated documentation copy onto a hand-authored
-         source document unless both paths are explicitly visible in the provided context
+        - Do not claim overall consistency with package manifests, scripts, build steps, or
+          source code unless that supporting evidence is explicitly visible in the provided context
+        - Do not treat a documented command as unsupported merely because the command name is
+          absent from the visible markdown file list; commands may refer to external CLIs or
+          package binaries unless visible manifests, scripts, or file contents contradict them
+        - Do not project a finding from a generated documentation copy onto a hand-authored
+          source document unless both paths are explicitly visible in the provided context
 
     **Documentation Standards to Apply:**
     - Technical accuracy and precision
@@ -3272,13 +3291,17 @@ markdown_lint_prompt:
        descriptive link text.
 
     **Before beginning your analysis**, confirm which of the above files
-    are present in the codebase. If project-specific files are found,
-    briefly identify the most relevant markdown rules they define. If
-    a file exists but does not define markdown guidance relevant to this
-    task, say so and fall back to the next source in the hierarchy. Do
-    not assume a missing file exists, and do not assume one
-    `CONTRIBUTING` location redirects to another unless the visible file
-    content explicitly says so.
+    are present in the codebase. Start your response with a
+    **Style Guide Sources** section that lists each checked path as
+    present or missing and briefly names the visible markdown rules that
+    apply. If a file exists but does not define markdown guidance
+    relevant to this task, say so and fall back to the next source in
+    the hierarchy. Do not assume a missing file exists, and do not
+    assume one `CONTRIBUTING` location redirects to another unless the
+    visible file content explicitly says so. If you cannot confirm this
+    hierarchy from the visible evidence, mark the analysis
+    inconclusive rather than proceeding as if the style-guide check was
+    completed.
 
     If only one project-specific file is present, apply its rules for
     the topics it covers and fall back to generic markdown defaults for
@@ -3331,6 +3354,15 @@ markdown_lint_prompt:
     
     1. **Severity Assessment**: 
        - Rate overall quality (Excellent/Good/Needs Improvement/Poor)
+         only when the visible evidence supports an enabled-rule quality
+         judgment
+       - If enabled-rule evidence is limited to aggregate counts,
+         top-file totals, missing mappings, or other partial evidence,
+         use `Inconclusive from provided evidence` instead of forcing one
+         of the four quality labels
+       - Do not label the repository Excellent, Good, Needs Improvement,
+         or Poor solely because no enabled-rule violations are visible in
+         partial evidence
        - Base assessment ONLY on enabled rules (ignore disabled rules)
        - Prioritize recommendations by **impact on documentation quality**
          (rendering correctness, accessibility, readability) rather than
@@ -3353,11 +3385,14 @@ markdown_lint_prompt:
     
     3. **Quick Fixes**:
        - Provide specific sed/awk commands for bulk fixes
+       - Commands must work from the repository root without requiring
+         shell-option changes such as `globstar`; prefer `find ... -exec
+         ... {} +` or `rg --glob '*.md'`
        - Example for trailing spaces:
-         `find . -name "*.md" -exec sed -i 's/[[:space:]]*$//' {{}} +`
+          `find . -name "*.md" -exec sed -i 's/[[:space:]]*$//' {{}} +`
        - Example for final newline:
-         `find . -name "*.md" -exec sh -c 'tail -c1 {{}} | read -r _ || 
-         echo >> {{}}' \;`
+          `find . -name "*.md" -exec sh -c 'tail -c1 {{}} | read -r _ || 
+          echo >> {{}}' \;`
     
     4. **Editor Configuration**:
        - Suggest `.editorconfig` settings only as recommendations unless
@@ -3372,6 +3407,10 @@ markdown_lint_prompt:
          configuration visibly present in the provided evidence
        - If existing automation already covers a rule, acknowledge that
          coverage before suggesting incremental improvements
+       - Do not claim PR-wide, CI-wide, or branch-trigger coverage unless
+         a visible workflow or CI configuration explicitly shows that
+         trigger; otherwise describe only the confirmed local coverage
+         and mark trigger scope as unavailable or inconclusive
   
   approach: |
     Analyze ONLY the markdown files and lint results explicitly listed above. Do not report violations for rules not in the enabled set.
@@ -3385,8 +3424,14 @@ markdown_lint_prompt:
     partial evidence. If the visible data does not include exact enabled-
     rule file/line mappings, do not fabricate them; prefer an explicit
     unavailable or inconclusive result.
+    Absence of visible enabled-rule mappings is not evidence of quality:
+    do not convert sparse evidence into a "Good" or equivalent overall
+    rating.
     
     **Output Format:**
+    - Begin with `**Style Guide Sources**` and state which hierarchy
+      files were checked, which were present, and which visible rules
+      applied
     - Concise analysis focused on enabled rules only
     - Specific file paths and line numbers for violations only when
       visible evidence supports them
@@ -3511,26 +3556,61 @@ configuration_specialist_prompt:
        - CI/CD caching strategies, artifact management (e.g., cache `node_modules` keyed on `package-lock.json` hash)
        - Configuration documentation (comments explaining non-obvious settings, e.g., why a timeout is set to a specific value)
     
-    5. **Special Handling for AI Workflow Configs** (if applicable):
-       - Validate ai_helpers.yaml structure (role_prefix + behavioral_guidelines pattern)
-       - Check YAML anchor references are valid
-       - Verify persona prompt completeness
-       - Flag token inefficiency patterns (redundant text, missing anchors)
-       - Ensure behavioral_guidelines usage for consistency
-       - When `config/ai_helpers.yaml` or `config/prompt_roles.yaml` are in scope, confirm
-         from the visible YAML evidence that persona keys use resolvable `role_ref` values
-         and that the top-level document remains a plain mapping (not a list or scalar).
-         Do not infer top-level structure from a mid-file slice that begins inside a
-         scalar or block value; require the document start or another unambiguous
-         top-level mapping key in the visible excerpt before making that claim.
-       - Only cross-check a loader or config-parser module when that module is explicitly
-         included in the provided scope/context. If the loader implementation is not shown,
-         mark loader-alignment conclusions inconclusive instead of assuming a repository path.
+     5. **Special Handling for AI Workflow Configs** (if applicable):
+        - Validate ai_helpers.yaml structure (role_prefix + behavioral_guidelines pattern)
+        - Check YAML anchor references are valid
+        - Verify persona prompt completeness
+        - Flag token inefficiency patterns (redundant text, missing anchors)
+        - Ensure behavioral_guidelines usage for consistency
+        - When `.workflow-config.yaml` is in scope, treat `workflow.steps` as the
+          supported override surface for execution planning. Do not treat
+          `workflow.stages.*.steps` as authoritative for execution order.
+        - For `.workflow-config.yaml`, preserve canonical step dependencies by default.
+          If a step's `dependencies` change from the canonical dependency set, require a
+          `dependency_comment` that explains why the override is necessary.
+        - Treat each `.workflow-config.yaml` dependency override as evidence-bound. Before
+          approving or suggesting a comment like "no test command configured" or
+          "no lint tool configured", verify that claim against the visible `tech_stack`
+          commands, manifest scripts, and other in-scope config values.
+        - Treat `dependency_comment` as documentation for an allowed override, not as a bypass
+          for locked prerequisite edges. In particular, do not approve or suggest rewires that
+          try to skip `step_09 <- step_08`, `step_10 <- step_09`, `step_11 <- step_13`,
+          `step_0f <- step_17`, or `step_12 <- step_0f`.
+        - When a locked prerequisite stays disabled, compute the downstream dependent closure
+          before approving the config. Do not stop at the immediate child step; every enabled
+          dependent in that branch must be disabled or rewired too.
+        - Apply that `dependency_comment` rule even when the step is disabled
+          (`enabled: false`). Disabled steps are still configuration evidence and do not
+          get a free pass for undocumented dependency rewires.
+        - Treat cross-phase rewires in `.workflow-config.yaml` (for example, moving an
+          early documentation step behind late review or terminal steps) as ordering
+          defects unless the configuration includes a concrete justification.
+        - When `config/ai_helpers.yaml` or `config/prompt_roles.yaml` are in scope, confirm
+          from the visible YAML evidence that persona keys use resolvable `role_ref` values
+          and that the top-level document remains a plain mapping (not a list or scalar).
+          Do not infer top-level structure from a mid-file slice that begins inside a
+          scalar or block value; require the document start or another unambiguous
+          top-level mapping key in the visible excerpt before making that claim.
+         - Only cross-check a loader or config-parser module when that module is explicitly
+           included in the provided scope/context. If the loader implementation is not shown,
+           mark loader-alignment conclusions inconclusive instead of assuming a repository path.
   
   approach: |
     Analyze ONLY the configuration files explicitly listed above. Do not reference, invent, or assume files not in that list.
     Treat `tsconfig*.json`, `jsconfig*.json`, and `.vscode/*.json` as JSONC-capable when comments are visible; do not report those comments as strict-JSON syntax errors.
     Do not recommend adding comments, READMEs, or rationale notes unless the visible configuration is genuinely opaque, risky, or missing explanation for a concrete maintenance-critical choice.
+    If `.workflow-config.yaml` is in scope and a step's dependency set differs from the
+    canonical ai_workflow.js workflow order, either restore the canonical dependencies or
+    require a specific `dependency_comment`. Do not assume disabled steps are exempt. If
+    the visible evidence is insufficient to confirm the canonical dependency set, mark the
+    override as requiring follow-up validation instead of passing it silently.
+    Do not accept unsupported claims that tests, linting, or another prerequisite branch is
+    unavailable when the visible `tech_stack`, `package.json` scripts, or related config says
+    otherwise. Call out that contradiction explicitly.
+    When the visible config disables test, lint, or other prerequisite branches, do not
+    suggest jumping directly to later locked steps. Recommend disabling the dependent branch
+    too, unless the canonical workflow explicitly allows that branch to self-skip. Evaluate the
+    whole downstream branch, not only the first dependent step.
 
     **Validation Priority:**
     1. Security issues (CRITICAL - exposed secrets, weak defaults)

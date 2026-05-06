@@ -33,18 +33,20 @@ doc_analysis_prompt:
 
     **REQUIRED ACTIONS**:
      1. **Read the changes**: Examine what was modified in each changed file
-     2. **Identify documentation impact**: Determine which sections in the listed documentation files need updates:
-         - Treat the files in `Documentation to review` as the only documentation targets for edits
-         - Use the changed files only as evidence for whether those scoped documentation targets need updates
-         - Review API references, usage instructions, architecture descriptions, and version strings only when those topics appear in the scoped documentation files
-         - Do not add roadmap-only, future, or "coming soon" placeholders to current-state documentation sections (for example released step tables, implementation summaries, or stable-status blocks) unless the scoped document already presents that section as planned/future work or the visible implementation evidence shows the feature already exists
-         - Do not propose edits to `README.md`, `CHANGELOG.md`, module READMEs, source-file JSDoc, or inline code comments unless those files are explicitly included in `Documentation to review` or already appear in the provided changed-file list as documentation files
+      2. **Identify documentation impact**: Determine which sections in the listed documentation files need updates:
+          - Treat the files in `Documentation to review` as the only documentation targets for edits
+          - Use the changed files only as evidence for whether those scoped documentation targets need updates
+          - Treat markdown documentation outside `docs/` as misplaced unless the file is `README.md` or `CHANGELOG.md`; when such a scoped file is visible, prefer moving it into `docs/` or the matching `docs/` subdirectory instead of normalizing new root-level docs
+          - Review API references, usage instructions, architecture descriptions, and version strings only when those topics appear in the scoped documentation files
+          - Do not add roadmap-only, future, or "coming soon" placeholders to current-state documentation sections (for example released step tables, implementation summaries, or stable-status blocks) unless the scoped document already presents that section as planned/future work or the visible implementation evidence shows the feature already exists
+          - Do not propose edits to `README.md`, `CHANGELOG.md`, module READMEs, source-file JSDoc, or inline code comments unless those files are explicitly included in `Documentation to review` or already appear in the provided changed-file list as documentation files
       3. **Determine specific edits**: Identify the exact lines or sections requiring updates — a "specific edit" means a concrete before/after text change tied to a file path, NOT a vague suggestion like "consider updating X"
       4. **Verify accuracy**: Ensure examples, code snippets, and cross-references are still correct
          - Treat adjacent metadata summary lines (for example version, tests, coverage, and `Last updated`) as a linked block: update each line only when a replacement value is explicitly visible in the evidence, and leave unsupported lines as unavailable/inconclusive instead of guessing
       5. **Handle missing or incomplete files**: If a documentation file from the provided scope is missing or clearly incomplete, note it as a documentation gap in your output rather than skipping it or fabricating content — describe briefly what should be there
     
     **OUTPUT FORMAT**: Use edit blocks showing before/after, or provide specific line-by-line changes. Choose exactly one verdict per scoped documentation file or clearly labeled file section: specific edit, "No updates required", "Not applicable", "Unavailable", or "Inconclusive". Never combine "Not applicable" with "No updates required" for the same file. If no edits are needed, state "No updates required" with a one-line reason only when the visible file contents support that conclusion. If the provided evidence is tangential to the scoped documentation target, state "Not applicable" instead.
+    If the visible scoped document includes a directory tree, project structure, module inventory, runtime boot path, or responsibility list, cross-check changed files against that visible inventory. A changed file that should appear in that visible inventory but is missing or no longer described is a documentation issue, not "No updates required".
   
   approach: |
     Analyze ONLY the documentation files explicitly listed in `Documentation to review`. Do not reference, invent, or assume missing documentation outside that scope.
@@ -90,6 +92,7 @@ doc_analysis_prompt:
      - If the visible files are real project files but do not materially affect the scoped documentation target, return "Not applicable" instead of "No updates required"
      - Do not add planned/future items from roadmap evidence into current-state/released documentation unless the scoped document explicitly labels that section as planned/future or visible implementation evidence confirms the feature already exists
      - Do not review source-file JSDoc, inline code comments, or non-documentation files as standalone deliverables unless those files are themselves in the scoped documentation set
+     - When a scoped doc visibly inventories files or modules, verify that changed files are still represented there before clearing the doc as current
      - FOCUS on accuracy over completeness
      - Keep the response dense and modular - prefer concise edit blocks over expansive narrative
      - Avoid verbosity, creative expansion, and speculative rewrites beyond the visible change set
@@ -242,22 +245,24 @@ technical_writer_prompt:
        - Use case-insensitive search for filenames (USER_GUIDE = User_Guide = user-guide)
     
     3. **File Location Decision Rules** (Priority order - MUST FOLLOW):
-       a. **UPDATE EXISTING** (Highest Priority): If similar file exists in ANY subdirectory → UPDATE IT in place
-       b. **FOLLOW PATTERN** (High Priority): If organized subdirectory structure exists → CREATE in appropriate subdirectory
-       c. **ROOT ONLY IF** (Fallback): Only create at docs/ root if NO subdirectory structure exists
-       d. **NEVER CREATE DUPLICATES**: Never create docs/FILE.md if docs/subdir/FILE.md exists
+        a. **UPDATE EXISTING** (Highest Priority): If similar file exists in ANY subdirectory → UPDATE IT in place
+        b. **FOLLOW PATTERN** (High Priority): If organized subdirectory structure exists → CREATE in appropriate subdirectory
+        c. **ROOT EXCEPTIONS ONLY** (Required): Keep only `README.md` and `CHANGELOG.md` at project root; place every other markdown documentation file under `docs/`
+        d. **NEVER CREATE DUPLICATES**: Never create docs/FILE.md if docs/subdir/FILE.md exists
     
     4. **Examples of Correct Behavior**:
-       - ✅ GOOD: docs/user/USER_GUIDE.md exists → UPDATE docs/user/USER_GUIDE.md (not create docs/USER_GUIDE.md)
-       - ✅ GOOD: docs/api/ directory exists → CREATE docs/api/NEW_API_ENDPOINT.md (not docs/API.md)
-       - ✅ GOOD: docs/guides/ exists with 5 files → CREATE docs/guides/NEW_TUTORIAL.md (follows pattern)
-       - ✅ GOOD: No docs/ subdirectories exist → CREATE docs/README.md (appropriate for flat structure)
+        - ✅ GOOD: docs/user/USER_GUIDE.md exists → UPDATE docs/user/USER_GUIDE.md (not create docs/USER_GUIDE.md)
+        - ✅ GOOD: docs/api/ directory exists → CREATE docs/api/NEW_API_ENDPOINT.md (not docs/API.md)
+        - ✅ GOOD: docs/guides/ exists with 5 files → CREATE docs/guides/NEW_TUTORIAL.md (follows pattern)
+        - ✅ GOOD: Project needs contribution guidance → CREATE docs/CONTRIBUTING.md (not CONTRIBUTING.md)
+        - ✅ GOOD: No docs/ subdirectories exist → CREATE docs/SETUP.md (appropriate for flat structure)
     
     5. **Examples of Incorrect Behavior** (AVOID THESE):
-       - ❌ BAD: docs/user/USER_GUIDE.md exists → Creating docs/USER_GUIDE.md (DUPLICATE!)
-       - ❌ BAD: docs/api/ directory exists → Creating docs/API_GUIDE.md (WRONG LOCATION!)
-       - ❌ BAD: docs/architecture/ has SYSTEM.md → Creating docs/ARCHITECTURE.md (IGNORES PATTERN!)
-       - ❌ BAD: Multiple subdirs exist → Creating files at docs/ root (BREAKS ORGANIZATION!)
+        - ❌ BAD: docs/user/USER_GUIDE.md exists → Creating docs/USER_GUIDE.md (DUPLICATE!)
+        - ❌ BAD: docs/api/ directory exists → Creating docs/API_GUIDE.md (WRONG LOCATION!)
+        - ❌ BAD: docs/architecture/ has SYSTEM.md → Creating docs/ARCHITECTURE.md (IGNORES PATTERN!)
+        - ❌ BAD: Multiple subdirs exist → Creating files at docs/ root (BREAKS ORGANIZATION!)
+        - ❌ BAD: Creating CONTRIBUTING.md, ARCHITECTURE.md, or FUNCTIONAL_REQUIREMENTS.md at project root
     
     6. **Directory Pattern Recognition**:
        - **By Audience**: docs/user/, docs/developer/, docs/admin/ → Create in appropriate audience directory

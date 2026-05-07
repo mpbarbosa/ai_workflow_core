@@ -697,6 +697,10 @@ step6_test_review_prompt:
     > inconclusive instead of claiming success. Do not assert "no performance issues",
     > "no CI issues", or other repository-wide conclusions unless the provided
     > evidence shows them directly.
+    > If a file's visible content ends with `(truncated)`, all per-file
+    > execution-risk conclusions for that file are **inconclusive** — do not
+    > write per-file "no issues", "no side effects", or similar pass findings
+    > for a truncated file.
 
     **Test File Contents:**
     {test_file_contents}

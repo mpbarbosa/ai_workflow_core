@@ -690,17 +690,21 @@ step6_test_review_prompt:
     **Existing Test Files in Scope:**
     {test_files}
 
-    > **Note:** Test file contents are truncated to fit token limits; listed files may
-    > not appear in the snapshot below. If a file is absent from **Test File Contents**,
-    > analyze only what is provided — do not invent or assume missing content.
-    > When evidence is missing or truncated, mark that conclusion unavailable or
-    > inconclusive instead of claiming success. Do not assert "no performance issues",
-    > "no CI issues", or other repository-wide conclusions unless the provided
-    > evidence shows them directly.
-    > If a file's visible content ends with `(truncated)`, all per-file
-    > execution-risk conclusions for that file are **inconclusive** — do not
-    > write per-file "no issues", "no side effects", or similar pass findings
-    > for a truncated file.
+    {evidence_manifest}
+
+    > **Evidence status key:**
+    > - `full` — complete file content is provided; all conclusions are valid.
+    > - `truncated` — visible portion only; conclusions about the visible code are valid,
+    >   but execution-risk conclusions (CI compatibility, side effects, performance) are
+    >   **inconclusive** for that file.
+    > - `absent` — file content could not be included; all conclusions about that file
+    >   are **unavailable** — do not invent or assume content.
+
+    **Test Framework Configuration** (package.json, jest/vitest config, tsconfig — if available):
+    {config_file_contents}
+
+    **Project Context** (README — if available):
+    {project_context_contents}
 
     **Test File Contents:**
     {test_file_contents}
@@ -712,6 +716,7 @@ step6_test_review_prompt:
        - Assess test naming conventions (describe behavior, not implementation)
        - Evaluate test readability and maintainability
        - Check for code duplication in tests (DRY violations)
+       - Flag dead test helpers: for every helper function or fixture defined in the test file, verify it is referenced by at least one test case — unreferenced helpers are lint errors that block the next workflow run
        - Validate proper use of test framework features
        - Assess assertion quality (specific, meaningful messages)
 
@@ -764,6 +769,7 @@ step6_test_review_prompt:
     - Provide code-level improvements, not portfolio analysis
     - Focus on HOW tests are written, not WHAT to test
     - Give concrete examples and refactoring patterns
+    - Before approving helper functions or fixtures, confirm each is referenced by at least one test — orphaned helpers cause lint errors that block the next workflow run
     - Prioritize maintainability and clarity
     - If evidence is incomplete, say unavailable or inconclusive instead of inferring broader health
     - If command compatibility is not visible, say it is unverified instead of assuming the repository-default test command executes the scoped files
@@ -775,6 +781,7 @@ step6_test_review_prompt:
     - "Use expect(result).toHaveLength(3) instead of expect(result.length).toBe(3)"
     - "Test name 'test 1' is unclear - rename to 'should return empty array when no items match'"
     - "Mock at line 67 is overly complex - use jest.fn() with mockReturnValue instead"
+    - "'makeFileOps' at line 53 is defined but never called by any test case — remove it to eliminate the no-unused-vars lint error that will block the next workflow run"
     
     Please analyze the existing tests and provide a detailed review limited to the
     visible evidence, with specific, actionable recommendations for improving test

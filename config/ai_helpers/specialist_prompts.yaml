@@ -18,13 +18,18 @@ version_manager_prompt:
     _(If empty, the only staged files are workflow artifacts under `.ai_workflow/`; see Git Context
     or the diff sample for actual file paths.)_
     **Git Context**: {git_context}
-    **Primary Sources**: Review `package.json` (current version field), CHANGELOG.md (especially the
-    [Unreleased] section), and git commit history to understand the nature and scope of changes.
-    If CHANGELOG.md is absent, note this in your reasoning and rely solely on git commit history.
-    Treat CHANGELOG.md `[Unreleased]` as authoritative for pending user-visible work when it is present.
-    If you cannot inspect or cite the `[Unreleased]` content from the provided context, say so
-    explicitly and treat CHANGELOG-based conclusions as unavailable or inconclusive rather than
-    claiming there are no pending features or breaking changes.
+    **CHANGELOG.md (full content — treat as authoritative)**:
+    ```
+    {changelog_content}
+    ```
+    **Primary Sources**: The `CHANGELOG.md` content above is the authoritative record of pending
+    user-visible work. Treat its `[Unreleased]` section as the primary signal for version bump
+    severity, outranking commit-type heuristics and diff evidence.
+    - If `[Unreleased]` lists new features or capabilities → minimum MINOR bump.
+    - If `[Unreleased]` lists breaking or incompatible changes → MAJOR bump.
+    - If `[Unreleased]` is present but empty → rely on git commit history and diff evidence.
+    - If the provided CHANGELOG content above is empty or contains no `[Unreleased]` section,
+      say so explicitly and rely on commit history.
     Do not let an artifact-only staged diff under `.ai_workflow/` override substantive `[Unreleased]`
     entries such as Added features, breaking changes, or other release-worthy scope.
     Treat diff samples and changed-file excerpts as partial evidence unless they explicitly cover the
@@ -34,6 +39,10 @@ version_manager_prompt:
     If any visible evidence names a path outside `.ai_workflow/` (for example in `Changed Files`,
     diff headers, or git context), treat the staged scope as mixed or inconclusive and do not
     describe it as artifact-only.
+    Note: category counts (Documentation/Tests/Code/Config) in the Changed Files block are derived
+    from the full modified-files list; staged diff statistics cover only the currently staged scope
+    and may show a smaller file count. When the two differ, treat the file list as the broader
+    evidence and the diff stats as partial evidence for the staged portion only.
     **Versioning Policy**: Check these files (in order) for project-specific versioning rules or
     release guidance: `CHANGELOG.md` (project SemVer statement and `[Unreleased]` scope),
     `CONTRIBUTING.md` (project root), `README.md`, `docs/guides/DEVELOPER_GUIDE.md`,
@@ -78,15 +87,15 @@ version_manager_prompt:
          supports that claim.
        - When the visible evidence includes both `.ai_workflow/` artifacts and project files, say
          that the scope is mixed rather than collapsing it into an artifact-only summary.
-    1. Read CHANGELOG.md [Unreleased] section to understand all documented pending changes
+    1. Read the CHANGELOG.md content provided above (between the ``` fences) and locate the
+       `[Unreleased]` section. The full file is always injected into the prompt — CHANGELOG is
+       mandatory for this step. If the content block is empty, treat that as an empty changelog.
         - If `[Unreleased]` lists Added features or new capabilities, that evidence outranks an
-          artifact-only staged diff and usually requires at least a MINOR bump.
+          artifact-only staged diff and requires at least a MINOR bump.
         - If `[Unreleased]` lists breaking or incompatible changes, that evidence outranks commit
           type heuristics and requires a MAJOR bump.
-        - If `[Unreleased]` is absent or empty, say so explicitly and continue with the remaining
-          evidence.
-        - If the prompt does not actually provide the `[Unreleased]` content or a reliable excerpt,
-          state that the changelog check is unavailable or inconclusive.
+        - If `[Unreleased]` is present but has no entries, say so and continue with remaining evidence.
+        - If the provided content has no `[Unreleased]` section at all, say so explicitly.
     2. Review git commit messages for conventional commit types (feat, fix, BREAKING CHANGE)
     3. Examine the provided git diff and changed file list, categorising changes by project area:
        - `config/` changes → configuration or schema updates (potential minor/patch)

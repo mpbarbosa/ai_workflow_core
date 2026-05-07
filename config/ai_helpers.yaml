@@ -2320,7 +2320,8 @@ step5_directory_prompt:
     - Best-practice conventions that are not explicitly required by the visible evidence should be framed as recommendations, not as missing-directory defects.
 
     **Authoritative Validation Sources:**
-    - `.workflow-config.yaml` (if present, use as the primary source of truth for required structure)
+    - `.workflow-config.yaml` (full content provided below under "Authoritative Configuration Files" when present — use it as the primary source of truth for required structure)
+    - Test runner configuration (`vitest.config.js`, `jest.config.js`, etc.) — full content provided below when present; use it as the definitive record of which test directories are active
     - `project_kinds.yaml` project-kind guidance and defaults (typically sourced from `.workflow_core/config/project_kinds.yaml` for this workflow, or from equivalent project-kind guidance included in the visible prompt context)
     - Architecture and structural guidance documented in `README.md`, `INDEX.md`, `docs/ARCHITECTURE.md`, `CONTRIBUTING.md`, `.github/SKILLS.md`, and directory-local `README.md` / `INDEX.md` files when visible
 
@@ -2362,6 +2363,11 @@ step5_directory_prompt:
     
     **Current Directory Structure:**
     {dir_tree}
+
+    **Authoritative Configuration Files (full content — use these for definitive structural claims):**
+    {config_context}
+    When `.workflow-config.yaml` is visible above, treat its `structure.source_dirs`, `structure.test_dirs`, and `structure.docs_dirs` keys as the definitive list of required directories. A directory listed under any of those keys is documented by definition — do not flag it as undocumented or recommend adding documentation for it.
+    When a test runner config (`vitest.config.js`, `jest.config.js`, etc.) is visible above, treat its `include` / `testMatch` / `roots` patterns as the definitive record of which directories contain actively executed tests. A test directory whose files do not match any include pattern is not an active test directory; mark such a discrepancy explicitly rather than asserting a clean separation of concerns.
 
     **Documentation Excerpts (partial — selected lines from README.md, INDEX.md, docs/ARCHITECTURE.md, CONTRIBUTING.md, `.github/copilot-instructions.md`, `.github/SKILLS.md`, and directory-local README / INDEX files when available):**
     {doc_context}
@@ -3501,6 +3507,11 @@ configuration_specialist_prompt:
     >   claims to the visible excerpt, and do not claim full-file validation or
     >   "All configuration files validated successfully" unless every in-scope file is
     >   present in full.
+    > - If this request is one partition or subset of a larger run, never use the exact
+    >   phrase "All configuration files validated successfully", never report file counts
+    >   beyond the files listed in this request, and never summarize files outside the
+    >   current scope list. If the visible files are clean, say so only for "this
+    >   partition", "this request", or "the visible file(s) above".
      > - A **File Contents** entry may be a deliberate compact summary of a generated
      >   lockfile or other oversized machine-generated config. When clearly labeled as a
      >   summary, analyze only the summarized fields shown and do not assume the raw file
@@ -3565,6 +3576,10 @@ configuration_specialist_prompt:
         - When `.workflow-config.yaml` is in scope, treat `workflow.steps` as the
           supported override surface for execution planning. Do not treat
           `workflow.stages.*.steps` as authoritative for execution order.
+        - If you discuss `.workflow-config.yaml` dependency overrides, enumerate every
+          visible overridden step ID before concluding whether the rewires are documented.
+          Do not imply there is only one visible override unless you have listed all of
+          them from the visible content.
         - For `.workflow-config.yaml`, preserve canonical step dependencies by default.
           If a step's `dependencies` change from the canonical dependency set, require a
           `dependency_comment` that explains why the override is necessary.
@@ -3599,11 +3614,13 @@ configuration_specialist_prompt:
     Analyze ONLY the configuration files explicitly listed above. Do not reference, invent, or assume files not in that list.
     Treat `tsconfig*.json`, `jsconfig*.json`, and `.vscode/*.json` as JSONC-capable when comments are visible; do not report those comments as strict-JSON syntax errors.
     Do not recommend adding comments, READMEs, or rationale notes unless the visible configuration is genuinely opaque, risky, or missing explanation for a concrete maintenance-critical choice.
+    In partitioned or subset requests, keep conclusions partition-local: do not mention files outside the current scope list, do not report global file counts, and do not use run-wide success wording.
     If `.workflow-config.yaml` is in scope and a step's dependency set differs from the
     canonical ai_workflow.js workflow order, either restore the canonical dependencies or
     require a specific `dependency_comment`. Do not assume disabled steps are exempt. If
     the visible evidence is insufficient to confirm the canonical dependency set, mark the
     override as requiring follow-up validation instead of passing it silently.
+    If multiple visible `.workflow-config.yaml` steps carry `dependency_comment`, list each visible step ID before saying the override set is complete or that no other rewires are visible.
     Do not accept unsupported claims that tests, linting, or another prerequisite branch is
     unavailable when the visible `tech_stack`, `package.json` scripts, or related config says
     otherwise. Call out that contradiction explicitly.

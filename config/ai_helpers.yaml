@@ -1658,6 +1658,7 @@ single_file_test_prompt:
     Generate a complete, runnable test file for the source file below.
 
     **Source file**: `{source_file}`
+    **Target test file**: `{target_test_path}`
     **Language / framework**: {test_framework}
 
     **Requirements**:
@@ -1677,11 +1678,23 @@ single_file_test_prompt:
     Analyse only the **{source_file}** source code shown above. Do not reference any files or modules not visible in the context.
 
     Generate a self-contained test file that:
-    - Imports from the source file using the correct relative path
+    - Imports **{source_file}** using the correct relative path **from `{target_test_path}`**
+      (e.g. if source is `src/foo/bar.ts` and test is `test/foo/bar.test.ts`, the import is `../../src/foo/bar`)
     - Uses {test_framework} idioms and conventions
     - Covers happy paths, edge cases, and error handling
     - Uses descriptive `describe`/`it` (or equivalent) blocks with clear test names
     - Does NOT include any explanations outside the code block
+
+    **TypeScript-specific constraints**:
+    - TypeScript interfaces and type aliases are erased at runtime. Do NOT use
+      `@ts-expect-error` together with `expect(...).toThrow()` to simulate runtime
+      type enforcement — interface violations produce compile-time errors only,
+      never runtime exceptions.
+    - Only use `@ts-expect-error` when the next line would otherwise cause a genuine
+      TypeScript compile error AND the test assertion targets observable runtime behaviour
+      (not the type error itself).
+    - Only import the specific module shown above. Do not import sibling files or types
+      not present in the source content.
 
 
 # Quality Prompt - Quick File-Level Code Review
@@ -1704,6 +1717,12 @@ quality_prompt:
 
     **Scope note:**
     {quality_scope_note}
+
+    If the evidence block above is empty, marked unavailable, or missing per-file
+    excerpt blocks, do not invent file-level findings. Return only an `Evidence Gap`
+    note that states the review is unavailable, names the affected files, and lists
+    the exact excerpts needed for a grounded review. Treat `[empty file]` markers as
+    real evidence that the visible file is empty.
     
     Analyze:
     1. **Code Organization** - Logical structure and separation of concerns
@@ -1722,8 +1741,12 @@ quality_prompt:
     - Work only from the injected file contents above; if a listed file is absent,
       truncated, or summarized too narrowly for a claim, mark that conclusion
       unavailable or inconclusive instead of treating the file as fully reviewed
+    - If the evidence block is empty, marked unavailable, or lacks per-file excerpt
+      blocks, return only an `Evidence Gap` response covering unavailable scope and
+      the missing evidence required for a grounded review
     - Do not say all listed files are clean, standard, or issue-free unless every
       listed file is visible in full in the prompt
+    - Treat `[empty file]` markers as grounded evidence that a visible file is empty
     - Treat `tsconfig*.json`, `jsconfig*.json`, and `.vscode/*.json` as JSONC-capable configs when comments are visible; do not flag those comments as strict-JSON syntax errors
     - Do not recommend adding comments, READMEs, or rationale notes unless the visible file is unusually opaque, risky, or missing explanation for a concrete maintenance-critical choice
     

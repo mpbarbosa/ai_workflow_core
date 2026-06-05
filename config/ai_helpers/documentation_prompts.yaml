@@ -36,17 +36,20 @@ doc_analysis_prompt:
       2. **Identify documentation impact**: Determine which sections in the listed documentation files need updates:
           - Treat the files in `Documentation to review` as the only documentation targets for edits
           - Use the changed files only as evidence for whether those scoped documentation targets need updates
-          - Treat markdown documentation outside `docs/` as misplaced unless the file is `README.md` or `CHANGELOG.md`; when such a scoped file is visible, prefer moving it into `docs/` or the matching `docs/` subdirectory instead of normalizing new root-level docs
+          - Treat markdown documentation outside `docs/` as misplaced unless the file is a conventional root-level documentation file such as `README.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `CLAUDE.md`, `AGENTS.md`, `ROADMAP.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`, or `SUPPORT.md`; when a scoped file visibly matches one of those root-level conventions, treat that location as valid rather than proposing a move into `docs/`
           - Review API references, usage instructions, architecture descriptions, and version strings only when those topics appear in the scoped documentation files
           - Do not add roadmap-only, future, or "coming soon" placeholders to current-state documentation sections (for example released step tables, implementation summaries, or stable-status blocks) unless the scoped document already presents that section as planned/future work or the visible implementation evidence shows the feature already exists
           - Do not propose edits to `README.md`, `CHANGELOG.md`, module READMEs, source-file JSDoc, or inline code comments unless those files are explicitly included in `Documentation to review` or already appear in the provided changed-file list as documentation files
       3. **Determine specific edits**: Identify the exact lines or sections requiring updates — a "specific edit" means a concrete before/after text change tied to a file path, NOT a vague suggestion like "consider updating X"
       4. **Verify accuracy**: Ensure examples, code snippets, and cross-references are still correct
          - Treat adjacent metadata summary lines (for example version, tests, coverage, and `Last updated`) as a linked block: update each line only when a replacement value is explicitly visible in the evidence, and leave unsupported lines as unavailable/inconclusive instead of guessing
+         - Do not use changelog bullets, "Recently Updated" lists, or dated history/timeline entries as replacement metadata for the scoped file unless the same metadata key/value pair is shown as metadata for that scoped file
       5. **Handle missing or incomplete files**: If a documentation file from the provided scope is missing or clearly incomplete, note it as a documentation gap in your output rather than skipping it or fabricating content — describe briefly what should be there
     
     **OUTPUT FORMAT**: Use edit blocks showing before/after, or provide specific line-by-line changes. Choose exactly one verdict per scoped documentation file or clearly labeled file section: specific edit, "No updates required", "Not applicable", "Unavailable", or "Inconclusive". Never combine "Not applicable" with "No updates required" for the same file. If no edits are needed, state "No updates required" with a one-line reason only when the visible file contents support that conclusion. If the provided evidence is tangential to the scoped documentation target, state "Not applicable" instead.
     If the visible scoped document includes a directory tree, project structure, module inventory, runtime boot path, or responsibility list, cross-check changed files against that visible inventory. A changed file that should appear in that visible inventory but is missing or no longer described is a documentation issue, not "No updates required".
+    If a scoped doc summarizes the purpose of a documentation directory and a support file named for that same directory (for example `docs/misc/README.md` for `misc/`) states a contradictory current purpose, treat the scoped summary line as stale and issue a targeted edit for that line.
+    If this partition does not include a direct scoped documentation excerpt, do not return "No updates required" or "Specific edit required" for that scoped file from this partition alone; return "Unavailable", "Inconclusive", or "Not applicable" instead.
   
   approach: |
     Analyze ONLY the documentation files explicitly listed in `Documentation to review`. Do not reference, invent, or assume missing documentation outside that scope.
@@ -93,12 +96,16 @@ doc_analysis_prompt:
      - Do not add planned/future items from roadmap evidence into current-state/released documentation unless the scoped document explicitly labels that section as planned/future or visible implementation evidence confirms the feature already exists
      - Do not review source-file JSDoc, inline code comments, or non-documentation files as standalone deliverables unless those files are themselves in the scoped documentation set
      - When a scoped doc visibly inventories files or modules, verify that changed files are still represented there before clearing the doc as current
+     - If this partition is support-only evidence, do not issue a final scoped-file verdict from this partition alone; limit conclusions to documentation impact signals and defer the final verdict to a partition that includes the scoped documentation excerpt
      - FOCUS on accuracy over completeness
      - Keep the response dense and modular - prefer concise edit blocks over expansive narrative
      - Avoid verbosity, creative expansion, and speculative rewrites beyond the visible change set
      - If a requested conclusion depends on missing or truncated file content, state "Unavailable" or "Inconclusive" instead of guessing
      - Only claim documentation is current when visible file contents support that conclusion
      - Never invent release dates, `Last updated` dates, or replacement metadata values that are not explicitly visible in the evidence
+     - For metadata replacements (for example `Last updated`, `Version`, `Documentation Version`, or `Release date`), only propose the new value when the exact key/value pair is visible somewhere in the scoped documentation excerpt or in a direct supporting evidence excerpt for that same field
+     - Do not treat changelog bullets, "Recently Updated" lists, or dated history/timeline entries as replacement metadata for the scoped file unless the same metadata key/value pair is shown as metadata for that scoped file
+     - When a scoped doc gives a directory-purpose summary and that directory's own `README.md` support file contradicts it, treat the scoped summary as stale rather than clearing it as current
 
 # Consistency Analysis Prompt Template
 consistency_prompt:

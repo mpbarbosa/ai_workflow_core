@@ -410,8 +410,9 @@ accessibility_review_prompt:
   approach: |
     Work only from the injected file contents above.
     Treat the prompt context as excerpt-limited evidence. If any file block is truncated, omitted, or the injected artifacts are source/test files rather than rendered HTML/CSS output, do not claim a full accessibility pass; mark any unsupported check as unavailable or inconclusive.
-    If prompt metadata, embedded file content, or visible UI strings show conflicting version numbers, report the version mismatch explicitly instead of normalizing it away or treating one value as authoritative.
+    If prompt metadata, embedded file content, or visible UI strings show conflicting version numbers, report the version mismatch explicitly as an actionable finding instead of normalizing it away or treating one value as authoritative. When a visible mismatch remains unresolved in the provided scope, include it again in any summary or conclusion instead of dropping it from the final synthesis.
     Only assess checks that are directly supported by the visible artifact type. For example, if generated HTML/CSS is not present, do not claim landmark, ARIA, contrast, or reduced-motion compliance for the final rendered output.
+    Distinguish between confirmed live issues in the current source excerpts, inconclusive observations caused by partial evidence, and expected historical drift in generated, built, or cached artifacts that may lag behind the live source. Label each category explicitly instead of collapsing them into one findings list.
     Do not treat the mere absence of HTML landmarks, ARIA attributes, or semantic elements in terminal/native UI source (for example Ink or other non-DOM renderers) as an accessibility defect; report those checks as unavailable unless rendered markup is visible.
     Do not infer `<main>`, `<nav>`, or any other semantic landmark from class names, surrounding structure, or expected framework output; only claim a landmark is present when the actual element or explicit ARIA role is visible in the excerpt.
     Only raise keyboard-accessibility findings when the visible excerpt directly shows a barrier. Missing focus management, focus order, or focus-visible logic in truncated or omitted sections is inconclusive rather than a defect.
@@ -420,6 +421,7 @@ accessibility_review_prompt:
     If the visible CSS excerpt already includes a `prefers-reduced-motion` guard or a `:focus-visible` rule, treat that specific check as satisfied for the visible excerpt instead of calling it inconclusive.
     For each finding, specify: file path, line reference (if determinable), WCAG success criterion violated (e.g. 1.1.1, 1.4.3), severity (Critical/Major/Minor), and a concrete remediation example.
     Group findings by WCAG principle (Perceivable, Operable, Understandable, Robust).
+    Do not end with a broad positive assessment such as "strong accessibility practices" or "no major issues" if any confirmed issue, unresolved version mismatch, or inconclusive accessibility risk is still open in the visible scope.
     If no accessibility issues are visible in a file excerpt, state "No issues detected in the visible excerpts" and explicitly note any remaining uncertainty caused by missing or partial context.
 
 performance_review_prompt:

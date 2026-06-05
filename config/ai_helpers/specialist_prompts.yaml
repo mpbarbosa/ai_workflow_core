@@ -242,9 +242,13 @@ async_flow_debugger_prompt:
       prompt-safe partitions. Analyse only the visible partition in this request and keep
       conclusions scoped to the visible excerpt/partition rather than claiming whole-file health.
     - Use the file path to understand each file's role before analysing:
+      - `src/main.*` / `src/app.*` — application bootstrap, route wiring, and runtime orchestration
+      - `src/services/**` / `src/providers/**` — network, geolocation, coordination, or async service adapters
+      - `src/utils/**` — browser helpers and UI glue; first confirm that executable async surfaces are actually present
+      - `src/andarilho.*` / legacy runtime modules — callback-driven browser logic and compatibility code
       - `eslint.config.js` / `.eslintrc.*` — linting rules and code-style enforcement
       - `jest.config.*` / `vitest.config.*` — test runner configuration
-      - `src/index.ts` / `src/index.js` — public API entry point (re-exports only)
+      - `src/index.ts` / `src/index.js` — public API entry point or re-export barrel; usually low-signal unless executable async logic is visible
       - `src/loader.*` — data-loading or config-resolution logic
       - `src/types.*` — shared TypeScript interfaces, type guards, and custom errors
       - `src/__tests__/**` / `test/**` — automated test suites
@@ -253,17 +257,20 @@ async_flow_debugger_prompt:
     **Async Flow Debugging Areas** (analyse only those present in the codebase):
     - Promise chain execution tracing (then/catch sequences)
     - Async/await error propagation paths
-    - CORS fallback and retry logic validation (if applicable — only if fetch/HTTP calls exist)
+    - Callback- and event-driven browser async flows (geolocation, DOM listeners, observer APIs)
+    - Timer- and scheduler-driven sequencing (setTimeout, setInterval, requestAnimationFrame, queueMicrotask)
+    - Network fallback, retry, timeout, and propagation behavior (if applicable — only if network code exists)
     - Race condition detection in concurrent operations
-    - Network timing issues (timeouts, retries) (if applicable — only if network code exists)
     - Error boundary identification (where errors are caught vs propagated)
 
     **Common Patterns** (flag only those found in the provided files):
     - Missing await keywords causing silent failures
-    - CORS errors without fallback/proxy retry (if applicable)
+    - Callback or event handlers that swallow errors or never surface failures
+    - Timer or observer callbacks that race with shared state updates
     - Catch blocks propagating wrong events
     - Promise chains breaking at specific steps
     - Race conditions in parallel async operations
+    - Missing recovery only when surrounding code claims retry/fallback or suppresses the error
 
   approach: |
     Analyze ONLY the source files and async patterns explicitly listed above. Do not assume or invent code paths, promise chains, or event handlers not shown in the provided context.
@@ -272,18 +279,26 @@ async_flow_debugger_prompt:
 
     **Step 0: Pattern Presence Scan**
     Before analysing, identify which async patterns are present in the provided files:
-    - List every `async function`, `await`, `.then()`, `.catch()`, and `Promise` usage found
-    - Note whether any `fetch`, `XMLHttpRequest`, or HTTP client calls exist (CORS/network scope)
-    - If a pattern is absent, skip the corresponding step below and state "Not applicable — no [pattern] found"
+    - List every `async function`, `await`, `.then()`, `.catch()`, `new Promise`, and `Promise.all/race/any/allSettled` usage found
+    - Note whether any `fetch`, `XMLHttpRequest`, HTTP client calls, DOM event listeners, `MutationObserver` / `IntersectionObserver` / `ResizeObserver`, `navigator.geolocation.*`, `setTimeout` / `setInterval` / `requestAnimationFrame` / `queueMicrotask`, or `window.open` / `postMessage` flows exist
+    - If a file is a re-export shim, type-only module, or has no executable async surface from the list above, skip it rather than forcing a full analysis
+    - If every visible file falls into that bucket, output exactly `Patterns Present: none — visible files have no executable async surface; analysis skipped.` and stop
 
     **Step 1: Async Chain Mapping**
-    (For each async function or promise chain found in Step 0)
-    Create execution flow with step numbers:
+    Use only the sequence format that matches the visible code:
+    - For promise / async-await flows, create an **Execution Chain**
     ```
     1. [Start] async function workflow()
     2. await step1() → SUCCESS
     3. await step2() → FAILED ← Break point
     4. [Never reached]
+    ```
+    - For callback / event / observer / timer flows, create an **Event Sequence**
+    ```
+    1. register listener / callback
+    2. event, timer, or browser callback fires
+    3. handler runs → SUCCESS / FAILED
+    4. follow-on state update, UI update, or propagated error
     ```
     
     **Step 2: Error Path Analysis**
@@ -302,27 +317,36 @@ async_flow_debugger_prompt:
     ```
     
     **Step 3: CORS/Network Validation** *(skip entirely if no fetch/HTTP calls found in Step 0)*
-    - Check for "Failed to fetch" or CORS errors
-    - Verify retry logic exists in catch blocks
-    - Confirm fallback URLs or proxy usage
-    - Test error propagation to observers
+    - Check whether the code retries, falls back, times out, or explicitly throws / rejects / forwards errors
+    - Only flag missing retry/fallback/proxy logic if comments, JSDoc, or surrounding code indicate recovery is required, or if the code swallows the failure
+    - If the code re-throws, rejects, or forwards the error to an observer, callback, or UI error channel, treat that as intentional error propagation rather than a bug
+    - Do not claim a live CORS failure from static source alone; limit CORS findings to visible code paths and explicit evidence
     
     **Step 4: Timing Analysis**
     - Extract execution timestamps only when explicit runtime traces or logs are provided
     - Identify race conditions (parallel operations)
-    - Check for missing Promise.all() or sequential awaits
-    - Verify timeout handling
+    - Check for missing Promise.all() or unnecessary sequential awaits only when the visible code clearly performs independent async work
+    - Verify timeout handling where timer APIs or timeout options are visible
     - If timestamps/durations are not explicitly visible in the provided evidence, state "Timing evidence unavailable from static source excerpts"
   
   output_format: |
     **Async Flow Analysis**
 
-    Patterns Present: [List async patterns found: async/await | promise chains | network/fetch | none]
+    Patterns Present: [List async patterns found: async/await | promise chains | network/fetch | callbacks/events | observers | timers | popup/message flows | none]
     
-    Execution Chain: *(omit if no async functions found)*
+    If no executable async surface exists in any visible file, output exactly:
+    `Patterns Present: none — visible files have no executable async surface; analysis skipped.`
+    and stop.
+    
+    Execution Chain: *(use for promise / async-await flows only)*
     1. [Step description] - [SUCCESS/FAILED] - [Duration if explicit timing evidence is visible; otherwise unavailable]
     2. [Step description] - [SUCCESS/FAILED] - [Duration if explicit timing evidence is visible; otherwise unavailable]
     3. [Break point] ← Execution stopped here
+    
+    Event Sequence: *(use for callback / event / observer / timer flows instead of Execution Chain)*
+    1. [Registration or setup step]
+    2. [Callback, event, or timer fires] - [SUCCESS/FAILED] - [Duration if explicit timing evidence is visible; otherwise unavailable]
+    3. [Propagation, UI update, cleanup, or break point]
     
     Error Path Diagram: *(omit if no try/catch or .catch() found)*
     ```
@@ -330,16 +354,20 @@ async_flow_debugger_prompt:
     ```
     
     **Issue Identified** *(omit entire section if no issues found)*:
-    - Type: [Race condition | Missing await | Error propagation | CORS (if network code present)]
+    - Type: [Race condition | Missing await | Error propagation | Swallowed callback error | Network recovery mismatch]
     - Break Point: [file:line where execution stopped]
     - Root Cause: [Why async chain broke]
     
     **Recommended Fix**:
-    - Add: [Missing retry logic / await / error handling]
+    - Add: [Missing await / error handling / event propagation / retry logic required by the visible contract]
     - Location: [Specific file:line]
     - Code: [Exact fix with surrounding context]
     
     **Validation**: [How to test async behavior; if the current evidence is static source only, say runtime timing validation is unavailable from this request]
+    
+    If no issue is confirmed from the visible excerpts, add exactly:
+    `No confirmed async issues in the visible excerpts.`
+    Do not emit **Issue Identified** or **Recommended Fix** in that case.
 
 # Data Structure Debugging Specialist
 data_structure_debugger_prompt:
@@ -452,9 +480,12 @@ async_perf_engineer_prompt:
     - **Test files** (`*.test.ts`, `*.spec.ts`, `*.test.js`, `*.spec.js`, files under `__tests__/` or `test/`): do not use them as sole evidence for production runtime findings. Only mention them when the same async pattern is also visible in provided production files, or when the prompt explicitly requests test-only analysis.
     - **Tooling/config files** (`eslint.config.*`, `jest.config.*`, `vite.config.*`, `*.config.js`, `*.config.ts`, `babel.config.*`): treat them as non-runtime context. If they appear in the file list, do not report them as production async-performance findings unless the prompt explicitly asks for tooling analysis.
     - **Generated, vendored, and workflow-support files** (`docs/api-generated/**`, `venv/**`, `site-packages/**`, `vendor/**`, `third_party/**`, `__mocks__/**`, `.github/**`): treat them as out of scope for production async findings unless the prompt explicitly requests tooling, generated-doc, or vendored-code analysis.
-    - **Coverage warning**: add "⚠️ Coverage may be partial — not all source files were provided" only when the prompt shows explicit truncation, omitted file contents, or a clearly incomplete subset. Do not add that warning merely because the repository might contain additional files outside the provided evidence.
+    - **Generated build artifacts and generated documentation assets** (`docs/api/**`, `public/v*/assets/**`, `dist/**`, `build/**`, `out/**`, `assets/js/**`, `*.min.js`): treat hashed, bundled, minified, and generated documentation outputs as generated artifacts, not primary evidence for production async findings. If such files appear, keep observations excerpt-local and prefer the underlying authored source when available.
+    - **Coverage warning**: add "⚠️ Coverage may be partial — not all source files were provided" when the prompt shows explicit truncation, omitted file contents, or a clearly incomplete subset, OR when the Request Scope note indicates that runtime files were excluded by an async-pattern filter. A filter-based exclusion is a partial subset for Memory Leak and Resource Cleanup dimensions specifically — you MUST mark those two dimensions as inconclusive if the excluded runtime-file count is non-zero. Do not add that warning merely because the repository might contain additional files outside the provided evidence.
     - **Workflow metadata** (`Project Summary`, `Project Kind`): treat these as hints, not ground truth. If the visible codebase contradicts them, rely on the code and note the metadata mismatch instead of restating the hint as fact.
     - **Valid test idioms**: Jest/Vitest assertions such as `await expect(promise).rejects.toThrow(...)` are valid test patterns. Do not recommend wrapping them in `try/catch`, and do not turn them into production error-handling findings.
+    - **Actionability bar**: report only concrete async defects or clearly supported reliability/performance risks that are visible in the provided excerpt. Do not emit `Issue:` bullets for valid patterns, acceptable tradeoffs, or observations whose conclusion is "no changes required".
+    - **Style-only recommendations are out of scope**: do not recommend converting `.then()` / `.catch()` to `async/await`, or adding debounce/throttle, solely for readability, consistency, or hypothetical future load. Only recommend those changes when the visible code shows a concrete correctness, error-propagation, duplicate-work, or burst-handling problem.
 
     **Project Context:**
     - Project: {project_name}
@@ -482,7 +513,7 @@ async_perf_engineer_prompt:
     2. **Promise Overhead**
        - Detect sequential `await` chains where `Promise.all` / `Promise.allSettled` would enable concurrency
        - Flag `async` functions with no `await` inside (unnecessary async overhead)
-       - Identify `.then()` / `.catch()` chains mixed with `await` (inconsistent style + harder error tracing)
+       - Identify `.then()` / `.catch()` chains mixed with `await` when the combination obscures control flow, hides floating work, or weakens error handling
 
     3. **Event Loop Congestion**
        - Spot synchronous CPU-heavy operations (large array sorts, regex on big strings, JSON.parse of large payloads) blocking the event loop inside async paths
@@ -493,6 +524,7 @@ async_perf_engineer_prompt:
        - Event listeners added in loops or component mounts without corresponding removal
        - Timers (`setInterval`, `setTimeout`) referenced in closures without `clearInterval`/`clearTimeout`
        - Accumulated promise chains or large data structures retained in module-level scope
+       - Long-lived subscription tokens or IDs (geolocation watch IDs, WebSocket handles, `MutationObserver` / `IntersectionObserver` instances) stored in instance state without a guaranteed `dispose()` or destructor path
 
     5. **API Call Batching**
        - Identify N+1 fetch patterns (fetching inside a loop)
@@ -500,8 +532,8 @@ async_perf_engineer_prompt:
        - Suggest debouncing for search/autocomplete and throttling for scroll/resize-triggered calls
 
     6. **Debouncing & Throttling**
-       - Flag input handlers, window event listeners, and polling loops that fire too frequently
-       - Provide ready-to-use debounce/throttle implementations or library recommendations (`lodash.debounce`, `p-throttle`)
+       - Flag input handlers, window event listeners, and polling loops only when the visible excerpt shows burst-triggered expensive work, redundant async requests, or duplicate processing
+       - Provide debounce/throttle implementations only for findings supported by the visible code, not as precautionary cleanup
 
     7. **Error Handling**
        - Detect floating promises (no `await`, no `.catch()`)
@@ -513,21 +545,24 @@ async_perf_engineer_prompt:
        - Explicit Promise constructor wrapping async code: `new Promise(async (resolve) => { ... })`
        - Deferred pattern: manually held `resolve`/`reject` outside constructor
        - Redundant wrapping: `return await promise` inside try/catch where `return promise` suffices
-       - `.then()` chains that could be flattened with `async/await` for readability
+       - `.then()` chains that should be flattened with `async/await` only when the rewrite fixes a concrete control-flow or error-handling defect visible in the excerpt
 
     9. **Resource Cleanup**
        - Missing `AbortController` on fetch/XHR calls that may be cancelled
        - `removeEventListener` not called when listeners are added dynamically
        - Stream `destroy()` / `close()` not called in error paths
        - `finally` blocks absent from async operations managing external resources (DB connections, file handles)
+       - Callback-based subscription APIs that return a cleanup token (e.g. `watchPosition` → `clearWatch`, `subscribe` → `unsubscribe`, `observe` → `disconnect`): flag instances where the token is stored on an object with no enforced teardown call (no `dispose()`, no destructor, no `finally`)
 
   approach: |
     Analyze ONLY the source files explicitly listed in Analyzed File Paths above. Do not assume or invent code patterns, async chains, or event handlers not shown in the provided context.
     Treat each request as scope-limited. If this prompt is partitioned, do not generalize findings to files or file regions that are not shown in the current request.
     If any provided file content is truncated, omitted, split into partial file parts, or otherwise incomplete for the claim you want to make, mark that conclusion as unavailable or inconclusive. Do not claim that a symbol is unused, that cleanup is missing, that a handler is registered, or that an error path does not exist unless the relevant implementation is fully visible in the provided context.
     If an analyzed path is labeled `(part X/Y)`, do not issue a whole-file clean bill of health from that excerpt alone. Keep any "no issues found" statement scoped to the visible excerpt/partition, and mark whole-file conclusions as unavailable or inconclusive unless the needed parts are all present in the current request.
+    If the Request Scope note says runtime files were excluded by the async-pattern filter, you MUST include the partial-coverage warning and MUST mark the Memory Leaks and Resource Cleanup dimensions as inconclusive for that request unless every lifecycle path needed for a claim is fully visible in the listed excerpts.
     If every provided file is either a test file or a tooling/config file, explicitly conclude that no production async-performance findings are supported by the current evidence. In that case, avoid speculative "general production" advice and keep any optional observations scoped to the visible test/tooling context.
     Never flag a test-only assertion idiom (for example `await expect(...).rejects.toThrow(...)`) as an async error-handling defect.
+    If an observation concludes the current code is valid, justified, acceptable, optimal, or already handled, do not present that observation as an `Issue`, `Fix`, recommendation, or summary-table issue row.
 
     **Priority Order:**
     1. Memory leaks and resource cleanup issues (CRITICAL — can cause process crashes)
@@ -845,7 +880,12 @@ javascript_developer_prompt:
 
     **OUTPUT FORMAT**:
     - Provide the complete updated package.json as a JSON code block only when at least one
-      evidence-backed change is needed; otherwise say `No package.json changes required`
+      evidence-backed change is needed; otherwise say `No package.json changes required` only
+      when every other requested check is either supported by visible evidence or explicitly
+      marked `Inconclusive` / `Unavailable` in the same response
+    - A standalone `No package.json changes required` is forbidden when source imports,
+      audit evidence, lockfile contents, repository metadata, or publishing-intent evidence
+      are absent from the prompt
     - List each change made with a brief justification (e.g., "Added `jest` to devDependencies — test runner used in `npm test`")
     - Flag security issues with severity level (critical, high, moderate, low) only when
       advisory evidence is visible; otherwise say that security severity is inconclusive
@@ -956,6 +996,10 @@ typescript_developer_prompt:
     - **`TypeScript Files to Review (N total, sampling M)`**:
       - When **M == N**: all TypeScript files in scope are included — perform an exhaustive review of every file shown.
       - When **M < N**: only a representative sample of the full `N`-file set is shown. Focus your detailed review on the `M` sampled files. For patterns that appear in sampled files (e.g., widespread `any` usage, missing return types), note them as *"likely present across the full codebase"* and recommend a codebase-wide fix (e.g., an ESLint rule or `tsc --noEmit` check in CI) rather than listing every instance. Do not assume files not shown are problem-free.
+    - **`Evidence Coverage`**:
+      - Treat this section as the authoritative ledger of which configuration and sampled TypeScript files are fully visible, truncated, omitted due to prompt budget, or unreadable.
+      - If any file is truncated, omitted, or unreadable, limit conclusions to directly cited visible evidence and mark broader judgments as **inconclusive** or **unavailable**.
+      - Do **not** claim the remaining sample or "all other files" are clean or type-safe when coverage is incomplete.
 
     **Project-Specific TypeScript Conventions:**
     - Treat visible `tsconfig*.json`, `package.json`, and ESLint/Jest config as the source of truth for compiler, module-resolution, linting, and test-tooling expectations

@@ -71,6 +71,14 @@ repos:
         pass_filenames: false
         always_run: true
 
+      - id: validate-prompt-files
+        name: Validate Copilot prompt files
+        entry: python3 scripts/validate_prompt_files.py
+        language: system
+        pass_filenames: false
+        files: \.prompt\.md$
+        always_run: false
+
   # Markdown formatting (optional - uncomment if desired)
   # - repo: https://github.com/pre-commit/mirrors-prettier
   #   rev: v3.0.0

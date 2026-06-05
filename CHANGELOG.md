@@ -7,7 +7,17 @@ All notable changes to the AI Workflow Core project will be documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.2/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.7.0] — 2026-06-04
+
+### Added
+
+- **`templates/prompts/`** — New directory containing GitHub Copilot prompt file versions of the four debugging checklists. Each `.prompt.md` file wraps the existing checklist content with Copilot frontmatter (`agent: 'agent'`, `description`) and a `${input:symptom:}` input variable. Consuming projects copy files to their own `.github/prompts/` and invoke them via `/name` in Copilot Chat. Original `.md` files in `templates/debugging/` are unchanged.
+- **`templates/prompts/README.md`** — Documents the new directory, lists available prompt files, and explains the copy-and-use workflow for consumers.
+- **`.github/prompts/add-role.prompt.md`** — Copilot Chat prompt for scaffolding a new role entry in `config/prompt_roles.yaml`; validates uniqueness, places entry in the correct section, bumps version, and runs `npm test`.
+- **`.github/prompts/add-persona.prompt.md`** — Copilot Chat prompt for scaffolding a new persona in the correct `config/ai_helpers/` sub-file; verifies the `role_ref` exists, updates `index.yaml`, regenerates `config/ai_helpers.yaml` via `build_ai_helpers.py`, and runs `npm test`.
+- **`scripts/validate_prompt_files.py`** — New validation script that checks all `*.prompt.md` files in `templates/prompts/` and `.github/prompts/` for valid frontmatter (`agent` + `description` fields), correct naming convention, and well-formed `${input:identifier:prompt}` variable syntax. Exits 0 on success, 1 on errors.
+- **`.pre-commit-config.yaml`** — Added `validate-prompt-files` hook (runs `validate_prompt_files.py` when any `*.prompt.md` file is staged).
+- **`workflow-templates/workflows/validate-structure.yml`** — Added `Validate Copilot prompt files` step so consuming projects that copy this workflow also enforce prompt file validity in CI.
 
 ### Changed
 

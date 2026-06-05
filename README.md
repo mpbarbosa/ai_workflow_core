@@ -3,7 +3,7 @@
 **Foundational configuration and templates for AI-powered workflow automation across multiple languages**
 
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](docs/LICENSE)
-[![Version](https://img.shields.io/badge/version-1.4.3-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-1.7.0-blue.svg)]()
 
 ## Overview
 
@@ -264,7 +264,7 @@ Part of [AI Workflow Automation](https://github.com/mpbarbosa/ai_workflow) proje
 
 ---
 
-**Version**: 1.6.0 | **Updated**: 2026-04-10
+**Version**: 1.7.0 | **Updated**: 2026-06-04
 
 ## Automated Validation
 

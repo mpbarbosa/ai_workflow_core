@@ -7,6 +7,7 @@ This directory contains **reusable template files and checklists** that projects
 | Directory | Contents |
 |-----------|----------|
 | [`debugging/`](debugging/README.md) | Four Markdown debugging checklists for async flows, browser APIs, data structures, and observer patterns. |
+| [`prompts/`](prompts/README.md) | GitHub Copilot prompt file versions of the debugging checklists. Copy to `.github/prompts/` in your project and invoke via `/name` in Copilot Chat. |
 
 ## Usage
 

@@ -32,6 +32,11 @@ jobs:
         run: |
           echo "Running directory structure validation..."
           python3 scripts/validate_structure.py
+
+      - name: Validate Copilot prompt files
+        run: |
+          echo "Validating Copilot prompt files..."
+          python3 scripts/validate_prompt_files.py
           
       - name: Check for empty directories
         run: |

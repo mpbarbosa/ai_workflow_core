@@ -1,7 +1,7 @@
 # AI Workflow Core - Architecture
 
-**Version**: 1.6.0
-**Last Updated**: 2026-04-10
+**Version**: 1.7.0
+**Last Updated**: 2026-06-04
 **Status**: Stable
 
 > **Purpose**: This document provides a high-level architectural overview of ai_workflow_core as a configuration and template library. For AI-specific guidance, see [.github/copilot-instructions.md](../.github/copilot-instructions.md).
@@ -140,6 +140,12 @@ Projects consume this library as a submodule:
    - Purpose: GitHub Actions workflows
    - Example: `code-quality.yml`
    - Customization: Manual editing after copy
+
+4. **Prompt Files** (`.prompt.md` in `templates/prompts/`)
+   - Purpose: GitHub Copilot Chat prompts for consuming projects
+   - Example: `async-flow-debug-checklist.prompt.md`
+   - Customization: Copy to `.github/prompts/` in consumer project; invoke via `/name` in Copilot Chat
+   - Variables: `${input:identifier:prompt}` syntax for user-provided context at invocation time
 
 ### Placeholder Format
 
@@ -448,7 +454,7 @@ Checks:
 **Decision**:
 - `project_kinds.yaml` version: 1.2.7
 - `ai_prompts_project_kinds.yaml` version: 1.2.7
-- Core repository version: 1.6.0
+- Core repository version: 1.7.0
 
 **Rationale:**
 - Schemas evolve independently
@@ -626,6 +632,7 @@ git submodule add <your-fork-url> .workflow_core
 ---
 
 **Version History:**
+- v1.7.0 (2026-06-04): Added `templates/prompts/` Copilot prompt files for debugging checklists; added `.github/prompts/` contributor tooling; added `validate_prompt_files.py` script and pre-commit hook; extended CI validate-structure workflow
 - v1.6.0 (2026-04-10): Added `validateConfig()`; created PROMPT_ROLES_REFERENCE.md; expanded FUNCTIONAL_REQUIREMENTS.md; fixed `resolvePersona` prototype-key bug
 - v1.5.0 (2026-04-10): Added `listPersonas()` to TypeScript loader; expanded AI_HELPERS_REFERENCE.md to v7.0.5; synced version numbers
 - v1.4.3 (2026-04-09): TypeScript loader (`loadPersonas`, `resolveAllPersonas`, `resolvePersona`, `isPersonaConfig`)
